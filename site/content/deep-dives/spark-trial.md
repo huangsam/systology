@@ -1,0 +1,38 @@
+---
+title: "Deep Dive: Spark Trial"
+description: "Batch processing with ETL workflows."
+summary: "End-to-end ETL example using Apache Spark for parquet datasets; focuses on schema handling, partitioning, and reproducible aggregation."
+tags: ["spark","etl","batch","data-pipelines","monitoring"]
+---
+
+## Context — Problem — Solution
+
+**Context:** `spark-trial` demonstrates end-to-end ETL for NYC Yellow Taxi trip data using Apache Spark, performing schema alignment, validation, and statistical aggregations.
+
+**Problem:** Processing large, multi-year parquet datasets requires robust schema handling, partition-aware IO, and reproducible aggregation logic for analytics.
+
+**Solution (high-level):** Use Spark DataFrame best practices: schema-on-read, partition pruning, parquet predicate pushdown, and deterministic aggregation pipelines with tests and CI-friendly samples.
+
+## 1. The Local Implementation
+
+- **Current Logic:** Downloads parquet-formatted trip data, loads into Spark, normalizes schemas across years, runs validations, and computes aggregated yearly and quarterly metrics.
+- **Bottleneck:** Large IO volume and schema drift across years; local runs are limited by available memory and CPU.
+
+## 2. Scaling Strategy
+
+- **Vertical vs. Horizontal:** Move to cluster mode with sufficient executors for parallelism; optimize partitioning strategy and caching for repeated transforms.
+- **State Management:** Use checkpointing and write intermediate artifacts to durable storage (S3/HDFS) to avoid recomputation.
+
+## 3. Comparison to Industry Standards
+
+- **My Project:** Practical ETL example focused on reproducible analytics for public datasets.
+- **Industry:** Production ETL adds orchestration (Airflow/Argo), data cataloging, monitoring, and schema evolution tooling.
+
+## 4. Experiments & Metrics
+
+- **Job runtime:** end-to-end processing time per year and per quarter.
+- **Resource efficiency:** executor memory/CPU utilization and optimal partition counts.
+
+## 5. Risks & Mitigations
+
+- **Schema drift:** implement schema merging strategies and robust validation with automatic alerting.

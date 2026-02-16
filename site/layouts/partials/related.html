@@ -1,0 +1,23 @@
+{{/*
+  related.html — auto-generate a small related-pages list based on shared tags.
+  Usage: partial "related.html" .
+*/}}
+{{ $p := . }}
+{{ with $p.Params.tags }}
+  {{ $related := where $p.Site.RegularPages "Params.tags" "intersect" . }}
+  {{ $related = where $related "RelPermalink" "ne" $p.RelPermalink }}
+  {{ $related = first 6 $related }}
+  {{ if gt (len $related) 0 }}
+    <aside class="related">
+      <h3>Related</h3>
+      <ul>
+        {{ range $related }}
+          <li>
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            {{ with .Params.summary }}<br/><small class="muted">{{ . }}</small>{{ end }}
+          </li>
+        {{ end }}
+      </ul>
+    </aside>
+  {{ end }}
+{{ end }}

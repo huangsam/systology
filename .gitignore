@@ -1,0 +1,7 @@
+archive/
+public/
+.DS_Store
+*.lock
+__pycache__/
+*.pyc
+*.pyo

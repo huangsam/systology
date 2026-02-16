@@ -1,0 +1,24 @@
+.PHONY: vendor build serve tidy tags
+
+VERSION ?= 11.12.0
+MERMAID_URL = https://cdnjs.cloudflare.com/ajax/libs/mermaid/$(VERSION)/mermaid.min.js
+VENDOR = site/assets/vendor/mermaid.min.js
+
+vendor:
+	@mkdir -p $(dir $(VENDOR))
+	@curl -fsSL "$(MERMAID_URL)" -o "$(VENDOR)"
+	@echo "Vendored mermaid $(VERSION) -> $(VENDOR)"
+
+build:
+	hugo -s site --minify --cleanDestinationDir
+
+serve:
+	hugo server -D -s site
+
+tidy:
+	python3 scripts/normalize_content.py
+	python3 scripts/add_summary_description.py
+	python3 scripts/update_internal_links.py
+
+tags:
+	python3 scripts/tag_frequency.py --top 40

@@ -1,0 +1,18 @@
+{{ define "main" }}
+  <article>
+    <header>
+      <h1>{{ .Title }}</h1>
+      {{ with .Params.description }}
+        <h2>{{ . }}</h2>
+      {{ end }}
+      {{ with .Params.tags }}
+        <p class="tags">{{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/tags/{{ $t | urlize }}">{{ $t }}</a>{{ end }}</p>
+      {{ end }}
+    </header>
+    <section>
+      {{ .Content }}
+    </section>
+
+    {{ partial "related.html" . }}
+  </article>
+{{ end }}

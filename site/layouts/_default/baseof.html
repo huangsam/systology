@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
+
+    {{/* description: prefer page `description`, then `summary`, then page `Summary`, then site param */}}
+    {{/* description precedence: page.description -> page.summary -> parent.summary/cascade -> .Summary -> site.description */}}
+    {{ $desc := .Params.description | default .Params.summary | default (.Summary | plainify) | default .Site.Params.description }}
+    {{ with $desc }}
+      <meta name="description" content="{{ . }}">
+    {{ end }}
+
+    <link rel="canonical" href="{{ .Permalink }}" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <meta name="robots" content="index, follow" />
+
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    {{ partial "header.html" . }}
+    <main>
+      {{ block "main" . }}{{ end }}
+    </main>
+    {{ partial "footer.html" . }}
+
+    <!-- Mermaid diagrams (Hugo Pipes: download + fingerprint from CDN, runtime fallback to /js/mermaid.min.js) -->
+    {{ $version := .Site.Params.mermaidVersion | default "11.12.0" }}
+    {{ $url := printf "https://cdnjs.cloudflare.com/ajax/libs/mermaid/%s/mermaid.min.js" $version }}
+    {{ $vendor := resources.Match "vendor/mermaid.min.js" | first 1 }}
+
+    {{ if $vendor }}
+      {{ $mermaid := index $vendor 0 | resources.Minify | resources.Fingerprint "sha384" }}
+      <script src="{{ $mermaid.Permalink }}" integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous" onerror="this.onerror=null;this.src='{{ $url }}'"></script>
+    {{ else }}
+      {{ $mermaid := resources.GetRemote $url | resources.Minify | resources.Fingerprint "sha384" }}
+      <script src="{{ $mermaid.Permalink }}" integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous" onerror="this.onerror=null;this.src='{{ $url }}'"></script>
+    {{ end }}
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (window.mermaid) {
+          mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+
+baseURL = "http://example.org/"
+languageCode = "en-us"
+title = "Systology (barebones)"
+enableGitInfo = true
+taxonomies = { tag = "tags", category = "categories" }
+
+[params]
+  mermaidVersion = "11.12.0"
