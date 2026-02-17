@@ -1,6 +1,6 @@
 ---
 title: "Background Job Queue for Big Tasks"
-description: "Async job for videos and data processing"
+description: "Async job for videos and data processing."
 summary: "Asynchronous job queue design for resource-heavy tasks (video encoding, data processing) with retries, idempotency, DLQ handling, and autoscaling."
 tags: ["monitoring","networking","queues","distributed-systems"]
 categories: ["designs"]
