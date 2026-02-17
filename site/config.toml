@@ -4,7 +4,9 @@ title = "Systology"
 enableGitInfo = true
 taxonomies = { tag = "tags", category = "categories" }
 
+# Useful links to learn more about tweaking code blocks:
 # https://gohugo.io/configuration/markup/
+# https://gohugo.io/quick-reference/syntax-highlighting-styles/
 [markup]
   [markup.highlight]
     noClasses = false
