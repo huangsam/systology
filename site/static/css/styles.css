@@ -50,26 +50,6 @@ main.container {
 }
 
 /* Header / Nav */
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
-.skip-link:focus {
-  position: static;
-  left: auto;
-  width: auto;
-  height: auto;
-  padding: 0.5rem 1rem;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 6px;
-}
-
 .site-header {
   border-bottom: 1px solid var(--border);
   background: transparent;
