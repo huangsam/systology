@@ -1,4 +1,4 @@
-# AGENTS
+# Systology agentic guidelines
 
 ## Purpose
 
