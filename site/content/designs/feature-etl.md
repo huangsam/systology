@@ -2,7 +2,7 @@
 title: "ETL Pipeline for ML Feature Engineering"
 description: "Data extraction, transformation, and loading"
 summary: "Robust ETL pipeline for deterministic, reproducible ML feature generation from diverse sources, with idempotence and scale in mind."
-tags: ["etl","ml","feature-extraction","data-pipelines","monitoring"]
+tags: ["ml","data-pipelines","monitoring"]
 categories: ["designs"]
 ---
 

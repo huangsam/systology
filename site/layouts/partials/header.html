@@ -1,5 +1,9 @@
-<header>
-  <nav>
-    <p><a href="/">Systology</a></p>
-  </nav>
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="{{ .Site.Title }}"><img src="/favicon.svg" alt="" class="logo-icon"> {{ .Site.Title }}</a>
+    <nav class="site-nav" role="navigation" aria-label="Main navigation">
+      <a href="/categories/">Categories</a>
+      <a href="/tags/">Tags</a>
+    </nav>
+  </div>
 </header>

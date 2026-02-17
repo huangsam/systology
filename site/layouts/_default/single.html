@@ -6,7 +6,16 @@
         <h2>{{ . }}</h2>
       {{ end }}
       {{ with .Params.tags }}
-        <p class="tags">{{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/tags/{{ $t | urlize }}">{{ $t }}</a>{{ end }}</p>
+        <div class="tags">
+          <span>Tags:</span>
+          {{ range $t := . }}<a class="badge" href="/tags/{{ $t | urlize }}/">{{ $t }}</a>{{ end }}
+        </div>
+      {{ end }}
+      {{ with .Params.categories }}
+        <div class="categories">
+          <span>Categories:</span>
+          {{ range $t := . }}<a class="badge" href="/categories/{{ $t | urlize }}/">{{ $t }}</a>{{ end }}
+        </div>
       {{ end }}
     </header>
     <section>

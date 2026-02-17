@@ -1,0 +1,24 @@
+{{ define "main" }}
+  <article>
+    <header>
+      <h1>{{ .Title }}</h1>
+      {{ with .Params.description }}
+        <p class="lead">{{ . }}</p>
+      {{ end }}
+      <p class="meta">{{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }}</p>
+    </header>
+
+    {{ if .Content }}
+      <section class="tax-content">{{ .Content }}</section>
+    {{ end }}
+
+    <ul class="terms-list">
+      {{ range .Pages }}
+        <li>
+          <a href="{{ .RelPermalink }}">{{ .Title | lower }}</a>
+          <span class="count">({{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }})</span>
+        </li>
+      {{ end }}
+    </ul>
+  </article>
+{{ end }}

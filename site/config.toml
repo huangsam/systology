@@ -1,7 +1,7 @@
 
 baseURL = "http://example.org/"
 languageCode = "en-us"
-title = "Systology (barebones)"
+title = "Systology"
 enableGitInfo = true
 taxonomies = { tag = "tags", category = "categories" }
 

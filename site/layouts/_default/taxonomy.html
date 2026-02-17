@@ -15,25 +15,23 @@
     {{ $pages := .Pages.ByDate.Reverse }}
     {{ $paginator := .Paginate $pages 12 }}
 
-    <section class="posts-list">
-      <ul>
-        {{ range $paginator.Pages }}
-          <li>
-            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-            {{ with .Params.tags }}
-              <small class="tags">&nbsp;—&nbsp;{{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/tags/{{ $t | urlize }}">{{ $t }}</a>{{ end }}</small>
-            {{ end }}
-            {{ with .Summary }}
-              <p class="summary">{{ . }}</p>
-            {{ end }}
-          </li>
-        {{ end }}
-      </ul>
+    <section class="posts-grid">
+      {{ range $paginator.Pages }}
+        <article class="post-card">
+          <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          {{ with .Summary }}
+            <p class="summary">{{ . }}</p>
+          {{ end }}
+          {{ with .Params.tags }}
+            <span class="tags-inline">{{ range $t := . }}<a class="badge" href="/tags/{{ $t | urlize }}/">{{ $t }}</a>{{ end }}</span>
+          {{ end }}
+        </article>
+      {{ end }}
     </section>
 
     <nav class="pagination">
-      {{ if $paginator.HasPrev }}<a class="prev" href="{{ $paginator.Prev.URL }}">← Newer</a>{{ end }}
-      {{ if $paginator.HasNext }}<a class="next" href="{{ $paginator.Next.URL }}">Older →</a>{{ end }}
+      {{ if $paginator.HasPrev }}<a class="prev" href="{{ $paginator.Prev.URL }}">← Previous</a>{{ end }}
+      {{ if $paginator.HasNext }}<a class="next" href="{{ $paginator.Next.URL }}">Next →</a>{{ end }}
     </nav>
   </article>
 {{ end }}

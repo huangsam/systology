@@ -2,7 +2,7 @@
 title: "Background Job Queue for Resource-Intensive Tasks"
 description: "Async job for videos and data processing"
 summary: "Asynchronous job queue design for resource-heavy tasks (video encoding, data processing) with retries, idempotency, DLQ handling, and autoscaling."
-tags: ["background-jobs","queue","monitoring","networking"]
+tags: ["monitoring","networking"]
 categories: ["designs"]
 ---
 
@@ -21,12 +21,11 @@ Create an asynchronous job queue system to handle resource-intensive tasks like 
 
 {{< mermaid >}}
 graph LR
-  Client[Client] --> API[API Gateway]
   API --> Queue[Job Queue]
   Queue --> Worker[Worker Pool]
   Worker --> Storage[(Object Storage)]
   Worker --> DB[(Job DB)]
-  DB --> Dashboard[Monitoring/ Dashboard]
+  DB --> Dashboard
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

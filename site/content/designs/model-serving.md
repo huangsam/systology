@@ -2,7 +2,7 @@
 title: "Scalable Model Serving Infrastructure"
 description: "Real-time ML inference at scale"
 summary: "Infrastructure for real-time ML inference with model versioning, autoscaling, and resource-aware fallbacks."
-tags: ["ml","inference","monitoring"]
+tags: ["ml","monitoring"]
 categories: ["designs"]
 ---
 
