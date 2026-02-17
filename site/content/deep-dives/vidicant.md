@@ -40,8 +40,3 @@ categories: ["deep-dives"]
 
 - **Platform packaging friction:** provide CI-built wheels and homebrew/cmake instructions for macOS, Linux, Windows.
 - **False positives in detection:** provide calibration tools and thresholding per-dataset.
-
-## See Also
-
-- [xcode-trial](/deep-dives/xcode-trial): Native macOS video analysis as counterpart to cross-platform approach.
-- [Photohaul](/deep-dives/photohaul): Similar media handling concerns for photos with EXIF preservation.
