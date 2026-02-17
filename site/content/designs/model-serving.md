@@ -20,25 +20,26 @@ Design an infrastructure to serve machine learning models for real-time inferenc
 ## 2. High-Level Architecture
 
 {{< mermaid >}}
-graph LR
-  Client["Client<br/>(Request)"]
-  Gateway["Gateway"]
-  Router["Router<br/>(Route Decision)"]
-  ServerA["Server A<br/>(Canary)"]
-  ServerB["Server B<br/>(Stable)"]
-  Registry["Model Registry<br/>(Versions)"]
+graph TD
+  Client["Client<br/>(Inference Request)"]
+  Gateway["Gateway<br/>(Load Balance)"]
+  Router["Router<br/>(Canary Decision)"]
+  ServerA["Server A<br/>(Canary ~5-10%)"]
+  ServerB["Server B<br/>(Stable ~90-95%)"]
   GPUA["GPU Pool A"]
   GPUB["GPU Pool B"]
+  Registry["Model Registry<br/>(Versions)"]
   Fallback["Fallback Model"]
   Client --> Gateway
   Gateway --> Router
-  Router -->|5-10% traffic| ServerA
-  Router -->|90-95% traffic| ServerB
-  Router -.->|on error| Fallback
-  ServerA -.->|loads model| Registry
-  ServerB -.->|loads model| Registry
+  Router -->|canary traffic| ServerA
+  Router -->|production traffic| ServerB
   ServerA --> GPUA
   ServerB --> GPUB
+  ServerA -.->|load| Registry
+  ServerB -.->|load| Registry
+  ServerA -.->|on error| Fallback
+  ServerB -.->|on error| Fallback
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

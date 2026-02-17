@@ -20,20 +20,20 @@ Design a high-performance search and retrieval engine to index and query large v
 ## 2. High-Level Architecture
 
 {{< mermaid >}}
-graph LR
-  Query --> QP[Query Parser]
-  QP --> Scatter
-  Scatter --> Shard1[Shard 1]
-  Scatter --> Shard2[Shard 2]
-  Scatter --> ShardN[Shard N]
-  Shard1 --> Gather
+graph TD
+  Query["Query Input"] --> QP["Query Parser"]
+  QP --> Scatter["Scatter (Parallel)"]
+  Scatter --> Shard1["Shard 1 (Local RankK)"]
+  Scatter --> Shard2["Shard 2 (Local RankK)"]
+  Scatter --> ShardN["Shard N (Local RankK)"]
+  Shard1 --> Gather["Gather & Merge"]
   Shard2 --> Gather
   ShardN --> Gather
-  Gather --> Ranker
-  Ranker --> Results
-  Indexer --> Shard1
-  Indexer --> Shard2
-  Indexer --> ShardN
+  Gather --> Ranker["Re-Ranker"]
+  Ranker --> Results["Top-K Results"]
+  Indexer["Index Writer"] -.->|updates| Shard1
+  Indexer -.->|updates| Shard2
+  Indexer -.->|updates| ShardN
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs
