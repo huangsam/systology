@@ -1,70 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
 
-    {{/* description: prefer page `description`, then `summary`, then page `Summary`, then site param */}}
-    {{/* description precedence: page.description -> page.summary -> parent.summary/cascade -> .Summary -> site.description */}}
-    {{ $desc := .Params.description | default .Params.summary | default (.Summary | plainify) | default .Site.Params.description }}
-    {{ with $desc }}
-      <meta name="description" content="{{ . }}">
-    {{ end }}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
 
-    <link rel="canonical" href="{{ .Permalink }}" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="alternate icon" href="/favicon.ico" />
-    <meta name="robots" content="index, follow" />
+  {{/* description: prefer page `description`, then `summary`, then page `Summary`, then site param */}}
+  {{/* description precedence: page.description -> page.summary -> parent.summary/cascade -> .Summary ->
+  site.description */}}
+  {{ $desc := .Params.description | default .Params.summary | default (.Summary | plainify) | default
+  .Site.Params.description }}
+  {{ with $desc }}
+  <meta name="description" content="{{ . }}">
+  {{ end }}
 
-    <link rel="stylesheet" href="/css/styles.css">
-  </head>
-  <body>
-    <a class="skip-link" href="#content">Skip to content</a>
-    {{ partial "header.html" . }}
-    <main id="content" class="container prose">
-      {{ block "main" . }}{{ end }}
-    </main>
-    {{ partial "footer.html" . }}
+  <link rel="canonical" href="{{ .Permalink }}" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="/favicon.ico" />
+  <meta name="robots" content="index, follow" />
 
-    <!-- Mermaid diagrams (Hugo Pipes: download + fingerprint from CDN, runtime fallback to /js/mermaid.min.js) -->
-    {{ $version := .Site.Params.mermaidVersion | default "11.12.0" }}
-    {{ $url := printf "https://cdnjs.cloudflare.com/ajax/libs/mermaid/%s/mermaid.min.js" $version }}
-    {{ $vendor := resources.Match "vendor/mermaid.min.js" | first 1 }}
+  <script>try { if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark') } catch (e) { }</script>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
 
-    {{ if $vendor }}
-      {{ $mermaid := index $vendor 0 | resources.Minify | resources.Fingerprint "sha384" }}
-      <script src="{{ $mermaid.Permalink }}" integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous" onerror="this.onerror=null;this.src='{{ $url }}'"></script>
-    {{ else }}
-      {{ $mermaid := resources.GetRemote $url | resources.Minify | resources.Fingerprint "sha384" }}
-      <script src="{{ $mermaid.Permalink }}" integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous" onerror="this.onerror=null;this.src='{{ $url }}'"></script>
-    {{ end }}
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  {{ partial "header.html" . }}
+  <main id="content" class="container prose">
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "footer.html" . }}
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        if (window.mermaid) {
-          mermaid.initialize({
-            startOnLoad: true,
-            theme: 'base',
-            securityLevel: 'loose',
-            themeVariables: {
-              primaryColor: '#f3f4f6',
-              primaryTextColor: '#0f1724',
-              primaryBorderColor: '#2563eb',
-              lineColor: '#6b7280',
-              secondBkgColor: '#ffffff',
-              tertiaryTextColor: '#6b7280',
-              tertiaryColor: '#e6e9ee',
-              notebkgColor: '#f0f9ff',
-              noteBorderColor: '#2563eb',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            },
-            flowchart: { useMaxWidth: true, curve: 'linear' },
-            sequence: { useMaxWidth: true },
-            gantt: { useWidth: undefined }
-          });
-        }
-      });
-    </script>
-  </body>
+  <!-- Scroll-to-top button -->
+  <button class="scroll-top" id="scroll-top" aria-label="Scroll to top">↑</button>
+
+  <!-- Mermaid diagrams (Hugo Pipes: download + fingerprint from CDN, runtime fallback to /js/mermaid.min.js) -->
+  {{ $version := .Site.Params.mermaidVersion | default "11.12.0" }}
+  {{ $url := printf "https://cdnjs.cloudflare.com/ajax/libs/mermaid/%s/mermaid.min.js" $version }}
+  {{ $vendor := resources.Match "vendor/mermaid.min.js" | first 1 }}
+
+  {{ if $vendor }}
+  {{ $mermaid := index $vendor 0 | resources.Minify | resources.Fingerprint "sha384" }}
+  <script src="{{ $mermaid.Permalink }}" integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous"
+    onerror="this.onerror=null;this.src='{{ $url }}'"></script>
+  {{ else }}
+  {{ $mermaid := resources.GetRemote $url | resources.Minify | resources.Fingerprint "sha384" }}
+  <script src="{{ $mermaid.Permalink }}" integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous"
+    onerror="this.onerror=null;this.src='{{ $url }}'"></script>
+  {{ end }}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      /* Mermaid */
+      if (window.mermaid) {
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: 'base',
+          securityLevel: 'loose',
+          themeVariables: {
+            primaryColor: '#f3f4f6',
+            primaryTextColor: '#0f1724',
+            primaryBorderColor: '#2563eb',
+            lineColor: '#6b7280',
+            secondBkgColor: '#ffffff',
+            tertiaryTextColor: '#6b7280',
+            tertiaryColor: '#e6e9ee',
+            notebkgColor: '#f0f9ff',
+            noteBorderColor: '#2563eb',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          },
+          flowchart: { useMaxWidth: true, curve: 'linear' },
+          sequence: { useMaxWidth: true },
+          gantt: { useWidth: undefined }
+        });
+      }
+
+      /* Dark-mode toggle */
+      var toggle = document.getElementById('theme-toggle');
+      if (toggle) {
+        toggle.addEventListener('click', function () {
+          var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+          document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
+          try { localStorage.setItem('theme', dark ? 'light' : 'dark'); } catch (e) { }
+        });
+      }
+
+      /* Scroll-to-top */
+      var btn = document.getElementById('scroll-top');
+      if (btn) {
+        window.addEventListener('scroll', function () {
+          btn.classList.toggle('visible', window.scrollY > 400);
+        }, { passive: true });
+        btn.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+    });
+  </script>
+</body>
+
 </html>

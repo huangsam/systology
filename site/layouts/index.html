@@ -1,14 +1,20 @@
 {{ define "main" }}
-  <article>
-    {{ .Content }}
-  </article>
+<article>
+  {{ .Content }}
+</article>
 
-  <section>
-    <h2>Sections</h2>
-    <ul>
+<section>
+  <h2>Sections</h2>
+  <div class="posts-grid">
     {{ range .Site.Sections }}
-      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    <article class="post-card">
+      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      {{ with .Params.description }}
+      <p class="summary">{{ . }}</p>
+      {{ end }}
+      <p class="meta">{{ len .RegularPagesRecursive }} article{{ if gt (len .RegularPagesRecursive) 1 }}s{{ end }}</p>
+    </article>
     {{ end }}
-    </ul>
-  </section>
+  </div>
+</section>
 {{ end }}
