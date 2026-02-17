@@ -16,6 +16,9 @@
         {{ with .Params.tags }}
           <small class="tags">&nbsp;—&nbsp;{{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/tags/{{ $t | urlize }}/">{{ $t }}</a>{{ end }}</small>
         {{ end }}
+        {{ with .Params.description }}
+          <p>{{ . }}</p>
+        {{ end }}
       </li>
     {{ end }}
     </ul>
