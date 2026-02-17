@@ -743,13 +743,7 @@ article>header .github-link {
 }
 
 .related li {
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  transition: background-color 0.15s ease;
-}
-
-.related li:hover {
-  background: var(--accent-weak);
+  padding: 0.5rem 0;
 }
 
 .related a {
