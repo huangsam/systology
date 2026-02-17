@@ -8,7 +8,7 @@ Systology is my collection of docs for studying systems at scale. It serves as a
 
 ## Getting Started
 
-To run the site locally, please make sure you have [Hugo] and [Python] installed, then run:
+To run the site locally, please make sure you have [Hugo] installed, then run:
 
 ```shell
 # Start the Hugo development server with drafts enabled
@@ -20,4 +20,3 @@ Then you can access the site at `https://localhost:1313/`.
 Happy learning! 🙏
 
 [Hugo]: https://gohugo.io/getting-started/installing/
-[Python]: https://www.python.org/downloads/
