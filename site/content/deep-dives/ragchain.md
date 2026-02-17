@@ -4,6 +4,7 @@ description: "Retrieval-augmented generation with search and ML."
 summary: "Local RAG stack (Chroma + Ollama) for private, reproducible retrieval and LLM usage; focuses on hybrid retrieval, index versioning, and evaluation."
 tags: ["ml","retrieval","privacy"]
 categories: ["deep-dives"]
+github: "https://github.com/huangsam/ragchain"
 ---
 
 ## Context — Problem — Solution

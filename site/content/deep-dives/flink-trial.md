@@ -4,6 +4,7 @@ description: "Streaming processing with state management and fault tolerance."
 summary: "Streaming analytics demo for simulated IoT events — emphasizes time semantics, state backends, checkpointing, and fault tolerance."
 tags: ["streaming","data-pipelines","monitoring","analytics"]
 categories: ["deep-dives"]
+github: "https://github.com/huangsam/flink-trial"
 ---
 
 ## Context — Problem — Solution

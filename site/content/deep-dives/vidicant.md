@@ -4,6 +4,7 @@ description: "Video processing for media pipelines."
 summary: "Cross-platform video/image feature extractor (C++ core, Python bindings) for ML preprocessing focusing on throughput, accuracy, and packaging."
 tags: ["media","video","feature-extraction","extensibility"]
 categories: ["deep-dives"]
+github: "https://github.com/huangsam/vidicant"
 ---
 
 ## Context — Problem — Solution

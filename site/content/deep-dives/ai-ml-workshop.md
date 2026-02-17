@@ -4,6 +4,7 @@ description: "AI/ML workshops on model training and evaluation."
 summary: "Practical, reproducible ML examples (PyTorch/Hugging Face/NumPy) with MPS-aware benchmarks and experiment hygiene for local hardware."
 tags: ["ml","experiments","reproducibility","privacy","ml-ops"]
 categories: ["deep-dives"]
+github: "https://github.com/huangsam/ai-ml-workshop"
 ---
 
 ## Context — Problem — Solution

@@ -4,6 +4,7 @@ description: "Photo system with media analysis and storage."
 summary: "Java tool for organizing and migrating large photo collections with deduplication, metadata preservation, and resumable jobs."
 tags: ["migration","deduplication","media","extensibility","networking"]
 categories: ["deep-dives"]
+github: "https://github.com/huangsam/photohaul"
 ---
 
 ## Context — Problem — Solution

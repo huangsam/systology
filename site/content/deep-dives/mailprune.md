@@ -4,6 +4,7 @@ description: "Email management tool for data processing."
 summary: "Local-first email auditing and cleanup tool that identifies noisy senders and produces privacy-preserving recommendations."
 tags: ["privacy","data-pipelines","networking","monitoring"]
 categories: ["deep-dives"]
+github: "https://github.com/huangsam/mailprune"
 ---
 
 ## Context — Problem — Solution

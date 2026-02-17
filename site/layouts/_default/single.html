@@ -17,6 +17,9 @@
           {{ range $t := . }}<a class="badge" href="/categories/{{ $t | urlize }}/">{{ $t }}</a>{{ end }}
         </div>
       {{ end }}
+      {{ with .Params.github }}
+        <a href="{{ . }}" target="_blank" rel="noopener">View on GitHub</a>
+      {{ end }}
     </header>
     <section>
       {{ .Content }}
