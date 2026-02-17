@@ -46,13 +46,21 @@ categories: ["principles"]
     - Balance abstraction benefits against performance needs when choosing frameworks.
 
 9. Testing & Reproducibility
-    - Provide small, deterministic sample datasets and unit/integration tests for pipelines. Record seed values, environment, and runner configs for reproducible runs.
+    - Provide deterministic sample datasets and targeted pipeline tests.
+    - Record seed values, environment, and runner configs for reproducible runs.
+    - Automate end-to-end pipeline tests that validate output schema and row counts.
 
 10. Cost & Resource Efficiency
-    - Optimize partition counts, avoid excessive materialization, and profile IO hotspots. For cloud runs, estimate egress and storage costs.
+    - Optimize partition counts and avoid excessive materialization of intermediate stages.
+    - Profile IO hotspots and tune serialization formats for read/write heavy workloads.
+    - For cloud runs, estimate egress and storage costs and set budget alerts.
 
 11. Development Ergonomics
-    - Keep example pipelines minimal and document runner-switch steps. Extract common helpers (data generators, test harnesses) into a shared folder to reduce duplication across trials.
+    - Keep example pipelines minimal and document runner-switch steps.
+    - Extract shared helpers (generators, test harnesses) to reduce duplication.
+    - Provide quick-start templates for new pipeline development.
 
 12. Cross-cutting: Security & Data Privacy
-    - Mask or encrypt sensitive fields, limit data retention, and document access controls for intermediate artifacts.
+    - Mask or encrypt sensitive fields in transit and at rest.
+    - Limit data retention and implement automatic cleanup of intermediate artifacts.
+    - Document access controls and audit policies for pipeline outputs.
