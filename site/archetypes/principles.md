@@ -9,5 +9,6 @@ categories: ["principles"]
 1. Principle or Practice Name
     - Brief description of the principle or practice.
     - Key benefits and motivations for using it.
+
 2. Another principle or practice
     - Repeat the structure
