@@ -21,17 +21,17 @@ Design a high-performance search and retrieval engine to index and query large v
 
 {{< mermaid >}}
 graph LR
-  Query[User Query] --> QP[Query Parser / Rewriter]
-  QP --> Scatter[Scatter Layer]
-  Scatter --> Shard1[Index Shard 1]
-  Scatter --> Shard2[Index Shard 2]
-  Scatter --> ShardN[Index Shard N]
-  Shard1 --> Gather[Gather / Merge]
+  Query --> QP[Query Parser]
+  QP --> Scatter
+  Scatter --> Shard1[Shard 1]
+  Scatter --> Shard2[Shard 2]
+  Scatter --> ShardN[Shard N]
+  Shard1 --> Gather
   Shard2 --> Gather
   ShardN --> Gather
-  Gather --> Ranker[Re-Ranker]
-  Ranker --> Results[Ranked Results]
-  Indexer[Indexer] --> Shard1
+  Gather --> Ranker
+  Ranker --> Results
+  Indexer --> Shard1
   Indexer --> Shard2
   Indexer --> ShardN
 {{< /mermaid >}}

@@ -21,12 +21,12 @@ Develop a global media serving system that efficiently delivers static and dynam
 
 {{< mermaid >}}
 graph LR
-  Users[Users] --> CDN[CDN Edge PoPs]
-  CDN -->|miss| Shield[Origin Shield]
-  Shield -->|miss| Origin[Origin Server]
-  Origin --> ObjectStore[(Object Storage)]
-  Uploader[Upload Service] --> Transcoder[Transcoder Workers]
-  Transcoder --> ObjectStore
+  Users --> CDN
+  CDN -->|miss| Shield
+  Shield -->|miss| Origin
+  Origin --> Storage
+  Uploader --> Transcoder
+  Transcoder --> Storage
   Transcoder --> CDN
 {{< /mermaid >}}
 

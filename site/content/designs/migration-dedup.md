@@ -21,13 +21,13 @@ Create a system to migrate large volumes of data between systems while performin
 
 {{< mermaid >}}
 graph LR
-  Source[(Source System)] --> Scanner[Scanner / Chunker]
-  Scanner --> HashIndex[(Hash Index)]
-  Scanner --> Migrator[Migration Workers]
+  Source --> Scanner
+  Scanner --> HashIndex[Hash Index]
+  Scanner --> Migrator
   HashIndex --> Migrator
-  Migrator --> Target[(Target System)]
-  Migrator -.->|checkpoint| StateDB[(State DB)]
-  Reconciler[Reconciler] --> Source
+  Migrator --> Target
+  Migrator -.->|checkpoint| StateDB[State DB]
+  Reconciler --> Source
   Reconciler --> Target
 {{< /mermaid >}}
 

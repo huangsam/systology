@@ -21,14 +21,14 @@ Build a platform for federated learning that trains models across distributed de
 
 {{< mermaid >}}
 graph LR
-  Coordinator[FL Coordinator] -->|model params| Selector[Client Selector]
+  Coordinator[Coordinator] -->|model params| Selector[Selector]
   Selector --> DeviceA[Device A]
   Selector --> DeviceB[Device B]
   Selector --> DeviceN[Device N]
-  DeviceA -->|encrypted update| Aggregator[Secure Aggregator]
+  DeviceA -->|encrypted update| Aggregator[Aggregator]
   DeviceB -->|encrypted update| Aggregator
   DeviceN -->|encrypted update| Aggregator
-  Aggregator --> GlobalModel[(Global Model Store)]
+  Aggregator --> GlobalModel[(Global Store)]
   GlobalModel --> Coordinator
 {{< /mermaid >}}
 

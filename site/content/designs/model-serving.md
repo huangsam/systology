@@ -21,15 +21,15 @@ Design an infrastructure to serve machine learning models for real-time inferenc
 
 {{< mermaid >}}
 graph LR
-  Client[API Client] --> Gateway[API Gateway]
-  Gateway --> Router[Model Router]
-  Router --> ServerA[Model Server A - v2 canary]
-  Router --> ServerB[Model Server B - v1 stable]
-  ServerA --> GPU[(GPU Pool)]
+  Client --> Gateway
+  Gateway --> Router
+  Router --> ServerA[Server A (Canary)]
+  Router --> ServerB[Server B (Stable)]
+  ServerA --> GPU
   ServerB --> GPU
-  Registry[(Model Registry)] --> ServerA
+  Registry --> ServerA
   Registry --> ServerB
-  Router -.->|fallback| Fallback[Lightweight Fallback Model]
+  Router -.->|fallback| Fallback
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

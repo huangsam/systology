@@ -21,10 +21,10 @@ Create an asynchronous job queue system to handle resource-intensive tasks like 
 
 {{< mermaid >}}
 graph LR
-  API --> Queue[Job Queue]
-  Queue --> Worker[Worker Pool]
-  Worker --> Storage[(Object Storage)]
-  Worker --> DB[(Job DB)]
+  API --> Queue
+  Queue --> Worker
+  Worker --> Storage
+  Worker --> DB
   DB --> Dashboard
 {{< /mermaid >}}
 
