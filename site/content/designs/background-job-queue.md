@@ -50,7 +50,7 @@ graph LR
 ## 4. Operational Excellence
 
 ### SLIs / SLOs
-- SLO: 99% of jobs start processing within 5 minutes of enqueue. ✅
+- SLO: 99% of jobs start processing within 5 minutes of enqueue.
 - SLO: 99.9% of jobs succeed (or move to DLQ) within configured retry policy.
 - SLIs: queue_depth, job_start_latency_p95, job_completion_latency_p99, job_success_rate (1m/5m windows).
 
