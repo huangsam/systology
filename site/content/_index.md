@@ -8,6 +8,6 @@ Systology is my documentation collection for studying systems: discoveries, patt
 
 ```go
 func main() {
-    fmt.Println("Go have fun!")
+    fmt.Println("Happy learning! 🙏")
 }
 ```
