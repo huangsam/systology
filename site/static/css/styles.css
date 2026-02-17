@@ -450,15 +450,24 @@ span.tags-inline {
 /* Smooth transitions (respects reduced motion) */
 @media (prefers-reduced-motion: no-preference) {
 
+  html,
   body,
   .site-header,
   .site-footer,
   .card,
+  .badge,
+  blockquote,
   pre,
   code,
   table,
   th,
-  td {
+  td,
+  .listing li,
+  .terms-list li,
+  .mermaid,
+  .scroll-top,
+  .pagination a,
+  .related {
     transition:
       background-color 0.18s ease,
       color 0.18s ease,
