@@ -1,8 +1,8 @@
 ---
-title: "Global CDN-Backed Media Serving"
+title: "Global CDN Media Serving"
 description: "Distributed media delivery worldwide"
 summary: "CDN-backed media delivery architecture for low-latency, highly-available global media serving with background upload processing."
-tags: ["performance","networking","monitoring","caching"]
+tags: ["performance","networking","monitoring","caching", "media"]
 categories: ["designs"]
 ---
 
