@@ -1,10 +1,10 @@
 # Systology
 
-Systology is my documentation collection for studying systems: discoveries, patterns, and practical learnings. It serves as a knowledge base for system design, implementation, and experimentation, drawing from real-world projects and trials.
+Systology is my collection of docs for studying systems at scale. It serves as a knowledge base for my synthesized learnings, drawing from work experience and content curated from various sources.
 
 - Principles: Core ideas and heuristics for system behavior.
-- Designs: System design explorations with trade-offs and decisions.
-- Deep Dives: Long-form investigations into projects and findings.
+- Designs: System explorations with trade-offs and decisions.
+- Deep Dives: Findings from my public projects on GitHub.
 
 ## Getting Started
 

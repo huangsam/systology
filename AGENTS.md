@@ -25,14 +25,4 @@ Do not run `make server` if it's already running. You can verify this with `lsof
 
 How to add a new page:
 
-1. Create `site/content/<section>/my-note.md` using kebab-case filename.
-2. Add front matter (title, description, summary, tags, categories).
-    ```yaml
-    ---
-    title: "My Note"
-    description: "Short description"
-    summary: "One-line summary used on index pages"
-    tags: ["tag1", "tag2"]
-    categories: ["designs"]
-    ---
-    ```
+1. Run `hugo new -s site designs/foo.md` to create a new design page
