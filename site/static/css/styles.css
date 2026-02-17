@@ -201,18 +201,19 @@ pre {
     monospace;
   padding: 1rem;
   border-radius: var(--radius);
-  background: #f5f7fa;
+  background: var(--bg);
   border: 1px solid var(--border);
-  color: #1e293b;
+  color: var(--text);
   overflow: auto;
   margin: 1rem 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 pre code {
-  background: transparent;
+  background: transparent !important;
   padding: 0;
-  color: inherit;
+  color: inherit !important;
+  border: none !important;
 }
 
 /* Blockquote */
@@ -408,20 +409,20 @@ span.tags-inline {
 }
 
 /* Article header optimization */
-article > header {
+article>header {
   margin-bottom: 1.5rem;
 }
 
-article > header h2 {
+article>header h2 {
   margin: 0.25rem 0 0.5rem;
 }
 
-article > header div.tags,
-article > header div.categories {
+article>header div.tags,
+article>header div.categories {
   margin: 0.5rem 0;
 }
 
-article > header .github-link {
+article>header .github-link {
   margin-top: 0.5rem;
 }
 
@@ -543,20 +544,21 @@ article > header .github-link {
   --muted: #94a3b8;
   --accent: #60a5fa;
   --accent-weak: rgba(96, 165, 250, 0.1);
+  --accent-weak-up: rgba(96, 165, 250, 0.2);
   --border: #1e293b;
   --blockquote-bg: #1a2332;
   --focus: 3px rgba(96, 165, 250, 0.25);
 }
 
 [data-theme="dark"] pre {
-  background: #1a2332;
-  border-color: #1e293b;
-  color: #e2e8f0;
+  background: var(--blockquote-bg);
+  border-color: var(--border);
+  color: var(--text);
 }
 
 [data-theme="dark"] code {
-  background: rgba(96, 165, 250, 0.1);
-  border-color: rgba(96, 165, 250, 0.2);
+  background: var(--accent-weak);
+  border-color: var(--accent-weak-up);
 }
 
 [data-theme="dark"] .mermaid {

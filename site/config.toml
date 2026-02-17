@@ -3,3 +3,11 @@ languageCode = "en-us"
 title = "Systology"
 enableGitInfo = true
 taxonomies = { tag = "tags", category = "categories" }
+
+# https://gohugo.io/configuration/markup/
+[markup]
+  [markup.highlight]
+    noClasses = false
+    noBackground = true
+    lineNos = false
+    style = "modus-vivendi"
