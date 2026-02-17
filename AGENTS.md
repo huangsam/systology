@@ -1,15 +1,15 @@
-# Systology agentic guidelines
+# Agentic guidelines
 
 ## Purpose
 
-This document captures practical guidance for building, testing, and operating "agents" (automation components, RAG/assistant integrations, and similar workflows) used or referenced by the Systology projects.
+This document captures practical guidance for building, testing, and operating "agents" used or referenced by the Systology project.
 
-## Project layout (where to edit)
+## Project layout
 
-- `site/content/` — markdown content (sections: `deep-dives`, `designs`, `principles`)
+- `site/content/` — Markdown content (`deep-dives`, `designs`, `principles`)
 - `site/layouts/` — Hugo templates
-- `site/static/` — static assets (CSS, images)
-- `scripts/` — content maintenance utilities (normalize, tag frequency, internal links)
+- `site/static/` — Static assets
+- `scripts/` — Content maintenance utilities
 
 ## Tools and practices
 
