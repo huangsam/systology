@@ -40,10 +40,10 @@ graph LR
 - **Serialisation and compression:** store objects in compressed form (zstd or LZ4) to reduce memory footprint. The CPU cost of decompression is negligible compared to a network round-trip to the backend store.
 - **Thread safety and concurrency:** use pipelining and connection pooling (one pool per app server) to maximise throughput. Employ `SETNX`-style locks or read-through cache-fill fences to prevent stampeding multiple backend fetches for the same cold key.
 
-### Tradeoffs
+### Trade-offs
 
-- Cache-aside vs write-through: cache-aside is simpler and avoids unnecessary cache writes, but risks brief staleness after backend updates; write-through ensures freshness at the cost of added write latency and cache churn for infrequently-read objects.
-- LRU vs LFU: LRU is simple and works well for recency-driven access patterns; LFU retains long-term popular objects better but is more complex to implement and slower to adapt to shifting workloads.
+- Cache-aside vs. write-through: cache-aside is simpler and avoids unnecessary cache writes, but risks brief staleness after backend updates; write-through ensures freshness at the cost of added write latency and cache churn for infrequently-read objects.
+- LRU vs. LFU: LRU is simple and works well for recency-driven access patterns; LFU retains long-term popular objects better but is more complex to implement and slower to adapt to shifting workloads.
 - Compression: reduces memory usage by 2–4× but adds CPU overhead per request; on cache-heavy workloads the tradeoff is almost always worthwhile.
 
 ## 4. Operational Excellence
@@ -51,7 +51,7 @@ graph LR
 ### SLIs / SLOs
 - SLO: Cache hit ratio ≥ 95% for object lookups.
 - SLO: P99 cache read latency < 5 ms; P99 cache write latency < 10 ms.
-- SLIs: cache_hit_ratio, cache_latency_p99, eviction_rate, memory_utilisation_percent, connection_pool_utilisation.
+- SLIs: cache_hit_ratio, cache_latency_p99, eviction_rate, memory_utilization_percent, connection_pool_utilization.
 
 ### Monitoring & Alerts (examples)
 
@@ -59,7 +59,7 @@ Alerts:
 
 - `cache_hit_ratio < 90%` for 5m
     - Severity: P2 (investigate eviction pressure or workload change).
-- `cache_memory_utilisation > 85%`
+- `cache_memory_utilization > 85%`
     - Severity: P2 (scale cluster or review TTLs / eviction thresholds).
 - `cache_latency_p99 > 15ms` for 3m
     - Severity: P1 (check network, slow commands, or hot keys).

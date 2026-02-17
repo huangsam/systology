@@ -44,11 +44,11 @@ graph TD
 - **Heterogeneity and non-IID data:** device datasets are typically non-IID and imbalanced. Use techniques like FedProx (proximal regularisation) or scaffold (control variates) to stabilise convergence. Run periodic evaluations on a held-out server-side validation set to detect divergence.
 - **Model versioning and rollout:** store each global checkpoint with a round number and evaluation metrics. Roll out the updated model to production gradually (canary → percentage ramp → full fleet) and monitor accuracy and fairness metrics before promoting.
 
-### Tradeoffs
+### Trade-offs
 
-- Secure aggregation vs performance: cryptographic protocols add 2–5× overhead per round and increase coordinator complexity; without them, a compromised server can reconstruct individual updates, creating a privacy risk.
-- Differential privacy vs model accuracy: stronger privacy guarantees (lower ε) inject more noise and reduce model accuracy; teams must choose a privacy-accuracy operating point based on regulatory requirements and data sensitivity.
-- Client sampling breadth vs round speed: sampling more clients per round improves update quality but increases round latency and bandwidth; small samples are faster but noisier.
+- Secure aggregation vs. performance: cryptographic protocols add 2–5× overhead per round and increase coordinator complexity; without them, a compromised server can reconstruct individual updates, creating a privacy risk.
+- Differential privacy vs. model accuracy: stronger privacy guarantees (lower ε) inject more noise and reduce model accuracy; teams must choose a privacy-accuracy operating point based on regulatory requirements and data sensitivity.
+- Client sampling breadth vs. round speed: sampling more clients per round improves update quality but increases round latency and bandwidth; small samples are faster but noisier.
 
 ## 4. Operational Excellence
 

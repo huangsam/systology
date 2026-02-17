@@ -1,7 +1,7 @@
 ---
 title: "Media Analysis"
 description: "Feature extraction and real-time handling for media data."
-summary: "Best practices for media feature extraction: stable schemas, streaming vs batch modes, metadata preservation, and performance engineering."
+summary: "Best practices for media feature extraction: stable schemas, streaming vs. batch modes, metadata preservation, and performance engineering."
 tags: ["media","feature-extraction"]
 categories: ["principles"]
 ---
@@ -11,12 +11,12 @@ categories: ["principles"]
     - Include structured fields for frames, detections, and metadata.
     - Ensure backward compatibility and migration paths for schema changes.
 
-2. Cross-platform vs Native
+2. Cross-platform vs. Native
     - Use cross-platform C++/OpenCV for portable batch processing pipelines.
     - Leverage native APIs (Vision/Metal) for optimized, low-latency on-device work.
     - Balance portability needs against performance requirements when choosing stacks.
 
-3. Stream vs Batch Processing
+3. Stream vs. Batch Processing
     - Implement streaming decode for memory-efficient handling of long videos.
     - Use batch processing with worker queues for large media archives.
     - Support both modes with configurable buffer sizes and parallelism.

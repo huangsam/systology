@@ -26,7 +26,7 @@ categories: ["principles"]
     - Use LLM-as-judge for qualitative evaluation but validate against human labels.
     - Maintain small, curated dev sets for quick iteration and regression testing.
 
-5. Latency vs Quality Trade-offs
+5. Latency vs. Quality Trade-offs
     - Cache results for frequent queries to reduce latency.
     - Use approximate nearest neighbors (ANN) for large-scale vector search.
     - Limit rerank window sizes to balance quality and speed.

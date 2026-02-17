@@ -7,8 +7,8 @@ categories: ["principles"]
 ---
 
 1. Time Semantics
-    - Batch vs Streaming: choose batch (Spark) for large-scale ETL and analytics; streaming (Flink) for low-latency, continuous processing. Beam provides a programming model that spans both.
-    - Event-time vs Processing-time: prefer event-time with watermarks where correctness matters (late data); use processing-time for simple, low-latency demos.
+    - Batch vs. Streaming: choose batch (Spark) for large-scale ETL and analytics; streaming (Flink) for low-latency, continuous processing. Beam provides a programming model that spans both.
+    - Event-time vs. Processing-time: prefer event-time with watermarks where correctness matters (late data); use processing-time for simple, low-latency demos.
 
 2. Fault Tolerance & State
     - Use checkpointing and durable state backends (RocksDB, filesystem, S3/HDFS) for stateful operators.
@@ -40,7 +40,7 @@ categories: ["principles"]
     - Add alerts for increasing lag, error rates, and state size growth.
     - Use distributed tracing for complex pipeline debugging.
 
-8. Runner Portability (Beam) vs Runtime Features
+8. Runner Portability (Beam) vs. Runtime Features
     - Use Beam for cross-runner portability when deployment flexibility is key.
     - Leverage native Flink/Spark APIs for advanced runtime optimizations.
     - Balance abstraction benefits against performance needs when choosing frameworks.

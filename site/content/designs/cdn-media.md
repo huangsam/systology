@@ -41,7 +41,7 @@ graph LR
 - **Image and video optimization:** serve modern formats (WebP, AVIF, H.265) with content negotiation via `Accept` headers. Apply on-the-fly image resizing at the edge for rarely-requested dimensions, and pre-generate popular variants.
 - **Multi-CDN and failover:** use DNS-based or anycast routing to distribute traffic across multiple CDN providers. Implement health-check probes and automatic failover so that an edge outage redirects users to healthy PoPs within seconds.
 
-### Tradeoffs
+### Trade-offs
 
 - Origin shield: reduces origin traffic significantly but adds an extra hop of latency on cold-cache requests; without it, origin can be overwhelmed during cache-busting events.
 - On-the-fly transforms: flexible and storage-efficient but CPU-intensive at the edge and risk latency spikes; pre-generating variants eliminates edge compute cost but increases storage and transcoding time.

@@ -13,7 +13,7 @@ github: "https://github.com/huangsam/flink-trial"
 
 **Problem:** Real-time streaming needs reliable windowing semantics, error routing, and resource management to keep latency low while maintaining correctness.
 
-**Solution (high-level):** Use proper time semantics, side output patterns for error separation, checkpointing for fault tolerance, and careful parallelism tuning to balance latency vs throughput.
+**Solution (high-level):** Use proper time semantics, side output patterns for error separation, checkpointing for fault tolerance, and careful parallelism tuning to balance latency vs. throughput.
 
 ## 1. The Local Implementation
 

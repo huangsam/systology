@@ -38,12 +38,12 @@ graph LR
 - **Worker model:** pull-based workers with leases/visibility timeouts and periodic heartbeats. Use worker-side concurrency controls and per-worker resource limits (CPU/memory/cgroup).
 - **Idempotency:** every job must have a dedup key / idempotency token and be safe to run multiple times. Persist job status (`PENDING` → `RUNNING` → `SUCCEEDED` | `FAILED`) in a Job DB to avoid double work.
 - **Retries & poison messages:** exponential backoff with jitter, capped retries (e.g., 5 attempts), then move to a Dead-Letter Queue (DLQ) for manual inspection or automated recovery.
-- **Prioritization & QoS:** implement separate queues (or priority fields) for latency-sensitive vs batch jobs; apply token-bucket rate limiting when calling external services.
+- **Prioritization & QoS:** implement separate queues (or priority fields) for latency-sensitive vs. batch jobs; apply token-bucket rate limiting when calling external services.
 - **Scaling strategy:** autoscale workers on queue depth and worker CPU utilization; partition work by job type to scale independently.
 - **Transactions & consistency:** use at-least-once semantics internally and rely on idempotent handlers; do not attempt expensive exactly-once semantics across distributed systems.
 - **Security & isolation:** run untrusted/long-running jobs in isolated sandboxes (containers) with strict resource quotas and network egress controls.
 
-### Tradeoffs
+### Trade-offs
 
 - Redis Streams: low-latency + simple, but requires careful persistence/ops for large retention. Kafka/SQS: better for guaranteed delivery and reprocessing at scale but adds operational complexity.
 - Inline payloads: simpler but increases queue size and risk of message loss; object store references increase system complexity but are more robust for large files.

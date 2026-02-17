@@ -44,4 +44,4 @@ github: "https://github.com/huangsam/xcode-trial"
 
 ## Related Principles
 
-- [Media Analysis](/principles/media-analysis): Stable output schemas, native vs cross-platform processing, performance engineering, and privacy guarantees.
+- [Media Analysis](/principles/media-analysis): Stable output schemas, native vs. cross-platform processing, performance engineering, and privacy guarantees.

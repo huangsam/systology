@@ -43,10 +43,10 @@ graph LR
 - **Backfill strategy:** support historical backfill by accepting a date range parameter. Partition data by date so that backfills process only affected partitions without reprocessing the entire dataset. Run backfills at lower priority to avoid starving production pipelines.
 - **Data quality and validation:** embed data-quality checks (Great Expectations, dbt tests) into the DAG as validation nodes: null-rate checks, range checks, row-count drift detection. Fail the pipeline early on quality violations before bad features reach the store.
 
-### Tradeoffs
+### Trade-offs
 
-- Batch vs micro-batch vs streaming: batch (hourly/daily) is simplest and sufficient for most ML training loops; streaming gives fresher features but adds complexity (exactly-once, state management); micro-batch (e.g., Spark Structured Streaming) is a middle ground.
-- Centralised orchestrator vs event-driven: an orchestrator provides a single pane of glass for scheduling and lineage but becomes a single point of failure; event-driven execution is more resilient but harder to reason about dependency ordering.
+- Batch vs. micro-batch vs. streaming: batch (hourly/daily) is simplest and sufficient for most ML training loops; streaming gives fresher features but adds complexity (exactly-once, state management); micro-batch (e.g., Spark Structured Streaming) is a middle ground.
+- Centralised orchestrator vs. event-driven: an orchestrator provides a single pane of glass for scheduling and lineage but becomes a single point of failure; event-driven execution is more resilient but harder to reason about dependency ordering.
 - Schema registry: enforces contracts and catches breaking changes early but adds a dependency and requires team discipline to register schemas before writing producers.
 
 ## 4. Operational Excellence
@@ -64,12 +64,12 @@ Alerts:
     - Severity: P1 (SLA at risk; investigate bottleneck tasks).
 - `data_quality_pass_rate < 99%` (per run)
     - Severity: P2 (bad data entering feature store; quarantine affected partitions).
-- `row_count_delta > 20%` vs previous run
+- `row_count_delta > 20%` vs. previous run
     - Severity: P2 (unexpected data volume change; verify source health).
 
 ### Testing & Reliability
 - Run the full DAG on a staging dataset daily; compare output features against a frozen golden snapshot.
-- Integration-test each connector with a mock source to verify pagination, retry, and checkpoint behaviour.
+- Integration-test each connector with a mock source to verify pagination, retry, and checkpoint behavior.
 - Perform quarterly backfill drills to validate that historical re-processing produces bit-identical features.
 
 ### Backups & Data Retention

@@ -11,9 +11,9 @@ github: "https://github.com/huangsam/beam-trial"
 
 **Context:** `beam-trial` is a minimal Apache Beam example demonstrating pipeline construction, basic transforms, and sharded text output.
 
-**Problem:** Understanding Beam's model and runner differences requires hands-on examples; users need clarity on how local vs distributed runners affect parallelism and IO.
+**Problem:** Understanding Beam's model and runner differences requires hands-on examples; users need clarity on how local vs. distributed runners affect parallelism and IO.
 
-**Solution (high-level):** Provide canonical examples showing Create/Map/TextIO, document runner semantics (Direct vs Flink/Dataflow), and add micro-benchmarks illustrating sharding, parallelism, and IO characteristics.
+**Solution (high-level):** Provide canonical examples showing Create/Map/TextIO, document runner semantics (Direct vs. Flink/Dataflow), and add micro-benchmarks illustrating sharding, parallelism, and IO characteristics.
 
 ## 1. The Local Implementation
 
@@ -32,8 +32,8 @@ github: "https://github.com/huangsam/beam-trial"
 
 ## 4. Experiments & Metrics
 
-- **Sharding behavior:** number of output shards vs throughput.
-- **Runner latency:** DirectRunner vs Flink/Dataflow end-to-end times on identical workloads.
+- **Sharding behavior:** number of output shards vs. throughput.
+- **Runner latency:** DirectRunner vs. Flink/Dataflow end-to-end times on identical workloads.
 
 ## 5. Risks & Mitigations
 

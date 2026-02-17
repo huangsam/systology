@@ -44,5 +44,5 @@ github: "https://github.com/huangsam/vidicant"
 
 ## Related Principles
 
-- [Media Analysis](/principles/media-analysis): Stable output schemas, stream vs batch processing, calibration, and packaging.
+- [Media Analysis](/principles/media-analysis): Stable output schemas, stream vs. batch processing, calibration, and packaging.
 - [Extensibility](/principles/extensibility): Cross-language bindings (pybind11) and stable API design.

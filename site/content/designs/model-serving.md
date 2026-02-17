@@ -54,18 +54,18 @@ graph TD
 - **Fallback and degradation:** maintain a lightweight fallback model (e.g., logistic regression, cached predictions, or a smaller distilled model) that activates when the primary model is unhealthy or latency exceeds the SLO. The fallback trades accuracy for availability and ensures the API never returns errors to end users.
 - **Pre- and post-processing:** run feature extraction, normalisation, and output formatting in the serving pipeline as vectorised transforms. Keep preprocessing deterministic and version it alongside the model to avoid training-serving skew.
 
-### Tradeoffs
+### Trade-offs
 
-- Batching vs latency: larger batches improve throughput and GPU utilisation but increase tail latency for requests that arrive at the start of a batch window; systems must tune batch size and wait time per SLO tier.
-- GPU sharing vs isolation: sharing GPUs across models maximises utilisation but introduces noisy-neighbour effects; dedicated GPUs guarantee latency but leave capacity idle during low traffic.
-- Rich serving framework vs custom server: frameworks like Triton provide out-of-the-box batching, multi-model, and multi-backend support but add abstraction layers; custom servers offer maximum control but require significant engineering investment.
+- Batching vs. latency: larger batches improve throughput and GPU utilization but increase tail latency for requests that arrive at the start of a batch window; systems must tune batch size and wait time per SLO tier.
+- GPU sharing vs. isolation: sharing GPUs across models maximizes utilization but introduces noisy-neighbour effects; dedicated GPUs guarantee latency but leave capacity idle during low traffic.
+- Rich serving framework vs. custom server: frameworks like Triton provide out-of-the-box batching, multi-model, and multi-backend support but add abstraction layers; custom servers offer maximum control but require significant engineering investment.
 
 ## 4. Operational Excellence
 
 ### SLIs / SLOs
 - SLO: P99 inference latency < 200 ms for all production models.
 - SLO: 99.9% availability of the inference API (including fallback responses).
-- SLIs: inference_latency_p99, inference_error_rate, model_load_time, gpu_utilisation, batch_fill_ratio, canary_accuracy_delta.
+- SLIs: inference_latency_p99, inference_error_rate, model_load_time, gpu_utilization, batch_fill_ratio, canary_accuracy_delta.
 
 ### Monitoring & Alerts (examples)
 

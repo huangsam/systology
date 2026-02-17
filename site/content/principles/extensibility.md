@@ -24,7 +24,7 @@ categories: ["principles"]
     - Use API contracts in integration tests to prevent regressions.
 
 4. Composability & Layering
-    - Build systems with clear layers (plumbing vs porcelain in Grit, transforms vs runners in Beam).
+    - Build systems with clear layers (plumbing vs. porcelain in Grit, transforms vs. runners in Beam).
     - Allow composing primitives into higher-level operations.
     - Maintain small, focused components that are easy to test and reuse.
 

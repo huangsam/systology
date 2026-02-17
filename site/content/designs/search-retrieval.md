@@ -48,11 +48,11 @@ graph TD
 - **Relevance tuning and feedback:** log click-through data and use it to train learning-to-rank models. Run online A/B tests on ranking changes. Provide an explain API that returns the scoring breakdown for debugging relevance issues.
 - **Multi-tenancy and access control:** enforce per-tenant index isolation (separate shards or filtered aliases) and document-level ACLs evaluated at query time. Use Bloom filters on ACL fields to quickly skip unauthorised documents during posting-list traversal.
 
-### Tradeoffs
+### Trade-offs
 
-- Lexical vs semantic search: BM25 is fast, interpretable, and requires no GPU, but misses semantic similarity (synonyms, paraphrases); dense vector search captures meaning but is compute-intensive and harder to debug. Hybrid balances both at the cost of pipeline complexity.
-- Near-real-time vs batch indexing: NRT indexing (1–5 s refresh) satisfies most use cases but adds memory pressure and compaction overhead; batch indexing (minutes/hours) is simpler but delays document visibility.
-- Scatter-gather vs single-node: scatter-gather scales horizontally and handles larger corpora but adds network hops and merge overhead; a single large node is simpler when the index fits in memory.
+- Lexical vs. semantic search: BM25 is fast, interpretable, and requires no GPU, but misses semantic similarity (synonyms, paraphrases); dense vector search captures meaning but is compute-intensive and harder to debug. Hybrid balances both at the cost of pipeline complexity.
+- Near-real-time vs. batch indexing: NRT indexing (1–5 s refresh) satisfies most use cases but adds memory pressure and compaction overhead; batch indexing (minutes/hours) is simpler but delays document visibility.
+- Scatter-gather vs. single-node: scatter-gather scales horizontally and handles larger corpora but adds network hops and merge overhead; a single large node is simpler when the index fits in memory.
 
 ## 4. Operational Excellence
 

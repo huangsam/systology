@@ -43,11 +43,11 @@ graph LR
 - **Rollback strategy:** before migration, snapshot or version the target dataset (e.g., database snapshot, object-store versioning). If post-migration validation reveals corruption, restore from the snapshot. For append-only targets, tag migrated records so they can be bulk-deleted.
 - **Parallelism and throttling:** run multiple migration workers in parallel, each assigned a set of chunks. Apply rate limiting and backpressure to avoid overwhelming the source or target systems. Use adaptive throttling that backs off when source read latency or target write latency exceeds a threshold.
 
-### Tradeoffs
+### Trade-offs
 
-- Inline dedup vs post-migration dedup: inline dedup (hash-check before write) avoids writing duplicates at all but requires a fast hash index in the critical path; post-migration dedup is simpler to implement but wastes write bandwidth and storage temporarily.
-- Full reconciliation vs sampling: full reconciliation guarantees correctness but is expensive (reads the entire dataset twice); sampling-based reconciliation is faster but can miss localised corruption.
-- Snapshot rollback vs record-level rollback: snapshots are simple and atomic but require enough storage headroom for a full copy; record-level rollback is space-efficient but more complex and slower to execute.
+- Inline dedup vs. post-migration dedup: inline dedup (hash-check before write) avoids writing duplicates at all but requires a fast hash index in the critical path; post-migration dedup is simpler to implement but wastes write bandwidth and storage temporarily.
+- Full reconciliation vs. sampling: full reconciliation guarantees correctness but is expensive (reads the entire dataset twice); sampling-based reconciliation is faster but can miss localised corruption.
+- Snapshot rollback vs. record-level rollback: snapshots are simple and atomic but require enough storage headroom for a full copy; record-level rollback is space-efficient but more complex and slower to execute.
 
 ## 4. Operational Excellence
 

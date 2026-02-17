@@ -35,7 +35,7 @@ github: "https://github.com/huangsam/spark-trial"
 - **Job runtime:** end-to-end processing time per year and per quarter.
 - **Resource efficiency:** executor memory/CPU utilization and optimal partition counts.
 - **Data quality validation:** row count, null rate, and schema conformance checks per ingestion batch; flag regressions against baselines.
-- **Partition strategy comparison:** measure read/write throughput and shuffle volume across different partition key choices (time-based vs hash-based).
+- **Partition strategy comparison:** measure read/write throughput and shuffle volume across different partition key choices (time-based vs. hash-based).
 
 ## 5. Risks & Mitigations
 

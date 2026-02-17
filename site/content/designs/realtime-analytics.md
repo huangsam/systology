@@ -42,10 +42,10 @@ graph LR
 - **Backpressure and load shedding:** implement backpressure from the stream processor to the collector (via Kafka consumer lag). If lag exceeds a threshold, shed non-critical events (e.g., impression pings) or degrade dashboard refresh rate rather than dropping high-value events (purchases, errors).
 - **Schema management:** enforce an Avro or Protobuf schema registry for event payloads. Producers must register schemas before publishing; the stream processor validates incoming events against the registry, rejecting malformed messages to protect downstream consumers.
 
-### Tradeoffs
+### Trade-offs
 
-- Flink vs Kafka Streams: Flink provides richer windowing, savepoints, and exactly-once guarantees across sinks, but requires a dedicated cluster; Kafka Streams runs as a library inside application pods, simplifying deployment but limiting state-management capabilities.
-- Event-time vs processing-time: event-time windowing produces accurate aggregations but requires watermark management and handling late data; processing-time is simpler but can produce inconsistent results under lag or reprocessing.
+- Flink vs. Kafka Streams: Flink provides richer windowing, savepoints, and exactly-once guarantees across sinks, but requires a dedicated cluster; Kafka Streams runs as a library inside application pods, simplifying deployment but limiting state-management capabilities.
+- Event-time vs. processing-time: event-time windowing produces accurate aggregations but requires watermark management and handling late data; processing-time is simpler but can produce inconsistent results under lag or reprocessing.
 - OLAP store choice: ClickHouse offers excellent single-node performance and simpler ops; Druid excels at high-concurrency sub-second queries but is more complex to operate; managed services (BigQuery) eliminate ops burden but limit tuning control and may increase cost.
 
 ## 4. Operational Excellence
@@ -69,7 +69,7 @@ Alerts:
 ### Testing & Reliability
 - Replay historical Kafka topics through a staging pipeline to validate windowing and aggregation logic before promoting changes.
 - Chaos-test: kill Flink task managers and verify that exactly-once checkpointing restores state without data loss or duplication.
-- Load-test at 3× peak event rate to validate autoscaling behaviour and identify bottlenecks in the collector, Kafka, and OLAP layers.
+- Load-test at 3× peak event rate to validate autoscaling behavior and identify bottlenecks in the collector, Kafka, and OLAP layers.
 
 ### Backups & Data Retention
 - Raw events in the data lake retained for 1 year (regulatory and ML retraining).

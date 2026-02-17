@@ -41,7 +41,7 @@ categories: ["principles"]
     - Include interactive REPLs for exploring language features.
     - Document the compilation pipeline with examples and tutorials.
 
-8. Performance vs Correctness
+8. Performance vs. Correctness
     - Prioritize correctness; add optimizations incrementally and protect with tests.
     - Use benchmarks to validate that optimizations produce measurable improvements.
     - Document performance-correctness trade-offs and guard invariants with assertions.
