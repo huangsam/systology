@@ -2,7 +2,7 @@
 title: "Networking & Services"
 description: "API design, rate limiting, retries, and resilient service communication."
 summary: "Practical guidance for API design, retries/backoff, rate limiting, connection pooling, and service resilience."
-tags: ["networking","services","api"]
+tags: ["networking"]
 categories: ["principles"]
 ---
 

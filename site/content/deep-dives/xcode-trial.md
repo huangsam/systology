@@ -2,7 +2,7 @@
 title: "xcode-trial"
 description: "iOS/macOS development with app architecture."
 summary: "Multimodal video analysis on macOS (AVFoundation, Vision, Core Image) focusing on concurrency, memory management, and hardware acceleration."
-tags: ["macos","video","multimodal","media"]
+tags: ["video","media"]
 categories: ["deep-dives"]
 ---
 

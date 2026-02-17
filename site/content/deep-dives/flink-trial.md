@@ -2,7 +2,7 @@
 title: "Flink Trial"
 description: "Streaming processing with state management and fault tolerance."
 summary: "Streaming analytics demo for simulated IoT events — emphasizes time semantics, state backends, checkpointing, and fault tolerance."
-tags: ["flink","streaming","iot","data-pipelines","monitoring"]
+tags: ["streaming","data-pipelines","monitoring","analytics"]
 categories: ["deep-dives"]
 ---
 

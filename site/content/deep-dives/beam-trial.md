@@ -2,7 +2,7 @@
 title: "Beam Trial"
 description: "Apache Beam for unified batch/streaming pipelines."
 summary: "Canonical Apache Beam examples demonstrating pipeline construction, runner differences, and IO sharding behavior for learning Beam."
-tags: ["beam","data-pipelines","streaming"]
+tags: ["data-pipelines","streaming"]
 categories: ["deep-dives"]
 ---
 
