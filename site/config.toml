@@ -4,6 +4,3 @@ languageCode = "en-us"
 title = "Systology"
 enableGitInfo = true
 taxonomies = { tag = "tags", category = "categories" }
-
-[params]
-  mermaidVersion = "11.12.0"
