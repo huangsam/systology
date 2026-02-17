@@ -1,23 +1,39 @@
-{{/*
-  related.html — auto-generate a small related-pages list based on shared tags.
-  Usage: partial "related.html" .
-*/}}
 {{ $p := . }}
-{{ with $p.Params.tags }}
-  {{ $related := where $p.Site.RegularPages "Params.tags" "intersect" . }}
-  {{ $related = where $related "RelPermalink" "ne" $p.RelPermalink }}
-  {{ $related = first 6 $related }}
-  {{ if gt (len $related) 0 }}
-    <aside class="related">
-      <h3>Related</h3>
-      <ul>
-        {{ range $related }}
-          <li>
-            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-            {{ with .Params.summary }}<br/><small class="muted">{{ . }}</small>{{ end }}
-          </li>
-        {{ end }}
-      </ul>
-    </aside>
-  {{ end }}
+{{ $currentTags := $p.Params.tags | default slice }}
+{{ $currentCats := $p.Params.categories | default slice }}
+
+{{ $related := slice }}
+
+{{ if $currentTags }}
+{{ $related = where $p.Site.RegularPages "Params.tags" "intersect" $currentTags }}
+{{ end }}
+
+{{ $related = where $related "RelPermalink" "ne" $p.RelPermalink }}
+{{ $related = first 4 $related }}
+
+{{ if gt (len $related) 0 }}
+<aside class="related">
+  <h3>Related</h3>
+  <ul>
+    {{ range $related }}
+    {{ $hasSharedTags := false }}
+    {{ if $currentTags }}
+    {{ if intersect .Params.tags $currentTags }}{{ $hasSharedTags = true }}{{ end }}
+    {{ end }}
+
+    {{ $hasSharedCats := false }}
+    {{ if $currentCats }}
+    {{ if intersect .Params.categories $currentCats }}{{ $hasSharedCats = true }}{{ end }}
+    {{ end }}
+    <li>
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      <span class="related-type">
+        {{ if $hasSharedTags }}<small class="label-tag">tag</small>{{ end }}
+        {{ if $hasSharedCats }}<small class="label-cat">category</small>{{ end }}
+      </span>
+      {{ with .Params.summary }}<br /><small class="muted">{{ . }}</small>{{ end }}
+    </li>
+    {{ end }}
+  </ul>
+</aside>
 {{ end }}
