@@ -2,7 +2,8 @@
 title: "Search & Retrieval Engine"
 description: "High-performance document search"
 summary: "Design a high-performance search and retrieval engine for large document/media collections with low-latency ranking and scalable indexing."
-tags: ["design","search","retrieval","vectors","privacy","monitoring"]
+tags: ["search","retrieval","vectors","privacy","monitoring"]
+categories: ["designs"]
 ---
 
 ## 1. Problem Statement & Constraints

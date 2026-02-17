@@ -3,6 +3,7 @@ title: "Compiler Design"
 description: "Optimization, portability, and error handling for compilers/interpreters."
 summary: "Guidelines for compiler design: clear IR boundaries, deterministic semantics, robust error reporting, and incremental compilation."
 tags: ["compiler","language-design"]
+categories: ["principles"]
 ---
 
 1. Clean IR Boundaries

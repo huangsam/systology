@@ -1,8 +1,9 @@
 ---
-title: "Deep Dive: Grit"
+title: "Grit"
 description: "VCS implementation with plumbing/porcelain architecture."
 summary: "From‑scratch Git implementation in Rust focusing on object storage, performance, and plumbing/porcelain command compatibility."
 tags: ["vcs","rust","performance","algorithms","monitoring"]
+categories: ["deep-dives"]
 ---
 
 ## Context — Problem — Solution

@@ -1,8 +1,9 @@
 ---
-title: "Deep Dive: Rustoku"
+title: "Rustoku"
 description: "High-performance Sudoku solver in Rust."
 summary: "Fast Sudoku solver and generator in Rust using bitmasking and MRV heuristics; emphasizes speed, determinism, and explainable solve traces."
 tags: ["algorithms","sudoku","rust","performance","monitoring"]
+categories: ["deep-dives"]
 ---
 
 ## Context — Problem — Solution

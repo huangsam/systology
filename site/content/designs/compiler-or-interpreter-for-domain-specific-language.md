@@ -2,7 +2,8 @@
 title: "Compiler or Interpreter for a Domain-Specific Language"
 description: "DSL parsing and execution"
 summary: "Develop a compiler or interpreter for a DSL that parses, optimizes, and executes code with deterministic behavior and clear diagnostics."
-tags: ["design","compiler","dsl","language-design"]
+tags: ["compiler","dsl","language-design"]
+categories: ["designs"]
 ---
 
 ## 1. Problem Statement & Constraints

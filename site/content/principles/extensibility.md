@@ -3,6 +3,7 @@ title: "Extensibility & Plugin Architecture"
 description: "Plugin architectures, stable APIs, and cross-language bindings for maintainable, adaptable systems."
 summary: "Guidelines for plugin architectures, stable APIs, cross-language bindings, and safe extension points."
 tags: ["extensibility","plugins"]
+categories: ["principles"]
 ---
 
 1. Plugin/Backend Abstraction

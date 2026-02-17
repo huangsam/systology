@@ -3,6 +3,7 @@ title: "Privacy & Agents"
 description: "Principles for designing safe, transparent, and user-centric agents that handle sensitive data"
 summary: "Privacy-first design rules for agents: local-first defaults, data minimization, consent, and auditable actions."
 tags: ["privacy"]
+categories: ["principles"]
 ---
 
 1. Local-first Default

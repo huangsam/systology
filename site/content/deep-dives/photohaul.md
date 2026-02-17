@@ -1,8 +1,9 @@
 ---
-title: "Deep Dive: Photohaul"
+title: "Photohaul"
 description: "Photo system with media analysis and storage."
 summary: "Java tool for organizing and migrating large photo collections with deduplication, metadata preservation, and resumable jobs."
 tags: ["migration","deduplication","photos","extensibility","networking"]
+categories: ["deep-dives"]
 ---
 
 ## Context — Problem — Solution

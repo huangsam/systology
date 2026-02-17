@@ -1,8 +1,9 @@
 ---
-title: "Deep Dive: xcode-trial"
+title: "xcode-trial"
 description: "iOS/macOS development with app architecture."
 summary: "Multimodal video analysis on macOS (AVFoundation, Vision, Core Image) focusing on concurrency, memory management, and hardware acceleration."
 tags: ["macos","video","multimodal","media","monitoring"]
+categories: ["deep-dives"]
 ---
 
 ## Context — Problem — Solution

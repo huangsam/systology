@@ -4,3 +4,18 @@ body {
   margin: 0;
   padding: 0 1rem;
 }
+
+/* Style for unordered listings */
+ul li {
+  margin: 0.5rem 0;
+}
+ul li p.summary {
+  margin: 0.25rem 0;
+}
+
+/* Style for code blocks */
+pre {
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: black !important;
+}

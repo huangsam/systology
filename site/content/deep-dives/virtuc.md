@@ -1,8 +1,9 @@
 ---
-title: "Deep Dive: VirtuC"
+title: "VirtuC"
 description: "Virtualization for system isolation."
 summary: "Rust-implemented compiler for a C subset that emits LLVM IR and focuses on AST design, semantic checks, and IR validation for teaching."
 tags: ["compiler","rust","education","monitoring"]
+categories: ["deep-dives"]
 ---
 
 ## Context — Problem — Solution

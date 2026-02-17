@@ -2,7 +2,8 @@
 title: "End-to-End Migration & Deduplication System"
 description: "Large-scale data migration and dedup"
 summary: "System design for migrating large datasets with deduplication, integrity checks, resumability, and idempotence."
-tags: ["design","migration","deduplication","storage","networking","extensibility"]
+tags: ["migration","deduplication","storage","networking","extensibility"]
+categories: ["designs"]
 ---
 
 ## 1. Problem Statement & Constraints

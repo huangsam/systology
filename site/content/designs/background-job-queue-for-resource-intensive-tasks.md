@@ -2,7 +2,8 @@
 title: "Background Job Queue for Resource-Intensive Tasks"
 description: "Async job for videos and data processing"
 summary: "Asynchronous job queue design for resource-heavy tasks (video encoding, data processing) with retries, idempotency, DLQ handling, and autoscaling."
-tags: ["design","background-jobs","queue","monitoring","networking"]
+tags: ["background-jobs","queue","monitoring","networking"]
+categories: ["designs"]
 ---
 
 ## 1. Problem Statement & Constraints

@@ -5,7 +5,7 @@ to Markdown files under `site/content/` when missing, using the
 first H1 (`# Title`) as the title.
 
 Run from repo root:
-  python3 scripts/normalize_content.py
+    python3 scripts/normalize_content.py
 """
 
 import re

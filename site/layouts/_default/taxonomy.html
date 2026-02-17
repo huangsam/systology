@@ -1,0 +1,39 @@
+{{ define "main" }}
+  <article>
+    <header>
+      <h1>{{ .Title }}</h1>
+      {{ with .Params.description }}
+        <p class="lead">{{ . }}</p>
+      {{ end }}
+      <p class="meta">{{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }}</p>
+    </header>
+
+    {{ if .Content }}
+      <section class="tax-content">{{ .Content }}</section>
+    {{ end }}
+
+    {{ $pages := .Pages.ByDate.Reverse }}
+    {{ $paginator := .Paginate $pages 12 }}
+
+    <section class="posts-list">
+      <ul>
+        {{ range $paginator.Pages }}
+          <li>
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            {{ with .Params.tags }}
+              <small class="tags">&nbsp;—&nbsp;{{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/tags/{{ $t | urlize }}">{{ $t }}</a>{{ end }}</small>
+            {{ end }}
+            {{ with .Summary }}
+              <p class="summary">{{ . }}</p>
+            {{ end }}
+          </li>
+        {{ end }}
+      </ul>
+    </section>
+
+    <nav class="pagination">
+      {{ if $paginator.HasPrev }}<a class="prev" href="{{ $paginator.Prev.URL }}">← Newer</a>{{ end }}
+      {{ if $paginator.HasNext }}<a class="next" href="{{ $paginator.Next.URL }}">Older →</a>{{ end }}
+    </nav>
+  </article>
+{{ end }}

@@ -2,7 +2,8 @@
 title: "Real-Time Analytics Pipeline for User Behavior"
 description: "Event stream processing and metrics"
 summary: "Scalable real-time pipeline to ingest and process high-volume user event streams for immediate analytics and dashboards; handles late arrivals and fault tolerance."
-tags: ["design","analytics","streaming","data-pipelines","monitoring"]
+tags: ["analytics","streaming","data-pipelines","monitoring"]
+categories: ["designs"]
 ---
 
 # 1. Problem Statement & Constraints
