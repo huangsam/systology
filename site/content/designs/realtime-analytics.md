@@ -6,7 +6,7 @@ tags: ["data-pipelines","monitoring","analytics","queues"]
 categories: ["designs"]
 ---
 
-# 1. Problem Statement & Constraints
+## 1. Problem Statement & Constraints
 
 Design a scalable system to ingest and process high-volume user event streams from a web application in real-time, enabling immediate analytics and dashboards for metrics like engagement. The pipeline must handle variable loads, ensure data accuracy despite late arrivals, and support fault-tolerant operations to maintain continuous availability.
 

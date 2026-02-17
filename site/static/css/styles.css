@@ -169,6 +169,11 @@ main.container {
   text-underline-offset: 3px;
 }
 
+.prose a.github-link {
+  color: var(--text);
+  text-decoration: none;
+}
+
 .prose img {
   max-width: 100%;
   height: auto;
@@ -368,6 +373,58 @@ span.tags-inline {
   border-color: var(--accent);
 }
 
+/* GitHub link */
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  color: #24292f;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.github-link:hover,
+.github-link:focus {
+  background: #f3f6f8;
+  border-color: #8c959f;
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+}
+
+.github-icon {
+  opacity: 0.8;
+}
+
+.github-link:hover .github-icon,
+.github-link:focus .github-icon {
+  opacity: 1;
+}
+
+/* Article header optimization */
+article > header {
+  margin-bottom: 1.5rem;
+}
+
+article > header h2 {
+  margin: 0.25rem 0 0.5rem;
+}
+
+article > header div.tags,
+article > header div.categories {
+  margin: 0.5rem 0;
+}
+
+article > header .github-link {
+  margin-top: 0.5rem;
+}
+
 /* Mermaid diagram styling */
 .mermaid {
   margin: 1.5rem 0;
@@ -560,6 +617,19 @@ span.tags-inline {
 
 [data-theme="dark"] .theme-toggle .icon-moon {
   display: none;
+}
+
+[data-theme="dark"] .github-link {
+  background: #1a2332;
+  border-color: #3f464e;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .github-link:hover,
+[data-theme="dark"] .github-link:focus {
+  background: #232d3a;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
 }
 
 /* ==============================
