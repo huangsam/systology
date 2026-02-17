@@ -1,5 +1,5 @@
 ---
-title: "End-to-End Migration & Deduplication System"
+title: "End-to-End Migration & Deduplication"
 description: "Large-scale data migration and dedup"
 summary: "System design for migrating large datasets with deduplication, integrity checks, resumability, and idempotence."
 tags: ["networking"]
