@@ -26,3 +26,5 @@ Do not run `make server` if it's already running. You can verify this with `lsof
 How to add a new page:
 
 1. Run `hugo new -s site designs/foo.md` to create a new design page
+2. Run `hugo new -s site deep-dives/bar.md` to create a new deep dive page
+3. Run `hugo new -s site principles/baz.md` to create a new principle page
