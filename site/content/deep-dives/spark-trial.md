@@ -33,7 +33,16 @@ categories: ["deep-dives"]
 
 - **Job runtime:** end-to-end processing time per year and per quarter.
 - **Resource efficiency:** executor memory/CPU utilization and optimal partition counts.
+- **Data quality validation:** row count, null rate, and schema conformance checks per ingestion batch; flag regressions against baselines.
+- **Partition strategy comparison:** measure read/write throughput and shuffle volume across different partition key choices (time-based vs hash-based).
 
 ## 5. Risks & Mitigations
 
-- **Schema drift:** implement schema merging strategies and robust validation with automatic alerting.
+- **Schema drift:** implement schema merging strategies and robust validation with automatic alerting on unexpected column changes.
+- **Data skew:** monitor partition sizes and repartition when a small number of keys dominate; use salted keys or custom partitioners for known-skewed columns.
+- **Resource exhaustion on large datasets:** set memory guardrails per executor, use adaptive query execution (AQE) to auto-tune shuffle partitions, and profile spill-to-disk behavior.
+
+## Related Principles
+
+- [Data Pipelines](/principles/data-pipelines): Schema handling, partitioning, reproducibility, cost efficiency, and development ergonomics.
+- [Monitoring & Observability](/principles/monitoring): Job-level metrics, resource profiling, and cost monitoring.

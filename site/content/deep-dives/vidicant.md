@@ -40,3 +40,8 @@ categories: ["deep-dives"]
 
 - **Platform packaging friction:** provide CI-built wheels and homebrew/cmake instructions for macOS, Linux, Windows.
 - **False positives in detection:** provide calibration tools and thresholding per-dataset.
+
+## Related Principles
+
+- [Media Analysis](/principles/media-analysis): Stable output schemas, stream vs batch processing, calibration, and packaging.
+- [Extensibility](/principles/extensibility): Cross-language bindings (pybind11) and stable API design.

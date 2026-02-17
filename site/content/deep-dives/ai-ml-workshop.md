@@ -2,7 +2,7 @@
 title: "AI/ML Workshop"
 description: "AI/ML workshops on model training and evaluation."
 summary: "Practical, reproducible ML examples (PyTorch/Hugging Face/NumPy) with MPS-aware benchmarks and experiment hygiene for local hardware."
-tags: ["ml","experiments","reproducibility","privacy","monitoring"]
+tags: ["ml","experiments","reproducibility","privacy"]
 categories: ["deep-dives"]
 ---
 
@@ -41,3 +41,8 @@ categories: ["deep-dives"]
 
 - **Non-reproducible environments:** pin deps, provide `uv` lockfile and minimal docker/devcontainer for CI.
 - **Large model resource constraints:** document fallbacks (smaller models, LoRA), and automate profiling to detect OOM early.
+
+## Related Principles
+
+- [ML Experiments](/principles/ml-experiments): Reproducibility, resource-aware design, deterministic evaluation, and lightweight MLOps.
+- [Privacy & Agents](/principles/privacy-agents): Local-first defaults and data handling for sensitive datasets.

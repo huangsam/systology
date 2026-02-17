@@ -2,7 +2,7 @@
 title: "RAGchain"
 description: "Retrieval-augmented generation with search and ML."
 summary: "Local RAG stack (Chroma + Ollama) for private, reproducible retrieval and LLM usage; focuses on hybrid retrieval, index versioning, and evaluation."
-tags: ["rag","retrieval","embeddings","llm","privacy","monitoring"]
+tags: ["rag","retrieval","embeddings","llm","privacy"]
 categories: ["deep-dives"]
 ---
 
@@ -40,3 +40,8 @@ categories: ["deep-dives"]
 
 - **Stale embeddings:** incremental re-embedding strategies and metadata to detect drift.
 - **Resource exhaustion:** provide sample-size limits and guide users to shard or prune indices.
+
+## Related Principles
+
+- [Retrieval & RAG](/principles/retrieval): Hybrid retrieval strategy, embedding stability, evaluation benchmarks, and privacy-aware indexing.
+- [Privacy & Agents](/principles/privacy-agents): Local-first defaults, data minimization, and consent for cloud services.

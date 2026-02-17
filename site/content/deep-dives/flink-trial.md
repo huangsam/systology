@@ -39,3 +39,8 @@ categories: ["deep-dives"]
 
 - **Incorrect time semantics:** consider event-time windows with watermarks if ordering/late arrivals matter.
 - **State blowup:** use RocksDB backend and TTL to bound state size.
+
+## Related Principles
+
+- [Data Pipelines](/principles/data-pipelines): Time semantics, fault tolerance, checkpointing, partitioning, and observability.
+- [Monitoring & Observability](/principles/monitoring): Streaming metrics, backlog monitoring, and resource profiling.

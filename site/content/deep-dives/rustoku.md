@@ -2,7 +2,7 @@
 title: "Rustoku"
 description: "High-performance Sudoku solver in Rust."
 summary: "Fast Sudoku solver and generator in Rust using bitmasking and MRV heuristics; emphasizes speed, determinism, and explainable solve traces."
-tags: ["algorithms","sudoku","rust","performance","monitoring"]
+tags: ["algorithms","sudoku","rust","performance"]
 categories: ["deep-dives"]
 ---
 
@@ -40,3 +40,7 @@ categories: ["deep-dives"]
 
 - **Incorrect difficulty classification:** instrument empirical metrics and tune generator heuristics.
 - **Performance regressions:** add CI benchmarks and regression alerts.
+
+## Related Principles
+
+- [Algorithms & Performance](/principles/algorithms-performance): Bitmasking, MRV heuristics, micro-benchmarking, deterministic generators, and explainable traces.

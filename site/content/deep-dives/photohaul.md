@@ -41,3 +41,9 @@ categories: ["deep-dives"]
 - **Data loss during migration:** always run in `--dry-run` mode with manifest generation; verify checksums post-migration.
 - **API rate limits for cloud backends:** implement exponential backoff and per-backend throttling.
 - **EXIF/metadata stripping:** preserve metadata by default and add configurable transformations; test against representative camera outputs.
+
+## Related Principles
+
+- [Migration & Deduplication](/principles/migration-dedup): Idempotent operations, content hashing, resumability, and dry-run verification.
+- [Extensibility](/principles/extensibility): Pluggable migrator backends (S3, Dropbox, SFTP) via trait/interface contracts.
+- [Media Analysis](/principles/media-analysis): Metadata preservation, performance engineering, and packaging.
