@@ -1,5 +1,4 @@
-
-baseURL = "http://sambyte.net/"
+baseURL = "https://sambyte.net/"
 languageCode = "en-us"
 title = "Systology"
 enableGitInfo = true
