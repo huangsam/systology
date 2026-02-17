@@ -21,6 +21,7 @@ Create an asynchronous job queue system to handle resource-intensive tasks like 
 
 {{< mermaid >}}
 graph LR
+  Client --> API
   API --> Queue
   Queue --> Worker
   Worker --> Storage
