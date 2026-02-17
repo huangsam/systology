@@ -2,14 +2,22 @@
 
 Systology is my documentation collection for studying systems: discoveries, patterns, and practical learnings. It serves as a knowledge base for system design, implementation, and experimentation, drawing from real-world projects and trials.
 
-- Principles: Guiding rules, heuristics, and core ideas for system behavior and reasoning.
-- Designs: Explorations of system design problems, with sketches, trade-offs, and decision records.
-- Deep Dives: Long-form investigations into specific projects, including methodology, data, findings, and next steps.
+- Principles: Core ideas and heuristics for system behavior.
+- Designs: System design explorations with trade-offs and decisions.
+- Deep Dives: Long-form investigations into projects and findings.
 
 ## Getting Started
 
-To run the site locally, navigate to the `site` directory and execute:
+To run the site locally, please make sure you have [Hugo] and [Python] installed, then run:
 
 ```shell
-hugo server -D -s site
+# Start the Hugo development server with drafts enabled
+make serve
 ```
+
+Then you can access the site at `https://localhost:1313/`.
+
+Happy learning! 🙏
+
+[Hugo]: https://gohugo.io/getting-started/installing/
+[Python]: https://www.python.org/downloads/
