@@ -1,0 +1,14 @@
+{{ $title := .title }}
+{{ $url := .url }}
+{{ $description := .description }}
+{{ $metaText := .metaText }}
+
+<article class="post-card">
+  <h3><a href="{{ $url }}">{{ $title }}</a></h3>
+  {{ with $description }}
+  <p class="summary">{{ . }}</p>
+  {{ end }}
+  {{ with $metaText }}
+  <p class="meta">{{ . }}</p>
+  {{ end }}
+</article>

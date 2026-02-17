@@ -1,26 +1,19 @@
 {{ define "main" }}
-  <article>
-    <header>
-      <h1>{{ .Title }}</h1>
-      {{ with .Params.description }}
-        <h2>{{ . }}</h2>
-      {{ end }}
-    </header>
-    <section>
-      {{ .Content }}
-    </section>
-    <ul class="listing">
-    {{ range .Pages }}
-      <li>
-        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        {{ with .Params.tags }}
-          <small class="tags">&nbsp;—&nbsp;{{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="/tags/{{ $t | urlize }}/">{{ $t }}</a>{{ end }}</small>
-        {{ end }}
-        {{ with .Params.summary }}
-          <p>{{ . }}</p>
-        {{ end }}
-      </li>
+<article>
+  <header>
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.description }}
+    <h2>{{ . }}</h2>
     {{ end }}
-    </ul>
-  </article>
+  </header>
+  <section>
+    {{ .Content }}
+  </section>
+  <ul class="listing">
+    {{ range .Pages }}
+    {{ partial "components/list-item.html" (dict "title" .Title "url" .RelPermalink "tags" .Params.tags "summary"
+    .Params.summary) }}
+    {{ end }}
+  </ul>
+</article>
 {{ end }}

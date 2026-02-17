@@ -1,0 +1,5 @@
+{{ $text := .text }}
+{{ $url := .url | default "#" }}
+{{ $class := .class | default "badge" }}
+
+<a class="{{ $class }}" href="{{ $url | urlize }}">{{ $text }}</a>

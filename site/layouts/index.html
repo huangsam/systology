@@ -7,13 +7,10 @@
   <h2>Sections</h2>
   <div class="posts-grid">
     {{ range .Site.Sections }}
-    <article class="post-card">
-      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-      {{ with .Params.description }}
-      <p class="summary">{{ . }}</p>
-      {{ end }}
-      <p class="meta">{{ len .RegularPagesRecursive }} article{{ if gt (len .RegularPagesRecursive) 1 }}s{{ end }}</p>
-    </article>
+    {{ $metaText := (printf "%d article%s" (len .RegularPagesRecursive) (cond (gt (len .RegularPagesRecursive) 1) "s"
+    "")) }}
+    {{ partial "components/post-card.html" (dict "title" .Title "url" .RelPermalink "description" .Params.description
+    "metaText" $metaText) }}
     {{ end }}
   </div>
 </section>
