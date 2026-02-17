@@ -1,6 +1,6 @@
 ---
 title: "Algorithms & Performance"
-description: "Clarity, benchmarking, memory discipline, generators for systems."
+description: "Best practices for algorithms and performance."
 summary: "Principles for clear algorithms and performance engineering: micro-benchmarks, memory discipline, and deterministic generators."
 tags: ["algorithms","performance"]
 categories: ["principles"]
