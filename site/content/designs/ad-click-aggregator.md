@@ -4,7 +4,7 @@ description: "Real-time big data processing for ad events."
 summary: "Design for aggregating ad clicks at massive scale, focusing on deduplication, exactly-once processing, and low-latency reporting."
 tags: ["analytics", "streaming"]
 categories: ["designs"]
-draft: true
+draft: false
 ---
 
 ## 1. Problem Statement & Constraints
