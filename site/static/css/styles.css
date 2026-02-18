@@ -9,6 +9,7 @@
   --radius: 10px;
   --max-width: 80ch;
   --focus: 3px rgba(37, 99, 235, 0.18);
+  --link-gap: 0.5rem;
 }
 
 /* Base layout + type */
@@ -80,7 +81,7 @@ main.container {
 
 .site-nav {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--link-gap);
   align-items: center;
 }
 
@@ -117,7 +118,7 @@ main.container {
 
 .footer-nav {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--link-gap);
   align-items: center;
 }
 
