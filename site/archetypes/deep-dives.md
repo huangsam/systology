@@ -1,6 +1,5 @@
 ---
 title: "Short title"
-date: {{ .Date }}
 description: "Short description"
 summary: "One-line summary used on index pages"
 tags: []
