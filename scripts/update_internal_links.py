@@ -49,10 +49,14 @@ def update_links_in_file(p: Path) -> bool:
     return False
 
 
-if __name__ == "__main__":
+def main() -> None:
     root: Path = Path("site/content")
     count: int = 0
     for md in root.rglob("*.md"):
         if update_links_in_file(md):
             count += 1
     print(f"Updated {count} files")
+
+
+if __name__ == "__main__":
+    main()

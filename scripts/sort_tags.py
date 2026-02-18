@@ -49,6 +49,10 @@ def process_directory(directory: str) -> None:
                     print(f"Updated: {path}")
 
 
-if __name__ == "__main__":
+def main() -> None:
     content_dir = "site/content"
     process_directory(content_dir)
+
+
+if __name__ == "__main__":
+    main()

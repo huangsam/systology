@@ -126,7 +126,7 @@ def fmt_table(counter: Counter) -> str:
     return "\n".join(lines)
 
 
-def main(argv=None) -> int:
+def main(argv=None) -> None:
     p = argparse.ArgumentParser(
         description="Count front-matter tags in a Hugo content tree"
     )
@@ -149,7 +149,7 @@ def main(argv=None) -> int:
     root = Path(args.path)
     if not root.exists():
         print(f"Path not found: {root}")
-        return 2
+        return
 
     counter, files_for_tag = count_tags(root)
 
@@ -162,7 +162,7 @@ def main(argv=None) -> int:
     if args.json:
         out = {tag: cnt for tag, cnt in items}
         print(json.dumps(out, indent=2, sort_keys=True))
-        return 0
+        return
 
     # print table
     c = Counter(dict(items))
@@ -181,4 +181,4 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()
