@@ -21,15 +21,15 @@ Design a ticketing or flash sale system capable of handling millions of users si
 ## 2. High-Level Architecture
 
 {{< mermaid >}}
-graph LR
-  Users --> CDN[CDN / Edge]
-  CDN --> WR[Waiting Room]
-  WR --> API[API Gateway]
-  API --> Reserve[Reservation Service]
-  Reserve --> Redis[(Redis Inventory)]
-  Reserve --> OrderDB[(Order DB)]
-  API --> Payment[Payment Service]
-  Payment --> OrderDB
+graph TD
+  Users --> Edge
+  Edge --> WaitRoom[Wait Room]
+  WaitRoom --> GW[Gateway]
+  GW --> Reserve
+  Reserve --> Redis[(Redis)]
+  Reserve --> Orders[(Orders)]
+  GW --> Payment
+  Payment --> Orders
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

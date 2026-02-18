@@ -21,19 +21,19 @@ Build a central notification system that allows various internal services to sen
 ## 2. High-Level Architecture
 
 {{< mermaid >}}
-graph LR
-  Services[Internal Services] --> API[Notification API]
-  API --> Router[Priority Router]
-  Router --> HQ[High-Priority Queue]
-  Router --> NQ[Normal Queue]
-  Router --> LQ[Low-Priority Queue]
-  HQ --> Dispatcher
-  NQ --> Dispatcher
-  LQ --> Dispatcher
-  Dispatcher --> Push[Push Adapter]
-  Dispatcher --> SMS[SMS Adapter]
-  Dispatcher --> Email[Email Adapter]
-  Dispatcher --> TrackDB[(Delivery Tracker)]
+graph TD
+  Services --> API
+  API --> Router
+  Router --> HQ[High Q]
+  Router --> NQ[Normal Q]
+  Router --> LQ[Low Q]
+  HQ --> Dispatch
+  NQ --> Dispatch
+  LQ --> Dispatch
+  Dispatch --> Push
+  Dispatch --> SMS
+  Dispatch --> Email
+  Dispatch --> Tracker[(Tracker)]
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

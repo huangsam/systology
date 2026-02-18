@@ -21,16 +21,16 @@ Design a robust payment system that processes customer transactions via third-pa
 ## 2. High-Level Architecture
 
 {{< mermaid >}}
-graph LR
-  Client --> API[Payment API]
-  API --> PSM[Payment State Machine]
-  PSM --> Gateway[Gateway Abstraction]
-  Gateway --> Stripe
-  Gateway --> PayPal
-  PSM --> Ledger[(Double-Entry Ledger)]
-  PSM --> Events[Event Bus]
-  Events --> Webhook[Webhook Dispatcher]
-  Events --> Recon[Reconciliation Job]
+graph TD
+  Client --> API
+  API --> PSM[State Machine]
+  PSM --> GW[Gateway]
+  GW --> Stripe
+  GW --> PayPal
+  PSM --> Ledger[(Ledger)]
+  PSM --> Bus[Events]
+  Bus --> Hooks[Webhooks]
+  Bus --> Recon
   Recon --> Ledger
 {{< /mermaid >}}
 

@@ -21,15 +21,15 @@ Design a service that allows users to search for businesses or points of interes
 ## 2. High-Level Architecture
 
 {{< mermaid >}}
-graph LR
-  Mobile[Mobile Client] --> LB[Load Balancer]
-  LB --> ReadAPI[Read API]
-  LB --> WriteAPI[Write API]
-  ReadAPI --> Cache[(Redis GeoCache)]
-  Cache -.->|miss| SpatialDB[(Spatial Index DB)]
-  WriteAPI --> SpatialDB
-  WriteAPI --> Ingest[Location Ingestion]
-  Ingest --> SpatialDB
+graph TD
+  Mobile --> LB
+  LB --> Read[Read API]
+  LB --> Write[Write API]
+  Read --> Cache[(Cache)]
+  Cache -.->|miss| Spatial[(Spatial DB)]
+  Write --> Spatial
+  Write --> Ingest
+  Ingest --> Spatial
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs
