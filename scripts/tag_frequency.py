@@ -28,10 +28,7 @@ def _strip_quotes(s: str) -> str:
 
 
 def parse_tags_from_text(text: str) -> list[str]:
-    """Extract `tags` from YAML front-matter in `text`.
-
-    Returns a list of tag strings (maybe empty).
-    """
+    """Extract `tags` from YAML front-matter in `text`."""
     lines = text.splitlines()
     if not lines:
         return []
@@ -96,11 +93,13 @@ def parse_tags_from_text(text: str) -> list[str]:
 
 
 def find_markdown_files(root: Path) -> Iterable[Path]:
+    """Find all markdown files under `root`."""
     for p in root.rglob("*.md"):
         yield p
 
 
 def count_tags(root: Path) -> tuple[Counter, defaultdict[str, list[str]]]:
+    """Count tags in markdown files under `root`."""
     counter = Counter()
     files_for_tag: defaultdict[str, list[str]] = defaultdict(list)
     for md in find_markdown_files(root):
@@ -116,6 +115,7 @@ def count_tags(root: Path) -> tuple[Counter, defaultdict[str, list[str]]]:
 
 
 def fmt_table(counter: Counter) -> str:
+    """Format a counter as a table."""
     rows = [(tag, count) for tag, count in counter.most_common()]
     if not rows:
         return "<no tags found>"

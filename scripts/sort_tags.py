@@ -12,6 +12,7 @@ import re
 
 
 def sort_tags(content: str) -> str:
+    """Sort tags in markdown files alphabetically."""
     # Match tags: ["tag1", "tag2"] or tags: [tag1, tag2]
     match = re.search(r"^tags:\s*\[(.*?)\]", content, re.MULTILINE)
     if not match:
@@ -31,7 +32,8 @@ def sort_tags(content: str) -> str:
     return content.replace(match.group(0), new_tags_str)
 
 
-def process_directory(directory: str):
+def process_directory(directory: str) -> None:
+    """Process all markdown files in a directory."""
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith(".md"):

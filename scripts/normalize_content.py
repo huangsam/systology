@@ -13,6 +13,7 @@ from pathlib import Path
 
 
 def has_frontmatter(lines: list[str]) -> bool:
+    """Check if the first line is frontmatter."""
     if not lines:
         return False
     first: str = lines[0].strip()
@@ -20,6 +21,7 @@ def has_frontmatter(lines: list[str]) -> bool:
 
 
 def extract_first_h1(lines: list[str]) -> str | None:
+    """Extract the first H1 from the lines."""
     for ln in lines:
         m = re.match(r"^#\s+(.*)", ln)
         if m:
@@ -28,6 +30,7 @@ def extract_first_h1(lines: list[str]) -> str | None:
 
 
 def process_file(path: Path) -> bool:
+    """Process a single file."""
     text: str = path.read_text(encoding="utf-8")
     lines: list[str] = text.splitlines()
 

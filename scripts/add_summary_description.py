@@ -11,10 +11,12 @@ Usage:
 from pathlib import Path
 import re
 
+# Maximum length of description
 MAX_DESC = 160
 
 
-def extract_frontmatter_and_body(text: str):
+def extract_frontmatter_and_body(text: str) -> tuple[list[str], list[str]]:
+    """Extract frontmatter and body from text."""
     lines = text.splitlines()
     i = 0
     while i < len(lines) and lines[i].strip() == "":
@@ -31,7 +33,8 @@ def extract_frontmatter_and_body(text: str):
     return None, lines[i:]
 
 
-def parse_fm_lines(fm_lines: list[str]) -> dict:
+def parse_fm_lines(fm_lines: list[str]) -> dict[str, str]:
+    """Parse frontmatter lines into a dictionary."""
     fm: dict = {}
     pattern = re.compile(
         r"^\s*([A-Za-z0-9_\-]+)\s*:\s*(?:\"([^\"]*)\"|'([^']*)'|([^#].*))?"
@@ -46,6 +49,7 @@ def parse_fm_lines(fm_lines: list[str]) -> dict:
 
 
 def first_paragraph(body_lines: list[str]) -> str:
+    """Extract the first paragraph from the body lines."""
     para: list[str] = []
     for ln in body_lines:
         if ln.strip() == "" and para:
@@ -62,6 +66,7 @@ def first_paragraph(body_lines: list[str]) -> str:
 
 
 def make_description(text: str, max_len: int = MAX_DESC) -> str:
+    """Make a description from the text."""
     if not text:
         return text
     if len(text) <= max_len:
@@ -76,6 +81,7 @@ def make_description(text: str, max_len: int = MAX_DESC) -> str:
 
 
 def insert_into_fm(fm_lines: list[str], key: str, value: str) -> list[str]:
+    """Insert a key-value pair into the frontmatter."""
     # Insert after title if present, else append at end of fm_lines
     out: list[str] = []
     inserted = False
@@ -90,6 +96,7 @@ def insert_into_fm(fm_lines: list[str], key: str, value: str) -> list[str]:
 
 
 def process_file(p: Path) -> bool:
+    """Process a single file."""
     text = p.read_text(encoding="utf-8")
     fm_lines, body_lines = extract_frontmatter_and_body(text)
     if fm_lines is None:
