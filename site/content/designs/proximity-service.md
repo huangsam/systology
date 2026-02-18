@@ -1,5 +1,5 @@
 ---
-title: "Proximity Service (Yelp/Maps)"
+title: "Proximity Service for Maps"
 description: "High-performance location-based search using geospatial indexing."
 summary: "Design for finding nearby points of interest with low latency, focusing on geospatial data structures like Geohashing or Quadtrees."
 tags: ["caching", "database", "geo"]
