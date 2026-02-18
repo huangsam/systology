@@ -2,21 +2,21 @@
 <article>
   <header>
     <h1>{{ .Title }}{{ if .Draft }} <span class="draft-badge">WIP</span>{{ end }}</h1>
-    {{ with .Params.description }}
-    <h2>{{ . }}</h2>
-    {{ end }}
+    <h2>{{ .Description }}</h2>
     {{ with .Params.tags }}
     <div class="tags">
       <span>Tags:</span>
-      {{ range . }}{{ partial "components/badge.html" (dict "text" . "url" (printf "/tags/%s/" (. | urlize))) }}{{ end
-      }}
+      {{ range . }}
+      {{ partial "components/badge.html" (dict "text" . "url" (printf "/tags/%s/" (. | urlize))) }}
+      {{ end }}
     </div>
     {{ end }}
     {{ with .Params.categories }}
     <div class="categories">
       <span>Categories:</span>
-      {{ range . }}{{ partial "components/badge.html" (dict "text" . "url" (printf "/categories/%s/" (. | urlize))) }}{{
-      end }}
+      {{ range . }}
+      {{ partial "components/badge.html" (dict "text" . "url" (printf "/categories/%s/" (. | urlize))) }}
+      {{ end }}
     </div>
     {{ end }}
     {{ with .Params.github }}

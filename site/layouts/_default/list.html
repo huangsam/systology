@@ -2,9 +2,7 @@
 <article>
   <header>
     <h1>{{ .Title }}</h1>
-    {{ with .Params.description }}
-    <h2>{{ . }}</h2>
-    {{ end }}
+    <h2>{{ .Description }}</h2>
   </header>
   <section>
     {{ .Content }}

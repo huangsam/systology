@@ -6,14 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
 
-  {{/* description: prefer page `description`, then `summary`, then page `Summary`, then site param */}}
-  {{/* description precedence: page.description -> page.summary -> parent.summary/cascade -> .Summary ->
-  site.description */}}
-  {{ $desc := .Params.description | default .Params.summary | default (.Summary | plainify) | default
-  .Site.Params.description }}
-  {{ with $desc }}
-  <meta name="description" content="{{ . }}">
-  {{ end }}
+  <meta name="description" content="{{ .Description }}">
 
   <link rel="canonical" href="{{ .Permalink }}" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
