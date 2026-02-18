@@ -2,7 +2,7 @@
 title: "Vidicant"
 description: "Video processing for media pipelines."
 summary: "Cross-platform video/image feature extractor (C++ core, Python bindings) for ML preprocessing focusing on throughput, accuracy, and packaging."
-tags: ["media","video","feature-extraction","extensibility"]
+tags: ["extensibility", "feature-extraction", "media", "video"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/vidicant"
 ---

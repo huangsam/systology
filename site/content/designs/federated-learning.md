@@ -2,7 +2,7 @@
 title: "Privacy-Preserving Federated Learning Platform"
 description: "Distributed learning without data sharing."
 summary: "Platform design for federated learning that trains across devices without sharing raw data, with secure aggregation and privacy safeguards."
-tags: ["privacy","ml","distributed-systems"]
+tags: ["distributed-systems", "ml", "privacy"]
 categories: ["designs"]
 ---
 

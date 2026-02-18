@@ -2,7 +2,7 @@
 title: "Migration & Deduplication"
 description: "Integrity and efficiency in migration/deduplication."
 summary: "Practices for safe, idempotent, and efficient large-scale data migration and deduplication."
-tags: ["migration","deduplication"]
+tags: ["deduplication", "migration"]
 categories: ["principles"]
 ---
 

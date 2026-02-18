@@ -2,7 +2,7 @@
 title: "Grit"
 description: "VCS implementation with plumbing/porcelain architecture."
 summary: "From‑scratch Git implementation in Rust focusing on object storage, performance, and plumbing/porcelain command compatibility."
-tags: ["rust","performance","algorithms", "vcs"]
+tags: ["algorithms", "performance", "rust", "vcs"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/grit"
 ---

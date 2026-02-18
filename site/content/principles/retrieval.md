@@ -2,7 +2,7 @@
 title: "Retrieval & RAG"
 description: "Building robust retrieval systems and RAG pipelines."
 summary: "Core principles for robust retrieval and RAG: hybrid retrieval, embedding stability, evaluation, and privacy-aware indexing."
-tags: ["retrieval","search"]
+tags: ["retrieval", "search"]
 categories: ["principles"]
 ---
 

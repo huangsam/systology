@@ -2,7 +2,7 @@
 title: "Notification System"
 description: "Scalable multi-channel notification engine for real-time engagement."
 summary: "Design of a high-throughput notification service supporting push, email, and SMS with prioritization, rate limiting, and delivery tracking."
-tags: ["queues", "scalability", "distributed-systems"]
+tags: ["distributed-systems", "queues", "scalability"]
 categories: ["designs"]
 ---
 

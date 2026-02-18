@@ -2,7 +2,7 @@
 title: "Chowist"
 description: "Web app for food features with twelve-factor scaling."
 summary: "Monolithic Django app for place listings; focus on production hardening: static serving, background jobs, connection pooling, and CI/CD."
-tags: ["web","monitoring","networking"]
+tags: ["monitoring", "networking", "web"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/chowist"
 ---
