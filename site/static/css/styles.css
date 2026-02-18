@@ -597,14 +597,6 @@ article>header .github-link {
   border-color: var(--border);
 }
 
-[data-theme="dark"] .mermaid rect {
-  fill: var(--accent) !important;
-}
-
-[data-theme="dark"] .mermaid .edgeLabel p {
-  background-color: var(--accent) !important;
-}
-
 [data-theme="dark"] .mermaid .flowchart-link {
   stroke: var(--text) !important;
 }
