@@ -1,4 +1,4 @@
-.PHONY: vendor build serve tidy tags
+.PHONY: vendor build clean serve tidy tags
 
 # https://cdnjs.com/libraries/mermaid
 VERSION ?= 11.12.0
@@ -12,6 +12,9 @@ vendor:
 
 build:
 	hugo -s site --minify --cleanDestinationDir
+
+clean:
+	rm -rf site/public
 
 serve:
 	hugo server -D -s site
