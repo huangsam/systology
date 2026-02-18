@@ -147,8 +147,6 @@ def main() -> None:
         except Exception as e:
             print("ERROR", p, e)
     print(f"Updated {len(updated)} files")
-    for u in updated:
-        print(" -", u)
 
 
 if __name__ == "__main__":

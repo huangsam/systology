@@ -79,8 +79,6 @@ def main() -> None:
                 updated.append(str(p.relative_to(root.parent)))
 
     print(f"Updated {len(updated)} files")
-    for u in updated[:50]:
-        print(" -", u)
 
 
 if __name__ == "__main__":

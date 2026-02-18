@@ -32,8 +32,9 @@ def sort_tags(content: str) -> str:
     return content.replace(match.group(0), new_tags_str)
 
 
-def process_directory(directory: str) -> None:
+def process_directory(directory: str) -> int:
     """Process all markdown files in a directory."""
+    count = 0
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith(".md"):
@@ -46,12 +47,14 @@ def process_directory(directory: str) -> None:
                 if new_content != content:
                     with open(path, "w") as f:
                         f.write(new_content)
-                    print(f"Updated: {path}")
+                    count += 1
+    return count
 
 
 def main() -> None:
     content_dir = "site/content"
-    process_directory(content_dir)
+    count = process_directory(content_dir)
+    print(f"Updated {count} files")
 
 
 if __name__ == "__main__":
