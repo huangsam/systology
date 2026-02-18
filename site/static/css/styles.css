@@ -7,7 +7,7 @@
   --border: #e6e9ee;
   --blockquote-bg: #f8fafc;
   --radius: 10px;
-  --max-width: 80ch;
+  --max-width: 48rem;
   --focus: 3px rgba(37, 99, 235, 0.18);
   --link-gap: 0.5rem;
   --gutter: 0.75rem;
@@ -41,14 +41,14 @@ body {
 
 .container {
   max-width: var(--max-width);
-  margin: 0.75rem auto;
+  margin: 0 auto;
   padding: 0 var(--gutter);
 }
 
 /* main: add a bit more vertical breathing room */
 main.container {
   margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
 /* Header / Nav */
@@ -109,9 +109,6 @@ main.container {
   padding: 1rem 0 1.5rem;
 }
 
-.site-footer .container {
-  padding: 0 var(--gutter);
-}
 
 /* Prose/content styling */
 .prose h1 {
