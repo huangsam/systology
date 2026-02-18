@@ -9,7 +9,7 @@
 {{ end }}
 
 {{ $related = where $related "RelPermalink" "ne" $p.RelPermalink }}
-{{ $related = first 3 $related }}
+{{ $related = first 4 $related }}
 
 {{ if gt (len $related) 0 }}
 <aside class="related">
