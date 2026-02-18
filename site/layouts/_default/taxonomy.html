@@ -5,11 +5,11 @@
     <p class="meta">{{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }}</p>
   </header>
 
-  {{ $pages := .Pages.ByDate.Reverse }}
+  {{ $pages := .Pages.ByTitle }}
   {{ $paginator := .Paginate $pages 20 }}
 
   <ul class="listing">
-    {{ range $paginator.Pages.ByTitle }}
+    {{ range $paginator.Pages }}
     {{ partial "components/list-item.html" (dict
     "title" .Title
     "url" .RelPermalink
