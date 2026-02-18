@@ -4,7 +4,7 @@ Strip top-level Markdown code fences and add YAML title frontmatter
 to Markdown files under `site/content/` when missing, using the
 first H1 (`# Title`) as the title.
 
-Run from repo root:
+Usage:
     python3 scripts/normalize_content.py
 """
 

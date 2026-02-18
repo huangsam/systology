@@ -4,7 +4,8 @@ Add `summary` and `description` frontmatter to markdown files under site/content
 when missing. Uses `summary` (if present) or the first paragraph as a candidate
 for `description` when needed.
 
-Usage: python3 scripts/add_summary_description.py
+Usage:
+    python3 scripts/add_summary_description.py
 """
 
 from pathlib import Path

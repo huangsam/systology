@@ -3,7 +3,8 @@
 Update internal Markdown links in `site/content/` to remove .md extensions and
 convert to absolute paths. For example, `[Link](./other.md)` becomes `[Link](/current/dir/other)`.
 
-Usage: python3 scripts/update_internal_links.py
+Usage:
+    python3 scripts/update_internal_links.py
 """
 
 import re

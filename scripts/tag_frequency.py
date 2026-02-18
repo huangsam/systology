@@ -6,13 +6,6 @@ Usage:
     python3 scripts/tag_frequency.py -p site/content
     python3 scripts/tag_frequency.py -p site/content --min-count 2 --json
     python3/scripts/tag_frequency.py -p site/content --show-files
-
-Features:
-- Handles YAML front-matter in these forms:
-    - inline: tags: ["a", 'b', c]
-    - block:  tags:\n  - a\n  - b
-    - single-string: tags: "foo"
-- No external dependencies.
 """
 
 from __future__ import annotations
