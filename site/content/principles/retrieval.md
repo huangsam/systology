@@ -4,6 +4,7 @@ description: "Building robust retrieval systems and RAG pipelines."
 summary: "Core principles for robust retrieval and RAG: hybrid retrieval, embedding stability, evaluation, and privacy-aware indexing."
 tags: ["retrieval", "search"]
 categories: ["principles"]
+draft: false
 ---
 
 1. Local Vector Store Hygiene

@@ -4,6 +4,7 @@ description: "Short description"
 summary: "One-line summary used on index pages"
 tags: []
 categories: ["principles"]
+draft: true
 ---
 
 1. Principle or Practice Name

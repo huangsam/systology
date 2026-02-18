@@ -5,6 +5,7 @@ summary: "Monolithic Django app for place listings; focus on production hardenin
 tags: ["monitoring", "networking", "web"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/chowist"
+draft: false
 ---
 
 ## Context — Problem — Solution

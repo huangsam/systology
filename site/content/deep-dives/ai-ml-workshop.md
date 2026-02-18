@@ -5,6 +5,7 @@ summary: "Practical, reproducible ML examples (PyTorch/Hugging Face/NumPy) with 
 tags: ["experiments", "ml", "ml-ops", "privacy", "reproducibility"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/ai-ml-workshop"
+draft: false
 ---
 
 ## Context — Problem — Solution

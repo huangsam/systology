@@ -376,6 +376,28 @@ span.tags-inline {
   border-color: var(--accent);
 }
 
+.draft-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 4px;
+  color: #d97706;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 0.75rem;
+  vertical-align: middle;
+}
+
+[data-theme="dark"] .draft-badge {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+}
+
 /* GitHub link */
 .github-link {
   display: inline-flex;

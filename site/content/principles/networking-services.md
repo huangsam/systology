@@ -4,6 +4,7 @@ description: "API design, rate limiting, retries, and resilient service communic
 summary: "Practical guidance for API design, retries/backoff, rate limiting, connection pooling, and service resilience."
 tags: ["networking"]
 categories: ["principles"]
+draft: false
 ---
 
 1. API Design & Contracts

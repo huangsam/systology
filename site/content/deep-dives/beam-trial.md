@@ -5,6 +5,7 @@ summary: "Canonical Apache Beam examples demonstrating pipeline construction, ru
 tags: ["data-pipelines", "streaming"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/beam-trial"
+draft: false
 ---
 
 ## Context — Problem — Solution

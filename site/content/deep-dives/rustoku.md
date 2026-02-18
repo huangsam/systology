@@ -5,6 +5,7 @@ summary: "Fast Sudoku solver and generator in Rust using bitmasking and MRV heur
 tags: ["algorithms", "performance", "rust"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/rustoku"
+draft: false
 ---
 
 ## Context — Problem — Solution

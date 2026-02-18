@@ -4,6 +4,7 @@ description: "Data extraction, transformation, and loading."
 summary: "Robust ETL pipeline for deterministic, reproducible ML feature generation from diverse sources, with idempotence and scale in mind."
 tags: ["data-pipelines", "etl", "ml", "monitoring"]
 categories: ["designs"]
+draft: false
 ---
 
 ## 1. Problem Statement & Constraints

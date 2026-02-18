@@ -4,6 +4,7 @@ description: "Time semantics, fault tolerance, etc. for batch/streaming."
 summary: "Principles for reliable batch and streaming pipelines: time semantics, fault tolerance, partitioning, observability, and reproducibility."
 tags: ["data-pipelines", "etl", "streaming"]
 categories: ["principles"]
+draft: false
 ---
 
 1. Time Semantics

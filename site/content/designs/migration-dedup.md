@@ -4,6 +4,7 @@ description: "Large-scale data migration and dedup."
 summary: "System design for migrating large datasets with deduplication, integrity checks, resumability, and idempotence."
 tags: ["networking"]
 categories: ["designs"]
+draft: false
 ---
 
 ## 1. Problem Statement & Constraints

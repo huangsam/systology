@@ -5,6 +5,7 @@ summary: "Multimodal video analysis on macOS (AVFoundation, Vision, Core Image) 
 tags: ["media", "video"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/xcode-trial"
+draft: false
 ---
 
 ## Context — Problem — Solution

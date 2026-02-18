@@ -5,6 +5,7 @@ summary: "Java tool for organizing and migrating large photo collections with de
 tags: ["deduplication", "extensibility", "media", "migration", "networking"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/photohaul"
+draft: false
 ---
 
 ## Context — Problem — Solution

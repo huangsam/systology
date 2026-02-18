@@ -5,6 +5,7 @@ summary: "From‑scratch Git implementation in Rust focusing on object storage, 
 tags: ["algorithms", "performance", "rust", "vcs"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/grit"
+draft: false
 ---
 
 ## Context — Problem — Solution

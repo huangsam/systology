@@ -5,6 +5,7 @@ summary: "End-to-end ETL example using Apache Spark for parquet datasets; focuse
 tags: ["data-pipelines", "etl", "monitoring"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/spark-trial"
+draft: false
 ---
 
 ## Context — Problem — Solution

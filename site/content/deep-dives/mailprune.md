@@ -5,6 +5,7 @@ summary: "Local-first email auditing and cleanup tool that identifies noisy send
 tags: ["data-pipelines", "monitoring", "networking", "privacy"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/mailprune"
+draft: false
 ---
 
 ## Context — Problem — Solution

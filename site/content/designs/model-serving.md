@@ -4,6 +4,7 @@ description: "Real-time ML inference at scale."
 summary: "Infrastructure for real-time ML inference with model versioning, autoscaling, and resource-aware fallbacks."
 tags: ["ml", "ml-ops", "monitoring"]
 categories: ["designs"]
+draft: false
 ---
 
 ## 1. Problem Statement & Constraints

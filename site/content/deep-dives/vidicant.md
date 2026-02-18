@@ -5,6 +5,7 @@ summary: "Cross-platform video/image feature extractor (C++ core, Python binding
 tags: ["extensibility", "feature-extraction", "media", "video"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/vidicant"
+draft: false
 ---
 
 ## Context — Problem — Solution

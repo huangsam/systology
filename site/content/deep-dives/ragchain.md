@@ -5,6 +5,7 @@ summary: "Local RAG stack (Chroma + Ollama) for private, reproducible retrieval 
 tags: ["ml", "privacy", "retrieval"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/ragchain"
+draft: false
 ---
 
 ## Context — Problem — Solution

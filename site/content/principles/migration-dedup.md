@@ -4,6 +4,7 @@ description: "Integrity and efficiency in migration/deduplication."
 summary: "Practices for safe, idempotent, and efficient large-scale data migration and deduplication."
 tags: ["deduplication", "migration"]
 categories: ["principles"]
+draft: false
 ---
 
 1. Idempotent Operations

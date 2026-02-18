@@ -4,6 +4,7 @@ description: "Distributed learning without data sharing."
 summary: "Platform design for federated learning that trains across devices without sharing raw data, with secure aggregation and privacy safeguards."
 tags: ["distributed-systems", "ml", "privacy"]
 categories: ["designs"]
+draft: false
 ---
 
 ## 1. Problem Statement & Constraints

@@ -5,6 +5,7 @@ summary: "Streaming analytics demo for simulated IoT events — emphasizes time 
 tags: ["analytics", "data-pipelines", "monitoring", "streaming"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/flink-trial"
+draft: false
 ---
 
 ## Context — Problem — Solution

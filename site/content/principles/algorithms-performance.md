@@ -4,6 +4,7 @@ description: "Best practices for algorithms and performance."
 summary: "Principles for clear algorithms and performance engineering: micro-benchmarks, memory discipline, and deterministic generators."
 tags: ["algorithms", "performance"]
 categories: ["principles"]
+draft: false
 ---
 
 1. Algorithmic Clarity

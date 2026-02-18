@@ -4,6 +4,7 @@ description: "Feature extraction and real-time handling for media data."
 summary: "Best practices for media feature extraction: stable schemas, streaming vs. batch modes, metadata preservation, and performance engineering."
 tags: ["feature-extraction", "media"]
 categories: ["principles"]
+draft: false
 ---
 
 1. Define Stable Output Schema

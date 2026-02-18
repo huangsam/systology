@@ -4,6 +4,7 @@ description: "Handling global transactions with high reliability and consistency
 summary: "Design of a scalable payment gateway integration and internal ledger system ensuring idempotency, strict consistency, and failure recovery."
 tags: ["database", "distributed-systems", "reliability"]
 categories: ["designs"]
+draft: true
 ---
 
 ## 1. Problem Statement & Constraints

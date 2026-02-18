@@ -4,6 +4,7 @@ description: "High-performance document search."
 summary: "Design a high-performance search and retrieval engine for large document/media collections with low-latency ranking and scalable indexing."
 tags: ["monitoring", "privacy", "retrieval", "search"]
 categories: ["designs"]
+draft: false
 ---
 
 ## 1. Problem Statement & Constraints

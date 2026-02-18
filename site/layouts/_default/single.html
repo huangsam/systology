@@ -1,7 +1,7 @@
 {{ define "main" }}
 <article>
   <header>
-    <h1>{{ .Title }}</h1>
+    <h1>{{ .Title }}{{ if .Draft }} <span class="draft-badge">WIP</span>{{ end }}</h1>
     {{ with .Params.description }}
     <h2>{{ . }}</h2>
     {{ end }}

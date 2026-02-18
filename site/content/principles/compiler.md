@@ -4,6 +4,7 @@ description: "Optimization, portability and resilience for compilers."
 summary: "Guidelines for compiler design: clear IR boundaries, deterministic semantics, robust error reporting, and incremental compilation."
 tags: ["compiler"]
 categories: ["principles"]
+draft: false
 ---
 
 1. Clean IR Boundaries

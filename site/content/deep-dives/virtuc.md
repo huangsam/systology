@@ -5,6 +5,7 @@ summary: "Rust-implemented compiler for a C subset that emits LLVM IR and focuse
 tags: ["compiler", "rust"]
 categories: ["deep-dives"]
 github: "https://github.com/huangsam/virtuc"
+draft: false
 ---
 
 ## Context — Problem — Solution
