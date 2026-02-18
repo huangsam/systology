@@ -234,8 +234,7 @@ th {
 }
 
 /* Tags and Categories badges (article header only) */
-div.tags,
-div.categories {
+div.tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -243,19 +242,9 @@ div.categories {
   margin: 0.75rem 0;
 }
 
-div.tags>span,
-div.categories>span {
+div.tags>span {
   font-weight: 600;
   color: var(--text);
-}
-
-/* Inline tags (in post lists) */
-span.tags-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-  align-items: center;
-  margin-top: 0.5rem;
 }
 
 span.muted {
@@ -427,8 +416,7 @@ article>header h2 {
   margin: 0.25rem 0 0.5rem;
 }
 
-article>header div.tags,
-article>header div.categories {
+article>header div.tags {
   margin: 0.5rem 0;
 }
 
@@ -797,15 +785,9 @@ article>header div.categories {
 }
 
 /* ==============================
-   Meta / Lead text
+   Meta text
    ============================== */
 .meta {
   color: var(--muted);
   font-size: 0.9rem;
-}
-
-.lead {
-  color: var(--muted);
-  font-size: 1.1rem;
-  margin: 0.25rem 0 0.75rem;
 }
