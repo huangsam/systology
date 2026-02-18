@@ -11,12 +11,25 @@ draft: false
 
 Create a system to migrate large volumes of data between systems while performing deduplication to eliminate redundant entries, ensuring data integrity and efficiency. The process must be idempotent, support rollback capabilities, and complete within specified timeframes, handling potential failures gracefully in a scalable manner.
 
-- **Functional Requirements:** Migrate data with deduplication.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 10TB migration.
-    - **Availability:** 99.9%.
-    - **Consistency:** Idempotent.
-    - **Latency Targets:** Migration < 24 hours.
+### Functional Requirements
+
+- Migrate data between source and target systems.
+- Detect and eliminate duplicate records during migration.
+- Provide resumability and rollback capabilities.
+- Reconcile source and target post-migration.
+
+### Non-Functional Requirements
+
+- **Scale:** 10 TB data migration; handle 100s of millions of records.
+- **Availability:** 99.9%; graceful handling of partial failures.
+- **Consistency:** Idempotent writes; no duplicate records post-migration.
+- **Latency:** Full migration completion < 24 hours.
+- **Workload Profile:**
+    - Read:Write ratio: ~50:50 (source scan = target writes)
+    - Throughput: 100–500 MB/sec sustained
+    - Avg record size: 1–100 KB
+    - Key skew: low (uniform distribution)
+    - Retention: 7-day retention of raw data for reconciliation
 
 ## 2. High-Level Architecture
 

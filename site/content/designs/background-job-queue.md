@@ -11,12 +11,24 @@ draft: false
 
 Create an asynchronous job queue system to handle resource-intensive tasks like video encoding or data processing, ensuring reliable execution with retries and idempotency. The system must scale to manage thousands of jobs concurrently, provide visibility into job status, and maintain high availability without impacting the main application performance.
 
-- **Functional Requirements:** Queue tasks like video encoding, process asynchronously with retries.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 10k jobs/hour.
-    - **Availability:** 99.9%.
-    - **Consistency:** Idempotent operations.
-    - **Latency Targets:** Job start < 5min.
+### Functional Requirements
+
+- Queue tasks (e.g., video encoding, data processing).
+- Process tasks asynchronously with retry logic.
+- Provide visibility into job status and failure handling.
+
+### Non-Functional Requirements
+
+- **Scale:** 10k jobs/hour; concurrent task processing capacity.
+- **Availability:** 99.9% job completion reliability.
+- **Consistency:** Idempotent operations; no duplicate processing.
+- **Latency:** Job start time < 5 minutes after queue.
+- **Workload Profile:**
+    - Read:Write ratio: ~50:50 (status checks + new enqueues)
+    - QPS: avg 3 / peak 10 jobs/sec
+    - Avg payload: 2–10 KB per job
+    - Key skew: moderate (certain job types more frequent)
+    - Retention: 30 days job history
 
 ## 2. High-Level Architecture
 

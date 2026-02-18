@@ -11,12 +11,25 @@ draft: false
 
 Design a ticketing or flash sale system capable of handling millions of users simultaneously trying to purchase a limited set of items (e.g., concert tickets). The system must prevent over-selling, ensure fair access (e.g., virtual waiting rooms), and maintain stable performance during extreme traffic bursts.
 
-- **Functional Requirements:** Browse inventory, reserve items, complete purchases, and manage a "waiting room" queue.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** Handle 1 million concurrent users at the start of a sale.
-    - **Latency:** Inventory check and reservation in < 500ms under peak load.
-    - **Consistency:** Linearizable consistency for inventory counts; no double-selling.
-    - **Availability:** 99.99% for the duration of the sale event.
+### Functional Requirements
+
+- Browse inventory and product details.
+- Reserve items with time-limited holds.
+- Complete purchases with payment processing.
+- Manage a virtual waiting room for fair queue management.
+
+### Non-Functional Requirements
+
+- **Scale:** Handle 1M concurrent users; limited inventory (e.g., 100k tickets).
+- **Availability:** 99.99% uptime for sale event duration.
+- **Consistency:** Linearizable consistency for inventory counts; no double-selling.
+- **Latency:** Inventory check and reservation < 500ms under peak load.
+- **Workload Profile:**
+    - Read:Write ratio: ~80:20 (browse + check > reserve)
+    - QPS: peak 1M / sec during opening moments
+    - Avg payload: 5–10 KB per request
+    - Key skew: extreme (popular items get 90% of traffic)
+    - Retention: event-specific; 30 days post-event
 
 ## 2. High-Level Architecture
 

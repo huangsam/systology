@@ -11,12 +11,24 @@ draft: false
 
 Design a service that allows users to search for businesses or points of interest (POIs) based on their current geographic location (latitude/longitude). The system must support high-frequency updates (for moving POIs) and extremely low-latency read requests for static business data.
 
-- **Functional Requirements:** Add/delete/update POI locations, search nearby POIs within a given radius or box.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 100 million POIs globally; 50k queries per second (QPS).
-    - **Latency:** Search results returned in < 200ms.
-    - **Availability:** 99.99% (read-heavy workload).
-    - **Accuracy:** Precision decreases as distance increases; eventual consistency for location updates is acceptable.
+### Functional Requirements
+
+- Search for POIs within a radius or bounding box.
+- Add, update, and delete POI locations.
+- Support real-time location updates for mobile entities.
+
+### Non-Functional Requirements
+
+- **Scale:** 100M POIs globally; 50k queries/sec (read-heavy).
+- **Availability:** 99.99% uptime; read-focused SLA.
+- **Consistency:** Eventual consistency for location updates; immediate for static POI data.
+- **Latency:** Search results < 200ms; location updates < 5 seconds to visible.
+- **Workload Profile:**
+    - Read:Write ratio: ~98:2 (searches >> location updates)
+    - QPS: avg 20k / peak 50k searches/sec
+    - Avg payload: 1–5 KB per search; 100 B per location update
+    - Key skew: extreme (major cities get 70% of queries)
+    - Retention: current POI state; 30-day update history
 
 ## 2. High-Level Architecture
 

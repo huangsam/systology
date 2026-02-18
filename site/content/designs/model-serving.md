@@ -11,12 +11,24 @@ draft: false
 
 Design an infrastructure to serve machine learning models for real-time inference, supporting high throughput and low latency while providing resource-aware fallbacks. The system must ensure deterministic results, handle model versioning, and scale horizontally to accommodate varying loads without compromising availability or performance.
 
-- **Functional Requirements:** Serve ML models for inference.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 10k inferences/sec.
-    - **Availability:** 99.9%.
-    - **Consistency:** Deterministic results.
-    - **Latency Targets:** P99 < 200ms.
+### Functional Requirements
+
+- Serve trained ML models for inference requests.
+- Support model versioning and canary rollouts.
+- Provide fallback models on errors or resource constraints.
+
+### Non-Functional Requirements
+
+- **Scale:** 10k inferences/sec; multi-replica horizontal scaling.
+- **Availability:** 99.9% inference availability.
+- **Consistency:** Deterministic results for same input across replicas.
+- **Latency:** P99 < 200ms end-to-end inference.
+- **Workload Profile:**
+    - Read:Write ratio: ~99:1 (serve >> model updates)
+    - QPS: avg 5k / peak 10k inferences/sec
+    - Avg request payload: 1–10 KB; response 500 B–10 KB
+    - Key skew: moderate (some models queried more)
+    - Retention: model versions (last 10) + rolling 30-day metrics
 
 ## 2. High-Level Architecture
 

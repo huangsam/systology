@@ -11,12 +11,24 @@ draft: false
 
 Build a robust ETL pipeline that extracts raw data from diverse sources, transforms it into machine learning features through deterministic and reproducible processes, and loads the features into a store for model training. The system must scale to large datasets, ensure idempotent operations for reliability, and run efficiently on modest hardware while maintaining strict reproducibility standards.
 
-- **Functional Requirements:** Extract raw data (e.g., images, logs), transform into features, load into feature store for ML models.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** Process 1TB/day, with reproducible runs.
-    - **Availability:** 99.5% for batch jobs.
-    - **Consistency:** Deterministic feature generation.
-    - **Latency Targets:** Batch completion < 2 hours.
+### Functional Requirements
+
+- Extract raw data from diverse sources (databases, APIs, blob stores).
+- Transform data into deterministic ML features.
+- Load features into a feature store for model training.
+
+### Non-Functional Requirements
+
+- **Scale:** Process 1 TB/day of raw input; reproducible pipeline runs.
+- **Availability:** 99.5% for batch jobs; graceful handling of source unavailability.
+- **Consistency:** Deterministic, bit-for-bit reproducible feature generation.
+- **Latency:** Batch job completion < 2 hours; daily schedule.
+- **Workload Profile:**
+    - Read:Write ratio: ~90:10 (source reads >>> feature writes)
+    - QPS: N/A (batch-oriented); throughput 1 TB/day
+    - Avg record size: 1–100 KB
+    - Key skew: moderate (some features more frequently used)
+    - Retention: 1y hot feature store; archive older features to cold storage
 
 ## 2. High-Level Architecture
 

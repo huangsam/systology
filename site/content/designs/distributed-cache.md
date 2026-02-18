@@ -11,12 +11,24 @@ draft: false
 
 Implement a distributed caching layer for a version control system to cache frequently accessed objects and hashes, reducing I/O operations and improving performance. The cache must handle high concurrency, provide thread-safe access, and dynamically manage memory usage while maintaining low latency for read-heavy workloads.
 
-- **Functional Requirements:** Cache objects, hashes for VCS operations.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 100k ops/sec.
-    - **Availability:** 99.9%.
-    - **Consistency:** Eventual.
-    - **Latency Targets:** P99 < 10ms.
+### Functional Requirements
+
+- Cache Git objects (blobs, trees, commits) and metadata.
+- Support cache invalidation and eviction policies.
+- Provide thread-safe concurrent access.
+
+### Non-Functional Requirements
+
+- **Scale:** 100k cache operations/sec; multi-node sharding.
+- **Availability:** 99.9% cache hit availability.
+- **Consistency:** Eventual consistency (cache-aside pattern).
+- **Latency:** P99 < 10ms for cache hits; P99 < 100ms on miss.
+- **Workload Profile:**
+    - Read:Write ratio: ~95:5 (cache-heavy reads)
+    - QPS: avg 50k / peak 100k ops/sec
+    - Avg object size: 50 KB–5 MB (Git objects)
+    - Key skew: high (popular repos/refs dominate)
+    - Retention: dynamic LRU eviction; no explicit TTL
 
 ## 2. High-Level Architecture
 

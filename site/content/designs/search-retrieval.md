@@ -11,12 +11,25 @@ draft: false
 
 Design a high-performance search and retrieval engine to index and query large volumes of documents or media, providing fast and relevant results. The system must handle massive query loads, ensure eventual consistency for updates, and maintain sub-millisecond response times while supporting advanced ranking and filtering features.
 
-- **Functional Requirements:** Index and search documents/media.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 1M queries/sec.
-    - **Availability:** 99.99%.
-    - **Consistency:** Eventual.
-    - **Latency Targets:** P99 < 50ms.
+### Functional Requirements
+
+- Index and search large document/media collections.
+- Support full-text search, filtering, and faceting.
+- Provide relevance ranking and result explanations.
+- Handle real-time index updates.
+
+### Non-Functional Requirements
+
+- **Scale:** 1M queries/sec; index 1B+ documents.
+- **Availability:** 99.99% query availability.
+- **Consistency:** Eventual consistency for index updates (1–5 second delay).
+- **Latency:** P99 < 50ms for query response.
+- **Workload Profile:**
+    - Read:Write ratio: ~99:1 (searches >> document updates)
+    - QPS: avg 500k / peak 1M queries/sec
+    - Avg payload: 100 B–5 KB per query; 10–100 KB per result page
+    - Key skew: extreme (popular queries get 80% traffic)
+    - Retention: indefinite (search index); document snapshots for versioning
 
 ## 2. High-Level Architecture
 

@@ -11,12 +11,24 @@ draft: false
 
 Design a system to aggregate millions of ad click events in real-time to provide up-to-the-minute reporting for advertisers. The system must handle high-volume streams, filter out fraudulent or duplicate clicks, and ensure that click counts are accurate for billing purposes.
 
-- **Functional Requirements:** Aggregate clicks by ad ID and time window (e.g., 1 minute), detect/filter duplicates, provide an API for real-time query results.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 10 billion click events per day (peak 200k events/sec).
-    - **Latency:** End-to-end data delay (event time to ingestion in report) < 1 minute.
-    - **Accuracy:** Exactly-once semantics for billing; hyper-accurate counts (probabilistic structures acceptable for pre-aggregation).
-    - **Fault Tolerance:** Robustness against regional outages or stream spikes.
+### Functional Requirements
+
+- Aggregate clicks by ad ID and time window (e.g., 1 minute).
+- Detect and filter duplicate clicks.
+- Provide an API for real-time query results.
+
+### Non-Functional Requirements
+
+- **Scale:** 10 billion click events per day (peak 200k events/sec).
+- **Latency:** End-to-end data delay (event time to ingestion in report) < 1 minute.
+- **Consistency:** Exactly-once semantics for billing; hyper-accurate counts (probabilistic structures acceptable for pre-aggregation).
+- **Availability:** Robustness against regional outages or stream spikes.
+- **Workload Profile:**
+    - Read:Write ratio: ~100:1 (read-dominated query workload)
+    - QPS: avg 50k / peak 200k clicks/sec
+    - Avg payload: ~500 B per event
+    - Key skew: high (popular ads get 60% of traffic)
+    - Retention: 90 days hot, 1y archive
 
 ## 2. High-Level Architecture
 

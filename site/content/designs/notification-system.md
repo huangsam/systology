@@ -11,12 +11,25 @@ draft: false
 
 Build a central notification system that allows various internal services to send messages across multiple channels (Push, SMS, Email). The system must handle massive spikes (e.g., flash sales, breaking news) while ensuring critical alerts are prioritized over marketing messages.
 
-- **Functional Requirements:** Support multiple channels, templates/localization, delivery tracking, and user preference management.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** Peak volume of 100k notifications per minute.
-    - **Latency:** Delivery to external providers within 5 seconds for high-priority alerts.
-    - **Availability:** 99.9% uptime.
-    - **Reliability:** At-least-once delivery; prevent spam via platform-level rate limiting.
+### Functional Requirements
+
+- Send notifications across multiple channels (push, SMS, email).
+- Support templating, localization, and user preferences.
+- Provide delivery tracking and receipt handling.
+- Enforce priority-based queue management.
+
+### Non-Functional Requirements
+
+- **Scale:** Peak volume 100k notifications/minute; handle 10–100× spikes.
+- **Availability:** 99.9% uptime; graceful degradation during provider outages.
+- **Consistency:** At-least-once delivery; deduplication for idempotency.
+- **Latency:** Delivery to external providers within 5 seconds (high-priority).
+- **Workload Profile:**
+    - Read:Write ratio: ~20:80 (preference reads < sends)
+    - QPS: avg 1.5k / peak 100k notifications/min
+    - Avg payload: 1–5 KB per notification
+    - Key skew: high (popular user segments dominate)
+    - Retention: 30 days delivery logs; 90 days metrics
 
 ## 2. High-Level Architecture
 

@@ -11,12 +11,25 @@ draft: false
 
 Design a scalable system to ingest and process high-volume user event streams from a web application in real-time, enabling immediate analytics and dashboards for metrics like engagement. The pipeline must handle variable loads, ensure data accuracy despite late arrivals, and support fault-tolerant operations to maintain continuous availability.
 
-- **Functional Requirements:** Ingest user event streams (e.g., clicks, views) from a web app, process in real-time, and provide analytics dashboards with aggregations like user engagement metrics.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** Handle 10k-100k events/sec, with 80:20 read:write ratio.
-    - **Availability:** 99.9% uptime.
-    - **Consistency:** Eventual consistency for aggregations.
-    - **Latency Targets:** P99 < 500ms for event processing.
+### Functional Requirements
+
+- Ingest user event streams (clicks, views, conversions) from web/mobile apps.
+- Process events in real-time with stateful aggregations.
+- Provide analytics dashboards and API for metric queries.
+- Archive raw events for batch reprocessing.
+
+### Non-Functional Requirements
+
+- **Scale:** Handle 10k–100k events/sec; peak-hour bursts.
+- **Availability:** 99.9% uptime; resilient to temporary source unavailability.
+- **Consistency:** Eventual consistency for aggregations; at-least-once event processing.
+- **Latency:** P99 < 500ms for event-to-dashboard visibility.
+- **Workload Profile:**
+    - Read:Write ratio: ~20:80 (dashboard reads << event ingestion)
+    - QPS: avg 50k / peak 100k events/sec
+    - Avg payload: 500 B–5 KB per event
+    - Key skew: high (popular users/events dominate)
+    - Retention: 30 days hot; 1y archive in data lake
 
 ## 2. High-Level Architecture
 

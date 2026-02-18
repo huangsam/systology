@@ -11,12 +11,25 @@ draft: false
 
 Design a robust payment system that processes customer transactions via third-party gateways (e.g., Stripe, PayPal) while maintaining a high-fidelity internal ledger. The system must handle millions of transactions daily, ensuring that no customer is double-charged and every payment is accurately reconciled.
 
-- **Functional Requirements:** Process payments, handle refunds, maintain a transaction ledger, and provide idempotency for all operations.
-- **Non-Functional Requirements (NFRs):**
-    - **Consistency:** Strict ACID compliance for ledger updates; external consistency using idempotency keys.
-    - **Availability:** 99.99% for critical payment paths.
-    - **Scale:** 1 million transactions per day (peak 100 TPS).
-    - **Reliability:** At-least-once delivery for downstream notifications with deduplication.
+### Functional Requirements
+
+- Process customer payments via multiple payment gateways.
+- Handle refunds, disputes, and state transitions.
+- Maintain a double-entry ledger for all transactions.
+- Provide idempotency and deduplication for all operations.
+
+### Non-Functional Requirements
+
+- **Scale:** 1M transactions/day; peak 100 TPS.
+- **Availability:** 99.99% for critical payment paths.
+- **Consistency:** Strict ACID compliance for ledger; external consistency via idempotency keys; eventual for analytics.
+- **Latency:** P99 < 2 seconds for payment processing.
+- **Workload Profile:**
+    - Read:Write ratio: ~30:70 (reconciliation reads << authorizations/captures)
+    - QPS: avg 12 / peak 100 TPS
+    - Avg payload: 5–10 KB per transaction
+    - Key skew: moderate (high-value merchants more active)
+    - Retention: 7-year ledger retention (compliance); 30d hot metrics
 
 ## 2. High-Level Architecture
 

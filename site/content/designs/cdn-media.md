@@ -11,12 +11,24 @@ draft: false
 
 Develop a global media serving system that efficiently delivers static and dynamic assets worldwide using a content delivery network, while handling background processing for user uploads. The architecture must optimize for low latency, high availability, and cost-effectiveness, ensuring secure and reliable access to media content across diverse geographic regions.
 
-- **Functional Requirements:** Serve static/media assets globally, with background processing for uploads.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 1M requests/sec, global distribution.
-    - **Availability:** 99.99%.
-    - **Consistency:** Eventual for media updates.
-    - **Latency Targets:** P99 < 100ms.
+### Functional Requirements
+
+- Serve static and media assets globally.
+- Support background processing and transcoding for uploads.
+- Provide signed URLs and access control for private content.
+
+### Non-Functional Requirements
+
+- **Scale:** 1M requests/sec, global distribution; multi-region deployment.
+- **Availability:** 99.99% uptime with multi-CDN failover.
+- **Consistency:** Eventual consistency for media updates.
+- **Latency:** P99 < 100ms to edge; P99 < 500ms origin.
+- **Workload Profile:**
+    - Read:Write ratio: ~98:2 (serves > transcoding)
+    - QPS: avg 500k / peak 1M requests/sec
+    - Avg payload: 2–50 MB per asset
+    - Key skew: very high (popular videos get 70% of traffic)
+    - Retention: indefinite (hot); archive to cold storage after 1y
 
 ## 2. High-Level Architecture
 

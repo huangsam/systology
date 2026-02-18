@@ -11,12 +11,24 @@ draft: false
 
 Build a platform for federated learning that trains models across distributed devices without sharing raw data, incorporating privacy-preserving techniques. The system must scale to millions of devices, ensure secure aggregation of updates, and maintain model accuracy while adhering to privacy constraints and handling communication latencies.
 
-- **Functional Requirements:** Train models across devices without data sharing.
-- **Non-Functional Requirements (NFRs):**
-    - **Scale:** 1M devices.
-    - **Availability:** 99.5%.
-    - **Consistency:** Secure aggregation.
-    - **Latency Targets:** Round < 1 hour.
+### Functional Requirements
+
+- Train models across distributed devices without centralised data collection.
+- Aggregate model updates securely and privately.
+- Support client device heterogeneity (connectivity, compute).
+
+### Non-Functional Requirements
+
+- **Scale:** 1M+ devices participating per training round.
+- **Availability:** 99.5% platform uptime; tolerates device dropout.
+- **Consistency:** Secure aggregation; privacy-preserving (differential privacy).
+- **Latency:** Training round completion < 1 hour.
+- **Workload Profile:**
+    - Read:Write ratio: ~1:1 (model broadcast = gradient upload)
+    - QPS: N/A (rounds-based, not request-based); 10–100 updates/sec per node
+    - Avg payload: 50 MB–1 GB per model update
+    - Key skew: low (uniform device participation)
+    - Retention: model checkpoints per round; 100 rounds
 
 ## 2. High-Level Architecture
 
