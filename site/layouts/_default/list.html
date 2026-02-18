@@ -10,12 +10,7 @@
   <ul class="listing">
     {{ range .Pages }}
     {{ partial "components/list-item.html"
-    (dict
-    "title" .Title
-    "url" .RelPermalink
-    "tags" .Params.tags
-    "summary" .Params.summary
-    "draft" .Draft)
+    (dict "title" .Title "url" .RelPermalink "tags" .Params.tags "summary" .Params.summary "draft" .Draft)
     }}
     {{ end }}
   </ul>
