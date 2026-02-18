@@ -2,9 +2,10 @@
 {{ $url := .url }}
 {{ $summary := .summary }}
 {{ $tags := .tags }}
+{{ $draft := .draft }}
 
 <li>
-  <a href="{{ $url }}">{{ $title }}</a>
+  <a href="{{ $url }}">{{ $title }}</a>{{ if $draft }} <span class="draft-badge">WIP</span>{{ end }}
   {{ with $tags }}
   <small class="tags">&nbsp;—&nbsp;
     {{ range $i, $t := . }}
