@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+"""
+Sort tags in markdown files alphabetically. This helps with consistency and
+makes it easier to find and manage tags.
+
+Usage:
+    python3 scripts/sort_tags.py
+"""
+
 import os
 import re
 
