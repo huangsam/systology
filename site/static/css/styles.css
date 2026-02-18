@@ -472,6 +472,8 @@ article>header div.tags {
   max-width: 100%;
   height: auto;
   display: block;
+  /* Center the diagram */
+  margin: 0 auto;
 }
 
 .mermaid .edgePath .path {
