@@ -1,6 +1,6 @@
 # Systology
 
-Systology is my collection of docs for studying systems at scale. It serves as a knowledge base for my synthesized learnings, drawing from work experience and content curated from various sources.
+Systology is my collection of docs for studying systems at scale. It serves as a knowledge base for my synthesized learnings, drawing from work experience and the world wide web.
 
 - Principles: Core ideas and heuristics for system behavior.
 - Designs: System explorations with trade-offs and decisions.
