@@ -5,13 +5,13 @@
     <p class="meta">{{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }}</p>
   </header>
 
-  <ul class="terms-list">
+  <div class="terms-pills">
     {{ range .Pages }}
-    <li>
-      <a href="{{ .RelPermalink }}">{{ .Title | lower }}</a>
-      <span class="count">{{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }}</span>
-    </li>
+    <a href="{{ .RelPermalink }}" class="term-pill">
+      <span class="label">{{ .Title | lower }}</span>
+      <span class="count">{{ len .Pages }}</span>
+    </a>
     {{ end }}
-  </ul>
+  </div>
 </article>
 {{ end }}

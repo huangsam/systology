@@ -301,32 +301,50 @@ span.muted {
   line-height: 1.5;
 }
 
-/* Terms list (taxonomy index pages) */
-.terms-list {
-  list-style: none;
-  padding: 0;
+/* Terms pills (taxonomy index pages) */
+.terms-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin: 2rem 0;
 }
 
-.terms-list li {
-  display: flex;
-  justify-content: space-between;
+.term-pill {
+  display: inline-flex;
   align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.terms-list li:last-child {
-  border-bottom: none;
-}
-
-.terms-list a {
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none !important;
+  color: var(--text);
+  font-size: 0.95rem;
   font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.terms-list .count {
+.term-pill:hover,
+.term-pill:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+.term-pill .count {
+  font-size: 0.8rem;
+  background: var(--bg);
   color: var(--muted);
-  font-size: 0.9rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.term-pill:hover .count {
+  border-color: rgba(37, 99, 235, 0.2);
+  color: var(--accent);
 }
 
 .badge {
