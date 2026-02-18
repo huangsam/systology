@@ -8,7 +8,7 @@
     {{ .Content }}
   </section>
   <ul class="listing">
-    {{ range .Pages }}
+    {{ range .Pages.ByTitle }}
     {{ partial "components/list-item.html" (dict
     "title" .Title
     "url" .RelPermalink
