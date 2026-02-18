@@ -10,16 +10,13 @@
 
   <ul class="listing">
     {{ range $paginator.Pages }}
-    <li>
-      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-      {{ with .Params.tags }}
-      <small class="tags">&nbsp;—&nbsp;{{ range $i, $t := . }}{{ if $i }}, {{ end }}<a
-          href="/tags/{{ $t | urlize }}/">{{ $t }}</a>{{ end }}</small>
-      {{ end }}
-      {{ with .Params.summary }}
-      <p>{{ . }}</p>
-      {{ end }}
-    </li>
+    {{ partial "components/list-item.html" (dict
+    "title" .Title
+    "url" .RelPermalink
+    "summary" .Params.summary
+    "tags" .Params.tags
+    "draft" .Draft
+    ) }}
     {{ end }}
   </ul>
 
