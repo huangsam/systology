@@ -1,6 +1,6 @@
 ---
 title: "Deep Dives"
-description: "Sharing hard-earned learnings from side projects."
+description: "Sharing unique insights from side projects."
 summary: "Long-form investigations, experiments, and research notes exploring projects with methodology, findings, and next steps."
 ---
 
