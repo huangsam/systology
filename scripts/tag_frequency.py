@@ -8,8 +8,6 @@ Usage:
     python3/scripts/tag_frequency.py -p site/content --show-files
 """
 
-from __future__ import annotations
-
 import argparse
 import json
 import re
