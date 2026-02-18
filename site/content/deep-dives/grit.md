@@ -4,7 +4,8 @@ description: "VCS implementation with plumbing/porcelain architecture."
 summary: "From‑scratch Git implementation in Rust focusing on object storage, performance, and plumbing/porcelain command compatibility."
 tags: ["algorithms", "performance", "rust", "vcs"]
 categories: ["deep-dives"]
-github: "https://github.com/huangsam/grit"
+links:
+  github: "https://github.com/huangsam/grit"
 draft: false
 ---
 

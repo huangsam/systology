@@ -4,7 +4,8 @@ description: "Virtualization for system isolation."
 summary: "Rust-implemented compiler for a C subset that emits LLVM IR and focuses on AST design, semantic checks, and IR validation for teaching."
 tags: ["compiler", "rust"]
 categories: ["deep-dives"]
-github: "https://github.com/huangsam/virtuc"
+links:
+  github: "https://github.com/huangsam/virtuc"
 draft: false
 ---
 

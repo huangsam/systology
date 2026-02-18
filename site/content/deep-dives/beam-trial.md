@@ -4,7 +4,8 @@ description: "Apache Beam for unified batch/streaming pipelines."
 summary: "Canonical Apache Beam examples demonstrating pipeline construction, runner differences, and IO sharding behavior for learning Beam."
 tags: ["data-pipelines", "streaming"]
 categories: ["deep-dives"]
-github: "https://github.com/huangsam/beam-trial"
+links:
+  github: "https://github.com/huangsam/beam-trial"
 draft: false
 ---
 

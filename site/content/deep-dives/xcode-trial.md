@@ -4,7 +4,8 @@ description: "iOS/macOS development with app architecture."
 summary: "Multimodal video analysis on macOS (AVFoundation, Vision, Core Image) focusing on concurrency, memory management, and hardware acceleration."
 tags: ["concurrency", "media", "video"]
 categories: ["deep-dives"]
-github: "https://github.com/huangsam/xcode-trial"
+links:
+  github: "https://github.com/huangsam/xcode-trial"
 draft: false
 ---
 

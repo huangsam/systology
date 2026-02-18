@@ -2,12 +2,9 @@
 <article>
   <header>
     <h1>
-      {{ if .Params.github }}
-      <a href="{{ .Params.github }}">{{ .Title }}</a>
-      {{ else }}
       {{ .Title }}
-      {{ end }}
       {{ if .Draft }}<span class="draft-badge">WIP</span>{{ end }}
+      {{ with .Params.links }}{{ partial "components/external-links.html" . }}{{ end }}
     </h1>
     <h2>{{ .Description }}</h2>
     {{ with .Params.tags }}

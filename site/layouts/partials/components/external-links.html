@@ -1,0 +1,7 @@
+{{- $labels := dict "github" "GH" "docs" "DC" "demo" "DM" "blog" "BG" -}}
+{{- $titles := dict "github" "View on GitHub" "docs" "Documentation" "demo" "Live Demo" "blog" "Blog Post" -}}
+{{- range $key, $url := . -}}
+{{- $label := index $labels $key | default (upper $key) -}}
+{{- $title := index $titles $key | default $key -}}
+<a class="link-pill" href="{{ $url }}" target="_blank" rel="noopener" title="{{ $title }}">{{ $label }}</a>
+{{- end -}}

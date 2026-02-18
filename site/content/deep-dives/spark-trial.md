@@ -4,7 +4,8 @@ description: "Batch processing with ETL workflows."
 summary: "End-to-end ETL example using Apache Spark for parquet datasets; focuses on schema handling, partitioning, and reproducible aggregation."
 tags: ["data-pipelines", "etl", "monitoring"]
 categories: ["deep-dives"]
-github: "https://github.com/huangsam/spark-trial"
+links:
+  github: "https://github.com/huangsam/spark-trial"
 draft: false
 ---
 
