@@ -129,7 +129,8 @@ main.container {
   border-radius: 6px;
 }
 
-.footer-nav a:hover {
+.footer-nav a:hover,
+.footer-nav a:focus {
   color: var(--accent);
   background: var(--accent-weak);
 }
@@ -506,6 +507,13 @@ article>header .github-link {
   }
 }
 
+@media (max-width: 900px) {
+  .scroll-top {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
 /* Smooth transitions (respects reduced motion) */
 @media (prefers-reduced-motion: no-preference) {
 
@@ -649,7 +657,7 @@ article>header .github-link {
    ============================== */
 .scroll-top {
   position: fixed;
-  bottom: 1.5rem;
+  bottom: 2.70rem;
   right: 1.5rem;
   width: 2.5rem;
   height: 2.5rem;
@@ -680,7 +688,7 @@ article>header .github-link {
 .scroll-top:focus-visible {
   color: var(--accent);
   border-color: var(--accent);
-  background: var(--accent-weak);
+  background: var(--bg);
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.1);
 }
 
