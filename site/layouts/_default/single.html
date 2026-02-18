@@ -1,7 +1,14 @@
 {{ define "main" }}
 <article>
   <header>
-    <h1>{{ .Title }}{{ if .Draft }} <span class="draft-badge">WIP</span>{{ end }}</h1>
+    <h1>
+      {{ if .Params.github }}
+      <a href="{{ .Params.github }}">{{ .Title }}</a>
+      {{ else }}
+      {{ .Title }}
+      {{ end }}
+      {{ if .Draft }}<span class="draft-badge">WIP</span>{{ end }}
+    </h1>
     <h2>{{ .Description }}</h2>
     {{ with .Params.tags }}
     <div class="tags">
@@ -18,9 +25,6 @@
       {{ partial "components/badge.html" (dict "text" . "url" (printf "/categories/%s/" (. | urlize))) }}
       {{ end }}
     </div>
-    {{ end }}
-    {{ with .Params.github }}
-    {{ partial "components/github-link.html" (dict "url" .) }}
     {{ end }}
   </header>
   <section>
