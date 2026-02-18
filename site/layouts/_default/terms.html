@@ -9,7 +9,7 @@
     {{ range .Pages }}
     <li>
       <a href="{{ .RelPermalink }}">{{ .Title | lower }}</a>
-      <span class="count">({{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }})</span>
+      <span class="count">{{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }}</span>
     </li>
     {{ end }}
   </ul>
