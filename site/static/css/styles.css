@@ -265,6 +265,10 @@ span.tags-inline {
   margin-top: 0.5rem;
 }
 
+span.muted {
+  margin-left: 0.125rem;
+}
+
 /* Post cards grid */
 .posts-grid {
   display: grid;

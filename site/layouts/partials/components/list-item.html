@@ -8,9 +8,14 @@
   <a href="{{ $url }}">{{ $title }}</a>{{ if $draft }} <span class="draft-badge">WIP</span>{{ end }}
   {{ with $tags }}
   <small class="tags">&nbsp;—&nbsp;
-    {{ range $i, $t := . }}
+    {{ $max := 3 }}
+    {{ range $i, $t := first $max . }}
     {{ if $i }}, {{ end }}
     <a href="/tags/{{ $t | urlize }}/">{{ $t }}</a>
+    {{ end }}
+    {{ $remaining := sub (len .) $max }}
+    {{ if gt $remaining 0 }}
+    <span class="muted">+{{ $remaining }} more</span>
     {{ end }}
   </small>
   {{ end }}
