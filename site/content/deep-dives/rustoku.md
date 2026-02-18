@@ -44,6 +44,3 @@ draft: false
 - **Incorrect difficulty classification:** instrument empirical metrics and tune generator heuristics.
 - **Performance regressions:** add CI benchmarks and regression alerts.
 
-## Related Principles
-
-- [Algorithms & Performance](/principles/algorithms-performance): Bitmasking, MRV heuristics, micro-benchmarking, deterministic generators, and explainable traces.

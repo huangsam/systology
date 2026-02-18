@@ -45,7 +45,3 @@ draft: false
 - **Non-reproducible environments:** pin deps, provide `uv` lockfile and minimal docker/devcontainer for CI.
 - **Large model resource constraints:** document fallbacks (smaller models, LoRA), and automate profiling to detect OOM early.
 
-## Related Principles
-
-- [ML Experiments](/principles/ml-experiments): Reproducibility, resource-aware design, deterministic evaluation, and lightweight MLOps.
-- [Privacy & Agents](/principles/privacy-agents): Local-first defaults and data handling for sensitive datasets.

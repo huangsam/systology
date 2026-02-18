@@ -45,8 +45,3 @@ draft: false
 - **Data loss/migrations:** use migrations with backups and run schema changes in safe, backward-compatible steps.
 - **Scaling DB connections:** use pgbouncer and limit active connections per app instance.
 
-## Related Principles
-
-- [Web App](/principles/webapp): Twelve-factor structure, static/media serving, scaling, background work, and CI/CD.
-- [Monitoring & Observability](/principles/monitoring): Metrics, error rates, SLOs, and health checks for production reliability.
-- [Networking & Services](/principles/networking-services): Connection pooling, reverse proxying, and API design.

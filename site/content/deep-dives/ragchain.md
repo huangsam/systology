@@ -44,7 +44,3 @@ draft: false
 - **Stale embeddings:** incremental re-embedding strategies and metadata to detect drift.
 - **Resource exhaustion:** provide sample-size limits and guide users to shard or prune indices.
 
-## Related Principles
-
-- [Retrieval & RAG](/principles/retrieval): Hybrid retrieval strategy, embedding stability, evaluation benchmarks, and privacy-aware indexing.
-- [Privacy & Agents](/principles/privacy-agents): Local-first defaults, data minimization, and consent for cloud services.

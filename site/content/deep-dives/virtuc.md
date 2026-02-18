@@ -2,7 +2,7 @@
 title: "VirtuC"
 description: "Virtualization for system isolation."
 summary: "Rust-implemented compiler for a C subset that emits LLVM IR and focuses on AST design, semantic checks, and IR validation for teaching."
-tags: ["compiler", "rust"]
+tags: ["algorithms", "compiler", "performance", "rust"]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/virtuc"
@@ -44,7 +44,3 @@ draft: false
 - **IR correctness bugs:** run `clang -S` comparisons and lit-style tests; integrate `FileCheck`-like assertions.
 - **Undefined behavior from unhandled constructs:** add graceful error messages and reject unsupported constructs explicitly.
 
-## Related Principles
-
-- [Compiler Design](/principles/compiler): Clean IR boundaries, deterministic semantics, error reporting, test harnesses, and incremental compilation.
-- [Algorithms & Performance](/principles/algorithms-performance): Profiling-driven optimization and memory discipline for codegen.

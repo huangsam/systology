@@ -60,8 +60,3 @@ draft: false
 - **OAuth/credentials leaks:** encrypt tokens at rest; use OS keychain when available; rotate refresh tokens and surface reauth UX.
 - **Privacy violation from cloud embeddings:** default to local embeddings; if cloud is enabled, show explicit consent and purge raw message text after embedding.
 
-## Related Principles
-
-- [Privacy & Agents](/principles/privacy-agents): Local-first defaults, data minimization, consent, credential safety, and audit logs.
-- [Networking & Services](/principles/networking-services): OAuth flows, API rate limiting, retries with backoff, and async IO.
-- [Data Pipelines](/principles/data-pipelines): Resumable ingestion, checkpointing, and partitioned processing.

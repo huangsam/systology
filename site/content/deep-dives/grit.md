@@ -2,7 +2,7 @@
 title: "Grit"
 description: "VCS implementation with plumbing/porcelain architecture."
 summary: "From‑scratch Git implementation in Rust focusing on object storage, performance, and plumbing/porcelain command compatibility."
-tags: ["algorithms", "performance", "rust", "vcs"]
+tags: ["algorithms", "extensibility", "performance", "rust", "vcs"]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/grit"
@@ -44,7 +44,3 @@ draft: false
 - **Compatibility issues:** Maintain strict adherence to Git formats and protocols; use existing Git repos for testing.
 - **Performance regressions:** Continuous benchmarking with Criterion; monitor for cache thrashing in large repos.
 
-## Related Principles
-
-- [Algorithms & Performance](/principles/algorithms-performance): Micro-benchmarking, memory discipline, and profiling-driven optimization.
-- [Extensibility](/principles/extensibility): Plumbing/porcelain layering and composable command architecture.

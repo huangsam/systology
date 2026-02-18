@@ -2,7 +2,7 @@
 title: "Beam Trial"
 description: "Apache Beam for unified batch/streaming pipelines."
 summary: "Canonical Apache Beam examples demonstrating pipeline construction, runner differences, and IO sharding behavior for learning Beam."
-tags: ["data-pipelines", "streaming"]
+tags: ["data-pipelines", "extensibility", "streaming"]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/beam-trial"
@@ -41,7 +41,3 @@ draft: false
 
 - **Local-only assumptions:** include docs on runner portability and necessary code changes when switching runners.
 
-## Related Principles
-
-- [Data Pipelines](/principles/data-pipelines): Time semantics, fault tolerance, partitioning, IO & schema, and runner portability.
-- [Extensibility](/principles/extensibility): Runner abstraction pattern for pluggable backends.

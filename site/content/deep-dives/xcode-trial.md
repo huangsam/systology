@@ -2,7 +2,7 @@
 title: "xcode-trial"
 description: "iOS/macOS development with app architecture."
 summary: "Multimodal video analysis on macOS (AVFoundation, Vision, Core Image) focusing on concurrency, memory management, and hardware acceleration."
-tags: ["concurrency", "media", "video"]
+tags: ["concurrency", "feature-extraction", "media", "video"]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/xcode-trial"
@@ -44,6 +44,3 @@ draft: false
 - **API drift across macOS versions:** pin minimum macOS/Xcode versions and add CI matrix jobs.
 - **Memory pressure on long videos:** stream frames and limit in-memory buffers.
 
-## Related Principles
-
-- [Media Analysis](/principles/media-analysis): Stable output schemas, native vs. cross-platform processing, performance engineering, and privacy guarantees.
