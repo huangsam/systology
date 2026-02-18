@@ -18,14 +18,6 @@
       {{ end }}
     </div>
     {{ end }}
-    {{ with .Params.categories }}
-    <div class="categories">
-      <span>Categories:</span>
-      {{ range . }}
-      {{ partial "components/badge.html" (dict "text" . "url" (printf "/categories/%s/" (. | urlize))) }}
-      {{ end }}
-    </div>
-    {{ end }}
   </header>
   <section>
     {{ .Content }}
