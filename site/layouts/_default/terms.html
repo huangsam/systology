@@ -6,7 +6,7 @@
   </header>
 
   <div class="terms-pills">
-    {{ range .Pages }}
+    {{ range .Pages.ByTitle }}
     <a href="{{ .RelPermalink }}" class="term-pill">
       <span class="label">{{ .Title | lower }}</span>
       <span class="count">{{ len .Pages }}</span>

@@ -9,7 +9,7 @@
   {{ $paginator := .Paginate $pages 20 }}
 
   <ul class="listing">
-    {{ range $paginator.Pages }}
+    {{ range $paginator.Pages.ByTitle }}
     {{ partial "components/list-item.html" (dict
     "title" .Title
     "url" .RelPermalink
