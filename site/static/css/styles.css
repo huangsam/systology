@@ -10,6 +10,7 @@
   --max-width: 80ch;
   --focus: 3px rgba(37, 99, 235, 0.18);
   --link-gap: 0.5rem;
+  --gutter: 0.75rem;
 }
 
 /* Base layout + type */
@@ -41,7 +42,7 @@ body {
 .container {
   max-width: var(--max-width);
   margin: 0.75rem auto;
-  padding: 0 0.75rem;
+  padding: 0 var(--gutter);
 }
 
 /* main: add a bit more vertical breathing room */
@@ -61,7 +62,7 @@ main.container {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.5rem 0;
+  padding: 0.5rem var(--gutter);
 }
 
 .brand {
@@ -106,6 +107,10 @@ main.container {
   color: var(--muted);
   font-size: 0.95rem;
   padding: 1rem 0 1.5rem;
+}
+
+.site-footer .container {
+  padding: 0 var(--gutter);
 }
 
 /* Prose/content styling */
@@ -456,12 +461,8 @@ article>header .github-link {
 
 /* Smaller screens */
 @media (max-width: 640px) {
-  .site-header .container {
-    padding: 0.5rem 1rem;
-  }
-
-  .footer-inner {
-    padding: 0.5rem 1rem;
+  :root {
+    --gutter: 0.75rem;
   }
 
   .brand {
@@ -475,7 +476,6 @@ article>header .github-link {
 
   .container {
     margin: 0.5rem auto;
-    padding: 0 0.75rem;
   }
 
   main.container {
@@ -484,21 +484,10 @@ article>header .github-link {
   }
 }
 
-/* Narrow widths (641px–700px): add extra horizontal padding so header/footer aren't cramped */
+/* Narrow widths (641px–700px): bump gutter so content isn't cramped */
 @media (min-width: 641px) and (max-width: 700px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .site-header .container {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-
-  .footer-inner {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+  :root {
+    --gutter: 1.25rem;
   }
 }
 
