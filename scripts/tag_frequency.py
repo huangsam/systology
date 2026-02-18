@@ -15,7 +15,7 @@ import json
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Iterable
 
 
 def _strip_quotes(s: str) -> str:
@@ -27,7 +27,7 @@ def _strip_quotes(s: str) -> str:
     return s
 
 
-def parse_tags_from_text(text: str) -> List[str]:
+def parse_tags_from_text(text: str) -> list[str]:
     """Extract `tags` from YAML front-matter in `text`.
 
     Returns a list of tag strings (maybe empty).
@@ -100,9 +100,9 @@ def find_markdown_files(root: Path) -> Iterable[Path]:
         yield p
 
 
-def count_tags(root: Path) -> Tuple[Counter, Dict[str, List[str]]]:
+def count_tags(root: Path) -> tuple[Counter, defaultdict[str, list[str]]]:
     counter = Counter()
-    files_for_tag: Dict[str, List[str]] = defaultdict(list)
+    files_for_tag: defaultdict[str, list[str]] = defaultdict(list)
     for md in find_markdown_files(root):
         try:
             text = md.read_text(encoding="utf8")
