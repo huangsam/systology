@@ -44,4 +44,3 @@ draft: false
 - **Data loss during migration:** always run in `--dry-run` mode with manifest generation; verify checksums post-migration.
 - **API rate limits for cloud backends:** implement exponential backoff and per-backend throttling.
 - **EXIF/metadata stripping:** preserve metadata by default and add configurable transformations; test against representative camera outputs.
-

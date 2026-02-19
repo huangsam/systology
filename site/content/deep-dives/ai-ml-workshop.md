@@ -11,7 +11,7 @@ draft: false
 
 ## Context — Problem — Solution
 
-**Context:** A hands-on collection focused on core ML workflows: PyTorch model development, Hugging Face model/dataset tooling, NumPy implementations for fundamentals, and scikit-learn experiments for classical algorithms. RAG/agents and media preprocessing are covered in auxiliary repos (`ragchain`, `mailprune`, `vidicant`, `xcode-trial`).
+**Context:** A hands-on collection focused on core ML workflows: PyTorch model development, Hugging Face model/dataset tooling, NumPy implementations for fundamentals, and scikit-learn experiments for classical algorithms. RAG/agents and media preprocessing are covered in auxiliary repos (`ragchain`, `vidicant`, `xcode-trial`).
 
 **Problem:** Reproducible experimentation and fair comparison of models is hindered by environment drift, heterogeneous hardware (MPS vs. CPU), and limited local resources for larger Transformer workflows.
 
@@ -44,4 +44,3 @@ draft: false
 
 - **Non-reproducible environments:** pin deps, provide `uv` lockfile and minimal docker/devcontainer for CI.
 - **Large model resource constraints:** document fallbacks (smaller models, LoRA), and automate profiling to detect OOM early.
-

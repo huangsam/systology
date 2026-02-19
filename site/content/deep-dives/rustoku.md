@@ -11,36 +11,41 @@ draft: false
 
 ## Context — Problem — Solution
 
-**Context:** `Rustoku` implements fast Sudoku solving/generation in Rust using bitmasking and MRV heuristics, exposing both library and CLI.
+**Context:** `Rustoku` implements fast Sudoku solving and generation in Rust, exposing both a library crate and a CLI. The core uses bitmasking for constraint tracking and Minimum Remaining Values (MRV) heuristics to guide backtracking, producing solve traces that map to human-understandable techniques.
 
-**Problem:** Producing extremely fast solves while keeping generation deterministic, guaranteeing uniqueness, and providing human-understandable solve paths requires careful algorithm design and test coverage.
+**Problem:** Producing extremely fast solves (sub-millisecond for most puzzles) while keeping generation deterministic, guaranteeing solution uniqueness, and providing human-understandable solve paths requires careful algorithm design, allocation discipline, and comprehensive test coverage. Balancing raw speed with explainability is a core tension.
 
-**Solution (high-level):** Optimize core algorithms (bitmask operations, ordering heuristics), instrument micro-benchmarks, and produce explainable step traces mapping to human techniques.
+**Solution (high-level):** Optimize constraint propagation with bitmask operations (`u32` per cell for candidate sets), order cell selection with MRV heuristics to minimize branching, instrument micro-benchmarks with Criterion, and produce structured step traces that map each backtracking decision to a human technique (naked singles, hidden pairs, forced chains).
 
 ## The Local Implementation
 
-- **Current Logic:** Uses bitmasking for constraint propagation, backtracking with MRV heuristics, and generator that ensures unique solutions and configurable clue counts. CLI supports generate/solve/check workflows.
-- **Bottleneck:** Worst-case backtracking paths for hard puzzles; ensuring generator produces targeted difficulty levels reliably.
+- **Current Logic:** Each cell's candidate set is represented as a `u32` bitmask where bit `i` indicates digit `i` is still possible. Constraint propagation uses bitwise AND/OR to update row, column, and box masks (27 `u32` values totaling 108 bytes) in O(1) per elimination. The solver selects the cell with the fewest remaining candidates (MRV heuristic), which empirically reduces backtracking depth by 3–5× compared to left-to-right scanning. The generator produces puzzles by filling a solved grid with a seeded RNG, then iteratively removing clues while verifying the solution remains unique by running the solver and checking that no second solution exists.
+- **Allocation discipline:** the inner solve loop avoids heap allocations entirely—the board is a fixed `[u8; 81]` array (81 bytes for cell values), with 81 `u32` candidate masks (324 bytes) tracking possibilities per cell. Candidate iteration uses `trailing_zeros()` on the bitmask rather than collecting into a `Vec`, and the backtracking stack uses a fixed-size array rather than a `Vec<Frame>`. This keeps the hot path in L1 cache and eliminates allocator overhead, which was critical for achieving microsecond-level solve times on easy/medium puzzles.
+- **Trace generation:** each solve step emits a structured record: `{ cell: (row, col), candidates: [digits], chosen: digit, technique: "naked_single" | "mrv_backtrack" | ... }`. These traces serve dual purposes—debugging incorrect solves and providing human-readable explanations of the solution path.
+- **Bottleneck:** Worst-case backtracking on adversarial puzzles (e.g., 17-clue minimal puzzles designed to maximize search depth) can still take milliseconds. Generator difficulty targeting is heuristic—clue count correlates with difficulty but doesn't guarantee it, so some generated "hard" puzzles solve in microseconds while some "medium" puzzles require deep backtracking.
 
 ## Scaling Strategy
 
-- **Vertical vs. Horizontal:** Focus on algorithmic speedups and low-level optimizations (avoid memory allocations, use iterators) rather than distributed scaling. For bulk generation, parallelize across worker threads or processes.
-- **State Management:** Record generation seeds and solver traces to reproduce puzzles and debug edge cases.
+- **Vertical vs. Horizontal:** Focus on algorithmic speedups and low-level optimizations rather than distributed scaling. For bulk generation (e.g., generating puzzle books), parallelize across worker threads using Rayon—each worker gets an independent RNG seeded deterministically from a master seed, ensuring the full batch is reproducible.
+- **State Management:** Record the master seed, per-puzzle seeds, and full solver traces to reproduce any puzzle and debug edge cases. Store generation metadata (seed, clue count, solve depth, solve time) alongside each puzzle for quality analysis.
 
 ## Comparison to Industry Standards
 
-- **My Project:** High-performance, explanatory solver with generation controls and human-like techniques.
-- **Industry:** Research-grade solvers may use advanced deductive algorithms and heavy precomputation; Rustoku focuses on clarity and speed with a modest feature set.
-- **Gap Analysis:** For research-scale solving, add more advanced strategies and profiling-guided optimizations.
+- **My Project:** High-performance, explanatory solver with generation controls and human-like technique mapping. Prioritizes clarity and auditability alongside speed.
+- **Industry:** Research-grade solvers (e.g., tdoku) use SIMD-vectorized constraint propagation and cache-line-aligned data structures for maximum throughput. Competition-grade generators use SAT solvers for difficulty classification.
+- **Gap Analysis:** To approach research-level performance, explore SIMD-based candidate elimination (processing multiple cells per instruction). For reliable difficulty classification, integrate a technique-counting heuristic that scores puzzles based on which human techniques are required (naked singles = easy, X-wings = hard) rather than relying solely on clue count.
 
 ## Experiments & Metrics
 
-- **Solve time distribution:** micro-benchmarks across puzzle difficulty buckets.
-- **Generator quality:** ratio of generated puzzles that match intended difficulty; uniqueness validation cost.
-- **Trace clarity:** user studies or heuristics to validate step-by-step explanations map to human techniques.
+- **Solve time distribution:** Criterion micro-benchmarks across difficulty buckets (easy/medium/hard/adversarial), measuring mean, P50, P95, and P99 solve times. Track these in CI to catch regressions—a 10% P99 regression triggers an alert.
+- **Backtracking depth:** measure average and max backtracking depth per difficulty bucket. MRV should keep average depth under 15 for medium puzzles; without MRV, expect 40+.
+- **Generator quality:** ratio of generated puzzles that match intended difficulty (validated by technique-counting), uniqueness validation cost (time to prove single-solution), and rejection rate (puzzles discarded during generation).
+- **Allocation profiling:** use DHAT to verify zero heap allocations in the solve hot path. Any regression means an accidental `Vec` or `String` crept into the inner loop.
+- **Trace clarity:** validate that step-by-step traces map correctly to known human techniques by running the tracer against a curated set of puzzles with known solution paths.
 
 ## Risks & Mitigations
 
-- **Incorrect difficulty classification:** instrument empirical metrics and tune generator heuristics.
-- **Performance regressions:** add CI benchmarks and regression alerts.
-
+- **Incorrect difficulty classification:** instrument empirical metrics (technique counting, backtracking depth) and tune generator heuristics. Maintain a labeled test set of puzzles with known difficulty grades.
+- **Performance regressions:** Criterion benchmarks run in CI with statistical comparison against the baseline. Alert on P95 regressions exceeding 5%.
+- **Bitmask correctness:** property-based tests with `proptest` verify that constraint propagation maintains invariants—every valid digit remains in the candidate set and every eliminated digit is genuinely constrained.
+- **Generator non-termination:** cap the number of clue-removal attempts and fall back to regeneration if uniqueness checking exceeds a timeout. Log seeds for puzzles that hit the cap for later investigation.

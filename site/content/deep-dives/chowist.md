@@ -44,4 +44,3 @@ draft: false
 - **Static/media serving issues:** integrate proper build and CDN-backed serving; ensure collectstatic is run in builds.
 - **Data loss/migrations:** use migrations with backups and run schema changes in safe, backward-compatible steps.
 - **Scaling DB connections:** use pgbouncer and limit active connections per app instance.
-

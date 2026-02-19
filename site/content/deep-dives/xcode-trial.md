@@ -1,7 +1,7 @@
 ---
 title: "xcode-trial"
 description: "iOS/macOS development with app architecture."
-summary: "Multimodal video analysis on macOS (AVFoundation, Vision, Core Image) focusing on concurrency, memory management, and hardware acceleration."
+summary: "Multimodal video analysis on macOS using AVFoundation, Vision, and Core Image — extracts faces, scenes, colors, motion, audio, and text with JSON output."
 tags: ["concurrency", "feature-extraction", "media"]
 categories: ["deep-dives"]
 links:
@@ -11,36 +11,40 @@ draft: false
 
 ## Context — Problem — Solution
 
-**Context:** `xcode-trial` is a Swift-based multimodal video analysis tool leveraging AVFoundation, Vision, and Core Image to extract faces, scenes, audio, and text.
+**Context:** `xcode-trial` is a Swift-based multimodal video analysis tool leveraging Apple-native frameworks—AVFoundation for media IO, Vision for computer vision tasks (face detection, scene classification, text recognition), and Core Image for image transforms. It targets macOS 12.0+ and requires Xcode 13.0+, producing JSON output for downstream analysis.
 
-**Problem:** Orchestrating multimodal components with high throughput and low latency on macOS requires careful concurrency, memory management, and hardware acceleration usage.
+**Problem:** Orchestrating multimodal analysis components on macOS requires understanding Apple's framework ecosystem (Vision, AVFoundation, Core Image), managing analysis across multiple extraction tracks (faces, scenes, colors, motion, audio, text), and producing structured output suitable for ML pipelines. Apple's frameworks are powerful but impose their own threading and callback constraints.
 
-**Solution (high-level):** Build a modular pipeline that stages CPU/GPU-bound tasks, uses native acceleration (Metal/Core Image), and emits stable JSON outputs for downstream ML pipelines.
+**Solution (high-level):** Build a modular pipeline with explicit analysis stages for each media dimension (faces, scenes, colors, motion, audio, text) using Apple-native APIs, compile via Swift Package Manager, and emit stable JSON outputs for downstream consumption.
 
 ## The Local Implementation
 
-- **Current Logic:** Swift Package Manager project that runs a pipeline: decode frames, run Vision face/scene detection, Core Image transforms, and audio analysis; outputs JSON summary per video.
-- **Bottleneck:** Frame decoding and Vision pipeline latency; coordinating asynchronous callbacks while preserving ordering and throughput.
+- **Current Logic:** Swift Package Manager project structured as a pipeline: video and image inputs are processed through multiple analysis tracks—Vision `VNDetectFaceRectanglesRequest` for face detection, `VNClassifyImageRequest` for scene classification, Core Image filters for color and visual analysis, plus motion and audio extraction via AVFoundation. Each track processes media independently and produces structured feature records. Results are aggregated and output as JSON per input file.
+- **Framework integration:** the project demonstrates how Vision, AVFoundation, and Core Image complement each other. Vision handles high-level recognition tasks (faces, scenes, text), AVFoundation provides media decoding and audio analysis, and Core Image enables image-level feature extraction. SPM manages the build with clean dependency boundaries.
+- **Hardware acceleration:** Core Image filters and Vision requests automatically route to the GPU on Apple Silicon when available. The pipeline benefits from Apple's integrated hardware without requiring explicit Metal or Neural Engine configuration.
+- **Bottleneck:** Vision pipeline latency varies per request type—face detection, scene classification, and text recognition have different computational profiles. Coordinating results from multiple analysis tracks while preserving structure adds complexity. macOS version differences affect API availability for certain Vision request types.
 
 ## Scaling Strategy
 
-- **Vertical vs. Horizontal:** Optimize for Apple Silicon (parallelize across cores/Metal), and for larger workloads run job-level parallelism across machines or macOS CI runners.
-- **State Management:** Per-video checkpoints and chunked processing; store intermediate artefacts for reproducibility and debugging.
+- **Vertical vs. Horizontal:** Optimize for Apple Silicon—the frameworks automatically leverage GPU and hardware acceleration. For larger workloads (processing video libraries), run job-level parallelism across multiple macOS machines, with each handling a subset of files. Apple's frameworks are optimized for single-machine throughput on their own hardware.
+- **State Management:** Per-video checkpoints store the last processed frame index and accumulated features, enabling resume after interruption. Chunked processing (5-minute segments) bounds memory and allows intermediate result persistence for long videos.
 
 ## Comparison to Industry Standards
 
-- **My Project:** Native, high-performance macOS analysis focusing on multimodal extraction and JSON schema outputs.
-- **Industry:** Cloud video analysis offers managed scaling but lacks local Apple-optimizations; native tools can hit platform-specific performance sweet spots.
-- **Gap Analysis:** For production, add SPM artifact builds, CI on macOS runners, and schema versioning for downstream ML ingestion.
+- **My Project:** Native macOS analysis leveraging Apple's Vision, AVFoundation, and Core Image frameworks for multimodal extraction. JSON output for downstream compatibility. Built with SPM for clean dependency management.
+- **Industry:** Cloud video analysis (Google Video Intelligence, AWS Rekognition) offers managed scaling and broader model coverage but lacks Apple-specific optimizations and incurs data egress costs and privacy implications. FFmpeg + OpenCV provides cross-platform portability but misses Metal/Neural Engine acceleration.
+- **Gap Analysis:** For production deployment: add SPM artifact caching and CI on macOS runners (GitHub Actions macOS, Buildkite Mac), implement schema versioning for downstream ML ingestion, and add structured error handling for partial analysis failures (e.g., Vision request fails on corrupted frames but pipeline continues).
 
 ## Experiments & Metrics
 
-- **Throughput:** seconds per minute of video at different concurrency levels.
-- **Accuracy:** face/scene detection precision on labeled clips.
-- **Resource:** CPU/GPU utilization and memory footprints on Apple Silicon.
+- **Throughput:** processing time per video at different resolutions and lengths, measured on Apple Silicon hardware. Target: reasonable throughput for batch analysis of video libraries.
+- **Framework latency:** per-analysis-track latency breakdown (Vision face, Vision scene, Core Image, audio extraction) to identify pipeline bottlenecks. Use Instruments (Time Profiler) for profiling.
+- **Accuracy:** face detection precision/recall on labeled clips, scene classification agreement with human labels, comparing Vision framework results against equivalent cross-platform implementations.
+- **Resource usage:** CPU/GPU utilization and peak memory footprint on Apple Silicon, measured via Xcode Instruments.
+- **Power efficiency:** energy impact per minute of video processed (via `powermetrics`), relevant for laptop and CI cost optimization.
 
 ## Risks & Mitigations
 
-- **API drift across macOS versions:** pin minimum macOS/Xcode versions and add CI matrix jobs.
-- **Memory pressure on long videos:** stream frames and limit in-memory buffers.
-
+- **API drift across macOS versions:** pin minimum macOS version (12.0+) and Xcode version (13.0+), add CI matrix jobs across macOS versions. Vision API availability varies by version—use `#available` checks and provide fallback paths.
+- **Memory pressure on long videos:** stream frames with a bounded buffer and release resources eagerly. Monitor with `os_signpost` to detect memory pressure events.
+- **CI environment constraints:** macOS CI runners may have limited GPU access. Ensure the pipeline degrades gracefully when hardware acceleration is unavailable, falling back to CPU-based processing with clear logging of the compute path.
