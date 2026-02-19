@@ -7,62 +7,50 @@ categories: ["principles"]
 draft: false
 ---
 
-1. Metrics & KPIs
-    - Emit structured metrics for throughput, latency, error rates, and resource utilization.
-    - Use consistent naming conventions and labels for aggregation and filtering.
-    - Track both technical metrics (CPU, memory) and business KPIs (processing rate, job completion).
+## 1. Metrics & KPIs
 
-2. Structured Logging
-    - Use structured logs (JSON) with consistent fields: timestamp, level, correlation ID, message.
-    - Include contextual information like user IDs, request IDs, and workflow stages.
-    - Design logs as event streams for centralized collection and analysis.
+Emit structured metrics for throughput, latency, and error rates alongside business KPIs using consistent naming conventions. This provides both technical and product perspectives on system health.
 
-3. Distributed Tracing
-    - Add trace IDs and span IDs across service boundaries for end-to-end request tracking.
-    - Instrument critical paths to identify bottlenecks in distributed systems.
-    - Use tools like OpenTelemetry for standardized tracing.
+## 2. Structured Logging
 
-4. Alerting & SLOs
-    - Define Service Level Objectives (SLOs) and error budgets for critical systems.
-    - Set up automated alerts for threshold violations and anomalies.
-    - Avoid alert fatigue by tuning thresholds and using multi-window detection.
+Use JSON logs with consistent fields (timestamp, level, correlation ID, context) and treat logs as event streams for centralized analysis. Unstructured logging is noise; structured logging enables aggregation and debugging at scale.
 
-5. Health Checks & Readiness
-    - Implement health endpoints that check dependencies (database, cache, external APIs).
-    - Differentiate between liveness (is the service running?) and readiness (can it handle traffic?).
-    - Include version and build information in health responses.
+## 3. Distributed Tracing
 
-6. Resource Profiling
-    - Profile CPU, memory, and IO usage to identify hotspots and optimize performance.
-    - Use continuous profiling in production to catch regressions.
-    - Monitor state size growth in stateful systems (Flink, Spark).
+Add trace IDs and span IDs across service boundaries to track requests end-to-end and identify latency bottlenecks in distributed systems. This is essential infrastructure for diagnosing multi-service interactions.
 
-7. Observability in Data Pipelines
-    - Track backlog sizes, processing lag, and watermark progression for streaming jobs.
-    - Emit partition-level metrics to detect skew and bottlenecks.
-    - Monitor checkpoint duration and failure rates for fault tolerance health.
+## 4. Alerting & SLOs
 
-8. Dashboard & Visualization
-    - Build operational dashboards showing key metrics and system health.
-    - Provide drill-down views for debugging specific jobs or requests.
-    - Use time-series visualization for trend analysis and capacity planning.
+Define Service Level Objectives and error budgets for critical systems, then set up alerts on threshold violations with carefully tuned thresholds to avoid alert fatigue. An alert that fires constantly trains people to ignore alerts.
 
-9. Error Budget & Postmortems
-    - Track error budgets to balance feature velocity and reliability.
-    - Conduct blameless postmortems after incidents to identify systemic issues.
-    - Document runbooks and recovery procedures for common failure modes.
+## 5. Health Checks & Readiness
 
-10. Cost Monitoring
-    - Track infrastructure costs by service, environment, and resource type.
-    - Monitor egress, storage, and compute costs for cloud workloads.
-    - Set budget alerts and forecast spending based on usage trends.
+Implement health endpoints that check dependencies and differentiate between liveness (is it running?) and readiness (can it handle traffic?). This distinction is crucial for orchestrators and load balancers.
 
-11. Development & Testing Observability
-    - Include debug/verbose logging modes for local development.
-    - Provide test fixtures that emit metrics and logs for validation.
-    - Use observability data to validate system behavior in integration tests.
+## 6. Resource Profiling
 
-12. Privacy & Compliance
-    - Scrub sensitive data (PII, credentials) from logs and metrics.
-    - Implement retention policies for logs and traces.
-    - Document what data is collected and how long it's retained.
+Profile CPU, memory, and IO to identify hotspots and validate optimization impact. Production profiling catches regressions that benchmarks miss, especially in stateful systems where state size growth can silently degrade performance.
+
+## 7. Observability in Data Pipelines
+
+Track consumer lag, watermark progression, and checkpoint health for streaming jobs. Pipeline observability reveals whether you're truly delivering the low-latency guarantees you promise.
+
+## 8. Dashboard & Visualization
+
+Build operational dashboards showing key metrics and drill-down views for debugging specific jobs. Time-series visualization reveals trends and patterns that raw numbers obscure.
+
+## 9. Error Budget & Postmortems
+
+Track error budgets to balance velocity and reliability, and conduct blameless postmortems to identify systemic issues rather than individual mistakes. This creates a feedback loop that systematically improves reliability.
+
+## 10. Cost Monitoring
+
+Track infrastructure costs by service and environment, setting budget alerts and forecasting based on usage trends. Cloud costs are easy to ignore until you get a surprise bill.
+
+## 11. Development & Testing Observability
+
+Include verbose logging modes, observability-friendly test fixtures, and use metrics to validate system behavior during integration tests. This surfaces bugs in the lab rather than production.
+
+## 12. Privacy & Compliance
+
+Never log PII or credentials, implement retention policies for logs and traces, and document what data is collected and why. Privacy violations are easier to prevent than remediate.

@@ -7,61 +7,50 @@ categories: ["principles"]
 draft: false
 ---
 
-1. Time Semantics
-    - Batch vs. Streaming: choose batch (Spark) for large-scale ETL and analytics; streaming (Flink) for low-latency, continuous processing. Beam provides a programming model that spans both.
-    - Event-time vs. Processing-time: prefer event-time with watermarks where correctness matters (late data); use processing-time for simple, low-latency demos.
+## 1. Time Semantics
 
-2. Fault Tolerance & State
-    - Use checkpointing and durable state backends (RocksDB, filesystem, S3/HDFS) for stateful operators.
-    - Ensure tests for recovery and idempotence after failures.
-    - Implement state TTL and cleanup policies for long-running jobs.
+Choose batch processing (Spark) for bounded, rebuiltable datasets and streaming (Flink) for continuous, low-latency updates. For correctness, prefer event-time with watermarks to handle late-arriving data rather than processing-time which varies with system load.
 
-3. Partitioning & Parallelism
-    - Partition/shard data by logical keys to expose parallelism and minimize skew.
-    - Tune parallelism levels to balance throughput, latency, and resource usage.
-    - Monitor partition distribution and repartition when skew is detected.
+## 2. Fault Tolerance & State
 
-4. IO & Schema
-    - Prefer partitioned, columnar formats (Parquet/ORC) for analytics workloads.
-    - Use durable, transactional sinks for streaming to ensure data consistency.
-    - Validate and evolve schemas carefully with explicit migrations and backward compatibility.
+Use checkpointing with durable state backends (RocksDB, S3) and implement recovery tests—storing state in memory makes failures expensive and limits scalability. Include state TTL cleanup policies for long-running jobs.
 
-5. Idempotence & Exactly-once Semantics
-    - Design sinks and downstream effects to be idempotent under retries.
-    - Use transactional or deduplicating sinks for exactly-once guarantees.
-    - Ensure watermarking and event-time processing for correctness in streaming.
+## 3. Partitioning & Parallelism
 
-6. Backpressure & Flow Control
-    - Use backpressure-friendly sources and runners to handle variable load.
-    - Tune buffer sizes and batching to avoid out-of-memory errors.
-    - Implement rate-limiting for upstream producers in streaming scenarios.
+Partition data by logical keys to expose parallelism and monitor for skew. Repartition dynamically if certain keys are processing much faster or slower than others, as skew is often the root cause of latency problems.
 
-7. Observability & Metrics
-    - Emit structured metrics for throughput, latency, and backlog monitoring.
-    - Add alerts for increasing lag, error rates, and state size growth.
-    - Use distributed tracing for complex pipeline debugging.
+## 4. IO & Schema
 
-8. Runner Portability (Beam) vs. Runtime Features
-    - Use Beam for cross-runner portability when deployment flexibility is key.
-    - Leverage native Flink/Spark APIs for advanced runtime optimizations.
-    - Balance abstraction benefits against performance needs when choosing frameworks.
+Prefer columnar formats (Parquet/ORC) for analytics and use transactional, durable sinks for streaming. Evolve schemas explicitly with versions and migrations rather than loose compatibility.
 
-9. Testing & Reproducibility
-    - Provide deterministic sample datasets and targeted pipeline tests.
-    - Record seed values, environment, and runner configs for reproducible runs.
-    - Automate end-to-end pipeline tests that validate output schema and row counts.
+## 5. Idempotence & Exactly-once Semantics
 
-10. Cost & Resource Efficiency
-    - Optimize partition counts and avoid excessive materialization of intermediate stages.
-    - Profile IO hotspots and tune serialization formats for read/write heavy workloads.
-    - For cloud runs, estimate egress and storage costs and set budget alerts.
+Design sinks to be idempotent under retries and rely on transactional semantics at boundaries. End-to-end exactly-once is hard; build idempotence instead so retries don't cause duplicate side effects.
 
-11. Development Ergonomics
-    - Keep example pipelines minimal and document runner-switch steps.
-    - Extract shared helpers (generators, test harnesses) to reduce duplication.
-    - Provide quick-start templates for new pipeline development.
+## 6. Backpressure & Flow Control
 
-12. Cross-cutting: Security & Data Privacy
-    - Mask or encrypt sensitive fields in transit and at rest.
-    - Limit data retention and implement automatic cleanup of intermediate artifacts.
-    - Document access controls and audit policies for pipeline outputs.
+Use backpressure-friendly sources and runners to prevent downstream overload. If a consumer starts falling behind, the system should slow the source rather than buffering unbounded data.
+
+## 7. Observability & Metrics
+
+Emit structured metrics for throughput, lag, and backlog. Distributed tracing helps debug complex pipelines where data flows through many stages and services.
+
+## 8. Runner Portability vs. Runtime Features
+
+Use Apache Beam for cross-runner portability when deployment flexibility matters, but leverage native APIs (Flink, Spark) when you need advanced optimizations. Portability is valuable until performance becomes critical.
+
+## 9. Testing & Reproducibility
+
+Provide deterministic test datasets and record seed values and runtime configs to make failures reproducible. Automated end-to-end tests that validate output schema and row counts catch silent correctness bugs.
+
+## 10. Cost & Resource Efficiency
+
+Optimize partition counts to avoid excessive task creation and minimize intermediate materializations. Profile IO hotspots and serialize formats for read/write-heavy workloads; estimate cloud egress and storage costs upfront.
+
+## 11. Development Ergonomics
+
+Keep example pipelines minimal with clear steps for switching runners and extract shared helpers to reduce duplication. Good templates and documentation multiply the productivity of new pipeline developers.
+
+## 12. Security & Data Privacy
+
+Mask or encrypt sensitive fields in transit and at rest, limit data retention with automatic cleanup of intermediate artifacts, and document access controls. Privacy is harder to retrofit than to bake in from the start.

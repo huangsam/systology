@@ -7,72 +7,58 @@ categories: ["principles"]
 draft: false
 ---
 
-1. API Design & Contracts
-    - Define clear, versioned API contracts with request/response schemas.
-    - Use REST conventions (GET/POST/PUT/DELETE) or adopt gRPC for performance-critical paths.
-    - Document endpoints with OpenAPI/Swagger or equivalent specifications.
+## 1. API Design & Contracts
 
-2. Error Handling & Retries
-    - Implement retry logic with exponential backoff and jitter for transient failures.
-    - Differentiate between retryable (5xx, timeouts) and non-retryable errors (4xx).
-    - Set maximum retry limits to prevent infinite loops and resource exhaustion.
+Define clear, versioned API contracts with request/response schemas and use REST conventions or gRPC for performance-critical paths. Explicit contracts prevent misunderstandings and enable independent evolution.
 
-3. Rate Limiting & Throttling
-    - Respect external API rate limits with adaptive throttling (e.g., Gmail API).
-    - Implement client-side rate limiting to avoid overwhelming downstream services.
-    - Use token bucket or leaky bucket algorithms for smooth traffic shaping.
+## 2. Error Handling & Retries
 
-4. Timeouts & Deadlines
-    - Set appropriate timeouts for all network calls (connection, read, total).
-    - Propagate deadline contexts across service boundaries for coordinated cancellation.
-    - Use circuit breakers to fail fast when downstream services are unhealthy.
+Implement exponential backoff with jitter for transient failures (5xx, timeouts) but never retry non-retryable errors (4xx). Cap retries to prevent infinite loops and differentiate error types to avoid wasted effort.
 
-5. Connection Management
-    - Use connection pooling to avoid overhead of repeated handshakes.
-    - Implement keep-alive and connection reuse for long-lived clients.
-    - Configure appropriate pool sizes based on expected concurrency and downstream capacity.
+## 3. Rate Limiting & Throttling
 
-6. Service Discovery & Load Balancing
-    - Use service discovery mechanisms (DNS, Consul, Kubernetes services) for dynamic endpoints.
-    - Implement client-side load balancing when appropriate for latency optimization.
-    - Support health-check-based routing to avoid sending traffic to unhealthy instances.
+Respect external rate limits with adaptive throttling and implement client-side rate limiting to avoid overwhelming downstream services. Token bucket algorithms provide smooth traffic shaping.
 
-7. Authentication & Authorization
-    - Use OAuth 2.0 flows for third-party API integration (e.g., Gmail, Dropbox, Google Drive).
-    - Implement token refresh logic and secure credential storage.
-    - Apply principle of least privilege for service-to-service authentication.
+## 4. Timeouts & Deadlines
 
-8. Data Serialization & Formats
-    - Choose appropriate formats: JSON for readability, Protocol Buffers/MessagePack for efficiency.
-    - Define schema evolution strategies for backward/forward compatibility.
-    - Validate inputs at service boundaries to prevent injection and malformed data.
+Set appropriate timeouts (connection, read, total) and propagate deadlines across service boundaries for coordinated cancellation. Timeouts prevent indefinite hangs; deadlines ensure requests fail consistently.
 
-9. Async & Non-blocking IO
-    - Use async IO patterns (async/await, futures, callbacks) for scalability.
-    - Avoid blocking operations in critical paths to maximize throughput.
-    - Implement backpressure handling to prevent memory exhaustion under load.
+## 5. Connection Management
 
-10. SSL/TLS & Security
-    - Enforce HTTPS/TLS for all external communication.
-    - Validate certificates and use certificate pinning where appropriate.
-    - Keep TLS libraries and cipher suites up to date.
+Use connection pooling to avoid repeated handshake overhead and implement keep-alive for reuse. Pool size matters: too small causes queueing, too large wastes resources.
 
-11. Idempotency
-    - Design POST/PUT operations to be idempotent using idempotency keys.
-    - Use unique request IDs to detect and handle duplicate requests.
-    - Ensure retries don't cause unintended side effects.
+## 6. Service Discovery & Load Balancing
 
-12. Monitoring & Debugging
-    - Log request/response metadata (status codes, latencies, payload sizes).
-    - Emit metrics for API call success/failure rates and latency percentiles.
-    - Use distributed tracing to debug cross-service interactions.
+Use service discovery (DNS, Kubernetes services) for dynamic endpoints and implement health-check-based routing. Load balancing reduces tail latency better than round-robin alone.
 
-13. Local Development & Mocking
-    - Provide mock servers or stubs for testing without external dependencies.
-    - Use environment-based configuration to switch between real and mock backends.
-    - Include integration tests that validate contract compliance.
+## 7. Authentication & Authorization
 
-14. Network Resilience
-    - Implement graceful degradation when optional services are unavailable.
-    - Use fallback mechanisms and cached responses for improved reliability.
-    - Test failure scenarios (network partitions, slow/failing services) regularly.
+Use OAuth 2.0 flows for third-party integrations and implement token refresh logic with secure credential storage. Apply least privilege for service-to-service auth.
+
+## 8. Data Serialization & Formats
+
+Choose formats based on tradeoffs: JSON for human debugging, Protocol Buffers for efficiency. Plan for schema evolution with backward/forward compatibility.
+
+## 9. Async & Non-blocking IO
+
+Use async/await patterns for scalability and avoid blocking operations in critical paths. Backpressure handling prevents memory exhaustion under load.
+
+## 10. SSL/TLS & Security
+
+Enforce HTTPS/TLS and validate certificates with pinning where needed. Keep TLS libraries current as new attacks emerge.
+
+## 11. Idempotency
+
+Design operations to be idempotent using idempotency keys and unique request IDs. Retries are only safe if they can't cause side effects.
+
+## 12. Monitoring & Debugging
+
+Log request/response metadata (status codes, latencies) and emit metrics for success/failure rates. Distributed tracing reveals cross-service latency problems.
+
+## 13. Local Development & Mocking
+
+Provide mock servers and environment-based config to switch backends. Integration tests validate contract compliance without external dependencies.
+
+## 14. Network Resilience
+
+Implement graceful degradation when optional services fail and use fallbacks and caching for reliability. Test failure scenarios regularly—surprises belong in labs, not production.

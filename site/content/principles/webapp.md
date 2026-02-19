@@ -7,42 +7,34 @@ categories: ["principles"]
 draft: false
 ---
 
-1. Twelve-Factor-ish App Structure
-    - Separate configuration from code using environment variables.
-    - Treat logs as event streams for centralized collection.
-    - Make applications stateless and horizontally scalable.
+## 1. Twelve-Factor-ish Structure
 
-2. Static & Media Serving
-    - Build static assets during CI with versioning and caching headers.
-    - Serve static files via CDN for global performance.
-    - Store user uploads in durable object storage with access controls.
+Separate configuration from code using environment variables and treat logs as event streams. Stateless applications scale horizontally; stateful designs become bottlenecks.
 
-3. Scaling Web & DB
-    - Use application servers (Gunicorn) with worker processes behind reverse proxies.
-    - Implement database connection pooling to handle concurrent requests.
-    - Design for horizontal scaling with load balancers and session management.
+## 2. Static & Media Serving
 
-4. Background Work
-    - Offload expensive tasks to background workers with job queues.
-    - Implement retry logic and idempotent operations for reliability.
-    - Provide visibility into job status and failure handling.
+Build static assets during CI with versioning and caching headers, serve via CDN for global performance, and store uploads in durable object storage. Serving from disk or memory doesn't scale.
 
-5. CI/CD & Migrations
-    - Automate testing, building, and deployment pipelines.
-    - Run database migrations safely with backups and rollback plans.
-    - Use blue-green or canary deployments for zero-downtime updates.
+## 3. Scaling Web & DB
 
-6. Observability
-    - Collect application metrics (latency, throughput, error rates).
-    - Implement structured logging with correlation IDs.
-    - Set up error tracking and alerting for proactive monitoring.
+Use application servers (Gunicorn) with worker processes behind reverse proxies and implement database connection pooling. Horizontal scaling requires stateless design.
 
-7. Security Basics
-    - Enforce HTTPS/TLS for all communications.
-    - Implement Content Security Policy and secure headers.
-    - Manage secrets securely outside version control.
+## 4. Background Work
 
-8. Local Developer Experience
-    - Provide docker-compose setups for consistent local environments.
-    - Include seed data and fixtures for quick development setup.
-    - Document setup and contribution processes clearly.
+Offload expensive tasks to job queues and implement retry logic with idempotent operations. Synchronous long-running tasks create poor user experience and fail unpredictably.
+
+## 5. CI/CD & Migrations
+
+Automate testing, building, and deployment with safe database migrations and rollback plans. Blue-green or canary deployments reduce blast radius of bad releases.
+
+## 6. Observability
+
+Collect application metrics (latency, throughput, errors) with structured logging and correlation IDs. Observability is the feedback loop for production behavior.
+
+## 7. Security Basics
+
+Enforce HTTPS/TLS, implement Content Security Policy and secure headers, and manage secrets outside version control. Security is easier to build than retrofit.
+
+## 8. Local Developer Experience
+
+Provide docker-compose setups for consistent local environments with seed data and fixtures. Good DX multiplies developer productivity.

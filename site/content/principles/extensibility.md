@@ -7,60 +7,46 @@ categories: ["principles"]
 draft: false
 ---
 
-1. Plugin/Backend Abstraction
-    - Define trait/interface contracts for components with different implementations.
-        - Photohaul migrators for S3/Dropbox/SFTP
-        - Beam runners for Direct/Flink/Dataflow
-    - Ensure each implementation satisfies the interface with comprehensive unit tests.
-    - Avoid leaking implementation details across abstraction boundaries.
+## 1. Plugin/Backend Abstraction
 
-2. Configuration-driven Behavior
-    - Load backend/plugin selection from config files or environment variables.
-    - Support runtime plugin discovery or compile-time feature flags.
-    - Document configuration schema and provide validation for user inputs.
+Define trait/interface contracts for swappable implementations (e.g., different Beam runners, different migration backends) and ensure each implementation is fully tested. This abstraction lets users choose their optimal backend without rewriting application code.
 
-3. Stable APIs & Versioning
-    - Define stable public APIs with semantic versioning for breaking changes.
-    - Deprecate old interfaces gracefully with migration guides.
-    - Use API contracts in integration tests to prevent regressions.
+## 2. Configuration-driven Behavior
 
-4. Composability & Layering
-    - Build systems with clear layers (plumbing vs. porcelain in Grit, transforms vs. runners in Beam).
-    - Allow composing primitives into higher-level operations.
-    - Maintain small, focused components that are easy to test and reuse.
+Load backend selection from configuration or environment variables rather than hardcoding—this allows operators to change behavior at deployment time without rebuilds. Support both compile-time flags and runtime discovery for flexibility.
 
-5. Cross-language Bindings
-    - For performance-critical libraries, expose stable C APIs with language-specific wrappers (pybind11 for Python).
-    - Use FFI best practices: error codes, clear ownership semantics, and documented ABI stability.
-    - Provide idiomatic bindings for each target language rather than direct 1:1 mappings.
+## 3. Stable APIs & Versioning
 
-6. Registry & Discovery Patterns
-    - Use plugin registries or factory patterns for dynamic component loading.
-    - Support both automatic discovery (scanning directories) and explicit registration.
-    - Provide clear error messages for missing or incompatible plugins.
+Maintain stable public APIs with semantic versioning and deprecate old versions with migration guides rather than breaking changes. Stability is a feature that enables downstream teams to update on their schedule, not yours.
 
-7. Isolation & Safety
-    - Isolate plugin failures to prevent cascading errors in the host system.
-    - Use sandboxing, process isolation, or capability-based security for untrusted plugins.
-    - Validate plugin inputs and outputs at boundaries.
+## 4. Composability & Layering
 
-8. Documentation & Examples
-    - Provide clear plugin development guides with example implementations.
-    - Document extension points and interfaces in detail.
-    - Include reference plugins demonstrating common patterns.
+Build systems with clear layers (high-level porcelain on top of low-level plumbing) and allow primitives to be composed into higher-level operations. Small, focused components are easier to test, reuse, and reason about.
 
-9. Testing Extensibility
-    - Write interface compliance tests that all implementations must pass.
-    - Test plugin loading, discovery, and error handling paths.
-    - Provide mock implementations for testing consumers.
+## 5. Cross-language Bindings
 
-10. Language-Specific Extension Patterns
-    - Use Rust traits for compile-time polymorphism and zero-cost abstractions in performance-critical extensions.
-    - Leverage Python's dynamic nature for rapid prototyping of new components with minimal boilerplate.
-    - Apply C++ templates for type-safe generic implementations that compile to efficient machine code.
-    - Consider Java interfaces for runtime plugin loading with strong typing and reflection capabilities.
+Expose performance-critical libraries through stable C APIs with idiomatic wrappers for target languages. Don't force Python users to think in C semantics; wrap at the boundary so each language feels natural.
 
-11. Backward Compatibility Strategy
-    - Design interfaces to be forward-compatible where possible (e.g., optional fields, capability negotiation).
-    - Maintain compatibility matrices for supported plugin/host version combinations.
-    - Use adapter patterns to bridge old and new interface versions.
+## 6. Registry & Discovery Patterns
+
+Use plugin registries or factories for dynamic component loading with support for both automatic discovery and explicit registration. Clear error messages for missing or incompatible plugins save hours of debugging.
+
+## 7. Isolation & Safety
+
+Isolate plugin failures to prevent cascading errors and use sandboxing or process isolation for untrusted plugins. A bad plugin shouldn't crash the host system.
+
+## 8. Documentation & Examples
+
+Provide clear plugin development guides with well-commented reference implementations. Documentation that shows you can write a plugin quickly removes friction for contributors.
+
+## 9. Testing Extensibility
+
+Write interface compliance tests that all implementations must pass to avoid silent incompatibilities. Provide mock implementations for testing consumers of the interface.
+
+## 10. Language-Specific Extension Patterns
+
+Use language features naturally: Rust traits for compile-time polymorphism, Python's dynamic nature for rapid prototyping, C++ templates for generic code. Fighting the language's idioms adds friction.
+
+## 11. Backward Compatibility Strategy
+
+Design interfaces to be forward-compatible where possible (optional fields, capability negotiation) and maintain compatibility matrices. Adapter patterns can bridge major version gaps without keeping forever-old code in the hot path.

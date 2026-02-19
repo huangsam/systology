@@ -7,42 +7,34 @@ categories: ["principles"]
 draft: false
 ---
 
-1. Local-first Default
-    - Prefer on-device or local-only processing for sensitive data to avoid network exposure.
-    - Use local storage and computation; avoid cloud uploads unless explicitly opted-in.
-    - Require explicit user consent and clear warnings for any external API integrations.
+## 1. Local-first Default
 
-2. Data Minimization
-    - Collect and store only the minimal fields required for functionality.
-    - Use derived features or hashes instead of raw sensitive text where possible.
-    - Implement data retention policies with automatic cleanup of unused data.
+Process sensitive data on-device or locally wherever possible, with explicit opt-in for any cloud integrations. Network exposure multiplies risk; local processing is the baseline.
 
-3. Consent & Transparency
-    - Surface clear descriptions of what data is sent to external services.
-    - Retain detailed consent logs for audit and user review.
-    - Provide data flow diagrams and privacy impact assessments in documentation.
+## 2. Data Minimization
 
-4. Token & Credential Safety
-    - Use OS keychains or secure credential stores for token management.
-    - Implement short-lived tokens with automatic rotation and refresh.
-    - Never commit secrets to version control; use environment variables or vaults.
+Collect only required fields and use derived features or hashes instead of raw sensitive text. Retention policies with automatic cleanup prevent creeping data hoarding.
 
-5. Explainability & Audit Logs
-    - Maintain human-readable logs of all agent actions and decisions.
-    - Support reversible changes with dry-run modes and undo capabilities.
-    - Include reasoning traces for automated decisions to build user trust.
+## 3. Consent & Transparency
 
-6. Rate Limits & Backoff
-    - Implement exponential backoff for API calls to handle rate limits gracefully.
-    - Set local resource limits (CPU, memory) to prevent cascade failures.
-    - Monitor and alert on usage patterns that approach limits.
+Surface clear descriptions of what data goes where and maintain detailed consent logs for audit. Consent is only meaningful if users understand what they're consenting to.
 
-7. Testing & Simulation
-    - Create synthetic test environments that mimic real scenarios without real data.
-    - Write unit tests for safety checks and edge case handling.
-    - Use property-based testing for agent behaviors and decision logic.
+## 4. Token & Credential Safety
 
-8. Policy Configurations
-    - Allow user-configurable safety policies like whitelists and blacklists.
-    - Implement max-effect thresholds to limit the scope of automated actions.
-    - Provide presets (conservative, balanced, permissive) for different risk tolerances.
+Use OS keychains for token management with short-lived tokens and automatic rotation. Never commit secrets to version control; use environment variables or vaults.
+
+## 5. Explainability & Audit Logs
+
+Maintain readable logs of all agent actions and decisions including reasoning traces. Users won't trust automation they can't explain or audit.
+
+## 6. Rate Limits & Backoff
+
+Implement exponential backoff for API calls and set local resource limits to prevent cascading failures. Rate limit violations are signs that something broke; alert on them.
+
+## 7. Testing & Simulation
+
+Create synthetic test environments that mimic real scenarios without sensitive data. Test safety checks and use property-based testing for agent behaviors.
+
+## 8. Policy Configurations
+
+Allow user-configurable safety policies with whitelists, blacklists, and max-effect thresholds. Presets (conservative, balanced, permissive) help users calibrate risk tolerance.

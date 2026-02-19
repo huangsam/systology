@@ -7,40 +7,34 @@ categories: ["principles"]
 draft: false
 ---
 
-1. Define Stable Output Schema
-    - Design versioned JSON schemas for consistent downstream consumption.
-    - Include structured fields for frames, detections, and metadata.
-    - Ensure backward compatibility and migration paths for schema changes.
+## 1. Define Stable Output Schema
 
-2. Cross-platform vs. Native
-    - Use cross-platform C++/OpenCV for portable batch processing pipelines.
-    - Leverage native APIs (Vision/Metal) for optimized, low-latency on-device work.
-    - Balance portability needs against performance requirements when choosing stacks.
+Design versioned JSON schemas for consistent downstream consumption with clear field semantics. Schema changes are costly downstream, so explicit versions and migrations matter more than backwards compatibility.
 
-3. Stream vs. Batch Processing
-    - Implement streaming decode for memory-efficient handling of long videos.
-    - Use batch processing with worker queues for large media archives.
-    - Support both modes with configurable buffer sizes and parallelism.
+## 2. Cross-platform vs. Native
 
-4. Metadata Preservation
-    - Preserve original EXIF data, timestamps, and codec information.
-    - Record processing metadata including tool versions and parameters.
-    - Maintain provenance chains for audit and reproducibility.
+Use cross-platform C++/OpenCV for portable batch pipelines but leverage native APIs (Metal, Vision) for optimized on-device work. Portability and performance pull in different directions.
 
-5. Performance Engineering
-    - Profile decode, transform, and inference operations to identify bottlenecks.
-    - Leverage hardware acceleration (GPU, SIMD) and request batching.
-    - Optimize for target hardware constraints and use case latency requirements.
+## 3. Stream vs. Batch Processing
 
-6. Calibration & False Positives
-    - Provide tools for threshold calibration and model fine-tuning.
-    - Include labeled test datasets for validation and benchmarking.
-    - Implement confidence scoring and filtering to reduce false positives.
+Implement streaming decode for long videos to avoid loading entire files into memory, and use batch processing with worker queues for archives. Support both modes with configurable buffers to avoid surprises.
 
-7. Packaging & Distribution
-    - Build Python wheels and native binaries for easy installation.
-    - Provide SPM/Xcode packages for native app integration.
-    - Use CI/CD for automated artifact building and cross-platform testing.
+## 4. Metadata Preservation
 
-8. Privacy & On-device Guarantees
-    - Prefer on-device processing for sensitive media; document data retention and sharing behavior.
+Preserve EXIF data, timestamps, and codec information alongside analysis results and record processing parameters for reproducibility. Metadata enables audit trails and helps trace data provenance.
+
+## 5. Performance Engineering
+
+Profile decode, transform, and inference operations to find actual bottlenecks rather than guessing. Hardware acceleration (GPU, SIMD) and request batching multiply throughput but require measurement to pay off.
+
+## 6. Calibration & False Positives
+
+Provide tools for threshold tuning and include labeled test datasets for validation. False positives multiply costs downstream; invest in calibration to reduce them.
+
+## 7. Packaging & Distribution
+
+Build wheels and native binaries for easy installation and provide CI/CD for cross-platform testing. Installation friction determines adoption; make it trivial.
+
+## 8. Privacy & On-device Processing
+
+Prefer on-device processing for sensitive media with clear documentation of what data leaves the device. Privacy violations are hard to repair; design for it upfront.

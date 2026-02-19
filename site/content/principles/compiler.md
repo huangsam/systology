@@ -7,42 +7,34 @@ categories: ["principles"]
 draft: false
 ---
 
-1. Clean IR Boundaries
-    - Maintain clear separation between AST parsing, semantic analysis, and IR lowering.
-    - Define explicit invariants and contracts between each compilation stage.
-    - Use intermediate representations that are easy to validate and transform.
+## 1. Clean IR Boundaries
 
-2. Deterministic Semantics
-    - Define a well-specified language subset with clear operational semantics.
-    - Reject unsupported language constructs with informative error messages.
-    - Ensure predictable behavior across different input programs and environments.
+Maintain clear separation between parsing, semantic analysis, and IR lowering with explicit invariants between stages. This isolation makes each pass easier to test, understand, and optimize independently.
 
-3. Error Reporting & UX
-    - Provide source-location linked diagnostics with clear explanations.
-    - Include recovery suggestions and examples for common errors.
-    - Design error messages for both compiler developers and end users.
+## 2. Deterministic Semantics
 
-4. Test Harnesses
-    - Use filecheck-style tests to verify IR and codegen outputs.
-    - Maintain regression test suites covering edge cases and error conditions.
-    - Automate testing across different target architectures and optimization levels.
+Define a well-specified language subset with predictable behavior rather than attempting to support every edge case—unsupported constructs should fail fast with clear error messages instead of producing subtle bugs downstream.
 
-5. Incremental Compilation
-    - Cache intermediate artifacts to avoid redundant work on unchanged modules.
-    - Implement dependency tracking for efficient rebuilds during development.
-    - Support partial recompilation for faster iteration cycles.
+## 3. Error Reporting & UX
 
-6. IR Validation
-    - Validate generated IR using existing toolchains and verification passes.
-    - Compare compiled behavior against reference implementations or specifications.
-    - Include runtime checks and assertions for generated code correctness.
+Provide diagnostics linked to source locations with actionable recovery suggestions; error messages are the first impression users have of your compiler, so they should be designed for clarity over terseness.
 
-7. Tooling & Teaching Aids
-    - Provide AST and IR visualizers for debugging and learning.
-    - Include interactive REPLs for exploring language features.
-    - Document the compilation pipeline with examples and tutorials.
+## 4. Test Harnesses
 
-8. Performance vs. Correctness
-    - Prioritize correctness; add optimizations incrementally and protect with tests.
-    - Use benchmarks to validate that optimizations produce measurable improvements.
-    - Document performance-correctness trade-offs and guard invariants with assertions.
+Use filecheck-style output testing (AST dumps, IR) and maintain regression suites across different architectures and optimization levels—this catches silent correctness regressions that benchmarks miss.
+
+## 5. Incremental Compilation
+
+Cache artifacts and track dependencies to avoid recompiling unchanged modules, speeding up the feedback loop during development without sacrificing correctness through overly aggressive caching.
+
+## 6. IR Validation
+
+Validate generated IR against reference implementations and include runtime assertions for critical invariants—this catches code generation bugs early rather than letting them escape to production targets.
+
+## 7. Tooling & Teaching Aids
+
+Provide AST and IR visualizers, interactive REPLs, and documentation with examples—these tools help both compiler developers and users understand the pipeline and debug problems faster.
+
+## 8. Performance vs. Correctness
+
+Prioritize correctness first, then add optimizations incrementally with benchmarks to validate improvements. Document performance-correctness tradeoffs and use assertions to guard invariants.
