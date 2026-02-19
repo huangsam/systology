@@ -7,6 +7,7 @@
   --muted: #6b7280;
   --accent: #2563eb;
   --accent-weak: rgba(37, 99, 235, 0.08);
+  --accent-weak-up: rgba(37, 99, 235, 0.15);
   --border: #e6e9ee;
   --blockquote-bg: #f8fafc;
   --radius: 10px;
@@ -18,6 +19,22 @@
   --color-success: #059669;
   --transition: all 0.18s ease;
   --transition-long: all 0.25s ease;
+  /* Spacing scale */
+  --space-nano: 0.05rem;
+  --space-micro: 0.125rem;
+  --space-xs: 0.25rem;
+  --space-xs-plus: 0.35rem;
+  --space-sm: 0.5rem;
+  --space-sm-plus: 0.625rem;
+  --space-md: 0.75rem;
+  --space-md-plus: 0.875rem;
+  --space-lg: 1rem;
+  --space-lg-plus: 1.1rem;
+  --space-xl: 1.25rem;
+  --space-2xl: 1.5rem;
+  --space-3xl: 2rem;
+  --space-3xl-plus: 2.25rem;
+  --space-4xl: 2.5rem;
 }
 
 /* ==============================
@@ -75,13 +92,13 @@ body {
 }
 
 main.container {
-  padding-top: 1rem;
-  padding-bottom: 1.5rem;
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-2xl);
 }
 
 :focus-visible {
   outline: var(--focus);
-  outline-offset: 3px;
+  outline-offset: var(--space-xs);
 }
 
 /* ==============================
@@ -93,8 +110,8 @@ main.container {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: var(--space-3xl);
+  height: var(--space-3xl);
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -112,8 +129,8 @@ main.container {
 }
 
 .theme-toggle svg {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: var(--space-lg-plus);
+  height: var(--space-lg-plus);
 }
 
 .theme-toggle .icon-sun {
@@ -135,10 +152,10 @@ main.container {
 /* Scroll-to-top button */
 .scroll-top {
   position: fixed;
-  bottom: 2.25rem;
-  right: 1.5rem;
-  width: 2.5rem;
-  height: 2.5rem;
+  bottom: var(--space-3xl-plus);
+  right: var(--space-2xl);
+  width: var(--space-4xl);
+  height: var(--space-4xl);
   border: 1px solid var(--border);
   border-radius: 50%;
   background: var(--bg);
@@ -169,14 +186,14 @@ main.container {
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin: 2rem 0 1rem;
+  gap: var(--space-lg);
+  margin: var(--space-3xl) 0 var(--space-lg);
 }
 
 .pagination a {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1.25rem;
+  padding: var(--space-sm) var(--space-xl);
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--accent);
@@ -204,14 +221,14 @@ main.container {
 }
 
 .card {
-  padding: 1rem;
+  padding: var(--space-lg);
 }
 
 .post-card {
-  padding: 1.25rem;
+  padding: var(--space-xl);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-md);
 }
 
 .post-card h3 {
@@ -238,8 +255,8 @@ main.container {
 .posts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-  margin: 1.5rem 0;
+  gap: var(--space-2xl);
+  margin: var(--space-2xl) 0;
 }
 
 /* ==============================
@@ -248,8 +265,8 @@ main.container {
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.625rem;
+  gap: var(--space-xs);
+  padding: var(--space-xs) 0.625rem;
   background: var(--accent-weak);
   border: 1px solid rgba(37, 99, 235, 0.2);
   border-radius: 6px;
@@ -264,11 +281,11 @@ main.container {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--space-lg);
 }
 
 .title-group > * {
-  margin: 0.5rem 0;
+  margin: var(--space-sm) 0;
 }
 
 .title-group .draft-badge,
@@ -285,7 +302,7 @@ main.container {
 .draft-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.125rem 0.5rem;
+  padding: var(--space-micro) var(--space-sm);
   background: rgba(217, 119, 6, 0.1);
   border: 1px solid rgba(217, 119, 6, 0.3);
   border-radius: 4px;
@@ -304,7 +321,7 @@ main.container {
 .link-pill {
   display: inline-flex;
   align-items: center;
-  padding: 0.125rem 0.5rem;
+  padding: var(--space-micro) var(--space-sm);
   background: var(--accent-weak);
   border: 1px solid rgba(37, 99, 235, 0.2);
   border-radius: 4px;
@@ -325,8 +342,8 @@ main.container {
 .term-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.875rem;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md-plus);
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -349,7 +366,7 @@ main.container {
   font-size: 0.8rem;
   background: var(--bg);
   color: var(--muted);
-  padding: 0.125rem 0.5rem;
+  padding: var(--space-micro) var(--space-sm);
   border-radius: 6px;
   border: 1px solid var(--border);
   transition: var(--transition);
@@ -363,13 +380,13 @@ main.container {
 .terms-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin: 2rem 0;
+  gap: var(--space-md);
+  margin: var(--space-3xl) 0;
 }
 
 .label-tag,
 .label-cat {
-  padding: 0.05rem 0.35rem;
+  padding: var(--space-nano) var(--space-xs-plus);
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 600;
@@ -416,11 +433,11 @@ main.container {
 
 .prose ul,
 .prose ol {
-  margin: 0.75rem 0;
+  margin: var(--space-md) 0;
 }
 
 .prose li {
-  padding-left: 0.25rem;
+  padding-left: var(--space-xs);
 }
 
 .prose a {
@@ -434,13 +451,13 @@ main.container {
   height: auto;
   border-radius: 8px;
   display: block;
-  margin: 0.75rem 0;
+  margin: var(--space-md) 0;
 }
 
 /* Code (inline) */
 code {
   background: rgba(37, 99, 235, 0.08);
-  padding: 0.15rem 0.35rem;
+  padding: 0.15rem var(--space-xs-plus);
   border-radius: 6px;
   border: 1px solid rgba(37, 99, 235, 0.15);
   font-size: 0.94em;
@@ -454,13 +471,13 @@ pre {
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New",
     monospace;
-  padding: 1rem;
+  padding: var(--space-lg);
   border-radius: var(--radius);
   background: var(--bg);
   border: 1px solid var(--border);
   color: var(--text);
   overflow: auto;
-  margin: 1rem 0;
+  margin: var(--space-lg) 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
@@ -484,8 +501,8 @@ pre code {
 
 /* Blockquote */
 blockquote {
-  margin: 1rem 0;
-  padding: 0.6rem 1rem;
+  margin: var(--space-lg) 0;
+  padding: 0.6rem var(--space-lg);
   border-left: 4px solid var(--border);
   background: var(--blockquote-bg);
   color: var(--muted);
@@ -496,13 +513,13 @@ blockquote {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1rem 0;
+  margin: var(--space-lg) 0;
   font-size: 0.95rem;
 }
 
 th,
 td {
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-sm) 0.75rem;
   border-bottom: 1px solid var(--border);
   text-align: left;
 }
@@ -524,9 +541,9 @@ th {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  gap: var(--space-lg);
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-lg);
 }
 
 .brand {
@@ -536,7 +553,7 @@ th {
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .logo-icon {
@@ -554,7 +571,7 @@ th {
   color: var(--muted);
   text-decoration: none;
   font-size: 0.95rem;
-  padding: 0.25rem 0.375rem;
+  padding: var(--space-xs) 0.375rem;
   border-radius: 6px;
   transition: var(--transition);
 }
@@ -573,14 +590,14 @@ th {
   border-top: 1px solid var(--border);
   color: var(--muted);
   font-size: 0.95rem;
-  padding: 1rem 0 1.5rem;
+  padding: var(--space-lg) 0 var(--space-2xl);
 }
 
 .footer-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-lg);
 }
 
 .footer-inner .copyright {
@@ -589,13 +606,13 @@ th {
 
 .social-links {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   align-items: center;
 }
 
 .social-links a {
   color: var(--muted);
-  padding: 0.25rem 0.375rem;
+  padding: var(--space-xs) 0.375rem;
   border-radius: 6px;
   transition: var(--transition);
   display: flex;
@@ -614,7 +631,7 @@ th {
    Article Header
    ============================== */
 article > header {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-lg);
 }
 
 article > header h2 {
@@ -622,15 +639,15 @@ article > header h2 {
 }
 
 article > header div.tags {
-  margin: 0.5rem 0;
+  margin: var(--space-sm) 0;
 }
 
 div.tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: var(--space-md);
   align-items: center;
-  margin: 0.75rem 0;
+  margin: var(--space-md) 0;
 }
 
 div.tags > span {
@@ -646,8 +663,8 @@ span.muted {
    Feature-Specific: Mermaid
    ============================== */
 .mermaid {
-  margin: 1.5rem 0;
-  padding: 1rem;
+  margin: var(--space-2xl) 0;
+  padding: var(--space-lg);
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -694,8 +711,8 @@ span.muted {
    Feature-Specific: Related Posts
    ============================== */
 .related {
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
+  margin-top: var(--space-4xl);
+  padding-top: var(--space-2xl);
   border-top: 1px solid var(--border);
 }
 
@@ -713,11 +730,11 @@ span.muted {
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .related li {
-  padding: 0.5rem 0;
+  padding: var(--space-sm) 0;
 }
 
 .related a {
@@ -737,8 +754,8 @@ span.muted {
 
 .related-type {
   display: inline-flex;
-  gap: 0.5rem;
-  margin-left: 0.5rem;
+  gap: var(--space-sm);
+  margin-left: var(--space-sm);
   vertical-align: middle;
 }
 
@@ -748,7 +765,7 @@ span.muted {
 .listing {
   list-style: none;
   padding: 0;
-  margin: 1.5rem 0;
+  margin: var(--space-2xl) 0;
 }
 
 .listing li {
@@ -787,28 +804,28 @@ span.muted {
 /* Small screens (max 640px) */
 @media (max-width: 640px) {
   :root {
-    --gutter: 0.75rem;
+    --gutter: var(--space-md);
   }
 
   .brand {
-    font-size: 1rem;
+    font-size: var(--space-lg);
   }
 
   .logo-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: var(--space-xl);
+    height: var(--space-xl);
   }
 
   main.container {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
   }
 }
 
 /* Narrow widths (641px–700px) */
 @media (min-width: 641px) and (max-width: 700px) {
   :root {
-    --gutter: 1.25rem;
+    --gutter: var(--space-xl);
   }
 }
 
