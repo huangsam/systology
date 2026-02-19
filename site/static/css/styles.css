@@ -342,7 +342,7 @@ main.container {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  text-decoration: none !important;
+  text-decoration: none;
   color: var(--text);
   font-size: 0.95rem;
   font-weight: 500;
@@ -478,10 +478,10 @@ pre {
 }
 
 pre code {
-  background: transparent !important;
+  background: transparent;
   padding: 0;
-  color: inherit !important;
-  border: none !important;
+  color: inherit;
+  border: none;
 }
 
 [data-theme="dark"] pre {
@@ -849,7 +849,7 @@ span.muted {
 /* Medium screens (max 900px) */
 @media (max-width: 900px) {
   .scroll-top {
-    opacity: 0 !important;
-    pointer-events: none !important;
+    opacity: 0;
+    pointer-events: none;
   }
 }
