@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Create an asynchronous job queue system to handle resource-intensive tasks like video encoding or data processing, ensuring reliable execution with retries and idempotency. The system must scale to manage thousands of jobs concurrently, provide visibility into job status, and maintain high availability without impacting the main application performance.
 
@@ -28,7 +28,7 @@ Create an asynchronous job queue system to handle resource-intensive tasks like 
     - Peak throughput: 10 jobs/sec
     - Retention: 30 days
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph LR
@@ -40,7 +40,7 @@ graph LR
     DB --> Dashboard
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -59,7 +59,7 @@ graph LR
 - Redis Streams: low-latency + simple, but requires careful persistence/ops for large retention. Kafka/SQS: better for guaranteed delivery and reprocessing at scale but adds operational complexity.
 - Inline payloads: simpler but increases queue size and risk of message loss; object store references increase system complexity but are more robust for large files.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 99% of jobs start processing within 5 minutes of enqueue.

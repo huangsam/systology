@@ -17,29 +17,29 @@ draft: false
 
 **Solution (high-level):** Harden the deployment with containerized builds, asset pipelines, a managed database (or HA Postgres), background worker processes for async work, and observability (metrics, logging, errors) to support production traffic.
 
-## 1. The Local Implementation
+## The Local Implementation
 
 - **Current Logic:** Standard Django app with models for places and users, views for list/detail, demo fixtures for local testing, and management commands for setup. Development flow uses `virtualenv` or `docker-compose` for local stacks.
 - **Bottleneck:** Single-process dev server, static file handling in production, potential lack of connection pooling and background job processing for heavier workloads (image processing, notifications).
 
-## 2. Scaling Strategy
+## Scaling Strategy
 
 - **Vertical vs. Horizontal:** Use Gunicorn with multiple workers behind a reverse proxy (nginx), scale horizontally with multiple application containers behind a load balancer. Use connection pooling (pgbouncer) for DB scale.
 - **State Management:** Store uploads in object storage (S3 or S3-compatible), use Redis for cache/session store and as a broker for background jobs (RQ/Celery). Migrate demo fixtures to seed scripts for reproducible environments.
 
-## 3. Comparison to Industry Standards
+## Comparison to Industry Standards
 
 - **My Project:** Monolithic Django app focused on rapid dev and UX demos.
 - **Industry:** Modern production web apps separate concerns: API layer, static CDN, background workers, autoscaling, and managed DB services.
 - **Gap Analysis:** To be production-ready, add CI/CD pipelines, health checks, rolling deploys, and infra-as-code for reproducible environments.
 
-## 4. Experiments & Metrics
+## Experiments & Metrics
 
 - **Throughput & latency:** requests/sec under realistic load (place listing, search, image upload).
 - **Background job lag:** time-to-complete for async tasks under load.
 - **Error rates & SLOs:** HTTP 5xx rates and target SLOs for core endpoints.
 
-## 5. Risks & Mitigations
+## Risks & Mitigations
 
 - **Static/media serving issues:** integrate proper build and CDN-backed serving; ensure collectstatic is run in builds.
 - **Data loss/migrations:** use migrations with backups and run schema changes in safe, backward-compatible steps.

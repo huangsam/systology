@@ -7,34 +7,34 @@ categories: ["principles"]
 draft: false
 ---
 
-## 1. Clean IR Boundaries
+## Clean IR Boundaries
 
 Maintain clear separation between parsing, semantic analysis, and IR lowering with explicit invariants between stages. This isolation makes each pass easier to test, understand, and optimize independently.
 
-## 2. Deterministic Semantics
+## Deterministic Semantics
 
 Define a well-specified language subset with predictable behavior rather than attempting to support every edge case—unsupported constructs should fail fast with clear error messages instead of producing subtle bugs downstream.
 
-## 3. Error Reporting & UX
+## Error Reporting & UX
 
 Provide diagnostics linked to source locations with actionable recovery suggestions; error messages are the first impression users have of your compiler, so they should be designed for clarity over terseness.
 
-## 4. Test Harnesses
+## Test Harnesses
 
 Use filecheck-style output testing (AST dumps, IR) and maintain regression suites across different architectures and optimization levels—this catches silent correctness regressions that benchmarks miss.
 
-## 5. Incremental Compilation
+## Incremental Compilation
 
 Cache artifacts and track dependencies to avoid recompiling unchanged modules, speeding up the feedback loop during development without sacrificing correctness through overly aggressive caching.
 
-## 6. IR Validation
+## IR Validation
 
 Validate generated IR against reference implementations and include runtime assertions for critical invariants—this catches code generation bugs early rather than letting them escape to production targets.
 
-## 7. Tooling & Teaching Aids
+## Tooling & Teaching Aids
 
 Provide AST and IR visualizers, interactive REPLs, and documentation with examples—these tools help both compiler developers and users understand the pipeline and debug problems faster.
 
-## 8. Performance vs. Correctness
+## Performance vs. Correctness
 
 Prioritize correctness first, then add optimizations incrementally with benchmarks to validate improvements. Document performance-correctness tradeoffs and use assertions to guard invariants.

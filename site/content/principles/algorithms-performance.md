@@ -7,30 +7,30 @@ categories: ["principles"]
 draft: false
 ---
 
-## 1. Algorithmic Clarity
+## Algorithmic Clarity
 
 Choose algorithms that are well-understood and documented, with clear complexity analysis—correctness and maintainability often outweigh marginal performance gains. Study canonical implementations (dynamic programming, graphs, backtracking) to build deep patterns into your mental model.
 
-## 2. Micro-benchmarking
+## Micro-benchmarking
 
 Add targeted benchmarks for hot paths and track them in CI to catch regressions early. Profile various input sizes to understand where bottlenecks actually live rather than optimizing hunches.
 
-## 3. Memory & Allocation Discipline
+## Memory & Allocation Discipline
 
 Minimize allocations in tight loops through buffer reuse and prefer stack allocation for speed-critical paths. Arena allocators or pools are valuable for repeated small allocations, but the upfront cost isn't worth it without evidence.
 
-## 4. Deterministic Generators
+## Deterministic Generators
 
 Record and version random seeds to make debug traces reproducible and allow investigation of edge cases. This discipline turns unlucky failures into debuggable scenarios that you can revisit.
 
-## 5. Explainability & Debug Traces
+## Explainability & Debug Traces
 
 Emit human-readable traces that link each step to algorithm decisions and reasoning—this bridges the gap between "what happened" and "why it happened," critical for both debugging and learning.
 
-## 6. Profiling-driven Optimization
+## Profiling-driven Optimization
 
 Use profiler data to avoid optimizing the wrong thing; maintain comprehensive tests to ensure changes actually improve the metric you care about without breaking correctness.
 
-## 7. Parallelism for Bulk Work
+## Parallelism for Bulk Work
 
 Use worker pools and data partitioning to scale bulk tasks horizontally, but keep per-worker state management simple and deterministic to stay maintainable.

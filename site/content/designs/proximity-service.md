@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Design a service that allows users to search for businesses or points of interest (POIs) based on their current geographic location (latitude/longitude). The system must support high-frequency updates (for moving POIs) and extremely low-latency read requests for static business data.
 
@@ -28,7 +28,7 @@ Design a service that allows users to search for businesses or points of interes
     - Peak throughput: 50k searches/sec
     - Retention: current POI state; 30-day update history
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph TD
@@ -42,7 +42,7 @@ graph TD
     Ingest --> Spatial
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -61,7 +61,7 @@ graph TD
 - Caching full result sets vs. caching raw POI data: caching pre-built result pages per cell is faster for repeated queries but wastes memory on low-traffic cells and makes personalised ranking harder; caching individual POI records is more flexible but requires assembling and ranking results on every request.
 - Precision vs. recall in expanding ring search: starting at high precision returns fewer, more relevant results quickly but may miss nearby POIs across cell boundaries; starting at low precision guarantees completeness but returns more data that must be filtered and sorted.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 99.9% of search queries return results within 200 ms.

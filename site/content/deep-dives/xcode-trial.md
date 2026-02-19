@@ -17,29 +17,29 @@ draft: false
 
 **Solution (high-level):** Build a modular pipeline that stages CPU/GPU-bound tasks, uses native acceleration (Metal/Core Image), and emits stable JSON outputs for downstream ML pipelines.
 
-## 1. The Local Implementation
+## The Local Implementation
 
 - **Current Logic:** Swift Package Manager project that runs a pipeline: decode frames, run Vision face/scene detection, Core Image transforms, and audio analysis; outputs JSON summary per video.
 - **Bottleneck:** Frame decoding and Vision pipeline latency; coordinating asynchronous callbacks while preserving ordering and throughput.
 
-## 2. Scaling Strategy
+## Scaling Strategy
 
 - **Vertical vs. Horizontal:** Optimize for Apple Silicon (parallelize across cores/Metal), and for larger workloads run job-level parallelism across machines or macOS CI runners.
 - **State Management:** Per-video checkpoints and chunked processing; store intermediate artefacts for reproducibility and debugging.
 
-## 3. Comparison to Industry Standards
+## Comparison to Industry Standards
 
 - **My Project:** Native, high-performance macOS analysis focusing on multimodal extraction and JSON schema outputs.
 - **Industry:** Cloud video analysis offers managed scaling but lacks local Apple-optimizations; native tools can hit platform-specific performance sweet spots.
 - **Gap Analysis:** For production, add SPM artifact builds, CI on macOS runners, and schema versioning for downstream ML ingestion.
 
-## 4. Experiments & Metrics
+## Experiments & Metrics
 
 - **Throughput:** seconds per minute of video at different concurrency levels.
 - **Accuracy:** face/scene detection precision on labeled clips.
 - **Resource:** CPU/GPU utilization and memory footprints on Apple Silicon.
 
-## 5. Risks & Mitigations
+## Risks & Mitigations
 
 - **API drift across macOS versions:** pin minimum macOS/Xcode versions and add CI matrix jobs.
 - **Memory pressure on long videos:** stream frames and limit in-memory buffers.

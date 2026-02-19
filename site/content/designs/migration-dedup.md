@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Create a system to migrate large volumes of data between systems while performing deduplication to eliminate redundant entries, ensuring data integrity and efficiency. The process must be idempotent, support rollback capabilities, and complete within specified timeframes, handling potential failures gracefully in a scalable manner.
 
@@ -29,7 +29,7 @@ Create a system to migrate large volumes of data between systems while performin
     - Throughput: 100–500 MB/sec
     - Retention: 7-day retention for reconciliation
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph LR
@@ -43,7 +43,7 @@ graph LR
     Reconciler --> Target
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -61,7 +61,7 @@ graph LR
 - Full reconciliation vs. sampling: full reconciliation guarantees correctness but is expensive (reads the entire dataset twice); sampling-based reconciliation is faster but can miss localised corruption.
 - Snapshot rollback vs. record-level rollback: snapshots are simple and atomic but require enough storage headroom for a full copy; record-level rollback is space-efficient but more complex and slower to execute.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: Complete 10 TB migration within 24 hours.

@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Develop a global media serving system that efficiently delivers static and dynamic assets worldwide using a content delivery network, while handling background processing for user uploads. The architecture must optimize for low latency, high availability, and cost-effectiveness, ensuring secure and reliable access to media content across diverse geographic regions.
 
@@ -28,7 +28,7 @@ Develop a global media serving system that efficiently delivers static and dynam
     - Peak throughput: 1M requests/sec
     - Retention: indefinite (hot); archive to cold storage after 1y
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph LR
@@ -41,7 +41,7 @@ graph LR
     Transcoder --> CDN
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -58,7 +58,7 @@ graph LR
 - On-the-fly transforms: flexible and storage-efficient but CPU-intensive at the edge and risk latency spikes; pre-generating variants eliminates edge compute cost but increases storage and transcoding time.
 - Multi-CDN: improves resilience and allows vendor negotiation but increases operational complexity and makes cache invalidation harder to coordinate across providers.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 99.99% of media requests served successfully (2xx/3xx) from edge or origin.

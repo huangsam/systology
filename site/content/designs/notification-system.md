@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Build a central notification system that allows various internal services to send messages across multiple channels (Push, SMS, Email). The system must handle massive spikes (e.g., flash sales, breaking news) while ensuring critical alerts are prioritized over marketing messages.
 
@@ -29,7 +29,7 @@ Build a central notification system that allows various internal services to sen
     - Peak throughput: 100k notifications/min
     - Retention: 30 days delivery logs; 90 days metrics
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph TD
@@ -47,7 +47,7 @@ graph TD
     Dispatch --> Tracker[(Tracker)]
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -66,7 +66,7 @@ graph TD
 - Push-based delivery vs. pull-based (inbox model): push is lower latency for real-time engagement but requires managing device tokens and handling offline users; an inbox/pull model is more reliable for guaranteed delivery but adds read latency and a polling or WebSocket infrastructure.
 - Inline template rendering vs. pre-rendered messages: inline rendering allows last-minute personalisation and A/B testing, but adds latency in the dispatch path; pre-rendering at enqueue time is faster but locks in content and makes template corrections harder after enqueue.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 99% of high-priority notifications delivered to the external provider within 5 seconds of API receipt.

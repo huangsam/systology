@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Implement a distributed caching layer for a version control system to cache frequently accessed objects and hashes, reducing I/O operations and improving performance. The cache must handle high concurrency, provide thread-safe access, and dynamically manage memory usage while maintaining low latency for read-heavy workloads.
 
@@ -28,7 +28,7 @@ Implement a distributed caching layer for a version control system to cache freq
     - Peak throughput: 100k ops/sec
     - Retention: dynamic LRU eviction
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph LR
@@ -39,7 +39,7 @@ graph LR
     Cache -.->|replication| CacheReplica[Replica]
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -57,7 +57,7 @@ graph LR
 - LRU vs. LFU: LRU is simple and works well for recency-driven access patterns; LFU retains long-term popular objects better but is more complex to implement and slower to adapt to shifting workloads.
 - Compression: reduces memory usage by 2–4× but adds CPU overhead per request; on cache-heavy workloads the tradeoff is almost always worthwhile.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: Cache hit ratio ≥ 95% for object lookups.

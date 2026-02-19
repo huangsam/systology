@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Design a ticketing or flash sale system capable of handling millions of users simultaneously trying to purchase a limited set of items (e.g., concert tickets). The system must prevent over-selling, ensure fair access (e.g., virtual waiting rooms), and maintain stable performance during extreme traffic bursts.
 
@@ -29,7 +29,7 @@ Design a ticketing or flash sale system capable of handling millions of users si
     - Peak throughput: 1M requests/sec
     - Retention: 30 days post-event
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph TD
@@ -43,7 +43,7 @@ graph TD
     Payment --> Orders
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -62,7 +62,7 @@ graph TD
 - Virtual waiting room vs. direct admission with rate limiting: the waiting room provides a fairer user experience and predictable backend load, but adds user-perceived latency and engineering complexity; pure rate limiting is simpler but leads to random request rejection under load.
 - Short reservation TTL vs. long TTL: shorter TTLs (5 min) recycle unsold inventory faster, improving sell-through rate, but risk timing out legitimate slow payers; longer TTLs (15 min) are user-friendlier but can hold inventory hostage if many users abandon.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 99.9% of admitted users can complete a reservation within 500 ms.

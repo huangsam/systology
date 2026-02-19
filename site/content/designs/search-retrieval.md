@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Design a high-performance search and retrieval engine to index and query large volumes of documents or media, providing fast and relevant results. The system must handle massive query loads, ensure eventual consistency for updates, and maintain sub-millisecond response times while supporting advanced ranking and filtering features.
 
@@ -29,7 +29,7 @@ Design a high-performance search and retrieval engine to index and query large v
     - Peak throughput: 1M queries/sec
     - Retention: indefinite search index; document versioning
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph TD
@@ -48,7 +48,7 @@ graph TD
     Indexer -.->|updates| ShardN
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -66,7 +66,7 @@ graph TD
 - Near-real-time vs. batch indexing: NRT indexing (1–5 s refresh) satisfies most use cases but adds memory pressure and compaction overhead; batch indexing (minutes/hours) is simpler but delays document visibility.
 - Scatter-gather vs. single-node: scatter-gather scales horizontally and handles larger corpora but adds network hops and merge overhead; a single large node is simpler when the index fits in memory.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: P99 query latency < 50 ms for keyword search; < 150 ms for hybrid (keyword + vector) search.

@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Design a robust payment system that processes customer transactions via third-party gateways (e.g., Stripe, PayPal) while maintaining a high-fidelity internal ledger. The system must handle millions of transactions daily, ensuring that no customer is double-charged and every payment is accurately reconciled.
 
@@ -29,7 +29,7 @@ Design a robust payment system that processes customer transactions via third-pa
     - Peak throughput: 100 TPS
     - Retention: 7-year ledger; 30 days hot metrics
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph TD
@@ -45,7 +45,7 @@ graph TD
     Recon --> Ledger
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -64,7 +64,7 @@ graph TD
 - Append-only ledger vs. mutable transaction table: append-only provides a tamper-evident audit trail and simplifies reconciliation, but makes corrections more verbose (compensating entries); a mutable table is simpler for small-scale systems but risks silent data loss and complicates auditing.
 - Single vs. multi-gateway: a single gateway is operationally simpler, but creates vendor lock-in and a single point of failure; multi-gateway improves resilience and negotiation leverage but adds routing logic, reconciliation complexity, and multiple provider integrations to maintain.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 99.99% of payment API requests return a response (success or well-defined error) within 2 seconds.

@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Design a scalable system to ingest and process high-volume user event streams from a web application in real-time, enabling immediate analytics and dashboards for metrics like engagement. The pipeline must handle variable loads, ensure data accuracy despite late arrivals, and support fault-tolerant operations to maintain continuous availability.
 
@@ -29,7 +29,7 @@ Design a scalable system to ingest and process high-volume user event streams fr
     - Peak throughput: 100k events/sec
     - Retention: 30 days hot; 1y archive
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph LR
@@ -42,7 +42,7 @@ graph LR
     Kafka -.->|archive| Lake
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -60,7 +60,7 @@ graph LR
 - Event-time vs. processing-time: event-time windowing produces accurate aggregations but requires watermark management and handling late data; processing-time is simpler but can produce inconsistent results under lag or reprocessing.
 - OLAP store choice: ClickHouse offers excellent single-node performance and simpler ops; Druid excels at high-concurrency sub-second queries but is more complex to operate; managed services (BigQuery) eliminate ops burden but limit tuning control and may increase cost.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: P99 end-to-end event processing latency (collector to OLAP) < 500 ms.

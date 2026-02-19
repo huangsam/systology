@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Build a robust ETL pipeline that extracts raw data from diverse sources, transforms it into machine learning features through deterministic and reproducible processes, and loads the features into a store for model training. The system must scale to large datasets, ensure idempotent operations for reliability, and run efficiently on modest hardware while maintaining strict reproducibility standards.
 
@@ -28,7 +28,7 @@ Build a robust ETL pipeline that extracts raw data from diverse sources, transfo
     - Throughput: 1 TB/day
     - Retention: 1y hot feature store; archive older features
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph LR
@@ -42,7 +42,7 @@ graph LR
     Transform -.->|lineage| Catalog
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -60,7 +60,7 @@ graph LR
 - Centralised orchestrator vs. event-driven: an orchestrator provides a single pane of glass for scheduling and lineage but becomes a single point of failure; event-driven execution is more resilient but harder to reason about dependency ordering.
 - Schema registry: enforces contracts and catches breaking changes early but adds a dependency and requires team discipline to register schemas before writing producers.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 99% of daily batch pipelines complete within the 2-hour SLA window.

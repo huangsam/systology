@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Design an infrastructure to serve machine learning models for real-time inference, supporting high throughput and low latency while providing resource-aware fallbacks. The system must ensure deterministic results, handle model versioning, and scale horizontally to accommodate varying loads without compromising availability or performance.
 
@@ -28,7 +28,7 @@ Design an infrastructure to serve machine learning models for real-time inferenc
     - Peak throughput: 10k inferences/sec
     - Retention: last 10 model versions + 30-day metrics
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph TD
@@ -53,7 +53,7 @@ graph TD
     ServerB -.->|on error| Fallback
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -71,7 +71,7 @@ graph TD
 - GPU sharing vs. isolation: sharing GPUs across models maximizes utilization but introduces noisy-neighbour effects; dedicated GPUs guarantee latency but leave capacity idle during low traffic.
 - Rich serving framework vs. custom server: frameworks like Triton provide out-of-the-box batching, multi-model, and multi-backend support but add abstraction layers; custom servers offer maximum control but require significant engineering investment.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: P99 inference latency < 200 ms for all production models.

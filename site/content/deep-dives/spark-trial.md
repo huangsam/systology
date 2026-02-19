@@ -17,29 +17,29 @@ draft: false
 
 **Solution (high-level):** Use Spark DataFrame best practices: schema-on-read, partition pruning, parquet predicate pushdown, and deterministic aggregation pipelines with tests and CI-friendly samples.
 
-## 1. The Local Implementation
+## The Local Implementation
 
 - **Current Logic:** Downloads parquet-formatted trip data, loads into Spark, normalizes schemas across years, runs validations, and computes aggregated yearly and quarterly metrics.
 - **Bottleneck:** Large IO volume and schema drift across years; local runs are limited by available memory and CPU.
 
-## 2. Scaling Strategy
+## Scaling Strategy
 
 - **Vertical vs. Horizontal:** Move to cluster mode with sufficient executors for parallelism; optimize partitioning strategy and caching for repeated transforms.
 - **State Management:** Use checkpointing and write intermediate artifacts to durable storage (S3/HDFS) to avoid recomputation.
 
-## 3. Comparison to Industry Standards
+## Comparison to Industry Standards
 
 - **My Project:** Practical ETL example focused on reproducible analytics for public datasets.
 - **Industry:** Production ETL adds orchestration (Airflow/Argo), data cataloging, monitoring, and schema evolution tooling.
 
-## 4. Experiments & Metrics
+## Experiments & Metrics
 
 - **Job runtime:** end-to-end processing time per year and per quarter.
 - **Resource efficiency:** executor memory/CPU utilization and optimal partition counts.
 - **Data quality validation:** row count, null rate, and schema conformance checks per ingestion batch; flag regressions against baselines.
 - **Partition strategy comparison:** measure read/write throughput and shuffle volume across different partition key choices (time-based vs. hash-based).
 
-## 5. Risks & Mitigations
+## Risks & Mitigations
 
 - **Schema drift:** implement schema merging strategies and robust validation with automatic alerting on unexpected column changes.
 - **Data skew:** monitor partition sizes and repartition when a small number of keys dominate; use salted keys or custom partitioners for known-skewed columns.

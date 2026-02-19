@@ -15,22 +15,22 @@ draft: true
 
 **Solution (high-level):** Summarize the approach taken to address the problem. What are the main components or strategies used?
 
-## 1. The Local Implementation
+## The Local Implementation
 
 Describe the current implementation or state of the system being analyzed. What are the key components, workflows, or algorithms involved? Highlight any bottlenecks, limitations, or areas for improvement.
 
-## 2. Scaling Strategy
+## Scaling Strategy
 
 Describe the approach taken to scale the system or solution. What strategies, patterns, or techniques were employed to handle increased load, complexity, or data volume?
 
-## 3. Comparison to Industry Standards
+## Comparison to Industry Standards
 
 Compare the approach taken in this deep dive to industry standards or best practices. What are the similarities and differences? What are the advantages and disadvantages of the chosen approach?
 
-## 4. Experiments & Metrics
+## Experiments & Metrics
 
 Describe any experiments conducted to evaluate the solution. What metrics were used to measure success? What were the results and insights gained from these experiments?
 
-## 5. Risks & Mitigations
+## Risks & Mitigations
 
 Identify potential risks or challenges associated with the solution. What are the mitigation strategies or contingency plans in place to address these risks?

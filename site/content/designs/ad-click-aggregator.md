@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Design a system to aggregate millions of ad click events in real-time to provide up-to-the-minute reporting for advertisers. The system must handle high-volume streams, filter out fraudulent or duplicate clicks, and ensure that click counts are accurate for billing purposes.
 
@@ -28,7 +28,7 @@ Design a system to aggregate millions of ad click events in real-time to provide
     - Peak throughput: 200k events/sec
     - Retention: 90 days hot, 1y archive
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph LR
@@ -42,7 +42,7 @@ graph LR
     Fraud -.->|flag| Dedup
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -61,7 +61,7 @@ graph LR
 - Event-time tumbling windows vs. sliding windows: tumbling windows are simpler and cheaper to maintain state for, but provide coarser temporal resolution; sliding windows give smoother reporting curves at the cost of higher state and CPU overhead.
 - Real-time ML fraud detection vs. batch scoring: real-time catches fraud before it enters aggregates but adds processing latency and model-serving infrastructure; batch scoring is simpler but means fraudulent clicks inflate reports until the next correction run.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 99% of click events are reflected in query results within 1 minute of event time.

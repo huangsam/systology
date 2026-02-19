@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: false
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Build a platform for federated learning that trains models across distributed devices without sharing raw data, incorporating privacy-preserving techniques. The system must scale to millions of devices, ensure secure aggregation of updates, and maintain model accuracy while adhering to privacy constraints and handling communication latencies.
 
@@ -28,7 +28,7 @@ Build a platform for federated learning that trains models across distributed de
     - Update rate: 10–100 updates/sec per node
     - Retention: 100 training rounds of checkpoints
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 {{< mermaid >}}
 graph TD
@@ -43,7 +43,7 @@ graph TD
     GlobalModel -->|averaged params| Coordinator
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 ### Deep Dive
 
@@ -61,7 +61,7 @@ graph TD
 - Differential privacy vs. model accuracy: stronger privacy guarantees (lower ε) inject more noise and reduce model accuracy; teams must choose a privacy-accuracy operating point based on regulatory requirements and data sensitivity.
 - Client sampling breadth vs. round speed: sampling more clients per round improves update quality but increases round latency and bandwidth; small samples are faster but noisier.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 ### SLIs / SLOs
 - SLO: 95% of FL rounds complete within 1 hour.

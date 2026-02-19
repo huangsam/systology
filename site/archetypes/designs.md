@@ -7,7 +7,7 @@ categories: ["designs"]
 draft: true
 ---
 
-## 1. Problem Statement & Constraints
+## Problem Statement & Constraints
 
 Write a concise problem statement describing the core business or technical problem you're solving.
 
@@ -27,7 +27,7 @@ Write a concise problem statement describing the core business or technical prob
   - Data retention
 - **Other constraints:** Budget, data residency, compliance, tech stack preferences.
 
-## 2. High-Level Architecture
+## High-Level Architecture
 
 Include a diagram and brief component responsibilities.
 
@@ -38,10 +38,10 @@ graph LR
     Worker --> Store[(Data store)]
 {{< /mermaid >}}
 
-## 3. Deep Dive & Trade-offs
+## Deep Dive & Trade-offs
 
 Describe key components, data model, and interfaces.
 
-## 4. Operational Excellence
+## Operational Excellence
 
 List SLIs/SLOs, monitoring/alerting strategy, and any operational considerations (e.g., canary releases, rollbacks, etc.).

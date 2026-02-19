@@ -17,12 +17,12 @@ draft: false
 
 **Solution (high-level):** Keep processing local-first and privacy-preserving while improving robustness: resumable ingestion, durable processing state, cached semantic features, and staged, reversible recommendations.
 
-## 1. The Local Implementation
+## The Local Implementation
 
 - **Current Logic:** Mailprune is a Python CLI that uses the Gmail API to fetch messages and metadata, computes sender-level statistics (volume, open-rate proxies, thread activity), clusters senders by content/behavior, and produces targeted recommendations (unsubscribe, filter, mute). It runs as a local audit: `uv run mailprune audit` pulls messages, analyzes them in parallel (thread/process pool), caches intermediate results, and writes reports to disk.
 - **Bottleneck:** Fetching messages at API rate limits and large inbox sizes creates IO-bound runs; memory and CPU usage spike during full-content clustering and embedding computation; OAuth token lifecycle and reauth flows complicate long-running jobs; absent persistent checkpoints, interrupted runs must restart from scratch.
 
-## 2. Scaling Strategy
+## Scaling Strategy
 
 - **Vertical vs. Horizontal:**
     - Short term: vertical scaling (more CPU, faster IO) speeds up single-machine audits for tens of thousands of messages. Good for quick one-off cleans.
@@ -37,7 +37,7 @@ draft: false
     - Default to local-only processing (no external embedding/LLM APIs). If cloud services are optional, gate them behind explicit user consent and document data flows.
     - Encrypt at-rest artifacts (credentials, cached exports). Use short-lived OAuth tokens and secure storage for refresh tokens.
 
-## 3. Comparison to Industry Standards
+## Comparison to Industry Standards
 
 - **My Project:** Mailprune — local-first, privacy-aware audits + explainable recommendations; focuses on sender clustering and engagement heuristics.
 - **Industry (e.g., SaneBox / CleanEmail / Gmail filters):** SaaS products offer managed cleanup with proprietary heuristics and cloud processing; Gmail filters operate at the server level and are immediate but require manual rule authoring.
@@ -46,7 +46,7 @@ draft: false
     - Cost: Building distributed ingestion, reliable background workers, and persistence raises engineering and infra costs compared to single-node local tooling.
     - Benefit: Mailprune's privacy-first approach and audit transparency are differentiators for privacy-conscious users.
 
-## 4. Experiments & Metrics
+## Experiments & Metrics
 
 - **Latency:** wall time per message (fetch + analysis) at different batch sizes and concurrency levels.
 - **Throughput:** messages processed / second across worker pool sizes.
@@ -54,7 +54,7 @@ draft: false
 - **False positive rate:** percentage of recommendations users revert.
 - **Resource cost:** CPU / memory / storage required for N-message audits; infra cost estimate for a hosted version.
 
-## 5. Risks & Mitigations
+## Risks & Mitigations
 
 - **Accidental mass changes:** require `--dry-run` and explicit `--apply --confirm` flags; implement undo via saved filter definitions and a reversible action log.
 - **OAuth/credentials leaks:** encrypt tokens at rest; use OS keychain when available; rotate refresh tokens and surface reauth UX.

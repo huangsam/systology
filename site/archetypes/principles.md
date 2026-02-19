@@ -7,10 +7,10 @@ categories: ["principles"]
 draft: true
 ---
 
-## 1. Principle or Practice Name
+## Principle or Practice Name
 
 Brief narrative explanation of why this principle matters and when to apply it. Mention key benefits, tradeoffs, or when this principle might not apply.
 
-## 2. Another Principle
+## Another Principle
 
 Repeat the narrative structure—focus on the reasoning and applicability rather than a checklist of tactics.
