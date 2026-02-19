@@ -10,7 +10,6 @@
 
   <link rel="canonical" href="{{ .Permalink }}" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="alternate icon" href="/favicon.ico" />
   <meta name="robots" content="index, follow" />
 
   <script>try { if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark') } catch (e) { }</script>
@@ -63,17 +62,6 @@
           var dark = document.documentElement.getAttribute('data-theme') === 'dark';
           document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
           try { localStorage.setItem('theme', dark ? 'light' : 'dark'); } catch (e) { }
-        });
-      }
-
-      /* Scroll-to-top */
-      var btn = document.getElementById('scroll-top');
-      if (btn) {
-        window.addEventListener('scroll', function () {
-          btn.classList.toggle('visible', window.scrollY > 400);
-        }, { passive: true });
-        btn.addEventListener('click', function () {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         });
       }
     });
