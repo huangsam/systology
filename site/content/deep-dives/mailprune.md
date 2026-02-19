@@ -13,7 +13,7 @@ draft: false
 
 **Context:** Personal inboxes accumulate noise over time; Mailprune emerged to audit Gmail accounts locally, identify high-volume low-value senders, and recommend targeted fixes.
 
-**Problem:** Large inboxes and API rate limits make full audits slow and fragile. Users need actionable recommendations that preserve privacy, avoid accidental mass changes, and can be reviewed before applying.
+**Motivation:** Large inboxes and API rate limits make full audits slow and fragile. Users need actionable recommendations that preserve privacy, avoid accidental mass changes, and can be reviewed before applying.
 
 **Solution (high-level):** Keep processing local-first and privacy-preserving while improving robustness: resumable ingestion, durable processing state, cached semantic features, and staged, reversible recommendations.
 

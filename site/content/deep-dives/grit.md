@@ -13,7 +13,7 @@ draft: false
 
 **Context:** `Grit` is a from-scratch Git implementation in Rust, providing both low-level plumbing commands (hash-object, cat-file, write-tree) and high-level porcelain commands (init, add, commit, log, status, diff, reset). The architecture follows Git's own layered design where porcelain is composed entirely from plumbing primitives.
 
-**Problem:** We often take Git's command-line interface and performance for granted. Building a Git implementation from scratch is a complex systems programming challenge that requires deep understanding of Git's data model (blobs, trees, commits), storage format (SHA-1 hashing, zlib compression), index structure, and command semantics. Achieving compatibility with Git's on-disk formats while optimizing for performance and correctness is non-trivial.
+**Motivation:** We often take Git's command-line interface and performance for granted. Building a Git implementation from scratch is a complex systems programming challenge that requires deep understanding of Git's data model (blobs, trees, commits), storage format (SHA-1 hashing, zlib compression), index structure, and command semantics. Achieving compatibility with Git's on-disk formats while optimizing for performance and correctness is non-trivial.
 
 **Solution (high-level):** Leverage Rust's ownership model for safe concurrent object access, implement LRU caching for objects and trees to amortize IO costs, use buffered read/write for all disk operations, and provide comprehensive test coverage with property-based testing (proptest) and compatibility tests against real Git repositories.
 

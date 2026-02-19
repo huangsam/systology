@@ -11,7 +11,7 @@ draft: true
 
 **Context:** Provide background and motivation for this deep dive. What prompted the exploration or analysis?
 
-**Problem:** Clearly articulate the problem or question being addressed. What are the key challenges or unknowns?
+**Motivation:** Clearly articulate the motivation behind the project or investigation. What specific problem or question are you trying to address? Why is it interesting or important?
 
 **Solution (high-level):** Summarize the approach taken to address the problem. What are the main components or strategies used?
 

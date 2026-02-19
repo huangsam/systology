@@ -13,7 +13,7 @@ draft: false
 
 **Context:** `Chowist` is a Django-based web application that replicates Yelp-like features: place listings, profiles, and a marketing homepage. It supports local development, demo data, Docker compose, and production deployment via Gunicorn.
 
-**Problem:** During lunch hours at my past companies, figuring out the next place to eat was a common challenge. Chowist was built as a fun project to practice web development and demonstrate production hardening techniques. The core problem is building a web app that can reliably serve traffic, handle file uploads, and scale beyond a single process while maintaining a good developer experience.
+**Motivation:** During lunch hours at my past companies, figuring out the next place to eat was a common challenge. Chowist was built as a fun project to practice web development and demonstrate production hardening techniques. The core problem is building a web app that can reliably serve traffic, handle file uploads, and scale beyond a single process while maintaining a good developer experience.
 
 **Solution (high-level):** Harden the deployment with containerized builds, asset pipelines, a managed database (or HA Postgres), background worker processes for async work, and observability (metrics, logging, errors) to support production traffic.
 

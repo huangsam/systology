@@ -13,7 +13,7 @@ draft: false
 
 **Context:** `vidicant` is a cross-platform video and image feature extractor with a C++ core (OpenCV) and Python bindings via pybind11. It serves ML preprocessing pipelines by extracting motion, blur, color, and face features from media files, producing structured JSON output for downstream training and analysis.
 
-**Problem:** After experimenting with xcode-trial, I wanted to create a cross-platform solution that could handle large-scale video preprocessing for ML pipelines, leveraging C++ for performance-critical tasks and Python for ease of use and integration.
+**Motivation:** After experimenting with xcode-trial, I wanted to create a cross-platform solution that could handle large-scale video preprocessing for ML pipelines, leveraging C++ for performance-critical tasks and Python for ease of use and integration.
 
 **Solution (high-level):** Optimize core C++ algorithms for batch throughput with streaming decode, expose a stable Python API via pybind11 with well-defined output schemas, and provide multiple packaging channels (manylinux wheels, macOS universal2 wheels, cmake-based builds) to minimize installation friction. The C++ layer handles performance-critical work; Python provides the ergonomic interface.
 
