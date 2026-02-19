@@ -13,7 +13,7 @@ draft: false
 
 **Context:** `Rustoku` implements fast Sudoku solving and generation in Rust, exposing both a library crate and a CLI. The core uses bitmasking for constraint tracking and Minimum Remaining Values (MRV) heuristics to guide backtracking, producing solve traces that map to human-understandable techniques.
 
-**Problem:** Producing extremely fast solves (sub-millisecond for most puzzles) while keeping generation deterministic, guaranteeing solution uniqueness, and providing human-understandable solve paths requires careful algorithm design, allocation discipline, and comprehensive test coverage. Balancing raw speed with explainability is a core tension.
+**Problem:** I wanted to recall the lessons I learned in college from building a Sudoku solver in C++, but this time with a focus on Rust's strengths (safety, expressiveness) and modern algorithmic techniques. The challenge was to design a solver that is not only fast (sub-millisecond solves for easy/medium puzzles) but also produces deterministic outputs and human-readable solve paths. Additionally, I wanted to implement a generator that can produce puzzles of varying difficulty while ensuring uniqueness of the solution.
 
 **Solution (high-level):** Optimize constraint propagation with bitmask operations (`u32` per cell for candidate sets), order cell selection with MRV heuristics to minimize branching, instrument micro-benchmarks with Criterion, and produce structured step traces that map each backtracking decision to a human technique (naked singles, hidden pairs, forced chains).
 

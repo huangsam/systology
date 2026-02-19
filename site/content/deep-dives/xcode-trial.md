@@ -13,7 +13,7 @@ draft: false
 
 **Context:** `xcode-trial` is a Swift-based multimodal video analysis tool leveraging Apple-native frameworks—AVFoundation for media IO, Vision for computer vision tasks (face detection, scene classification, text recognition), and Core Image for image transforms. It targets macOS 15.0+ and Xcode 26.0+, producing JSON output for downstream analysis.
 
-**Problem:** Orchestrating multimodal analysis components on macOS requires understanding Apple's framework ecosystem (Vision, AVFoundation, Core Image), managing analysis across multiple extraction tracks (faces, scenes, colors, motion, audio, text), and producing structured output suitable for ML pipelines. Apple's frameworks are powerful but impose their own threading and callback constraints.
+**Problem:** I always wanted to see how Apple-native frameworks could be combined to perform comprehensive video analysis on macOS, leveraging hardware acceleration and modern Swift features while maintaining modularity and reproducibility.
 
 **Solution (high-level):** Build a modular pipeline with explicit analysis stages for each media dimension (faces, scenes, colors, motion, audio, text) using Apple-native APIs, compile via Swift Package Manager, and emit stable JSON outputs for downstream consumption.
 

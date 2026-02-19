@@ -13,9 +13,9 @@ draft: false
 
 **Context:** `Photohaul` is a Java/Gradle tool for organizing and migrating large photo collections to local or cloud targets with configurable folder rules and deduplication.
 
-**Problem:** Processing tens of thousands of files reliably and quickly while preserving metadata, avoiding duplicates, and supporting multiple migration backends (S3, Dropbox, Google Drive, SFTP) requires careful IO, hashing, and failure-recovery design.
+**Problem:** I was not able to apply my Lightroom-based photo organization patterns to my older photos, which are scattered across various folders and drives. I wanted a tool that could traverse my existing photo collection, identify duplicates based on content hashing, and migrate them to a new organized structure (e.g., by date or event) while preserving metadata. Additionally, I wanted the ability to migrate to cloud storage providers like Google Drive without manual drag-and-drop, and to have resumable jobs in case of interruptions.
 
-**Solution (high-level):** Use streaming traversal with skip-on-change semantics, robust content hashing for deduplication, pluggable migrators with idempotent operations, and a small job-state store for resumability.
+**Solution (high-level):** Use path traversal with skip-on-change semantics, robust content hashing for deduplication, pluggable migrators with idempotent operations.
 
 ## The Local Implementation
 

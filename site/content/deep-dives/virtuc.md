@@ -13,7 +13,7 @@ draft: false
 
 **Context:** `VirtuC` is a Rust-implemented compiler for a C subset that emits LLVM IR and produces native executables via `clang`. It serves as both an educational tool for understanding compiler internals and a testbed for exploring IR generation, optimization passes, and error reporting design.
 
-**Problem:** Building a correct, maintainable compiler pipeline requires clear boundaries between phases (lexing, parsing, semantic analysis, IR generation), sound type-checking, and robust error reporting with source-location diagnostics. Without these boundaries, adding new language features requires touching every stage simultaneously, making bugs nearly impossible to isolate.
+**Problem:** I built part of a compiler in college with [huangsam/ec2prog](https://github.com/huangsam/ec2prog), but wanted to explore a more structured approach with Rust's type system, LLVM IR generation, and modern error reporting techniques.
 
 **Solution (high-level):** Enforce strict phase boundaries with well-typed intermediate representations between stages, implement Rust-inspired error diagnostics with source spans and recovery suggestions, add regression tests and IR-level validation, and provide tooling (`--dump-ast`, `--emit-llvm`) to visualize compilation phases for teaching and debugging.
 
