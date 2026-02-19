@@ -1,11 +1,11 @@
 {{ define "main" }}
 <article>
   <header>
-    <h1>
-      {{ .Title }}
+    <div class="title-group">
+      <h1>{{ .Title }}</h1>
       {{ if .Draft }}<span class="draft-badge">WIP</span>{{ end }}
       {{ with .Params.links }}{{ partial "components/external-links.html" . }}{{ end }}
-    </h1>
+    </div>
     <h2>{{ .Description }}</h2>
     {{ with .Params.tags }}
     <div class="tags">
