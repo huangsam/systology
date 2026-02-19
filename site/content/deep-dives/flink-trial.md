@@ -35,14 +35,6 @@ draft: false
 - **Industry:** Production streaming includes event-time watermarks with late-data side outputs, complex event processing (CEP library), exactly-once end-to-end guarantees, comprehensive job health dashboards (Flink Web UI + Prometheus), and dynamic resource scaling with Kubernetes.
 - **Gap Analysis:** For production deployment: implement event-time windowing with watermarks and configurable allowed lateness, add late-data side outputs for events that arrive after window closure, build comprehensive dashboards (checkpoint duration, backpressure, watermark lag, records-per-second per operator), integrate with a metrics stack (Prometheus + Grafana via Flink's metrics reporters), and automate savepoint management for job upgrades.
 
-## Experiments & Metrics
-
-- **Latency:** per-event processing latency (ingestion to window emission) under different parallelism settings (1, 2, 4, 8 task slots). Measure at the operator level using Flink's latency tracking markers.
-- **Throughput:** events/second sustainable at each parallelism level before backpressure triggers. Identify the bottleneck operator (usually the window function or the sink).
-- **Processing-time vs. event-time comparison:** run the same event stream through both windowing modes and compare aggregate correctness when events arrive out of order. Quantify the error rate of processing-time windows under realistic disorder.
-- **Fault recovery:** time to recover after simulated TaskManager failures with checkpointing enabled. Measure checkpoint size, checkpoint duration, and end-to-end recovery time (failure → full throughput restored).
-- **State size growth:** monitor RocksDB state size over time with and without TTL to quantify unbounded state risk.
-
 ## Risks & Mitigations
 
 - **Incorrect time semantics:** processing-time windows produce non-deterministic results for reprocessed data. Document the migration path to event-time with watermarks and provide both configurations in the example code for comparison.

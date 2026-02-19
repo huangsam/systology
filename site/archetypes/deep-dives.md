@@ -27,10 +27,6 @@ Describe the approach to scaling—both vertical (single node optimization) and 
 
 Compare the approach taken in this deep dive to industry standards or best practices. What are the similarities and differences? What are the advantages and disadvantages of the chosen approach?
 
-## Experiments & Metrics
-
-Describe any experiments conducted to evaluate the solution. What metrics were used to measure success? What were the results and insights gained from these experiments?
-
 ## Risks & Mitigations
 
 Identify potential risks, failure modes, or resource exhaustion scenarios. For each risk, describe the mitigation strategy or contingency plan. Consider data loss/corruption, resource limits, dependency failures, and operational gotchas. This section grounds the design in reality—every system has constraints and failure points.

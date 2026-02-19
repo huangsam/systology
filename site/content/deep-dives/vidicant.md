@@ -34,13 +34,6 @@ draft: false
 - **Industry:** Cloud video processing services (Google Video Intelligence, AWS Rekognition Video) offer managed pipelines with auto-scaling and broader model coverage, but require data egress, incur per-minute costs, and introduce privacy concerns for sensitive media. FFmpeg-based pipelines offer similar portability but lack integrated ML feature extraction.
 - **Gap Analysis:** For large-scale production media pipelines, integrate with cloud object stores (S3/GCS) for input/output, add worker autoscaling (Kubernetes HPA on queue depth), and build a calibration suite for threshold tuning per-dataset. For on-prem deployments, focus on native acceleration (FFmpeg hardware decoders, CUDA where available).
 
-## Experiments & Metrics
-
-- **Throughput:** files/hour and frames/second for different worker counts, video resolutions, and codec types. Profile decode vs. analysis time split to identify the actual bottleneck.
-- **Detection quality:** precision/recall for motion, face, and blur detection on labeled subsets. Sweep threshold values and produce precision-recall curves for each detector, enabling per-dataset calibration.
-- **Resource usage:** per-file peak memory and decode CPU cost, measured with `perf` (Linux) and Instruments (macOS). Target: < 500 MB resident memory regardless of video length via frame sampling and sequential processing.
-- **Packaging validation:** test `pip install` on clean environments (Linux, macOS) to verify scikit-build-core wheels install without build tools. Measure install time and binary size.
-
 ## Risks & Mitigations
 
 - **Platform packaging friction:** CI builds wheels using scikit-build-core with CMake `FetchContent` for pybind11 integration. Provide cmake instructions as fallbacks for source builds. Test installation in CI on clean environments to catch missing native dependencies.

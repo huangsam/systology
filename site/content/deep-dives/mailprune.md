@@ -46,14 +46,6 @@ draft: false
     - Cost: Building distributed ingestion, reliable background workers, and persistence raises engineering and infra costs compared to single-node local tooling.
     - Benefit: Mailprune's privacy-first approach and audit transparency are differentiators for privacy-conscious users.
 
-## Experiments & Metrics
-
-- **Latency:** wall time per message (fetch + analysis) at different batch sizes and concurrency levels.
-- **Throughput:** messages processed / second across worker pool sizes.
-- **Recommendation quality:** precision@k measured by manual labels or small user study (do recommended unsubscribes match human decisions?).
-- **False positive rate:** percentage of recommendations users revert.
-- **Resource cost:** CPU / memory / storage required for N-message audits; infra cost estimate for a hosted version.
-
 ## Risks & Mitigations
 
 - **Accidental mass changes:** require `--dry-run` and explicit `--apply --confirm` flags; implement undo via saved filter definitions and a reversible action log.

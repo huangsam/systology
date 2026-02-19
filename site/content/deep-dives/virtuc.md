@@ -34,13 +34,6 @@ draft: false
 - **Industry:** Production compilers (clang, gcc) have decades of optimization passes, sophisticated register allocation, link-time optimization, and support for the full C/C++ specification. They also have extensive fuzz testing infrastructure (csmith, afl) for finding miscompilation bugs.
 - **Gap Analysis:** To approach production robustness: add a verifier pass after IR generation that checks structural invariants (SSA dominance, type consistency, well-formed control flow), expand the fuzz testing suite with random program generation, implement at least basic optimization passes (constant folding, dead code elimination) gated behind `-O` flags, and add cross-compilation support for multiple target architectures.
 
-## Experiments & Metrics
-
-- **Correctness:** tiered test suite—(1) unit tests for individual passes (lexer token output, parser AST shape, type checker error/success), (2) snapshot tests comparing emitted LLVM IR against golden files for each supported construct, (3) end-to-end tests that compile C programs and verify execution output against expected values, (4) error-path tests verifying that invalid programs produce the expected diagnostic messages.
-- **Performance:** compile time for multi-file projects with and without incremental caching. Measure per-phase timing (lex, parse, sema, codegen) to identify which phase dominates.
-- **Generated code quality:** runtime performance of compiled executables compared to `clang -O0` output on micro-benchmarks (loops, recursion, array operations). This validates that codegen produces correct and reasonably efficient machine code.
-- **Incremental build gains:** time saved with cache-enabled incremental builds on a representative project. Target: < 100ms for a no-op rebuild.
-
 ## Risks & Mitigations
 
 - **IR correctness bugs:** compare VirtuC's output against `clang -S -emit-llvm` for the same input programs and diff the IR. Integrate FileCheck-style assertions for IR structure. Run a verifier pass after every codegen to catch malformed IR before it reaches LLVM's backend.

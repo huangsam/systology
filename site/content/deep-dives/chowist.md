@@ -33,12 +33,6 @@ draft: false
 - **Industry:** Modern production web apps separate concerns: API layer, static CDN, background workers, autoscaling, and managed DB services.
 - **Gap Analysis:** To be production-ready, add CI/CD pipelines, health checks, rolling deploys, and infra-as-code for reproducible environments.
 
-## Experiments & Metrics
-
-- **Throughput & latency:** requests/sec under realistic load (place listing, search, image upload).
-- **Background job lag:** time-to-complete for async tasks under load.
-- **Error rates & SLOs:** HTTP 5xx rates and target SLOs for core endpoints.
-
 ## Risks & Mitigations
 
 - **Static/media serving issues:** integrate proper build and CDN-backed serving; ensure collectstatic is run in builds.

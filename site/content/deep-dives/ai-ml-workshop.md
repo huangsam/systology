@@ -33,13 +33,6 @@ draft: false
 - **Industry:** Production ML stacks use strict MLOps, artifact registries, and scalable training infra (Kubernetes, distributed TPU/GPU).
 - **Gap Analysis:** To move from workshop to production rigour requires CI-driven reproducible runs, artifact signing, and standardized evaluation suites for RAG and agent behaviors.
 
-## Experiments & Metrics
-
-- **MPS speedups:** time/epoch and memory usage comparisons (MPS vs. CPU) across representative models and batch sizes.
-- **PEFT efficiency:** parameter reduction, wall-clock fine-tune time, and downstream accuracy when using LoRA/PEFT vs. full fine-tune.
-- **Classical ML comparisons:** consistent cross-validation benchmarks for scikit-learn examples (accuracy, AUC, training time) against baseline implementations.
-- **NumPy correctness:** unit-tested implementations verifying gradients, PCA, and linear algebra results against known libraries.
-
 ## Risks & Mitigations
 
 - **Non-reproducible environments:** pin deps, provide `uv` lockfile and minimal docker/devcontainer for CI.

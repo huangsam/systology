@@ -33,12 +33,6 @@ draft: false
 - **Industry:** Managed migration tools (rclone, cloud migration services) scale well and provide broad backend coverage; Photohaul focuses on photographer-oriented folder semantics and deduplication tuned for photography workflows.
 - **Gap Analysis:** To match `rclone`'s breadth, ensure robust backend drivers and extensive retry/timeout tuning; to differentiate, expose rich folder-rule DSL and EXIF-first organization.
 
-## Experiments & Metrics
-
-- **Throughput:** files migrated / second with various concurrency settings and backends.
-- **Hash accuracy & collisions:** measure deduplication false-positive/negative rates on real datasets.
-- **Resumability:** average recovery time after simulated failures and percent of duplicated uploads avoided.
-
 ## Risks & Mitigations
 
 - **Data loss during migration:** always run in `--dry-run` mode with manifest generation; verify checksums post-migration.

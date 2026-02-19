@@ -36,14 +36,6 @@ draft: false
 - **Industry:** Cloud RAG offerings (Pinecone + OpenAI, Weaviate Cloud, Amazon Kendra) provide managed scaling, automatic sharding, and access to powerful embedding/generation models, but trade off privacy, repeatability, and cost transparency. They also abstract away retrieval tuning, making quality debugging opaque.
 - **Gap Analysis:** To reach production-grade scale and latency: implement persistent sharding with cross-shard query routing, add ANN (HNSW) search for indices beyond 1M vectors (Chroma uses exact search by default), integrate monitoring for retrieval quality drift (track average relevance scores over time), and build a reranker layer (cross-encoder on top-50 results) to recover precision lost by approximate search.
 
-## Experiments & Metrics
-
-- **Retrieval quality:** MAP@10, MRR, and NDCG@10 computed against a curated golden set of 100+ query-document relevance pairs. LLM-as-judge evaluation for answer correctness on open-ended questions, validated against human labels for calibration.
-- **BM25 vs. vector vs. hybrid comparison:** run the evaluation suite with each retrieval mode independently and fused, quantifying the improvement from hybrid retrieval (typically 10–15% MAP improvement over either alone).
-- **Fusion parameter sensitivity:** sweep RRF `k` from 10 to 200 and measure MAP@10 to find the optimal operating point for the corpus.
-- **Latency:** end-to-end `ask` response time breakdown—retrieval (BM25 + vector + fusion), context assembly, and LLM generation—with varying corpus sizes (1k, 10k, 100k chunks).
-- **Indexing cost:** time and memory to ingest N documents, measured for different embedding models and chunk sizes. Compare local Ollama embedding throughput across model sizes.
-
 ## Risks & Mitigations
 
 - **Stale embeddings:** incremental re-embedding on document change detection (content hash comparison). Schedule periodic full re-index validation that compares incremental vs. clean-build index quality to detect accumulated drift.

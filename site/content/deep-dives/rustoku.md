@@ -35,14 +35,6 @@ draft: false
 - **Industry:** Research-grade solvers (e.g., tdoku) use SIMD-vectorized constraint propagation and cache-line-aligned data structures for maximum throughput. Competition-grade generators use SAT solvers for difficulty classification.
 - **Gap Analysis:** To approach research-level performance, explore SIMD-based candidate elimination (processing multiple cells per instruction). For reliable difficulty classification, integrate a technique-counting heuristic that scores puzzles based on which human techniques are required (naked singles = easy, X-wings = hard) rather than relying solely on clue count.
 
-## Experiments & Metrics
-
-- **Solve time distribution:** Criterion micro-benchmarks across difficulty buckets (easy/medium/hard/adversarial), measuring mean, P50, P95, and P99 solve times. Track these in CI to catch regressions—a 10% P99 regression triggers an alert.
-- **Backtracking depth:** measure average and max backtracking depth per difficulty bucket. MRV should keep average depth under 15 for medium puzzles; without MRV, expect 40+.
-- **Generator quality:** ratio of generated puzzles that match intended difficulty (validated by technique-counting), uniqueness validation cost (time to prove single-solution), and rejection rate (puzzles discarded during generation).
-- **Allocation profiling:** use DHAT to verify zero heap allocations in the solve hot path. Any regression means an accidental `Vec` or `String` crept into the inner loop.
-- **Trace clarity:** validate that step-by-step traces map correctly to known human techniques by running the tracer against a curated set of puzzles with known solution paths.
-
 ## Risks & Mitigations
 
 - **Incorrect difficulty classification:** instrument empirical metrics (technique counting, backtracking depth) and tune generator heuristics. Maintain a labeled test set of puzzles with known difficulty grades.

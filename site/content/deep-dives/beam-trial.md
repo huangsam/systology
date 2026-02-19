@@ -35,13 +35,6 @@ draft: false
 - **Industry:** Production Beam pipelines rely on robust runners with monitoring (Dataflow Metrics, Flink Web UI), durable sources/sinks, exactly-once semantics, and orchestration (Airflow, Argo) for scheduling and retry.
 - **Gap Analysis:** To move from this learning example to production: add additional transforms (GroupByKey, windowed aggregations, side inputs), integrate durable sources/sinks with schema enforcement (Avro/Parquet), implement pipeline-level monitoring and alerting, integrate orchestration for scheduling and failure recovery, and tune runner-specific configurations for the target workload.
 
-## Experiments & Metrics
-
-- **Transform composition:** extend the pipeline with additional transforms (filtering, keyed aggregation, windowing) and measure how pipeline complexity affects execution time on DirectRunner.
-- **Sharding behavior:** experiment with `TextIO.write().withNumShards()` to understand how DirectRunner handles shard configuration vs. how distributed runners respect it.
-- **Runner comparison:** add FlinkRunner and Dataflow runner dependencies and compare execution characteristics (latency, shard output, resource usage) for the same pipeline across runners.
-- **Serialization cost:** benchmark default `SerializableCoder` vs. `AvroCoder` vs. custom coders for representative record types to quantify per-element overhead as the pipeline grows.
-
 ## Risks & Mitigations
 
 - **Local-only assumptions:** the project currently only demonstrates DirectRunner. Include docs on runner portability and the dependency/config changes required when switching runners. Add Gradle configurations per runner for easy switching.

@@ -35,13 +35,6 @@ draft: false
 - **Industry:** Git itself is highly optimized with decades of development—packfile deltification, bitmap indices for reachability, and multi-pack-index for large repos. Libgit2 provides a C library with comprehensive API coverage. Gitoxide (another Rust implementation) targets full compatibility with extensive packfile support.
 - **Gap Analysis:** To approach Git's robustness: implement packfile support (delta compression, pack-index) for storage efficiency on large repos, add `merge` and `rebase` with three-way merge algorithms, support `.gritignore` patterns for status filtering, and implement `fetch`/`push` with Git's smart HTTP and SSH transport protocols.
 
-## Experiments & Metrics
-
-- **Performance benchmarks:** Criterion micro-benchmarks comparing `grit init`, `grit add`, `grit status`, `grit commit`, and `grit log` against standard Git on repositories of varying sizes (10, 100, 1k, 10k files). Measure both cold (empty cache) and warm (populated cache) performance.
-- **Cache efficiency:** LRU hit rates and memory usage for different cache sizes (256, 512, 1024, 4096 entries) under `status` and `log` workloads. Find the knee where increasing cache size yields diminishing returns.
-- **Correctness:** property-based tests with proptest for round-trip serialization (object → bytes → SHA → decompress → object), index sorting invariants, and tree construction. Integration tests that create a repository with `grit` and verify it's readable by standard Git (and vice versa).
-- **Compatibility:** maintain a suite of Git repositories (empty, shallow, deep history, binary files, symlinks) and verify that `grit` reads and writes them correctly by comparing object hashes and ref states.
-
 ## Risks & Mitigations
 
 - **Compatibility issues:** strict adherence to Git's object and index formats with byte-level tests. Run `grit` operations on repositories created by Git and verify with `git fsck` that no corruption is introduced.

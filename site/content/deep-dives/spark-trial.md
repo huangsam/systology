@@ -33,13 +33,6 @@ draft: false
 - **Industry:** Production ETL adds orchestration (Airflow/Argo), data cataloging, monitoring, and schema evolution tooling.
 - **Gap Analysis:** To reach production readiness, integrate with workflow orchestration for scheduling and error recovery, add data lineage and schema versioning systems, implement comprehensive monitoring (job metrics, data quality checks), and automate handling of schema evolution and drift.
 
-## Experiments & Metrics
-
-- **Job runtime:** end-to-end processing time per year and per quarter.
-- **Resource efficiency:** executor memory/CPU utilization and optimal partition counts.
-- **Data quality validation:** row count, null rate, and schema conformance checks per ingestion batch; flag regressions against baselines.
-- **Partition strategy comparison:** measure read/write throughput and shuffle volume across different partition key choices (time-based vs. hash-based).
-
 ## Risks & Mitigations
 
 - **Schema drift:** implement schema merging strategies and robust validation with automatic alerting on unexpected column changes.

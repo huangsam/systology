@@ -35,14 +35,6 @@ draft: false
 - **Industry:** Cloud video analysis (Google Video Intelligence, AWS Rekognition) offers managed scaling and broader model coverage but lacks Apple-specific optimizations and incurs data egress costs and privacy implications. FFmpeg + OpenCV provides cross-platform portability but misses Metal/Neural Engine acceleration.
 - **Gap Analysis:** For production deployment: add SPM artifact caching and CI on macOS runners (GitHub Actions macOS, Buildkite Mac), implement schema versioning for downstream ML ingestion, and add structured error handling for partial analysis failures (e.g., Vision request fails on corrupted frames but pipeline continues).
 
-## Experiments & Metrics
-
-- **Throughput:** processing time per video at different resolutions and lengths, measured on Apple Silicon hardware. Target: reasonable throughput for batch analysis of video libraries.
-- **Framework latency:** per-analysis-track latency breakdown (Vision face, Vision scene, Core Image, audio extraction) to identify pipeline bottlenecks. Use Instruments (Time Profiler) for profiling.
-- **Accuracy:** face detection precision/recall on labeled clips, scene classification agreement with human labels, comparing Vision framework results against equivalent cross-platform implementations.
-- **Resource usage:** CPU/GPU utilization and peak memory footprint on Apple Silicon, measured via Xcode Instruments.
-- **Power efficiency:** energy impact per minute of video processed (via `powermetrics`), relevant for laptop and CI cost optimization.
-
 ## Risks & Mitigations
 
 - **API drift across macOS versions:** pin minimum macOS version (12.0+) and Xcode version (13.0+), add CI matrix jobs across macOS versions. Vision API availability varies by version—use `#available` checks and provide fallback paths.
