@@ -15,8 +15,6 @@ draft: false
 
 **Motivation:** Large inboxes and API rate limits make full audits slow and fragile. Users need actionable recommendations that preserve privacy, avoid accidental mass changes, and can be reviewed before applying.
 
-**Solution:** Keep processing local-first and privacy-preserving while improving robustness: resumable ingestion, durable processing state, cached semantic features, and staged, reversible recommendations.
-
 ## The Local Implementation
 
 - **Current Logic:** Mailprune is a Python CLI that uses the Gmail API to fetch messages and metadata, computes sender-level statistics (volume, open-rate proxies, thread activity), clusters senders by content/behavior, and produces targeted recommendations (unsubscribe, filter, mute). It runs as a local audit: `uv run mailprune audit` pulls messages, analyzes them in parallel (thread/process pool), caches intermediate results, and writes reports to disk.

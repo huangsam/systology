@@ -15,8 +15,6 @@ draft: false
 
 **Motivation:** I wanted to recall the lessons I learned in college from building a Sudoku solver in C++, but this time with a focus on Rust's strengths (safety, expressiveness) and modern algorithmic techniques. The challenge was to design a solver that is not only fast (sub-millisecond solves for easy/medium puzzles) but also produces deterministic outputs and human-readable solve paths. Additionally, I wanted to implement a generator that can produce puzzles of varying difficulty while ensuring uniqueness of the solution.
 
-**Solution:** Optimize constraint propagation with bitmask operations (`u32` per cell for candidate sets), order cell selection with MRV heuristics to minimize branching, instrument micro-benchmarks with Criterion, and produce structured step traces that map each backtracking decision to a human technique (naked singles, hidden pairs, forced chains).
-
 ## The Local Implementation
 
 - **Current Logic:** Each cell's candidate set is represented as a `u32` bitmask where bit `i` indicates digit `i` is still possible. Constraint propagation uses bitwise AND/OR to update row, column, and box masks (27 `u32` values totaling 108 bytes) in O(1) per elimination. The solver selects the cell with the fewest remaining candidates (MRV heuristic), which empirically reduces backtracking depth by 3–5× compared to left-to-right scanning. The generator produces puzzles by filling a solved grid with a seeded RNG, then iteratively removing clues while verifying the solution remains unique by running the solver and checking that no second solution exists.

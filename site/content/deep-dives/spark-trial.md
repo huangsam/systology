@@ -15,8 +15,6 @@ draft: false
 
 **Motivation:** I have used Spark SQL and PySpark in the past, but also wanted to complete my understand of the Spark ecosystem by writing a Scala-based Spark application that handles real-world data challenges: schema drift across years, large IO volumes, and the need for reproducible analytics. The project serves as a practical example of Spark's core abstractions (DataFrames, Datasets, RDDs) and optimization techniques (partitioning, caching) while also addressing common pitfalls like schema evolution and data skew.
 
-**Solution:** Use Spark DataFrame best practices: schema-on-read, partition pruning, parquet predicate pushdown, and deterministic aggregation pipelines with tests and CI-friendly samples.
-
 ## The Local Implementation
 
 - **Current Logic:** A Scala/SBT project that downloads parquet-formatted trip data from public sources, loads into Spark, normalizes schemas across years, runs validations, and computes aggregated yearly and quarterly metrics with configurable year ranges and quarterly sampling (Jan/Apr/Jul/Oct).

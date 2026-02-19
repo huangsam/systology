@@ -15,8 +15,6 @@ draft: false
 
 **Motivation:** It was difficult finding one place to learn and experiment with the full ML workflow—from data loading to model training, evaluation, and optimization—especially with a local-first approach that emphasizes reproducibility and hardware-aware benchmarking (MPS vs. CPU). Many resources are either too high-level (abstracting away training details) or too fragmented (focusing on one aspect like Hugging Face without the full pipeline). Additionally, ensuring experiments are reproducible and comparable across hardware adds complexity.
 
-**Solution:** Emphasize reproducible, local-first experiments: pinned environments, MPS-aware benchmarking, deterministic datasets/seeded runs, and lightweight experiment tracking. Delegate RAG/agent and media-specific operational concerns to their respective projects.
-
 ## The Local Implementation
 
 - **Current Logic:** A CLI-driven workshop centers on PyTorch examples (training, transfer learning, MPS optimization), Hugging Face integrations (datasets, tokenizers, model hubs), NumPy-from-scratch exercises for fundamentals, and scikit-learn algorithm demos. Notebooks, scripts, and `uv` tasks orchestrate experiments. RAG/agent demos and media feature extraction are maintained in `ragchain`, `mailprune`, `vidicant`, and `xcode-trial` respectively.

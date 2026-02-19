@@ -13,9 +13,7 @@ draft: false
 
 **Context:** `beam-trial` is a minimal Apache Beam learning project in Java/Gradle that demonstrates fundamental pipeline construction with the DirectRunner. The project provides a single entry point that creates an in-memory `PCollection`, applies transforms, and writes sharded text output.
 
-**Motivation:** Beam's programming model is deceptively simple—`PCollection` → `PTransform` → `PCollection`—but understanding how transforms compose, how IO works, and how the model maps to distributed execution requires hands-on experimentation. Developers need a clean, runnable starting point to build intuition before tackling production-scale pipelines.
-
-**Solution:** Provide a focused Hello World pipeline that demonstrates `Create`, `MapElements`, and `TextIO.write()` with the DirectRunner, establishing the Beam mental model (PCollections, PTransforms, coders) as a foundation for more complex pipeline work.
+**Motivation:** Beam is an alternative to Flink, and I wanted to understand its core programming model and abstractions. The project serves as a simple starting point to learn how to construct pipelines, apply transforms, and execute with the DirectRunner before exploring more complex features like windowing, stateful processing, and runner portability.
 
 ## The Local Implementation
 

@@ -15,8 +15,6 @@ draft: false
 
 **Motivation:** I have a deep interest in asking insightful questions about programming languages from time to time. One of the websites I keep coming back to is TIOBE, which has all the numbers but not as much about the language or the underlying concepts itself. When I want to try out a new language on that list, I want a chatbot that can answer questions about the language, its history, and its ecosystem based on the TIOBE content.
 
-**Solution:** Build a robust ingestion pipeline with versioned vector indices, combine BM25 and vector retrieval via Reciprocal Rank Fusion (RRF) with tunable weights, implement an automated evaluation harness (LLM-as-judge), and maintain strict local-first defaults with explicit opt-in for any cloud integration.
-
 ## The Local Implementation
 
 - **Current Logic:** Documents are ingested via a CLI (`ragchain ingest`) that chunks text with configurable size and overlap (default 2500 chars / 500 overlap), generates embeddings via Ollama's local embedding model (qwen3-embedding), and stores vectors in Chroma with document metadata. A parallel BM25 index (rank_bm25) is built over the same chunks for lexical retrieval. Queries are served via `ragchain ask`, which uses LangGraph to orchestrate intent-based adaptive retrieval—classifying queries as FACT, CONCEPT, or COMPARISON and adjusting BM25/vector weights accordingly—then combines results using RRF (score = Σ 1/(k + rank) across retrievers) and feeds the top-k chunks as context to Ollama for generation.

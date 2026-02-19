@@ -15,8 +15,6 @@ draft: false
 
 **Motivation:** After experimenting with xcode-trial, I wanted to create a cross-platform solution that could handle large-scale video preprocessing for ML pipelines, leveraging C++ for performance-critical tasks and Python for ease of use and integration.
 
-**Solution:** Optimize core C++ algorithms for batch throughput with streaming decode, expose a stable Python API via pybind11 with well-defined output schemas, and provide multiple packaging channels (manylinux wheels, macOS universal2 wheels, cmake-based builds) to minimize installation friction. The C++ layer handles performance-critical work; Python provides the ergonomic interface.
-
 ## The Local Implementation
 
 - **Current Logic:** C++ core uses OpenCV's `VideoCapture` (with FFmpeg backend) for sequential, file-based frame extraction and implements feature extractors: frame difference for motion detection, Laplacian variance for blur scoring, color k-means clustering for color analysis, and edge detection. For video files, it extracts frame count, FPS, resolution, duration, and motion detection metrics by reprocessing the file for each metric. Each analysis operation (motion score, dominant colors, scene detection) reopens the video and reads a limited sample (50-100 frames) for performance. pybind11 binds these as `process_image(path) -> dict` and `process_video(path, opts) -> dict` Python callables, handling type conversions (cv::Mat ↔ numpy array) at the boundary. An interface-based design (`IImageLoader`/`IVideoLoader`) provides clean abstraction over the processing pipeline. A CLI wraps the Python API for batch runs with glob patterns and outputs per-file JSON.

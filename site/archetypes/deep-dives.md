@@ -13,8 +13,6 @@ draft: true
 
 **Motivation:** Clearly articulate the motivation behind the project or investigation. What specific problem or question are you trying to address? Why is it interesting or important?
 
-**Solution:** Summarize the approach taken to address the problem. What are the main components or strategies used?
-
 ## The Local Implementation
 
 Describe the current implementation in detail: key components, workflows, and algorithms. Explain how the system currently works, including data structures, IO patterns, and concurrency models. Highlight bottlenecks, limitations, or areas where performance or scalability could be improved. Include code-level details or architectural decisions that are noteworthy.

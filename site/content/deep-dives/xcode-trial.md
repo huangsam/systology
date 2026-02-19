@@ -15,8 +15,6 @@ draft: false
 
 **Motivation:** I always wanted to see how Apple-native frameworks could be combined to perform comprehensive video analysis on macOS, leveraging hardware acceleration and modern Swift features while maintaining modularity and reproducibility.
 
-**Solution:** Build a modular pipeline with explicit analysis stages for each media dimension (faces, scenes, colors, motion, audio, text) using Apple-native APIs, compile via Swift Package Manager, and emit stable JSON outputs for downstream consumption.
-
 ## The Local Implementation
 
 - **Current Logic:** Swift Package Manager project structured as a pipeline: video and image inputs are processed through multiple analysis tracks—Vision `VNDetectFaceRectanglesRequest` for face detection, `VNClassifyImageRequest` for scene classification, Core Image filters for color and visual analysis, plus motion and audio extraction via AVFoundation. Each track processes media independently and produces structured feature records. Results are aggregated and output as JSON per input file.

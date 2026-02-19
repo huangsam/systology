@@ -15,8 +15,6 @@ draft: false
 
 **Motivation:** I built part of a compiler in college with [huangsam/ec2prog](https://github.com/huangsam/ec2prog), but wanted to explore a more structured approach with Rust's type system, LLVM IR generation, and modern error reporting techniques.
 
-**Solution:** Enforce strict phase boundaries with well-typed intermediate representations between stages, implement Rust-inspired error diagnostics with source spans and recovery suggestions, add regression tests and IR-level validation, and provide tooling (`--dump-ast`, `--emit-llvm`) to visualize compilation phases for teaching and debugging.
-
 ## The Local Implementation
 
 - **Current Logic:** The pipeline flows through four distinct phases. Phase 1 (Lexing): `logos` tokenizes source into a typed token stream with source spans. Phase 2 (Parsing): `nom` combinators consume tokens and build a typed AST with `Span` annotations on every node. Phase 3 (Semantic Analysis): a pass over the AST resolves symbols (variable/function lookup via a scoped symbol table), checks types (integer widths, pointer compatibility, function signatures), and annotates the AST with resolved type information. Phase 4 (Codegen): `inkwell` (a safe LLVM binding) lowers the annotated AST to LLVM IR—`alloca` for locals, proper `phi` nodes for control flow merges, and correct calling conventions for function calls. The CLI compiles the IR to an object file and links with `clang`.
