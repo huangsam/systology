@@ -24,9 +24,31 @@ import subprocess
 from collections import Counter, defaultdict
 from pathlib import Path
 
-# --- Globals ---
+# Maximum length for description
 MAX_DESC_LEN = 160
-CSS_FILES = ["site/static/css/styles.css", "site/static/css/search.css"]
+
+# Paths
+SITE_DIR = "site"
+CONTENT_DIR = "content"
+STATIC_DIR = "static"
+ARCHETYPES_DIR = "archetypes"
+CSS_FILES = [
+    f"{SITE_DIR}/{STATIC_DIR}/css/styles.css",
+    f"{SITE_DIR}/{STATIC_DIR}/css/search.css",
+]
+SEARCH_INDEX_PATH = f"{SITE_DIR}/{STATIC_DIR}/search-index.json"
+
+# File Constants
+MD_EXT = ".md"
+FM_DELIM = "---"
+
+# Frontmatter Keys
+FM_TITLE = "title"
+FM_DATE = "date"
+FM_LASTMOD = "lastmod"
+FM_TAGS = "tags"
+FM_SUMMARY = "summary"
+FM_DESC = "description"
 
 
 # --- Utilities ---
@@ -48,7 +70,7 @@ def has_frontmatter(lines: list[str]) -> bool:
     if not lines:
         return False
     first = lines[0].strip()
-    return first in ("---", "+++", "{")
+    return first in (FM_DELIM, "+++", "{")
 
 
 def extract_first_h1(lines: list[str]) -> str | None:
@@ -79,7 +101,7 @@ def normalize_file(path: Path) -> bool:
 
     title = extract_first_h1(lines)
     if title:
-        fm = ["---", f'title: "{title.replace('"', "''")}"', "---", ""]
+        fm = [FM_DELIM, f'{FM_TITLE}: "{title.replace('"', "''")}"', FM_DELIM, ""]
         new = fm + lines
         path.write_text("\n".join(new) + "\n", encoding="utf-8")
         return True
@@ -94,7 +116,7 @@ def normalize_file(path: Path) -> bool:
 def run_normalize(content_dir: Path) -> None:
     print("Running normalize_content...")
     count = 0
-    for p in content_dir.rglob("*.md"):
+    for p in content_dir.rglob(f"*{MD_EXT}"):
         if p.is_file():
             if normalize_file(p):
                 count += 1
@@ -109,9 +131,9 @@ def extract_fm_body(text: str) -> tuple[list[str] | None, list[str]]:
     i = 0
     while i < len(lines) and lines[i].strip() == "":
         i += 1
-    if i < len(lines) and lines[i].strip() == "---":
+    if i < len(lines) and lines[i].strip() == FM_DELIM:
         j = i + 1
-        while j < len(lines) and lines[j].strip() != "---":
+        while j < len(lines) and lines[j].strip() != FM_DELIM:
             j += 1
         if j >= len(lines):
             return None, lines[i:]
@@ -168,7 +190,7 @@ def insert_fm(fm_lines: list[str], key: str, value: str) -> list[str]:
     inserted = False
     for ln in fm_lines:
         out.append(ln)
-        if not inserted and re.match(r"^\s*title\s*:\s*", ln):
+        if not inserted and re.match(r"^\s*" + FM_TITLE + r"\s*:\s*", ln):
             out.append(f'{key}: "{value.replace('"', '\\"')}"')
             inserted = True
     if not inserted:
@@ -183,15 +205,15 @@ def add_summary_desc_file(p: Path) -> bool:
         return False
     fm = parse_fm(fm_lines)
 
-    has_summary = "summary" in fm and fm["summary"].strip()
-    has_desc = "description" in fm and fm["description"].strip()
+    has_summary = FM_SUMMARY in fm and fm[FM_SUMMARY].strip()
+    has_desc = FM_DESC in fm and fm[FM_DESC].strip()
 
     if has_summary and has_desc:
         return False
 
     candidate = None
     if has_summary:
-        candidate = fm["summary"].strip()
+        candidate = fm[FM_SUMMARY].strip()
     else:
         cand = first_paragraph(body_lines)
         if cand:
@@ -202,18 +224,18 @@ def add_summary_desc_file(p: Path) -> bool:
 
     new_fm = fm_lines.copy()
     if not has_summary:
-        new_fm = insert_fm(new_fm, "summary", candidate)
+        new_fm = insert_fm(new_fm, FM_SUMMARY, candidate)
     if not has_desc:
         desc = make_description(candidate)
-        new_fm = insert_fm(new_fm, "description", desc)
+        new_fm = insert_fm(new_fm, FM_DESC, desc)
 
     parsed_fm_content = "\n".join(new_fm)
 
     # Rebuild file
     new_text = (
-        "---\n"
+        f"{FM_DELIM}\n"
         + parsed_fm_content
-        + "\n---\n\n"
+        + f"\n{FM_DELIM}\n\n"
         + "\n".join(body_lines).lstrip()
         + "\n"
     )
@@ -224,7 +246,7 @@ def add_summary_desc_file(p: Path) -> bool:
 def run_add_summary_desc(content_dir: Path) -> None:
     print("Running add_summary_description...")
     updated = 0
-    for p in sorted(content_dir.rglob("*.md")):
+    for p in sorted(content_dir.rglob(f"*{MD_EXT}")):
         try:
             if add_summary_desc_file(p):
                 updated += 1
@@ -249,7 +271,7 @@ def update_links_file(p: Path, content_root: Path) -> bool:
     def replace_link(match: re.Match) -> str:
         full = match.group(0)
         link = match.group(2)
-        if link.endswith(".md"):
+        if link.endswith(MD_EXT):
             link = link[:-3]
             if link.startswith("../"):
                 up_count = link.count("../")
@@ -275,7 +297,7 @@ def update_links_file(p: Path, content_root: Path) -> bool:
 def run_update_links(content_dir: Path) -> None:
     print("Running update_internal_links...")
     count = 0
-    for md in content_dir.rglob("*.md"):
+    for md in content_dir.rglob(f"*{MD_EXT}"):
         if update_links_file(md, content_dir):
             count += 1
     print(f"  Updated {count} files")
@@ -300,7 +322,7 @@ def run_sort_tags(content_dir: Path) -> None:
     count = 0
     for root, _, files in os.walk(content_dir):
         for file in files:
-            if file.endswith(".md"):
+            if file.endswith(MD_EXT):
                 path = Path(root) / file
                 content = path.read_text(encoding="utf-8")
                 new_content = sort_tags_in_text(content)
@@ -356,7 +378,7 @@ def run_format_project(content_dir: Path, archetypes_dir: Path) -> None:
         if not d.exists():
             continue
         count = 0
-        for p in d.rglob("*.md"):
+        for p in d.rglob(f"*{MD_EXT}"):
             if process_md_format(p):
                 count += 1
         if count > 0:
@@ -400,7 +422,7 @@ def run_generate_index(content_dir: Path) -> None:
     print("Generating search index...")
     documents = []
     doc_id = 0
-    for md_file in sorted(content_dir.rglob("*.md")):
+    for md_file in sorted(content_dir.rglob(f"*{MD_EXT}")):
         if "_index.md" in md_file.name or md_file.name.startswith("."):
             continue
         try:
@@ -409,7 +431,7 @@ def run_generate_index(content_dir: Path) -> None:
             continue
 
         fm, body = extract_fm_search(content)
-        if "title" not in fm:
+        if FM_TITLE not in fm:
             continue
 
         try:
@@ -417,10 +439,10 @@ def run_generate_index(content_dir: Path) -> None:
         except IndexError:
             category = "unknown"
 
-        title = fm.get("title", "")
-        desc = fm.get("description", "")
-        summary = fm.get("summary", "")
-        tags = fm.get("tags", [])
+        title = fm.get(FM_TITLE, "")
+        desc = fm.get(FM_DESC, "")
+        summary = fm.get(FM_SUMMARY, "")
+        tags = fm.get(FM_TAGS, [])
 
         preview = desc if desc else extract_preview(body)
         searchable = f"{title} {desc} {summary} {' '.join(tags) if isinstance(tags, list) else tags}".lower()
@@ -442,7 +464,7 @@ def run_generate_index(content_dir: Path) -> None:
 
     index_data = {"documents": documents, "documentCount": len(documents)}
     # Assuming CWD is project root
-    output_path = Path("site/static/search-index.json")
+    output_path = Path(SEARCH_INDEX_PATH)
     output_path.parent.mkdir(exist_ok=True, parents=True)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(index_data, f)
@@ -454,12 +476,12 @@ def run_generate_index(content_dir: Path) -> None:
 
 def parse_tags_from_text(text: str) -> list[str]:
     lines = text.splitlines()
-    if not lines or lines[0].strip() != "---":
+    if not lines or lines[0].strip() != FM_DELIM:
         return []
 
     end_idx = None
     for i in range(1, len(lines)):
-        if lines[i].strip() == "---":
+        if lines[i].strip() == FM_DELIM:
             end_idx = i
             break
     if end_idx is None:
@@ -468,13 +490,15 @@ def parse_tags_from_text(text: str) -> list[str]:
     fm_text = "\n".join(lines[1:end_idx])
 
     # Inline list
-    m = re.search(r"^\s*tags\s*:\s*\[([^\]]*)\]", fm_text, re.MULTILINE)
+    m = re.search(r"^\s*" + FM_TAGS + r"\s*:\s*\[([^\]]*)\]", fm_text, re.MULTILINE)
     if m:
         return [_strip_quotes(p) for p in m.group(1).split(",") if p.strip()]
 
     # Single scalar
     m = re.search(
-        r"^\s*tags\s*:\s*([\'\"]?[^\n\'\"]+[\'\"]?)\s*$", fm_text, re.MULTILINE
+        r"^\s*" + FM_TAGS + r"\s*:\s*([\'\"]?[^\n\'\"]+[\'\"]?)\s*$",
+        fm_text,
+        re.MULTILINE,
     )
     if m:
         return [_strip_quotes(m.group(1))]
@@ -483,7 +507,7 @@ def parse_tags_from_text(text: str) -> list[str]:
     block_start = None
     lines_fm = fm_text.splitlines()
     for idx, line in enumerate(lines_fm):
-        if re.match(r"^\s*tags\s*:\s*$", line):
+        if re.match(r"^\s*" + FM_TAGS + r"\s*:\s*$", line):
             block_start = idx
             break
     if block_start is not None:
@@ -503,7 +527,7 @@ def run_tag_stats(
     counter = Counter()
     files_for_tag = defaultdict(list)
 
-    for md in content_dir.rglob("*.md"):
+    for md in content_dir.rglob(f"*{MD_EXT}"):
         try:
             text = md.read_text(encoding="utf-8")
         except Exception:
@@ -552,9 +576,9 @@ def check_file(p: Path, content_root: Path) -> list[str]:
         errors.append("Missing frontmatter")
     else:
         fm = parse_fm(fm_lines)
-        if "title" not in fm or not fm["title"].strip():
-            errors.append("Missing 'title' in frontmatter")
-        if "date" not in fm and "lastmod" not in fm:
+        if FM_TITLE not in fm or not fm[FM_TITLE].strip():
+            errors.append(f"Missing '{FM_TITLE}' in frontmatter")
+        if FM_DATE not in fm and FM_LASTMOD not in fm:
             # Optional warning, but good to have
             pass
 
@@ -581,16 +605,16 @@ def check_file(p: Path, content_root: Path) -> list[str]:
             # We'll just check content for now
             target = content_root / link.lstrip("/")
             if not target.exists() and not target.with_suffix(".md").exists():
-                 # Try static?
-                 # simplistic check:
-                 pass
+                # Try static?
+                # simplistic check:
+                pass
         else:
             target = base_dir / link
 
         # If it's an MD link, maybe it dropped the extension?
         if target and not target.exists():
-             if target.with_suffix(".md").exists():
-                 target = target.with_suffix(".md")
+            if target.with_suffix(MD_EXT).exists():
+                target = target.with_suffix(MD_EXT)
 
         # If still not found
         if target and not target.exists():
@@ -599,7 +623,7 @@ def check_file(p: Path, content_root: Path) -> list[str]:
                 # TODO: Check file existence ignoring anchor
                 pass
             else:
-                 errors.append(f"Broken link: {link}")
+                errors.append(f"Broken link: {link}")
 
     # 3. Image Validation
     # Matches ![Alt](src)
@@ -611,12 +635,12 @@ def check_file(p: Path, content_root: Path) -> list[str]:
 
         target = None
         if src.startswith("/"):
-             # Absolute path in Hugo usually maps to static/
-             # We need to find static dir relative to content_root
-             static_dir = content_root.parent / "static"
-             target = static_dir / src.lstrip("/")
+            # Absolute path in Hugo usually maps to static/
+            # We need to find static dir relative to content_root
+            static_dir = content_root.parent / "static"
+            target = static_dir / src.lstrip("/")
         else:
-             target = base_dir / src
+            target = base_dir / src
 
         if target and not target.exists():
             errors.append(f"Missing image: {src}")
@@ -627,7 +651,7 @@ def check_file(p: Path, content_root: Path) -> list[str]:
 def run_check(content_dir: Path) -> None:
     print("Running check...")
     error_count = 0
-    for p in sorted(content_dir.rglob("*.md")):
+    for p in sorted(content_dir.rglob(f"*{MD_EXT}")):
         if p.name.startswith("."):
             continue
         file_errors = check_file(p, content_dir)
@@ -680,9 +704,9 @@ def main():
     else:
         base_dir = script_path.parent
 
-    site_dir = base_dir / "site"
-    content_dir = site_dir / "content"
-    archetypes_dir = site_dir / "archetypes"
+    site_dir = base_dir / SITE_DIR
+    content_dir = site_dir / CONTENT_DIR
+    archetypes_dir = site_dir / ARCHETYPES_DIR
 
     if args.command == "tidy":
         run_normalize(content_dir)
