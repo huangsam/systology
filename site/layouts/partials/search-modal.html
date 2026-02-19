@@ -1,0 +1,176 @@
+<div id="site-search-modal" class="site-search-modal-container" style="display: none;">
+  <div class="site-search-overlay" data-close-search></div>
+  <div class="site-search-modal">
+    <div class="site-search-header">
+      <div class="site-search-input-wrapper">
+        <span class="site-search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input type="text" class="site-search-input" id="site-search-input"
+          placeholder="Search designs, principles, deep dives..." aria-label="Search" autocomplete="off" />
+        <button class="site-search-close" data-close-search>&times;</button>
+      </div>
+    </div>
+    <div class="site-search-body">
+      <div id="site-search-default" class="site-search-default">
+        <div class="site-search-quick-links">
+          <a href="/categories/" class="site-search-cta">
+            <span class="site-search-cta-icon">📂</span>
+            <span class="site-search-cta-text">All Categories</span>
+            <span class="site-search-cta-arrow">→</span>
+          </a>
+          <a href="/tags/" class="site-search-cta">
+            <span class="site-search-cta-icon">🏷️</span>
+            <span class="site-search-cta-text">All Tags</span>
+            <span class="site-search-cta-arrow">→</span>
+          </a>
+        </div>
+      </div>
+      <div id="site-search-results-list" style="display: none;">
+        <!-- Results injected here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let searchIndex = null;
+    let debounceTimer = null;
+    const searchModal = document.getElementById('site-search-modal');
+    const searchInput = document.getElementById('site-search-input');
+    const searchDefault = document.getElementById('site-search-default');
+    const searchResultsList = document.getElementById('site-search-results-list');
+    const closeButtons = document.querySelectorAll('[data-close-search]');
+    const openButtons = document.querySelectorAll('[data-open-search]');
+
+    if (!searchModal) return;
+
+    // Move modal to body end to avoid z-index/transform issues and ensure proper layering
+    document.body.appendChild(searchModal);
+
+    // Load search index
+    let indexLoaded = false;
+    function loadIndex() {
+      if (indexLoaded) return;
+      fetch('/search-index.json')
+        .then(res => res.json())
+        .then(data => {
+          searchIndex = data.documents;
+          indexLoaded = true;
+        })
+        .catch(err => console.error('Failed to load search index:', err));
+    }
+
+    // Open Modal
+    function openSearch() {
+      loadIndex();
+      searchModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+
+      // Allow time for display:flex to apply
+      setTimeout(() => {
+        searchInput.focus();
+        // Reset to default state
+        if (!searchInput.value.trim()) {
+          searchDefault.style.display = 'block';
+          searchResultsList.style.display = 'none';
+        } else {
+          // If there was a leftover value, trigger search or just show it (optional)
+          performSearch(searchInput.value);
+        }
+      }, 50);
+    }
+
+    // Close Modal
+    function closeSearch() {
+      searchModal.style.display = 'none';
+      document.body.style.overflow = ''; // Revert to previous value
+      searchInput.value = '';
+      searchResultsList.innerHTML = ''; // Clear results
+      // Reset visibility
+      searchDefault.style.display = 'block';
+      searchResultsList.style.display = 'none';
+    }
+
+    // Event Listeners for Open
+    openButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openSearch();
+      });
+    });
+
+    // Event Listeners for Close
+    closeButtons.forEach(btn => {
+      btn.addEventListener('click', closeSearch);
+    });
+
+    // Search Logic
+    function performSearch(query) {
+      if (!searchIndex) return;
+
+      if (!query.trim()) {
+        searchDefault.style.display = 'block';
+        searchResultsList.style.display = 'none';
+        searchResultsList.innerHTML = '';
+        return;
+      }
+
+      // Hide default, show results
+      searchDefault.style.display = 'none';
+      searchResultsList.style.display = 'block';
+
+      query = query.toLowerCase();
+      const results = searchIndex.filter(doc => {
+        const content = doc.content.toLowerCase();
+        const title = doc.title.toLowerCase();
+        const tags = (doc.tags || []).join(' ').toLowerCase();
+        return content.includes(query) || title.includes(query);
+      }).slice(0, 15);
+
+      if (results.length === 0) {
+        searchResultsList.innerHTML = '<p class="site-search-no-results">No results found.</p>';
+      } else {
+        searchResultsList.innerHTML = results.map(doc => `
+        <a href="${doc.url}" class="site-search-result">
+          <div class="site-search-result-title">${doc.title}</div>
+          <div class="site-search-result-preview">${doc.preview}</div>
+          <div class="site-search-result-meta">
+            <span class="site-search-badge-category">${doc.category}</span>
+            ${doc.tags.map(tag => `<span class="site-search-badge">${tag}</span>`).join('')}
+          </div>
+        </a>
+      `).join('');
+      }
+    }
+
+    searchInput.addEventListener('input', function (e) {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        performSearch(e.target.value);
+      }, 300);
+    });
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', function (e) {
+      // Cmd/Ctrl + K to open
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (searchModal.style.display === 'none' || searchModal.style.display === '') {
+          openSearch();
+        } else {
+          closeSearch();
+        }
+      }
+      // Escape to close
+      if (e.key === 'Escape' && searchModal.style.display === 'flex') {
+        closeSearch();
+      }
+    });
+  });
+</script>
