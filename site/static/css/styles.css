@@ -502,6 +502,7 @@ th {
 .site-header {
   border-bottom: 1px solid var(--border);
   background: transparent;
+  transition: var(--transition);
 }
 
 .site-header .container {
@@ -558,6 +559,7 @@ th {
   color: var(--muted);
   font-size: 0.95rem;
   padding: var(--space-lg) 0 var(--space-2xl);
+  transition: var(--transition);
 }
 
 .footer-inner {
