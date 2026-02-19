@@ -38,11 +38,6 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  height: 100%;
-}
-
 body {
   margin: 0;
   background: var(--bg);
@@ -57,20 +52,27 @@ body {
   transition:
     background-color 0.18s ease,
     color 0.18s ease;
+  overflow-anchor: none;
+
+  /* Sticky Footer via Grid */
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 
 /* ==============================
    Layout & Spacing
    ============================== */
 .container {
+  width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
 
 main.container {
-  margin-top: 1.5rem;
-  margin-bottom: 2.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
 }
 
 :focus-visible {
@@ -90,8 +92,9 @@ main.container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding: 1rem var(--gutter);
+  gap: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .brand {
@@ -177,18 +180,19 @@ main.container {
 /* ==============================
    Components: Cards
    ============================== */
-.card {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01));
-  border: 1px solid var(--border);
-  padding: 1rem;
-  border-radius: 12px;
-}
-
+.card,
 .post-card {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01));
   border: 1px solid var(--border);
-  padding: 1.25rem;
   border-radius: 12px;
+}
+
+.card {
+  padding: 1rem;
+}
+
+.post-card {
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -228,6 +232,7 @@ main.container {
 .badge {
   display: inline-flex;
   align-items: center;
+  gap: 0.25rem;
   padding: 0.25rem 0.625rem;
   background: var(--accent-weak);
   border: 1px solid rgba(37, 99, 235, 0.2);
@@ -250,7 +255,7 @@ main.container {
 .draft-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.5rem;
+  padding: 0.125rem 0.5rem;
   background: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 4px;
@@ -260,7 +265,6 @@ main.container {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-left: 0.75rem;
-  vertical-align: middle;
 }
 
 [data-theme="dark"] .draft-badge {
@@ -272,7 +276,7 @@ main.container {
 .link-pill {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.5rem;
+  padding: 0.125rem 0.5rem;
   background: var(--accent-weak);
   border: 1px solid rgba(37, 99, 235, 0.2);
   border-radius: 4px;
@@ -282,7 +286,6 @@ main.container {
   font-weight: 700;
   letter-spacing: 0.05em;
   margin-left: 0.75rem;
-  vertical-align: middle;
   transition:
     background-color 0.18s ease,
     border-color 0.18s ease;
@@ -491,15 +494,15 @@ th {
 /* ==============================
    Article Header
    ============================== */
-article>header {
+article > header {
   margin-bottom: 1rem;
 }
 
-article>header h2 {
+article > header h2 {
   margin: 0.25rem 0 0.5rem;
 }
 
-article>header div.tags {
+article > header div.tags {
   margin: 0.5rem 0;
 }
 
@@ -511,7 +514,7 @@ div.tags {
   margin: 0.75rem 0;
 }
 
-div.tags>span {
+div.tags > span {
   font-weight: 600;
   color: var(--text);
 }
@@ -818,13 +821,9 @@ span.muted {
     height: 1.25rem;
   }
 
-  .container {
-    margin: 0.5rem auto;
-  }
-
   main.container {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 }
 
