@@ -35,14 +35,14 @@ Design a ticketing or flash sale system capable of handling millions of users si
 
 {{< mermaid >}}
 graph TD
-  Users --> Edge
-  Edge --> WaitRoom[Wait Room]
-  WaitRoom --> GW[Gateway]
-  GW --> Reserve
-  Reserve --> Redis[(Redis)]
-  Reserve --> Orders[(Orders)]
-  GW --> Payment
-  Payment --> Orders
+    Users --> Edge
+    Edge --> WaitRoom[Wait Room]
+    WaitRoom --> GW[Gateway]
+    GW --> Reserve
+    Reserve --> Redis[(Redis)]
+    Reserve --> Orders[(Orders)]
+    GW --> Payment
+    Payment --> Orders
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

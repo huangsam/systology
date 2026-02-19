@@ -34,14 +34,14 @@ Design a system to aggregate millions of ad click events in real-time to provide
 
 {{< mermaid >}}
 graph LR
-  SDK --> Ingest
-  Ingest --> Kafka
-  Kafka --> Dedup
-  Dedup --> Agg
-  Agg --> OLAP[(OLAP)]
-  OLAP --> Query
-  Kafka --> Fraud
-  Fraud -.->|flag| Dedup
+    SDK --> Ingest
+    Ingest --> Kafka
+    Kafka --> Dedup
+    Dedup --> Agg
+    Agg --> OLAP[(OLAP)]
+    OLAP --> Query
+    Kafka --> Fraud
+    Fraud -.->|flag| Dedup
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

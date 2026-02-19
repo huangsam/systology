@@ -34,15 +34,15 @@ Build a platform for federated learning that trains models across distributed de
 
 {{< mermaid >}}
 graph TD
-  Coordinator[Coordinator] -->|broadcast model params| Selector[Device Selector]
-  Selector --> DeviceA[Device A]
-  Selector --> DeviceB[Device B]
-  Selector --> DeviceN["Device N (...)"]
-  DeviceA -->|encrypted update| Aggregator[Secure Aggregator]
-  DeviceB -->|encrypted update| Aggregator
-  DeviceN -->|encrypted update| Aggregator
-  Aggregator --> GlobalModel[(Global Store)]
-  GlobalModel -->|averaged params| Coordinator
+    Coordinator[Coordinator] -->|broadcast model params| Selector[Device Selector]
+    Selector --> DeviceA[Device A]
+    Selector --> DeviceB[Device B]
+    Selector --> DeviceN["Device N (...)"]
+    DeviceA -->|encrypted update| Aggregator[Secure Aggregator]
+    DeviceB -->|encrypted update| Aggregator
+    DeviceN -->|encrypted update| Aggregator
+    Aggregator --> GlobalModel[(Global Store)]
+    GlobalModel -->|averaged params| Coordinator
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

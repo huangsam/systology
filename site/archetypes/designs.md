@@ -35,9 +35,9 @@ Include a diagram and brief component responsibilities.
 
 {{< mermaid >}}
 graph LR
-  Client --> API[API Layer]
-  API --> Worker[Worker/Workers]
-  Worker --> Store[(Data store)]
+    Client --> API[API Layer]
+    API --> Worker[Worker/Workers]
+    Worker --> Store[(Data store)]
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

@@ -35,14 +35,14 @@ Create a system to migrate large volumes of data between systems while performin
 
 {{< mermaid >}}
 graph LR
-  Source --> Scanner
-  Scanner --> HashIndex[Hash Index]
-  Scanner --> Migrator
-  HashIndex --> Migrator
-  Migrator --> Target
-  Migrator -.->|checkpoint| StateDB[State DB]
-  Reconciler --> Source
-  Reconciler --> Target
+    Source --> Scanner
+    Scanner --> HashIndex[Hash Index]
+    Scanner --> Migrator
+    HashIndex --> Migrator
+    Migrator --> Target
+    Migrator -.->|checkpoint| StateDB[State DB]
+    Reconciler --> Source
+    Reconciler --> Target
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

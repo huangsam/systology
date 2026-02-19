@@ -35,19 +35,19 @@ Design a high-performance search and retrieval engine to index and query large v
 
 {{< mermaid >}}
 graph TD
-  Query["Query Input"] --> QP["Query Parser"]
-  QP --> Scatter["Scatter (Parallel)"]
-  Scatter --> Shard1["Shard 1 (Local RankK)"]
-  Scatter --> Shard2["Shard 2 (Local RankK)"]
-  Scatter --> ShardN["Shard N (Local RankK)"]
-  Shard1 --> Gather["Gather & Merge"]
-  Shard2 --> Gather
-  ShardN --> Gather
-  Gather --> Ranker["Re-Ranker"]
-  Ranker --> Results["Top-K Results"]
-  Indexer["Index Writer"] -.->|updates| Shard1
-  Indexer -.->|updates| Shard2
-  Indexer -.->|updates| ShardN
+    Query["Query Input"] --> QP["Query Parser"]
+    QP --> Scatter["Scatter (Parallel)"]
+    Scatter --> Shard1["Shard 1 (Local RankK)"]
+    Scatter --> Shard2["Shard 2 (Local RankK)"]
+    Scatter --> ShardN["Shard N (Local RankK)"]
+    Shard1 --> Gather["Gather & Merge"]
+    Shard2 --> Gather
+    ShardN --> Gather
+    Gather --> Ranker["Re-Ranker"]
+    Ranker --> Results["Top-K Results"]
+    Indexer["Index Writer"] -.->|updates| Shard1
+    Indexer -.->|updates| Shard2
+    Indexer -.->|updates| ShardN
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

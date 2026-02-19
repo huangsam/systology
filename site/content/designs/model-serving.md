@@ -34,25 +34,25 @@ Design an infrastructure to serve machine learning models for real-time inferenc
 
 {{< mermaid >}}
 graph TD
-  Client["Client<br/>(Inference Request)"]
-  Gateway["Gateway<br/>(Load Balance)"]
-  Router["Router<br/>(Canary Decision)"]
-  ServerA["Server A<br/>(Canary ~5-10%)"]
-  ServerB["Server B<br/>(Stable ~90-95%)"]
-  GPUA["GPU Pool A"]
-  GPUB["GPU Pool B"]
-  Registry["Model Registry<br/>(Versions)"]
-  Fallback["Fallback Model"]
-  Client --> Gateway
-  Gateway --> Router
-  Router -->|canary traffic| ServerA
-  Router -->|production traffic| ServerB
-  ServerA --> GPUA
-  ServerB --> GPUB
-  ServerA -.->|load| Registry
-  ServerB -.->|load| Registry
-  ServerA -.->|on error| Fallback
-  ServerB -.->|on error| Fallback
+    Client["Client<br/>(Inference Request)"]
+    Gateway["Gateway<br/>(Load Balance)"]
+    Router["Router<br/>(Canary Decision)"]
+    ServerA["Server A<br/>(Canary ~5-10%)"]
+    ServerB["Server B<br/>(Stable ~90-95%)"]
+    GPUA["GPU Pool A"]
+    GPUB["GPU Pool B"]
+    Registry["Model Registry<br/>(Versions)"]
+    Fallback["Fallback Model"]
+    Client --> Gateway
+    Gateway --> Router
+    Router -->|canary traffic| ServerA
+    Router -->|production traffic| ServerB
+    ServerA --> GPUA
+    ServerB --> GPUB
+    ServerA -.->|load| Registry
+    ServerB -.->|load| Registry
+    ServerA -.->|on error| Fallback
+    ServerB -.->|on error| Fallback
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

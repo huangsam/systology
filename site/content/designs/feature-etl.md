@@ -34,14 +34,14 @@ Build a robust ETL pipeline that extracts raw data from diverse sources, transfo
 
 {{< mermaid >}}
 graph LR
-  Raw[Raw Sources] --> Ingest
-  Ingest --> Lake
-  Lake --> Transform[DAG]
-  Transform --> FeatureStore[Store]
-  FeatureStore --> Training
-  Scheduler[Orchestrator] --> Ingest
-  Scheduler --> Transform
-  Transform -.->|lineage| Catalog
+    Raw[Raw Sources] --> Ingest
+    Ingest --> Lake
+    Lake --> Transform[DAG]
+    Transform --> FeatureStore[Store]
+    FeatureStore --> Training
+    Scheduler[Orchestrator] --> Ingest
+    Scheduler --> Transform
+    Transform -.->|lineage| Catalog
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

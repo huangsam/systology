@@ -34,11 +34,11 @@ Implement a distributed caching layer for a version control system to cache freq
 
 {{< mermaid >}}
 graph LR
-  Client --> LB[Load Balancer]
-  LB --> AppServer[App Server]
-  AppServer -->|cache-aside| Cache
-  AppServer -->|miss| Backend
-  Cache -.->|replication| CacheReplica[Replica]
+    Client --> LB[Load Balancer]
+    LB --> AppServer[App Server]
+    AppServer -->|cache-aside| Cache
+    AppServer -->|miss| Backend
+    Cache -.->|replication| CacheReplica[Replica]
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

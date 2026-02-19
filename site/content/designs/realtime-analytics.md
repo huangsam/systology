@@ -35,13 +35,13 @@ Design a scalable system to ingest and process high-volume user event streams fr
 
 {{< mermaid >}}
 graph LR
-  App --> Collector
-  Collector --> Kafka
-  Kafka --> StreamProc[Processor]
-  StreamProc --> OLAP
-  OLAP --> Dashboard
-  StreamProc -.->|late| DLQ
-  Kafka -.->|archive| Lake
+    App --> Collector
+    Collector --> Kafka
+    Kafka --> StreamProc[Processor]
+    StreamProc --> OLAP
+    OLAP --> Dashboard
+    StreamProc -.->|late| DLQ
+    Kafka -.->|archive| Lake
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

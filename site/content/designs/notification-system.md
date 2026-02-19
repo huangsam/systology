@@ -35,18 +35,18 @@ Build a central notification system that allows various internal services to sen
 
 {{< mermaid >}}
 graph TD
-  Services --> API
-  API --> Router
-  Router --> HQ[High Q]
-  Router --> NQ[Normal Q]
-  Router --> LQ[Low Q]
-  HQ --> Dispatch
-  NQ --> Dispatch
-  LQ --> Dispatch
-  Dispatch --> Push
-  Dispatch --> SMS
-  Dispatch --> Email
-  Dispatch --> Tracker[(Tracker)]
+    Services --> API
+    API --> Router
+    Router --> HQ[High Q]
+    Router --> NQ[Normal Q]
+    Router --> LQ[Low Q]
+    HQ --> Dispatch
+    NQ --> Dispatch
+    LQ --> Dispatch
+    Dispatch --> Push
+    Dispatch --> SMS
+    Dispatch --> Email
+    Dispatch --> Tracker[(Tracker)]
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

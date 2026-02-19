@@ -34,14 +34,14 @@ Design a service that allows users to search for businesses or points of interes
 
 {{< mermaid >}}
 graph TD
-  Mobile --> LB
-  LB --> Read[Read API]
-  LB --> Write[Write API]
-  Read --> Cache[(Cache)]
-  Cache -.->|miss| Spatial[(Spatial DB)]
-  Write --> Spatial
-  Write --> Ingest
-  Ingest --> Spatial
+    Mobile --> LB
+    LB --> Read[Read API]
+    LB --> Write[Write API]
+    Read --> Cache[(Cache)]
+    Cache -.->|miss| Spatial[(Spatial DB)]
+    Write --> Spatial
+    Write --> Ingest
+    Ingest --> Spatial
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

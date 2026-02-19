@@ -35,16 +35,16 @@ Design a robust payment system that processes customer transactions via third-pa
 
 {{< mermaid >}}
 graph TD
-  Client --> API
-  API --> PSM[State Machine]
-  PSM --> GW[Gateway]
-  GW --> Stripe
-  GW --> PayPal
-  PSM --> Ledger[(Ledger)]
-  PSM --> Bus[Events]
-  Bus --> Hooks[Webhooks]
-  Bus --> Recon
-  Recon --> Ledger
+    Client --> API
+    API --> PSM[State Machine]
+    PSM --> GW[Gateway]
+    GW --> Stripe
+    GW --> PayPal
+    PSM --> Ledger[(Ledger)]
+    PSM --> Bus[Events]
+    Bus --> Hooks[Webhooks]
+    Bus --> Recon
+    Recon --> Ledger
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs

@@ -34,13 +34,13 @@ Develop a global media serving system that efficiently delivers static and dynam
 
 {{< mermaid >}}
 graph LR
-  Users --> CDN
-  CDN -->|miss| Shield
-  Shield -->|miss| Origin
-  Origin --> Storage
-  Uploader --> Transcoder
-  Transcoder --> Storage
-  Transcoder --> CDN
+    Users --> CDN
+    CDN -->|miss| Shield
+    Shield -->|miss| Origin
+    Origin --> Storage
+    Uploader --> Transcoder
+    Transcoder --> Storage
+    Transcoder --> CDN
 {{< /mermaid >}}
 
 ## 3. Deep Dive & Trade-offs
