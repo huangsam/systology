@@ -48,6 +48,5 @@ draft: false
 
 ## Risks & Mitigations
 
-- **Accidental mass changes:** require `--dry-run` and explicit `--apply --confirm` flags; implement undo via saved filter definitions and a reversible action log.
 - **OAuth/credentials leaks:** encrypt tokens at rest; use OS keychain when available; rotate refresh tokens and surface reauth UX.
 - **Privacy violation from cloud embeddings:** default to local embeddings; if cloud is enabled, show explicit consent and purge raw message text after embedding.

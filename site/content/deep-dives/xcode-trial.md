@@ -11,7 +11,7 @@ draft: false
 
 ## Context — Problem — Solution
 
-**Context:** `xcode-trial` is a Swift-based multimodal video analysis tool leveraging Apple-native frameworks—AVFoundation for media IO, Vision for computer vision tasks (face detection, scene classification, text recognition), and Core Image for image transforms. It targets macOS 12.0+ and requires Xcode 13.0+, producing JSON output for downstream analysis.
+**Context:** `xcode-trial` is a Swift-based multimodal video analysis tool leveraging Apple-native frameworks—AVFoundation for media IO, Vision for computer vision tasks (face detection, scene classification, text recognition), and Core Image for image transforms. It targets macOS 15.0+ and Xcode 26.0+, producing JSON output for downstream analysis.
 
 **Problem:** Orchestrating multimodal analysis components on macOS requires understanding Apple's framework ecosystem (Vision, AVFoundation, Core Image), managing analysis across multiple extraction tracks (faces, scenes, colors, motion, audio, text), and producing structured output suitable for ML pipelines. Apple's frameworks are powerful but impose their own threading and callback constraints.
 
@@ -37,6 +37,6 @@ draft: false
 
 ## Risks & Mitigations
 
-- **API drift across macOS versions:** pin minimum macOS version (12.0+) and Xcode version (13.0+), add CI matrix jobs across macOS versions. Vision API availability varies by version—use `#available` checks and provide fallback paths.
+- **API drift across macOS versions:** pin minimum macOS version and Xcode version, add CI matrix jobs across macOS versions. Vision API availability varies by version—use `#available` checks and provide fallback paths.
 - **Memory pressure on long videos:** stream frames with a bounded buffer and release resources eagerly. Monitor with `os_signpost` to detect memory pressure events.
 - **CI environment constraints:** macOS CI runners may have limited GPU access. Ensure the pipeline degrades gracefully when hardware acceleration is unavailable, falling back to CPU-based processing with clear logging of the compute path.
