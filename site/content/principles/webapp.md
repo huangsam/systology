@@ -2,7 +2,7 @@
 title: "Web App"
 description: "Designing apps based on 12-factor principles."
 summary: "Guiding principles for production-ready web apps (12-factor-inspired): scaling, static/media handling, background work, CI/CD, and observability."
-tags: []
+tags: ["extensibility"]
 categories: ["principles"]
 draft: false
 ---

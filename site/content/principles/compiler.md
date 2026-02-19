@@ -13,8 +13,6 @@ Maintain clear separation between parsing, semantic analysis, and IR lowering wi
 
 In practice, each compiler phase should consume a well-typed input and produce a well-typed output. The parser emits an AST, semantic analysis produces an annotated AST, and lowering generates an IR—each boundary is a contract. When you need to change how optimization works, you modify one pass without worrying about ripple effects in parsing or code generation.
 
-See how [Virtuc]({{< ref "/deep-dives/virtuc" >}}) implements this separation with distinct parsing, semantic, and code-generation stages—each independently testable.
-
 **Anti-pattern — Monolithic Pass:** Combining parsing, type-checking, and code generation into a single function. This makes bugs nearly impossible to isolate and kills incremental compilation potential. If adding a new language feature requires touching every stage simultaneously, your boundaries are too blurry.
 
 ## Deterministic Semantics
@@ -29,7 +27,13 @@ Write a specification (even an informal one) that answers: what happens for ever
 
 Provide diagnostics linked to source locations with actionable recovery suggestions; error messages are the first impression users have of your compiler, so they should be designed for clarity over terseness.
 
-Great error messages include: (1) where the error is (file, line, column with a source snippet), (2) what went wrong in plain language, and (3) how to fix it. Rust's compiler errors are the gold standard—study them. Consider colorized output, ASCII art for pointer arrows, and "did you mean?" suggestions for typos.
+Great error messages include:
+
+1. Where the error is (file, line, column with a source snippet)
+2. What went wrong in plain language
+3. How to fix it
+
+Rust's compiler errors are the gold standard—study them. Consider colorized output, ASCII art for pointer arrows, and "did you mean?" suggestions for typos.
 
 **Anti-pattern — Cryptic Error Codes:** Emitting `"E0042: type mismatch"` with no context. If the user has to search a separate manual to understand an error, you've failed at UX. Inline the explanation and show the relevant code snippet with the mismatch highlighted.
 
@@ -50,8 +54,6 @@ Cache artifacts and track dependencies to avoid recompiling unchanged modules, s
 The key insight is dependency tracking: for each compilation unit, record what it depends on (imported symbols, macros, type definitions). When a dependency changes, invalidate only the affected units. Use content hashing (not timestamps) to detect actual changes—a file save that doesn't change content shouldn't trigger recompilation.
 
 **Anti-pattern — Cache Everything Forever:** Aggressively caching without proper invalidation logic. Stale caches cause mysterious "it works after a clean build" bugs that destroy trust in the build system. When in doubt, invalidate more rather than less—correctness over speed.
-
-See the [Virtuc deep-dive]({{< ref "/deep-dives/virtuc" >}}) for discussion of incremental strategies in an educational compiler context.
 
 ## IR Validation
 

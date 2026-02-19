@@ -11,9 +11,12 @@ draft: false
 
 Define trait/interface contracts for swappable implementations (e.g., different Beam runners, different migration backends) and ensure each implementation is fully tested. This abstraction lets users choose their optimal backend without rewriting application code.
 
-The pattern is: define a trait or interface with the operations your system needs, then implement it for each backend. Consumers depend only on the trait, not the concrete type. In Rust this means `trait Backend { fn execute(&self, ...) -> Result<...>; }` with implementations for each runner. In Python, use Protocol classes or abstract base classes.
+The pattern is: define a trait or interface with the operations your system needs, then implement it for each backend. Consumers depend only on the trait, not the concrete type.
 
-See how [Beam Trial]({{< ref "/deep-dives/beam-trial" >}}) abstracts across DirectRunner, FlinkRunner, and DataflowRunner, and how [Photohaul]({{< ref "/deep-dives/photohaul" >}}) supports multiple migration backends (S3, Dropbox, Google Drive, SFTP) behind a common interface.
+- In Rust this means `trait Backend { ... }` with implementations for each runner
+- In Python, use `ABC` or duck typing with clear documentation of expected methods
+- In Java, define an interface and implement it for each backend
+- In Go, define an interface and implement it with different structs
 
 **Anti-pattern — Leaky Abstraction Avalanche:** Creating an abstraction that works for one backend but forces awkward workarounds for others. If every new backend requires special-casing in the consumer code, the abstraction is adding complexity rather than removing it. Test-drive abstractions with at least two concrete implementations before committing to the interface.
 

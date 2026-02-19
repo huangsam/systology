@@ -13,8 +13,6 @@ Choose batch processing (Spark) for bounded, rebuiltable datasets and streaming 
 
 Event-time processing answers the question "when did this actually happen?" rather than "when did the system see it?" This distinction is critical for analytics correctness—a click that happened at 11:59 PM should land in yesterday's report even if it arrives at 12:03 AM. Watermarks define "how long do we wait for stragglers?" and directly control the latency-completeness tradeoff.
 
-See how [Beam Trial]({{< ref "/deep-dives/beam-trial" >}}) demonstrates runner semantics and IO sharding behavior, and how [Flink Trial]({{< ref "/deep-dives/flink-trial" >}}) explores event-time windows and side outputs for late data handling.
-
 **Anti-pattern — Processing-time Everything:** Using processing-time windows because they're simpler. This works until data arrives out of order (network delays, partition lag, mobile offline sync), at which point your aggregates silently become wrong. Use event-time from the start and save yourself a painful migration later.
 
 ## Fault Tolerance & State

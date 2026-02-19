@@ -74,5 +74,3 @@ Partition work by natural keys (file ID, user ID, shard number) and assign parti
 For CPU-bound work (hashing, compression, solving), thread pools with work-stealing (Rayon in Rust, `ForkJoinPool` in Java) are effective. For IO-bound work (API calls, file downloads), async task pools or process pools avoid GIL contention in Python.
 
 **Anti-pattern — Parallelism Without Measurement:** Spinning up 64 threads because "more is faster." Thread contention, context switching, and memory overhead can make parallel code slower than sequential. Benchmark with varying worker counts and find the knee of the curve. See the [Background Job Queue]({{< ref "/designs/background-job-queue" >}}) design for a production-grade approach to worker scaling.
-
-See how [Photohaul]({{< ref "/deep-dives/photohaul" >}}) uses configurable concurrency for hashing and uploads—parallelism helps but synchronization overhead grows with concurrency.
