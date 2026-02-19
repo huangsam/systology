@@ -149,39 +149,6 @@ main.container {
   display: none;
 }
 
-/* Scroll-to-top button */
-.scroll-top {
-  position: fixed;
-  bottom: var(--space-3xl-plus);
-  right: var(--space-2xl);
-  width: var(--space-4xl);
-  height: var(--space-4xl);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: var(--bg);
-  color: var(--muted);
-  font-size: 1.1rem;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: var(--transition-long);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  z-index: 50;
-}
-
-.scroll-top.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.scroll-top:hover,
-.scroll-top:focus-visible {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: var(--bg);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.1);
-}
-
 /* Pagination */
 .pagination {
   display: flex;
@@ -830,13 +797,5 @@ span.muted {
 @media (min-width: 641px) and (max-width: 700px) {
   :root {
     --gutter: var(--space-xl);
-  }
-}
-
-/* Medium screens (max 900px) */
-@media (max-width: 900px) {
-  .scroll-top {
-    opacity: 0 !important;
-    pointer-events: none !important;
   }
 }
