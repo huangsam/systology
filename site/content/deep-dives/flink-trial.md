@@ -31,6 +31,7 @@ draft: false
 
 - **My Project:** Demonstration-grade streaming with common patterns (side outputs, windowed counts).
 - **Industry:** Production streaming includes event-time watermarks, late data handling, monitoring, and autoscaling of task managers.
+- **Gap Analysis:** For production deployments, implement event-time windowing with watermarks, late data handling policies, comprehensive dashboards for job health/latency/throughput, and dynamic task manager scaling based on backpressure.
 
 ## Experiments & Metrics
 

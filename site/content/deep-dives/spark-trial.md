@@ -31,6 +31,7 @@ draft: false
 
 - **My Project:** Practical ETL example focused on reproducible analytics for public datasets.
 - **Industry:** Production ETL adds orchestration (Airflow/Argo), data cataloging, monitoring, and schema evolution tooling.
+- **Gap Analysis:** To reach production readiness, integrate with workflow orchestration for scheduling and error recovery, add data lineage and schema versioning systems, implement comprehensive monitoring (job metrics, data quality checks), and automate handling of schema evolution and drift.
 
 ## Experiments & Metrics
 

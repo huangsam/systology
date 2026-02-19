@@ -31,6 +31,7 @@ draft: false
 
 - **My Project:** Teaching-first, deterministic examples for learning Beam.
 - **Industry:** Production pipelines rely on robust runners, durable sources/sinks, and monitoring; ramping from examples requires addressing orchestration and operational concerns.
+- **Gap Analysis:** To move from learning examples to production, add durable sources/sinks, monitoring/alerting, orchestration (scheduling retries/restarts), and runner-specific performance tuning for the target execution environment (Flink/Dataflow/Spark).
 
 ## Experiments & Metrics
 
