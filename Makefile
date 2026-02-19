@@ -11,7 +11,7 @@ vendor:
 	@echo "Vendored mermaid $(VERSION) -> $(VENDOR)"
 
 index:
-	python3 scripts/generate_search_index.py
+	python3 manage.py index
 
 build: index
 	hugo -s site --minify --cleanDestinationDir
@@ -23,11 +23,7 @@ serve: index
 	hugo server -D -s site
 
 tidy:
-	python3 scripts/normalize_content.py
-	python3 scripts/add_summary_description.py
-	python3 scripts/update_internal_links.py
-	python3 scripts/sort_tags.py
-	python3 scripts/format_project.py
+	python3 manage.py tidy
 
 tags:
-	python3 scripts/tag_frequency.py --top 40
+	python3 manage.py stats --top 40
