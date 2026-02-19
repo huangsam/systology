@@ -10,9 +10,10 @@ Usage:
     python3 scripts/manage.py <command> [options]
 
 Commands:
-    tidy      Run full content normalization and formatting pipeline.
+    tidy      Run full tidy pipeline.
     index     Generate the Lunr.js search index.
     stats     Show tag frequency statistics.
+    check     Validate content across site.
 """
 
 import argparse
@@ -538,6 +539,111 @@ def run_tag_stats(
                 print(f"  - {f}")
 
 
+# --- Logic: check_content ---
+
+
+def check_file(p: Path, content_root: Path) -> list[str]:
+    errors = []
+    text = p.read_text(encoding="utf-8")
+    fm_lines, body_lines = extract_fm_body(text)
+
+    # 1. Frontmatter Validation
+    if fm_lines is None:
+        errors.append("Missing frontmatter")
+    else:
+        fm = parse_fm(fm_lines)
+        if "title" not in fm or not fm["title"].strip():
+            errors.append("Missing 'title' in frontmatter")
+        if "date" not in fm and "lastmod" not in fm:
+            # Optional warning, but good to have
+            pass
+
+    # 2. Internal Link Validation
+    # Matches [Label](link)
+    # Ignore http/https/mailto
+    base_dir = p.parent
+    links = re.findall(r"\[([^\]]+)\]\(([^)]+)\)", text)
+    for _, link in links:
+        link = link.strip()
+        if link.startswith(("#", "http", "https", "mailto:", "tel:")):
+            continue
+
+        # Handle Hugo relref/ref (skip for now or implement logic)
+        if "{{" in link or "}}" in link:
+            continue
+
+        # Resolve path
+        # If absolute in Hugo (starts with /), it's relative to content/ or static/
+        # Here we assume it's relative to content/ for MD files
+        target = None
+        if link.startswith("/"):
+            # Check content first, then static check is harder without static_dir context here
+            # We'll just check content for now
+            target = content_root / link.lstrip("/")
+            if not target.exists() and not target.with_suffix(".md").exists():
+                 # Try static?
+                 # simplistic check:
+                 pass
+        else:
+            target = base_dir / link
+
+        # If it's an MD link, maybe it dropped the extension?
+        if target and not target.exists():
+             if target.with_suffix(".md").exists():
+                 target = target.with_suffix(".md")
+
+        # If still not found
+        if target and not target.exists():
+            # Special case: anchors
+            if "#" in link:
+                # TODO: Check file existence ignoring anchor
+                pass
+            else:
+                 errors.append(f"Broken link: {link}")
+
+    # 3. Image Validation
+    # Matches ![Alt](src)
+    images = re.findall(r"!\[([^\]]*)\]\(([^)]+)\)", text)
+    for _, src in images:
+        src = src.strip()
+        if src.startswith(("http", "https", "data:")):
+            continue
+
+        target = None
+        if src.startswith("/"):
+             # Absolute path in Hugo usually maps to static/
+             # We need to find static dir relative to content_root
+             static_dir = content_root.parent / "static"
+             target = static_dir / src.lstrip("/")
+        else:
+             target = base_dir / src
+
+        if target and not target.exists():
+            errors.append(f"Missing image: {src}")
+
+    return errors
+
+
+def run_check(content_dir: Path) -> None:
+    print("Running check...")
+    error_count = 0
+    for p in sorted(content_dir.rglob("*.md")):
+        if p.name.startswith("."):
+            continue
+        file_errors = check_file(p, content_dir)
+        if file_errors:
+            print(f"\n{p.relative_to(content_dir.parent)}:")
+            for err in file_errors:
+                print(f"  - {err}")
+                error_count += 1
+
+    if error_count == 0:
+        print("  No issues found.")
+    else:
+        print(f"\n  Found {error_count} issues.")
+        # exit(1) # Optional: fail build if issues found
+
+
 # --- Main Entry Point ---
 
 
@@ -557,6 +663,9 @@ def main():
     stats_parser.add_argument("--top", type=int, default=0, help="Top N tags")
     stats_parser.add_argument("--json", action="store_true", help="JSON output")
     stats_parser.add_argument("--show-files", action="store_true", help="Show files")
+
+    # Check
+    subparsers.add_parser("check", help="Validate content")
 
     args = parser.parse_args()
 
@@ -585,6 +694,8 @@ def main():
         run_generate_index(content_dir)
     elif args.command == "stats":
         run_tag_stats(content_dir, args.min_count, args.top, args.json, args.show_files)
+    elif args.command == "check":
+        run_check(content_dir)
 
 
 if __name__ == "__main__":

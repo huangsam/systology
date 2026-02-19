@@ -25,5 +25,8 @@ serve: index
 tidy:
 	python3 manage.py tidy
 
+check:
+	python3 manage.py check
+
 tags:
 	python3 manage.py stats --top 40

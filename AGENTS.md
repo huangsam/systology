@@ -17,6 +17,7 @@ Some things to keep in mind when working with the site content and related agent
 
 - Preview changes locally (`make serve` / `hugo server -D`) and visually inspect affected pages.
 - Run content helpers and formatters: `make tidy`.
+- Run content validation: `make check`.
 - Use `make build` and inspect `site/public/` (or PR preview site) to smoke-check output.
 
 Do not run `make server` if it's already running. You can verify this with `lsof -i :1313`.
