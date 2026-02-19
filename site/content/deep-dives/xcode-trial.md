@@ -15,7 +15,7 @@ draft: false
 
 **Motivation:** I always wanted to see how Apple-native frameworks could be combined to perform comprehensive video analysis on macOS, leveraging hardware acceleration and modern Swift features while maintaining modularity and reproducibility.
 
-**Solution (high-level):** Build a modular pipeline with explicit analysis stages for each media dimension (faces, scenes, colors, motion, audio, text) using Apple-native APIs, compile via Swift Package Manager, and emit stable JSON outputs for downstream consumption.
+**Solution:** Build a modular pipeline with explicit analysis stages for each media dimension (faces, scenes, colors, motion, audio, text) using Apple-native APIs, compile via Swift Package Manager, and emit stable JSON outputs for downstream consumption.
 
 ## The Local Implementation
 

@@ -15,7 +15,7 @@ draft: false
 
 **Motivation:** Large inboxes and API rate limits make full audits slow and fragile. Users need actionable recommendations that preserve privacy, avoid accidental mass changes, and can be reviewed before applying.
 
-**Solution (high-level):** Keep processing local-first and privacy-preserving while improving robustness: resumable ingestion, durable processing state, cached semantic features, and staged, reversible recommendations.
+**Solution:** Keep processing local-first and privacy-preserving while improving robustness: resumable ingestion, durable processing state, cached semantic features, and staged, reversible recommendations.
 
 ## The Local Implementation
 

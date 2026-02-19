@@ -15,7 +15,7 @@ draft: false
 
 **Motivation:** Real-time streaming requires reliable windowing semantics (processing-time vs. event-time), proper error routing without blocking the main pipeline, state management for windowed aggregations, and fault tolerance that recovers from failures without data loss. These concerns interact in subtle ways—a wrong windowing choice silently produces incorrect aggregates that are difficult to detect after the fact.
 
-**Solution (high-level):** Use Flink-native APIs for processing-time windowed aggregation as a starting point, with side output patterns to route malformed events to error sinks, and a clear migration path toward event-time processing with watermarks, RocksDB state backend, and checkpoint-based fault tolerance for production scenarios.
+**Solution:** Use Flink-native APIs for processing-time windowed aggregation as a starting point, with side output patterns to route malformed events to error sinks, and a clear migration path toward event-time processing with watermarks, RocksDB state backend, and checkpoint-based fault tolerance for production scenarios.
 
 ## The Local Implementation
 

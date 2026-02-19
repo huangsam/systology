@@ -15,7 +15,7 @@ draft: false
 
 **Motivation:** I built part of a compiler in college with [huangsam/ec2prog](https://github.com/huangsam/ec2prog), but wanted to explore a more structured approach with Rust's type system, LLVM IR generation, and modern error reporting techniques.
 
-**Solution (high-level):** Enforce strict phase boundaries with well-typed intermediate representations between stages, implement Rust-inspired error diagnostics with source spans and recovery suggestions, add regression tests and IR-level validation, and provide tooling (`--dump-ast`, `--emit-llvm`) to visualize compilation phases for teaching and debugging.
+**Solution:** Enforce strict phase boundaries with well-typed intermediate representations between stages, implement Rust-inspired error diagnostics with source spans and recovery suggestions, add regression tests and IR-level validation, and provide tooling (`--dump-ast`, `--emit-llvm`) to visualize compilation phases for teaching and debugging.
 
 ## The Local Implementation
 

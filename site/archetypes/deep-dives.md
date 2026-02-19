@@ -13,7 +13,7 @@ draft: true
 
 **Motivation:** Clearly articulate the motivation behind the project or investigation. What specific problem or question are you trying to address? Why is it interesting or important?
 
-**Solution (high-level):** Summarize the approach taken to address the problem. What are the main components or strategies used?
+**Solution:** Summarize the approach taken to address the problem. What are the main components or strategies used?
 
 ## The Local Implementation
 

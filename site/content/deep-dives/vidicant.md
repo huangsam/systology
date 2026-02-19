@@ -15,7 +15,7 @@ draft: false
 
 **Motivation:** After experimenting with xcode-trial, I wanted to create a cross-platform solution that could handle large-scale video preprocessing for ML pipelines, leveraging C++ for performance-critical tasks and Python for ease of use and integration.
 
-**Solution (high-level):** Optimize core C++ algorithms for batch throughput with streaming decode, expose a stable Python API via pybind11 with well-defined output schemas, and provide multiple packaging channels (manylinux wheels, macOS universal2 wheels, cmake-based builds) to minimize installation friction. The C++ layer handles performance-critical work; Python provides the ergonomic interface.
+**Solution:** Optimize core C++ algorithms for batch throughput with streaming decode, expose a stable Python API via pybind11 with well-defined output schemas, and provide multiple packaging channels (manylinux wheels, macOS universal2 wheels, cmake-based builds) to minimize installation friction. The C++ layer handles performance-critical work; Python provides the ergonomic interface.
 
 ## The Local Implementation
 

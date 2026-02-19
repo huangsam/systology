@@ -15,7 +15,7 @@ draft: false
 
 **Motivation:** I have a deep interest in asking insightful questions about programming languages from time to time. One of the websites I keep coming back to is TIOBE, which has all the numbers but not as much about the language or the underlying concepts itself. When I want to try out a new language on that list, I want a chatbot that can answer questions about the language, its history, and its ecosystem based on the TIOBE content.
 
-**Solution (high-level):** Build a robust ingestion pipeline with versioned vector indices, combine BM25 and vector retrieval via Reciprocal Rank Fusion (RRF) with tunable weights, implement an automated evaluation harness (LLM-as-judge), and maintain strict local-first defaults with explicit opt-in for any cloud integration.
+**Solution:** Build a robust ingestion pipeline with versioned vector indices, combine BM25 and vector retrieval via Reciprocal Rank Fusion (RRF) with tunable weights, implement an automated evaluation harness (LLM-as-judge), and maintain strict local-first defaults with explicit opt-in for any cloud integration.
 
 ## The Local Implementation
 

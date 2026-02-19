@@ -15,7 +15,7 @@ draft: false
 
 **Motivation:** I have used Spark SQL and PySpark in the past, but also wanted to complete my understand of the Spark ecosystem by writing a Scala-based Spark application that handles real-world data challenges: schema drift across years, large IO volumes, and the need for reproducible analytics. The project serves as a practical example of Spark's core abstractions (DataFrames, Datasets, RDDs) and optimization techniques (partitioning, caching) while also addressing common pitfalls like schema evolution and data skew.
 
-**Solution (high-level):** Use Spark DataFrame best practices: schema-on-read, partition pruning, parquet predicate pushdown, and deterministic aggregation pipelines with tests and CI-friendly samples.
+**Solution:** Use Spark DataFrame best practices: schema-on-read, partition pruning, parquet predicate pushdown, and deterministic aggregation pipelines with tests and CI-friendly samples.
 
 ## The Local Implementation
 

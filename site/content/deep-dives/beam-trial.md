@@ -15,7 +15,7 @@ draft: false
 
 **Motivation:** Beam's programming model is deceptively simple—`PCollection` → `PTransform` → `PCollection`—but understanding how transforms compose, how IO works, and how the model maps to distributed execution requires hands-on experimentation. Developers need a clean, runnable starting point to build intuition before tackling production-scale pipelines.
 
-**Solution (high-level):** Provide a focused Hello World pipeline that demonstrates `Create`, `MapElements`, and `TextIO.write()` with the DirectRunner, establishing the Beam mental model (PCollections, PTransforms, coders) as a foundation for more complex pipeline work.
+**Solution:** Provide a focused Hello World pipeline that demonstrates `Create`, `MapElements`, and `TextIO.write()` with the DirectRunner, establishing the Beam mental model (PCollections, PTransforms, coders) as a foundation for more complex pipeline work.
 
 ## The Local Implementation
 
