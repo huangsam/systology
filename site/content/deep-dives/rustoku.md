@@ -22,11 +22,6 @@ draft: false
 - **Trace generation:** each solve step emits a structured record: `{ cell: (row, col), candidates: [digits], chosen: digit, technique: "naked_single" | "mrv_backtrack" | ... }`. These traces serve dual purposes—debugging incorrect solves and providing human-readable explanations of the solution path.
 - **Bottleneck:** Worst-case backtracking on adversarial puzzles (e.g., 17-clue minimal puzzles designed to maximize search depth) can still take milliseconds. Generator difficulty targeting is heuristic—clue count correlates with difficulty but doesn't guarantee it, so some generated "hard" puzzles solve in microseconds while some "medium" puzzles require deep backtracking.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Focus on algorithmic speedups and low-level optimizations rather than distributed scaling. For bulk generation (e.g., generating puzzle books), parallelize across worker threads using Rayon—each worker gets an independent RNG seeded deterministically from a master seed, ensuring the full batch is reproducible.
-- **State Management:** Record the master seed, per-puzzle seeds, and full solver traces to reproduce any puzzle and debug edge cases. Store generation metadata (seed, clue count, solve depth, solve time) alongside each puzzle for quality analysis.
-
 ## Comparison to Industry Standards
 
 - **My Project:** High-performance, explanatory solver with generation controls and human-like technique mapping. Prioritizes clarity and auditability alongside speed.

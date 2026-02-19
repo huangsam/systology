@@ -17,10 +17,6 @@ draft: true
 
 Describe the current implementation in detail: key components, workflows, and algorithms. Explain how the system currently works, including data structures, IO patterns, and concurrency models. Highlight bottlenecks, limitations, or areas where performance or scalability could be improved. Include code-level details or architectural decisions that are noteworthy.
 
-## Scaling Strategy
-
-Describe the approach to scaling—both vertical (single node optimization) and horizontal (distributed). What strategies were employed to handle increased load, complexity, or data volume? Include state management (checkpointing, persistence), sharding strategies, and incremental vs. full rebuild trade-offs. This section is critical for understanding the system's growth limits and evolution path.
-
 ## Comparison to Industry Standards
 
 Compare the approach taken in this deep dive to industry standards or best practices. What are the similarities and differences? What are the advantages and disadvantages of the chosen approach?

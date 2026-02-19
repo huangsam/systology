@@ -20,11 +20,6 @@ draft: false
 - **Current Logic:** Photohaul traverses file paths using configured `PathRuleSet`, computes photo hashes for deduplication, and migrates files via `PathMigrator` implementations (local path, S3, Dropbox, Google Drive, SFTP). It supports skipping unchanged files and has configuration-driven folder rules.
 - **Bottleneck:** IO-bound traversal and remote API latencies for cloud backends; deduplication hashing cost for large binary sets; ensuring metadata (EXIF) preservation across backends.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Increase local IO concurrency and parallelize hashing; for very large archives, partition traversal into shards (by time range or file tree) and run workers in parallel. For cloud migrations, use concurrent uploads with retry/backoff.
-- **State Management:** Introduce resumable job checkpoints (per-shard), a local SQLite/Postgres job-state table, and object manifest files for each migration run to enable idempotence and safe retries.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Focus on customizable folder rules, local-first processing, and multiple backend migrators.

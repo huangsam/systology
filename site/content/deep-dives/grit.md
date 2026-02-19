@@ -22,11 +22,6 @@ draft: false
 - **LRU caching strategy:** an LRU cache (`lru` crate, default 1024 entries) sits between object read requests and disk IO. Object lookups first check the cache by SHA; cache misses decompress from disk and populate the cache. Tree objects are cached separately since they're frequently re-read during status and diff operations (walking the tree for every `status` call without caching would read the same tree objects O(depth × files) times). Cache hit rates typically exceed 80% for `status` and `log` on repositories with stable working trees.
 - **Bottleneck:** Full Git compatibility for complex operations (merge, rebase, worktrees) requires significant additional implementation. Performance scaling for large repositories (100k+ objects) depends on efficient packfile support, which is not yet implemented—all objects are stored loose. Status checks on large working trees require efficient filesystem traversal with `.gritignore` pattern support.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Focus on single-machine performance with aggressive caching and parallelized filesystem operations. For `status`, parallel stat() calls across working tree files using Rayon, with the index serving as the expected-state reference. For `log`, lazy object loading—only decompress commit messages when needed for display.
-- **State Management:** LRU caches are persistent per CLI invocation (not across runs, for correctness). Incremental operations (add, status) read only changed entries by comparing working tree mtimes against the index.
-
 ## Comparison to Industry Standards
 
 - **My Project:** High-performance, educational Git implementation emphasizing the plumbing/porcelain architecture, LRU caching for read performance, and property-based correctness testing. Achieves 3–4× speedups over Git on small-repo micro-benchmarks (init ~2.1ms at 4.1×, add ~4.1ms at 3.4×, status ~5.4ms at 3.3×, commit ~6.0ms at 4.2×) due to lower startup overhead and the Myers diff algorithm implementation.

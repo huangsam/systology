@@ -22,11 +22,6 @@ draft: false
 - **Time semantics:** currently uses processing-time windows for simplicity. Events carry an `event_timestamp` field that enables migration to event-time processing with `WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(5))`, which tolerates up to 5 seconds of out-of-order delivery before closing windows.
 - **Bottleneck:** Processing-time windows are simple but don't correctly handle reprocessed events or late arrivals—aggregates can differ between runs of the same data. Local demo parallelism (1–2 task slots) doesn't reflect cluster-scale behavior where network shuffle between operators introduces real latency and backpressure dynamics.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Run on a Flink cluster (standalone or YARN/Kubernetes) for production. Scale parallelism per operator independently—the source and window operators often need different parallelism settings. Use Flink's reactive scaling (Kubernetes) to adjust TaskManagers based on backpressure signals.
-- **State Management:** Enable checkpoints with `env.enableCheckpointing(60_000)` (60s interval) using the `RocksDBStateBackend` for state that exceeds available heap. Configure state TTL (`StateTtlConfig.newBuilder(Time.hours(1))`) on windowed state to prevent unbounded growth from stale device keys. For exactly-once semantics with external sinks, use Flink's two-phase commit protocol with transactional sinks (Kafka, JDBC).
-
 ## Comparison to Industry Standards
 
 - **My Project:** Demonstration-grade streaming with common Flink patterns (side outputs, windowed counts, keyed state). Focused on illustrating Flink's native capabilities and operational model.

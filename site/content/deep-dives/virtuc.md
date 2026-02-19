@@ -21,11 +21,6 @@ draft: false
 - **Error reporting:** diagnostics include source file, line, column, a snippet of the offending code with an underline caret, and a suggestion when possible (e.g., `"did you mean 'int'?"` for typos). The parser implements error recovery by synchronizing on statement boundaries (semicolons, closing braces), allowing it to report multiple independent errors per compilation rather than bailing on the first one. Error output is modeled after Rust's compiler—clear, actionable, and never cryptic.
 - **Bottleneck:** Expanding the supported C subset (structs, unions, enums, switch statements) requires extending all four phases in coordination. Ensuring correct IR lowering for edge cases (pointer arithmetic, implicit integer promotions, short-circuit evaluation) requires both snapshot tests of emitted IR and end-to-end execution tests.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Not applicable in the distributed sense—focus on codebase modularity so each compiler phase can be extended independently. Incremental compilation metadata (content hashes of source files and their ASTs) enables skipping unchanged modules during rebuilds, speeding the developer feedback loop.
-- **State Management:** Cache parsed ASTs and generated IR keyed by source content hash. Track inter-module dependencies (which functions/types are imported from other modules) to invalidate only affected modules when a dependency changes. Use content hashing rather than timestamps to avoid phantom rebuilds.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Small, focused compiler aimed at education and experimentation with LLVM IR. Emphasizes clear phase boundaries, readable error messages, and inspectable intermediate representations over optimization depth.

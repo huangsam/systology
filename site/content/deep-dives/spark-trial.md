@@ -20,11 +20,6 @@ draft: false
 - **Current Logic:** A Scala/SBT project that downloads parquet-formatted trip data from public sources, loads into Spark, normalizes schemas across years, runs validations, and computes aggregated yearly and quarterly metrics with configurable year ranges and quarterly sampling (Jan/Apr/Jul/Oct).
 - **Bottleneck:** Large IO volume and schema drift across years; local runs are limited by available memory and CPU.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Move to cluster mode with sufficient executors for parallelism; optimize partitioning strategy and caching for repeated transforms.
-- **State Management:** Use checkpointing and write intermediate artifacts to durable storage (S3/HDFS) to avoid recomputation.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Practical ETL example focused on reproducible analytics for public datasets.

@@ -20,11 +20,6 @@ draft: false
 - **Current Logic:** Standard Django app with models for places and users, views for list/detail, demo fixtures for local testing, and management commands for setup. Development flow uses `virtualenv` or `docker-compose` for local stacks.
 - **Bottleneck:** Single-process dev server, static file handling in production, potential lack of connection pooling and background job processing for heavier workloads (image processing, notifications).
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Use Gunicorn with multiple workers behind a reverse proxy (nginx), scale horizontally with multiple application containers behind a load balancer. Use connection pooling (pgbouncer) for DB scale.
-- **State Management:** Store uploads in object storage (S3 or S3-compatible), use Redis for cache/session store and as a broker for background jobs (RQ/Celery). Migrate demo fixtures to seed scripts for reproducible environments.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Monolithic Django app focused on rapid dev and UX demos.

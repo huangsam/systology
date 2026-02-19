@@ -23,11 +23,6 @@ draft: false
 - **Privacy architecture:** no data leaves the device. Ollama runs models locally (currently qwen3 for generation, qwen3-embedding for embeddings), Chroma stores vectors on local disk or via a local Docker container, and the BM25 index is an in-memory structure rebuilt from local documents.
 - **Bottleneck:** Embedding generation is the ingestion bottleneck—Ollama on CPU can be slow per chunk, making large re-indexing runs time-consuming. Memory footprint grows with corpus size (Chroma vectors + BM25 term frequencies). The default corpus covers 50 programming languages plus 10 conceptual bridge pages, and extending to larger domains requires attention to chunk sizing and retrieval parameter tuning.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** For larger corpora, shard indices by domain or document collection and serve queries to a coordinating aggregator that merges RRF-fused results across shards. Use incremental indexing (content-hash-based diff detection) to avoid full re-embedding when only a few documents change—this reduces update cost from O(N) to O(changed).
-- **State Management:** Version vector indices with manifests, snapshot ingestion cursors (last-processed document hash), and store provenance metadata for all indexed documents. Use Docker Compose + Makefiles for reproducible local stacks. Maintain a mapping from document IDs to vector IDs for efficient deletion of stale vectors.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Local-only RAG with explicit reproducibility and privacy guarantees. No cloud dependencies. Hybrid retrieval with systematic evaluation. Suitable for personal knowledge bases and privacy-sensitive domains.

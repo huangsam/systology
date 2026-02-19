@@ -20,21 +20,6 @@ draft: false
 - **Current Logic:** Mailprune is a Python CLI that uses the Gmail API to fetch messages and metadata, computes sender-level statistics (volume, open-rate proxies, thread activity), clusters senders by content/behavior, and produces targeted recommendations (unsubscribe, filter, mute). It runs as a local audit: `uv run mailprune audit` pulls messages, analyzes them in parallel (thread/process pool), caches intermediate results, and writes reports to disk.
 - **Bottleneck:** Fetching messages at API rate limits and large inbox sizes creates IO-bound runs; memory and CPU usage spike during full-content clustering and embedding computation; OAuth token lifecycle and reauth flows complicate long-running jobs; absent persistent checkpoints, interrupted runs must restart from scratch.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:**
-    - Short term: vertical scaling (more CPU, faster IO) speeds up single-machine audits for tens of thousands of messages. Good for quick one-off cleans.
-    - Long term: horizontal scaling is required for recurring audits across many accounts or very large mailboxes. Partition by time ranges, labels, or sender shards and run worker pools (Celery / RQ / Dask) to parallelize ingestion and analysis.
-
-- **State Management:**
-    - Move from in-memory caches to durable stores: use Redis for ephemeral caches and rate-limit state, Postgres for normalized metadata (senders, message indexes, last-checked cursors), and object storage (S3/local FS) for raw export/archives.
-    - Add resumable ingestion checkpoints (per-label or per-page token) so interrupted runs resume incrementally.
-    - For semantic features, maintain a local vector store (Chroma/FAISS) to avoid re-embedding repeated content; version embeddings and control retention for privacy.
-
-- **Privacy-first considerations:**
-    - Default to local-only processing (no external embedding/LLM APIs). If cloud services are optional, gate them behind explicit user consent and document data flows.
-    - Encrypt at-rest artifacts (credentials, cached exports). Use short-lived OAuth tokens and secure storage for refresh tokens.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Mailprune — local-first, privacy-aware audits + explainable recommendations; focuses on sender clustering and engagement heuristics.

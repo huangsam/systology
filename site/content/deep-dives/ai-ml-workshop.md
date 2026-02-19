@@ -20,11 +20,6 @@ draft: false
 - **Current Logic:** A CLI-driven workshop centers on PyTorch examples (training, transfer learning, MPS optimization), Hugging Face integrations (datasets, tokenizers, model hubs), NumPy-from-scratch exercises for fundamentals, and scikit-learn algorithm demos. Notebooks, scripts, and `uv` tasks orchestrate experiments. RAG/agent demos and media feature extraction are maintained in `ragchain`, `mailprune`, `vidicant`, and `xcode-trial` respectively.
 - **Bottleneck:** Variation in hardware (MPS vs. CPU), inconsistent dependency pinning, and resource limits for transformer-scale experiments create noisy comparisons; large-model fine-tuning may be infeasible without PEFT techniques or smaller models.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Use vertical tuning (mixed precision, batch-size scaling) to maximize local hardware. For larger datasets, offload to reproducible CI runners or cloud spot instances with the same pinned environment.
-- **State Management:** Capture experiments with deterministic seeds, dataset checksums, and an artifact store (local FS or remote). Use a lightweight experiment-tracking dashboard (MLflow/simple TSV) for metrics.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Local-first, educational experiments with an emphasis on explainability and small-scale reproducibility.

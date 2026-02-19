@@ -22,11 +22,6 @@ draft: false
 - **Hardware acceleration:** Core Image filters and Vision requests automatically route to the GPU on Apple Silicon when available. The pipeline benefits from Apple's integrated hardware without requiring explicit Metal or Neural Engine configuration.
 - **Bottleneck:** Vision pipeline latency varies per request type—face detection, scene classification, and text recognition have different computational profiles. Coordinating results from multiple analysis tracks while preserving structure adds complexity. macOS version differences affect API availability for certain Vision request types.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Optimize for Apple Silicon—the frameworks automatically leverage GPU and hardware acceleration. For larger workloads (processing video libraries), run job-level parallelism across multiple macOS machines, with each handling a subset of files. Apple's frameworks are optimized for single-machine throughput on their own hardware.
-- **State Management:** Per-video checkpoints store the last processed frame index and accumulated features, enabling resume after interruption. Chunked processing (5-minute segments) bounds memory and allows intermediate result persistence for long videos.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Native macOS analysis leveraging Apple's Vision, AVFoundation, and Core Image frameworks for multimodal extraction. JSON output for downstream compatibility. Built with SPM for clean dependency management.

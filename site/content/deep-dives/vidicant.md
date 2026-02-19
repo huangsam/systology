@@ -21,11 +21,6 @@ draft: false
 - **C++/Python boundary design:** pybind11 bindings are defined in a single `vidicant_py.cpp` that exposes the high-level functions—not the internal OpenCV types. Python callers never handle `cv::Mat` directly; the binding layer converts results to dicts and numpy arrays. Error handling maps C++ exceptions to Python exceptions with meaningful messages. This follows the principle of wrapping once, correctly, idiomatically—rather than exposing raw FFI.
 - **Bottleneck:** IO-bound video decoding dominates processing time for large files (60%+ of wall-clock time for 1080p video) due to sequential file-based decoding and redundant reopens across multiple analysis passes. Memory usage is controlled by sampling only the first 50-100 frames per metric, avoiding full video decoding. Heuristic detectors (blur, motion) require per-dataset threshold tuning to avoid false positives—a hardcoded threshold calibrated on professional video flags most smartphone footage incorrectly.
 
-## Scaling Strategy
-
-- **Vertical vs. Horizontal:** Thread-pool workers process files in parallel (one file per worker, configurable concurrency). Within each file, sampling the first 50-100 frames keeps memory constant and decoding time bounded. For large datasets, split file lists across containers or machines and merge JSON outputs; each worker is stateless with respect to other files.
-- **State Management:** Track processed files via a job-state DB (SQLite for local, Postgres for shared) with per-file status (`PENDING` → `PROCESSING` → `DONE` | `FAILED`). Skip already-processed files on re-runs for incremental batch processing. Store processing parameters (thresholds, model versions) alongside results for reproducibility.
-
 ## Comparison to Industry Standards
 
 - **My Project:** Lightweight cross-platform extractor prioritizing speed and Python UX. Single binary/wheel distribution with no cloud dependencies. Focused on preprocessing features for ML pipelines.
