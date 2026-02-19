@@ -252,7 +252,7 @@ main.container {
   gap: var(--space-lg);
 }
 
-.title-group>* {
+.title-group > * {
   margin: var(--space-sm) 0;
 }
 
@@ -604,16 +604,17 @@ th {
 /* ==============================
    Article Header
    ============================== */
-article>header {
+.prose article > header {
   margin-bottom: var(--space-lg);
 }
 
-article>header h2 {
+.prose article > header h2 {
   margin: 0.25rem 0 0.75rem;
-  font-weight: 400;
+  font-weight: 600;
+  font-size: 1.125rem;
 }
 
-article>header div.tags {
+.prose article > header div.tags {
   margin: var(--space-sm) 0;
 }
 
@@ -625,7 +626,7 @@ div.tags {
   margin: var(--space-md) 0;
 }
 
-div.tags>span {
+div.tags > span {
   font-weight: 600;
   color: var(--text);
 }
