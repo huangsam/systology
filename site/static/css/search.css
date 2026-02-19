@@ -133,8 +133,7 @@ body.search-active .site-search-results {
   align-items: center;
   padding: var(--space-2xl);
   border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
+  position: relative;
   background: var(--bg);
   border-radius: var(--radius) var(--radius) 0 0;
 }
@@ -207,7 +206,8 @@ body.search-active .site-search-results {
 
 .site-search-result:hover {
   border-color: var(--accent);
-  background: var(--accent-weak);
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--accent-weak), var(--accent-weak));
   transform: translateX(4px);
 }
 
