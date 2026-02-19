@@ -185,6 +185,7 @@ main.container {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01));
   border: 1px solid var(--border);
   border-radius: 12px;
+  transition: var(--transition);
 }
 
 .card {
