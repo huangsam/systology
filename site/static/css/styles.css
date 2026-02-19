@@ -791,6 +791,12 @@ span.muted {
     padding-top: var(--space-sm);
     padding-bottom: var(--space-sm);
   }
+
+  .footer-inner {
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-md);
+  }
 }
 
 /* Narrow widths (641px–700px) */
