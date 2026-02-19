@@ -40,8 +40,8 @@ graph LR
 
 ## Deep Dive & Trade-offs
 
-Describe key components, data model, and interfaces.
+Describe the system design in detail: key components and their responsibilities, data model and schema, internal interfaces/APIs, and major tradeoffs (e.g., consistency vs. latency, durability vs. throughput). Explain why certain choices were made and what alternatives were considered.
 
 ## Operational Excellence
 
-List SLIs/SLOs, monitoring/alerting strategy, and any operational considerations (e.g., canary releases, rollbacks, etc.).
+Define Service Level Indicators (SLIs) and Service Level Objectives (SLOs) for your system—what does success look like? Outline the monitoring and alerting strategy (key metrics, dashboards, on-call runbooks). Include operational considerations like graceful degradation, canary releases, rollback procedures, and failover strategies.
