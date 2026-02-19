@@ -25,4 +25,4 @@ Repeat the same narrative structure: explain the principle, provide language-spe
 
 ## Cross-principle Notes
 
-Optionally, relate multiple principles to each other or reference other pages in the site that go deeper (e.g., "See [Ad Click Aggregator]({{< ref "/designs/ad-click-aggregator" >}}) for a production example of this principle in practice.").
+Optionally, relate multiple principles to each other or reference other pages in the site that go deeper for a production example of this principle in practice.
