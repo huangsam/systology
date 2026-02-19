@@ -25,11 +25,9 @@ Design a ticketing or flash sale system capable of handling millions of users si
 - **Consistency:** Linearizable consistency for inventory counts; no double-selling.
 - **Latency:** Inventory check and reservation < 500ms under peak load.
 - **Workload Profile:**
-    - Read:Write ratio: ~80:20 (browse + check > reserve)
-    - QPS: peak 1M / sec during opening moments
-    - Avg payload: 5–10 KB per request
-    - Key skew: extreme (popular items get 90% of traffic)
-    - Retention: event-specific; 30 days post-event
+    - Read:Write ratio: ~80:20
+    - Peak throughput: 1M requests/sec
+    - Retention: 30 days post-event
 
 ## 2. High-Level Architecture
 

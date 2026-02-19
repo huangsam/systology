@@ -24,11 +24,9 @@ Design an infrastructure to serve machine learning models for real-time inferenc
 - **Consistency:** Deterministic results for same input across replicas.
 - **Latency:** P99 < 200ms end-to-end inference.
 - **Workload Profile:**
-    - Read:Write ratio: ~99:1 (serve >> model updates)
-    - QPS: avg 5k / peak 10k inferences/sec
-    - Avg request payload: 1–10 KB; response 500 B–10 KB
-    - Key skew: moderate (some models queried more)
-    - Retention: model versions (last 10) + rolling 30-day metrics
+    - Read:Write ratio: ~99:1
+    - Peak throughput: 10k inferences/sec
+    - Retention: last 10 model versions + 30-day metrics
 
 ## 2. High-Level Architecture
 

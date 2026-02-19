@@ -25,11 +25,9 @@ Design a robust payment system that processes customer transactions via third-pa
 - **Consistency:** Strict ACID compliance for ledger; external consistency via idempotency keys; eventual for analytics.
 - **Latency:** P99 < 2 seconds for payment processing.
 - **Workload Profile:**
-    - Read:Write ratio: ~30:70 (reconciliation reads << authorizations/captures)
-    - QPS: avg 12 / peak 100 TPS
-    - Avg payload: 5–10 KB per transaction
-    - Key skew: moderate (high-value merchants more active)
-    - Retention: 7-year ledger retention (compliance); 30d hot metrics
+    - Read:Write ratio: ~30:70
+    - Peak throughput: 100 TPS
+    - Retention: 7-year ledger; 30 days hot metrics
 
 ## 2. High-Level Architecture
 

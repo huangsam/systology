@@ -24,10 +24,8 @@ Design a service that allows users to search for businesses or points of interes
 - **Consistency:** Eventual consistency for location updates; immediate for static POI data.
 - **Latency:** Search results < 200ms; location updates < 5 seconds to visible.
 - **Workload Profile:**
-    - Read:Write ratio: ~98:2 (searches >> location updates)
-    - QPS: avg 20k / peak 50k searches/sec
-    - Avg payload: 1–5 KB per search; 100 B per location update
-    - Key skew: extreme (major cities get 70% of queries)
+    - Read:Write ratio: ~98:2
+    - Peak throughput: 50k searches/sec
     - Retention: current POI state; 30-day update history
 
 ## 2. High-Level Architecture

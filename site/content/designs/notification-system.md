@@ -25,10 +25,8 @@ Build a central notification system that allows various internal services to sen
 - **Consistency:** At-least-once delivery; deduplication for idempotency.
 - **Latency:** Delivery to external providers within 5 seconds (high-priority).
 - **Workload Profile:**
-    - Read:Write ratio: ~20:80 (preference reads < sends)
-    - QPS: avg 1.5k / peak 100k notifications/min
-    - Avg payload: 1–5 KB per notification
-    - Key skew: high (popular user segments dominate)
+    - Read:Write ratio: ~20:80
+    - Peak throughput: 100k notifications/min
     - Retention: 30 days delivery logs; 90 days metrics
 
 ## 2. High-Level Architecture

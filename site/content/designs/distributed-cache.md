@@ -24,11 +24,9 @@ Implement a distributed caching layer for a version control system to cache freq
 - **Consistency:** Eventual consistency (cache-aside pattern).
 - **Latency:** P99 < 10ms for cache hits; P99 < 100ms on miss.
 - **Workload Profile:**
-    - Read:Write ratio: ~95:5 (cache-heavy reads)
-    - QPS: avg 50k / peak 100k ops/sec
-    - Avg object size: 50 KB–5 MB (Git objects)
-    - Key skew: high (popular repos/refs dominate)
-    - Retention: dynamic LRU eviction; no explicit TTL
+    - Read:Write ratio: ~95:5
+    - Peak throughput: 100k ops/sec
+    - Retention: dynamic LRU eviction
 
 ## 2. High-Level Architecture
 

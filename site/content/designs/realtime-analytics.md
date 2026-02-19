@@ -25,11 +25,9 @@ Design a scalable system to ingest and process high-volume user event streams fr
 - **Consistency:** Eventual consistency for aggregations; at-least-once event processing.
 - **Latency:** P99 < 500ms for event-to-dashboard visibility.
 - **Workload Profile:**
-    - Read:Write ratio: ~20:80 (dashboard reads << event ingestion)
-    - QPS: avg 50k / peak 100k events/sec
-    - Avg payload: 500 B–5 KB per event
-    - Key skew: high (popular users/events dominate)
-    - Retention: 30 days hot; 1y archive in data lake
+    - Read:Write ratio: ~20:80
+    - Peak throughput: 100k events/sec
+    - Retention: 30 days hot; 1y archive
 
 ## 2. High-Level Architecture
 

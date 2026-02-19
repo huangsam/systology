@@ -24,11 +24,9 @@ Create an asynchronous job queue system to handle resource-intensive tasks like 
 - **Consistency:** Idempotent operations; no duplicate processing.
 - **Latency:** Job start time < 5 minutes after queue.
 - **Workload Profile:**
-    - Read:Write ratio: ~50:50 (status checks + new enqueues)
-    - QPS: avg 3 / peak 10 jobs/sec
-    - Avg payload: 2–10 KB per job
-    - Key skew: moderate (certain job types more frequent)
-    - Retention: 30 days job history
+    - Read:Write ratio: ~50:50
+    - Peak throughput: 10 jobs/sec
+    - Retention: 30 days
 
 ## 2. High-Level Architecture
 

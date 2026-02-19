@@ -22,11 +22,9 @@ Write a concise problem statement describing the core business or technical prob
 - **Consistency:** Strong consistency, eventual consistency, or specific guarantees (e.g., exactly-once).
 - **Availability:** Uptime target (e.g., 99.99%), fault tolerance, regional failover.
 - **Workload Profile:**
-  - Read:Write ratio (e.g., 90:10)
-  - QPS avg/peak (e.g., 2k/200k)
-  - Average payload size
-  - Key skew (uniform, moderate, high)
-  - Data retention period
+  - Read:Write ratio
+  - Peak throughput (QPS / TPS)
+  - Data retention
 - **Other constraints:** Budget, data residency, compliance, tech stack preferences.
 
 ## 2. High-Level Architecture

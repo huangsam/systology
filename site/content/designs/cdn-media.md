@@ -24,10 +24,8 @@ Develop a global media serving system that efficiently delivers static and dynam
 - **Consistency:** Eventual consistency for media updates.
 - **Latency:** P99 < 100ms to edge; P99 < 500ms origin.
 - **Workload Profile:**
-    - Read:Write ratio: ~98:2 (serves > transcoding)
-    - QPS: avg 500k / peak 1M requests/sec
-    - Avg payload: 2–50 MB per asset
-    - Key skew: very high (popular videos get 70% of traffic)
+    - Read:Write ratio: ~98:2
+    - Peak throughput: 1M requests/sec
     - Retention: indefinite (hot); archive to cold storage after 1y
 
 ## 2. High-Level Architecture

@@ -24,11 +24,9 @@ Build a platform for federated learning that trains models across distributed de
 - **Consistency:** Secure aggregation; privacy-preserving (differential privacy).
 - **Latency:** Training round completion < 1 hour.
 - **Workload Profile:**
-    - Read:Write ratio: ~1:1 (model broadcast = gradient upload)
-    - QPS: N/A (rounds-based, not request-based); 10–100 updates/sec per node
-    - Avg payload: 50 MB–1 GB per model update
-    - Key skew: low (uniform device participation)
-    - Retention: model checkpoints per round; 100 rounds
+    - Read:Write ratio: ~1:1
+    - Update rate: 10–100 updates/sec per node
+    - Retention: 100 training rounds of checkpoints
 
 ## 2. High-Level Architecture
 

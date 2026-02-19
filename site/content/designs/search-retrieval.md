@@ -25,11 +25,9 @@ Design a high-performance search and retrieval engine to index and query large v
 - **Consistency:** Eventual consistency for index updates (1–5 second delay).
 - **Latency:** P99 < 50ms for query response.
 - **Workload Profile:**
-    - Read:Write ratio: ~99:1 (searches >> document updates)
-    - QPS: avg 500k / peak 1M queries/sec
-    - Avg payload: 100 B–5 KB per query; 10–100 KB per result page
-    - Key skew: extreme (popular queries get 80% traffic)
-    - Retention: indefinite (search index); document snapshots for versioning
+    - Read:Write ratio: ~99:1
+    - Peak throughput: 1M queries/sec
+    - Retention: indefinite search index; document versioning
 
 ## 2. High-Level Architecture
 

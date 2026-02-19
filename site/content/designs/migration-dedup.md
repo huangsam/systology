@@ -25,11 +25,9 @@ Create a system to migrate large volumes of data between systems while performin
 - **Consistency:** Idempotent writes; no duplicate records post-migration.
 - **Latency:** Full migration completion < 24 hours.
 - **Workload Profile:**
-    - Read:Write ratio: ~50:50 (source scan = target writes)
-    - Throughput: 100–500 MB/sec sustained
-    - Avg record size: 1–100 KB
-    - Key skew: low (uniform distribution)
-    - Retention: 7-day retention of raw data for reconciliation
+    - Read:Write ratio: ~50:50
+    - Throughput: 100–500 MB/sec
+    - Retention: 7-day retention for reconciliation
 
 ## 2. High-Level Architecture
 

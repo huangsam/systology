@@ -24,11 +24,9 @@ Build a robust ETL pipeline that extracts raw data from diverse sources, transfo
 - **Consistency:** Deterministic, bit-for-bit reproducible feature generation.
 - **Latency:** Batch job completion < 2 hours; daily schedule.
 - **Workload Profile:**
-    - Read:Write ratio: ~90:10 (source reads >>> feature writes)
-    - QPS: N/A (batch-oriented); throughput 1 TB/day
-    - Avg record size: 1–100 KB
-    - Key skew: moderate (some features more frequently used)
-    - Retention: 1y hot feature store; archive older features to cold storage
+    - Read:Write ratio: ~90:10
+    - Throughput: 1 TB/day
+    - Retention: 1y hot feature store; archive older features
 
 ## 2. High-Level Architecture
 

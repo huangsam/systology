@@ -24,10 +24,8 @@ Design a system to aggregate millions of ad click events in real-time to provide
 - **Consistency:** Exactly-once semantics for billing; hyper-accurate counts (probabilistic structures acceptable for pre-aggregation).
 - **Availability:** Robustness against regional outages or stream spikes.
 - **Workload Profile:**
-    - Read:Write ratio: ~100:1 (read-dominated query workload)
-    - QPS: avg 50k / peak 200k clicks/sec
-    - Avg payload: ~500 B per event
-    - Key skew: high (popular ads get 60% of traffic)
+    - Read:Write ratio: ~100:1
+    - Peak throughput: 200k events/sec
     - Retention: 90 days hot, 1y archive
 
 ## 2. High-Level Architecture
