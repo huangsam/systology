@@ -781,6 +781,10 @@ span.muted {
   font-weight: 500;
 }
 
+.listing .draft-badge {
+  margin-left: var(--space-sm);
+}
+
 /* ==============================
    Utility
    ============================== */
