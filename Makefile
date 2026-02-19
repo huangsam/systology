@@ -27,6 +27,7 @@ tidy:
 	python3 scripts/add_summary_description.py
 	python3 scripts/update_internal_links.py
 	python3 scripts/sort_tags.py
+	python3 scripts/format_project.py
 
 tags:
 	python3 scripts/tag_frequency.py --top 40
