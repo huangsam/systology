@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** A hands-on collection focused on core ML workflows: PyTorch model development, Hugging Face model/dataset tooling, NumPy implementations for fundamentals, and scikit-learn experiments for classical algorithms. RAG/agents and media preprocessing are covered in auxiliary repos (`ragchain`, `vidicant`, `xcode-trial`).
 

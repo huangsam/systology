@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `xcode-trial` is a Swift-based multimodal video analysis tool leveraging Apple-native frameworks—AVFoundation for media IO, Vision for computer vision tasks (face detection, scene classification, text recognition), and Core Image for image transforms. It targets macOS 15.0+ and Xcode 26.0+, producing JSON output for downstream analysis.
 

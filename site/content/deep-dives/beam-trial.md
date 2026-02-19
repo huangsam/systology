@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `beam-trial` is a minimal Apache Beam learning project in Java/Gradle that demonstrates fundamental pipeline construction with the DirectRunner. The project provides a single entry point that creates an in-memory `PCollection`, applies transforms, and writes sharded text output.
 

@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** Personal inboxes accumulate noise over time; Mailprune emerged to audit Gmail accounts locally, identify high-volume low-value senders, and recommend targeted fixes.
 

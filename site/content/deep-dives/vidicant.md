@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `vidicant` is a cross-platform video and image feature extractor with a C++ core (OpenCV) and Python bindings via pybind11. It serves ML preprocessing pipelines by extracting motion, blur, color, and face features from media files, producing structured JSON output for downstream training and analysis.
 

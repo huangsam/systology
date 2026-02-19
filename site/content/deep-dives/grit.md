@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `Grit` is a from-scratch Git implementation in Rust, providing both low-level plumbing commands (hash-object, cat-file, write-tree) and high-level porcelain commands (init, add, commit, log, status, diff, reset). The architecture follows Git's own layered design where porcelain is composed entirely from plumbing primitives.
 

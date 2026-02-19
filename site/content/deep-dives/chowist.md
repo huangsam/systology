@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `Chowist` is a Django-based web application that replicates Yelp-like features: place listings, profiles, and a marketing homepage. It supports local development, demo data, Docker compose, and production deployment via Gunicorn.
 

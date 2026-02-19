@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `ragchain` is a local-first RAG (Retrieval-Augmented Generation) stack built on Chroma for vector storage and Ollama for local LLM inference. Everything runs on-device—embeddings, vector search, BM25 retrieval, and LLM generation—ensuring that user documents and queries never leave local infrastructure.
 

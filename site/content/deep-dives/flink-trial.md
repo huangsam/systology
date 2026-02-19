@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `flink-trial` is a streaming analytics demo that processes simulated IoT device events using Apache Flink's native Java API. It demonstrates tumbling window aggregation, side output patterns for error routing, and checkpoint-based fault tolerance—features that go beyond Beam's portable abstraction layer.
 

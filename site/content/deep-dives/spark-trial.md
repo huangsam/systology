@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `spark-trial` demonstrates end-to-end ETL for NYC Yellow Taxi trip data using Apache Spark with Scala and SBT, performing schema alignment, validation, and statistical aggregations across multiple years.
 

@@ -9,7 +9,7 @@ links:
 draft: false
 ---
 
-## Context — Problem — Solution
+## Context & Motivation
 
 **Context:** `Photohaul` is a Java/Gradle tool for organizing and migrating large photo collections to local or cloud targets with configurable folder rules and deduplication.
 

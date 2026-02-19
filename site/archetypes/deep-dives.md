@@ -7,7 +7,7 @@ categories: ["deep-dives"]
 draft: true
 ---
 
-## Context - Problem - Solution
+## Context & Motivation
 
 **Context:** Provide background and motivation for this deep dive. What prompted the exploration or analysis?
 
