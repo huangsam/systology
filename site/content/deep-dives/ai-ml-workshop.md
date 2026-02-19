@@ -13,7 +13,7 @@ draft: false
 
 **Context:** A hands-on collection focused on core ML workflows: PyTorch model development, Hugging Face model/dataset tooling, NumPy implementations for fundamentals, and scikit-learn experiments for classical algorithms. RAG/agents and media preprocessing are covered in auxiliary repos (`ragchain`, `vidicant`, `xcode-trial`).
 
-**Problem:** Reproducible experimentation and fair comparison of models is hindered by environment drift, heterogeneous hardware (MPS vs. CPU), and limited local resources for larger Transformer workflows.
+**Problem:** It was difficult finding one place to learn and experiment with the full ML workflow—from data loading to model training, evaluation, and optimization—especially with a local-first approach that emphasizes reproducibility and hardware-aware benchmarking (MPS vs. CPU). Many resources are either too high-level (abstracting away training details) or too fragmented (focusing on one aspect like Hugging Face without the full pipeline). Additionally, ensuring experiments are reproducible and comparable across hardware adds complexity.
 
 **Solution (high-level):** Emphasize reproducible, local-first experiments: pinned environments, MPS-aware benchmarking, deterministic datasets/seeded runs, and lightweight experiment tracking. Delegate RAG/agent and media-specific operational concerns to their respective projects.
 
