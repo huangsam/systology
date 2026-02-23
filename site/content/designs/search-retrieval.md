@@ -48,6 +48,22 @@ graph TD
     Indexer -.->|updates| ShardN
 {{< /mermaid >}}
 
+## Data Design
+
+### Inverted Index (SSTables/Segments)
+| Component | Structure | Description | Storage |
+| :--- | :--- | :--- | :--- |
+| **Dictionary** | Sorted Term Map | Term string to Offset lookup. | Memory/Cache |
+| **Postings** | PForDelta List | Compressed document IDs + counts. | Disk |
+| **Positions** | Delta-coded | Token offsets for phrase queries. | Disk |
+
+### Vector Store (HNSW/IVF)
+| Field | Type | Dim | Purpose |
+| :--- | :--- | :--- | :--- |
+| **doc_embedding** | Float16 Vector| 768 | Semantic similarity search. |
+| **hnsw_graph** | Proximity Graph| N/A | Fast approximate NN search. |
+| **doc_metadata** | JSON | N/A | Filtering/Faceting after retrieval. |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

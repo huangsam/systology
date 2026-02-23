@@ -43,6 +43,22 @@ graph LR
     Reconciler --> Target
 {{< /mermaid >}}
 
+## Data Design
+
+### Hash Index (Bloom Filter + KV Map)
+| Store | Purpose | Key / Pattern | Value |
+| :--- | :--- | :--- | :--- |
+| **Bloom** | First-pass membership check. | `content_hash` | N/A (Probabilistic) |
+| **Map** | Exact location lookup. | `h:<sha256>` | `target_location_uri` |
+
+### Migration State (SQL)
+| Table | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| **checkpoints** | `chunk_id` | String (PK) | Partition or PK-range identifier. |
+| | `status` | Enum | `pending`, `syncing`, `failed`, `verified`. |
+| | `checksum` | String | Hash of migrating chunk for integrity. |
+| | `run_id` | UUID | To handle idempotent re-runs. |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

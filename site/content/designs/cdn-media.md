@@ -41,6 +41,22 @@ graph LR
     Transcoder --> CDN
 {{< /mermaid >}}
 
+## Data Design
+
+### Object Storage Layout (S3)
+| Bucket | Prefix / Path | Retention | Description |
+| :--- | :--- | :--- | :--- |
+| `raw-uploads`| `user_id/YYYY-MM-DD/` | 30 days | Original untouched files. |
+| `media-assets`| `asset_id/rendition/` | Indefinite | Post-transcoding optimal variants. |
+| `static-logs` | `cdn/pop_id/HH_MM/` | 90 days | Aggregated edge access logs. |
+
+### Cache Key & Logic (CDN)
+| Item | Cache Key Pattern | TTL (Default) | Invalidation Tag |
+| :--- | :--- | :--- | :--- |
+| **Images** | `host/path?w=100&q=80` | 30 days | `img:<asset_id>` |
+| **Videos** | `host/path/playlist.m3u8`| 1 year | `vid:<asset_id>` |
+| **Manifests**| `host/config.json` | 60 seconds | `config:global` |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

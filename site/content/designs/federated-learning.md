@@ -43,6 +43,23 @@ graph TD
     GlobalModel -->|averaged params| Coordinator
 {{< /mermaid >}}
 
+## Data Design
+
+### Global Model Store (Object Store / Registry)
+| Artifact | Type | Description | Versioning |
+| :--- | :--- | :--- | :--- |
+| `weights.bin` | Float32 Array | Flat buffer of averaged model parameters. | Per Round |
+| `config.json` | JSON | Model architecture and hyperparameters. | Immutable |
+| `privacy.log` | Cumulative | Rolling ε (epsilon) and δ (delta) spend. | 100 Rounds |
+
+### Round Metadata (SQL)
+| Table | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| **rounds** | `round_id` | Int (PK) | Sequential round number. |
+| | `client_count`| Int | Number of successfully aggregated clients. |
+| | `val_accuracy` | Float | Server-side validation accuracy. |
+| | `noise_scale` | Float | DP noise multiplier used in this round. |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

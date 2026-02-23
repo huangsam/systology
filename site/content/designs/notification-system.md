@@ -47,6 +47,24 @@ graph TD
     Dispatch --> Tracker[(Tracker)]
 {{< /mermaid >}}
 
+## Data Design
+
+### Notification Queue (Redis Streams / Kafka)
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `notif_id` | UUID | Correlates dispatch with receipt. |
+| `priority` | Enum | `HIGH`, `NORMAL`, `BULK`. |
+| `payload` | JSON/Proto | Rendered content or template variables. |
+| `channel_pref`| List | `[push, email]` order of retry. |
+
+### Delivery Tracker (SQL)
+| Table | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| **notifications** | `id` | UUID (PK)| Master ID for tracking. |
+| **receipts** | `notif_id` | UUID (FK)| Links to external provider status. |
+| | `status` | Enum | `sent`, `delivered`, `opened`, `bounced`.|
+| | `err_code` | String | Provider-specific failure reason. |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

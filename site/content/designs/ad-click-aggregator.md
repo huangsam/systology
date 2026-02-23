@@ -42,6 +42,23 @@ graph LR
     Fraud -.->|flag| Dedup
 {{< /mermaid >}}
 
+## Data Design
+
+### Message Stream (Kafka Topics)
+| Topic | Partition Key | Description | Retention |
+| :--- | :--- | :--- | :--- |
+| `raw_clicks` | `click_id` | Original event stream from SDK. | 7 days |
+| `ad_events` | `ad_id` | Deduplicated events for aggregation. | 24 hours |
+| `fraud_verdicts` | `ad_id` | ML flags for retroactive subtraction. | 24 hours |
+
+### Reporting Schema (OLAP - ClickHouse)
+| Table | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| **clicks_agg** | `ad_id` | UInt32 (PK) | Unique advertisement ID. |
+| | `window_ts` | DateTime (PK)| 1-min window start timestamp. |
+| | `click_count`| AggregateSet| Rolling count for the window. |
+| | `revenue` | Decimal | Sum of bid price for clicked ads. |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

@@ -39,6 +39,21 @@ graph LR
     Cache -.->|replication| CacheReplica[Replica]
 {{< /mermaid >}}
 
+## Data Design
+
+### Cache Key-Space (KV)
+| Prefix | Key Format | Value Type | Description |
+| :--- | :--- | :--- | :--- |
+| `obj:` | `obj:<sha1>` | Compressed Blob | Git objects (blobs, trees, commits). |
+| `idx:` | `idx:<pack_id>` | Byte Array | Pack-index offsets for object lookups. |
+| `ref:` | `ref:<branch_path>`| SHA1 String | Branch heads and lightweight tags. |
+
+### Node Metadata (Shared State/Config)
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `consistent_hash_ring` | Range Map | Mapping of hash ranges to physical node IDs. |
+| `node_status` | Hash Map | Health and load metrics per node (Heartbeat). |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

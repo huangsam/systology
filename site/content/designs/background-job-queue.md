@@ -40,6 +40,25 @@ graph LR
     DB --> Dashboard
 {{< /mermaid >}}
 
+## Data Design
+
+### Job Message Format (Redis Streams / SQS)
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `job_id` | UUID | Unique identifier for the job instance. |
+| `task_type` | String | e.g., `transcode_v1`, `batch_report_v2`. |
+| `payload_ref`| URI | S3 path to the large payload (if applicable). |
+| `retries` | Int | Current attempt count. |
+
+### Job Status Store (SQL)
+| Table | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| **jobs** | `id` | UUID (PK) | Unique job ID. |
+| | `status` | Enum | `pending`, `running`, `success`, `failed`. |
+| | `result_url`| String | Link to output artifact. |
+| | `error_log` | Text | Last error message for DLQ inspection. |
+| | `owner_id` | UUID (Idx)| Identifying the worker currently leasing. |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

@@ -42,6 +42,22 @@ graph TD
     Ingest --> Spatial
 {{< /mermaid >}}
 
+## Data Design
+
+### Spatial Index (B-Tree + Geohash)
+| Key (Geohash) | Value | Shard Strategy | Purpose |
+| :--- | :--- | :--- | :--- |
+| `9q8yyk...` | `poi_id` | Prefix `9q8` | Hierarchical 2D space mapping. |
+| `9q8yyn...` | `poi_id` | Prefix `9q8` | Adjacent cell indexing. |
+
+### POI Metadata (NoSQL/Document)
+| Field | Type | Description | Indexing |
+| :--- | :--- | :--- | :--- |
+| `id` | UUID (PK) | Unique provider ID. | Hash |
+| `name` | String | Business/Place name. | Full-text |
+| `category` | Enum | `restaurant`, `park`, etc. | Bitmap |
+| `rating` | Float | 0.0 to 5.0 score. | Range |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

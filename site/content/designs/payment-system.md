@@ -45,6 +45,23 @@ graph TD
     Recon --> Ledger
 {{< /mermaid >}}
 
+## Data Design
+
+### Idempotency Store (Redis/Postgres)
+| Key Pattern | Value | TTL | Purpose |
+| :--- | :--- | :--- | :--- |
+| `idem:<key>` | JSON Response | 24 Hours | Prevent double-charges from retries. |
+| `lock:<user>` | Boolean | 30 Seconds | Distributed lock during active process. |
+
+### Internal Ledger (SQL)
+| Table | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| **entries** | `id` | UUID (PK) | Unique entry identifier. |
+| | `account_id` | String (Idx) | e.g., `user_123`, `gateway_stripe`. |
+| | `amount` | BigInt | Smallest unit (e.g. cents). |
+| | `direction` | Enum | `debit`, `credit`. |
+| | `tx_id` | UUID (FK) | Reference to parent transaction. |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

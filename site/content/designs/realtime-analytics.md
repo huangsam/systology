@@ -42,6 +42,22 @@ graph LR
     Kafka -.->|archive| Lake
 {{< /mermaid >}}
 
+## Data Design
+
+### Event Stream (Kafka Topics)
+| Topic | Partition Key | Throughput | Retention |
+| :--- | :--- | :--- | :--- |
+| `user_events` | `session_id` | 100k msg/s | 7 days |
+| `aggregates` | `metric_name` | 1k msg/s | 24 hours |
+| `late_events` | `event_id` | < 100 msg/s | 14 days |
+
+### Metrics Store (OLAP - ClickHouse/Druid)
+| Table | Granularity | Partitioning | Primary Key |
+| :--- | :--- | :--- | :--- |
+| **raw_events** | Event-level | `YYYY-MM-DD` | `session_id, timestamp` |
+| **minly_aggs** | 1 Minute | `YYYY-MM` | `metric_type, window_start` |
+| **hourly_aggs**| 1 Hour | `YYYY` | `metric_type, window_start` |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

@@ -53,6 +53,23 @@ graph TD
     ServerB -.->|on error| Fallback
 {{< /mermaid >}}
 
+## Data Design
+
+### Model Registry (Object Store + Metadata)
+| Registry Field | Type | Description | Immutable |
+| :--- | :--- | :--- | :--- |
+| `model_uri` | S3 URI | Path to TorchScript/ONNX binary. | Yes |
+| `runtime_env` | Container Tag | Python/C++ environment version. | Yes |
+| `is_live` | Boolean | Global flag for production routing. | No |
+| `fallback_id` | Version ID | Directs to smaller model if latency spikes. | No |
+
+### Inference Logs (Sampled / Streaming)
+| Dimension | Description | Retention |
+| :--- | :--- | :--- |
+| **Input Features** | Vector/Tensor used for prediction. | 14 days |
+| **Probability** | Softmax/Confidence score from head. | 14 days |
+| **Hardware Metrics**| GPU Mem/Util during the kernel call. | 30 days |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

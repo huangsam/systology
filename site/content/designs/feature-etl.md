@@ -42,6 +42,22 @@ graph LR
     Transform -.->|lineage| Catalog
 {{< /mermaid >}}
 
+## Data Design
+
+### Data Lake Partitioning (S3/HDFS/Warehouse)
+| Layer | Partition Key | Format | Retention |
+| :--- | :--- | :--- | :--- |
+| **Bronze** | `source_id/YYYY-MM-DD` | Parquet | 1 year |
+| **Silver** | `feature_group/v_1` | Iceberg | 5 years |
+| **Gold** | `model_version/run_id` | Parquet | Indefinite |
+
+### Feature Store Layout (KV/NoSQL)
+| Key Pattern | Value Type | Purpose | Latency |
+| :--- | :--- | :--- | :--- |
+| `u:feat:<user_id>` | Hash/Vector | Real-time user embedding. | < 5ms |
+| `p:feat:<prod_id>` | Tensor/List | Product interaction stats. | < 10ms |
+| `meta:<group_v>` | JSON | Feature metadata / drift thresholds. | < 50ms |
+
 ## Deep Dive & Trade-offs
 
 ### Deep Dive

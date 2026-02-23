@@ -38,6 +38,19 @@ graph LR
     Worker --> Store[(Data store)]
 {{< /mermaid >}}
 
+## Data Design
+
+Describe the data storage layout (SQL schemas, NoSQL key-spaces, or document formats).
+
+| Store | Purpose | Primary Key / Index | TTL / Retention |
+| :--- | :--- | :--- | :--- |
+| **Component Name** | Description | Field(s) | Policy |
+
+### Sample Schema / Key Format
+```sql
+-- SQL snippet or JSON example
+```
+
 ## Deep Dive & Trade-offs
 
 Describe the system design in detail: key components and their responsibilities, data model and schema, internal interfaces/APIs, and major tradeoffs (e.g., consistency vs. latency, durability vs. throughput). Explain why certain choices were made and what alternatives were considered.
