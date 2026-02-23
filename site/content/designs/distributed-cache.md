@@ -101,5 +101,5 @@ graph LR
 
 ### Retention & Backups
 
-- **Data Policy**: Ephemeral by design (authoritative store in Git); snapshots for maintenance warm-up.
+- **Data Policy**: Ephemeral by design; snapshots for maintenance warm-up.
 - **Retention**: 30d metrics retention for capacity planning and debugging.
