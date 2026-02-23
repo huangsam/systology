@@ -84,27 +84,25 @@ graph LR
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: 99.99% of media requests served successfully (2xx/3xx) from edge or origin.
 - SLO: P99 latency < 100 ms for cached content, < 500 ms for cache misses through origin shield.
 - SLIs: cache_hit_ratio, origin_request_rate, edge_latency_p99, upload_success_rate, transcoding_duration_p95.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `cache_hit_ratio < 85%`: Investigate invalidation storms or config drift (P2).
+- `origin_5xx_rate > 1%`: Check origin storage and compute health (P1).
+- `transcoding_queue > 1000`: Scale transcoder workers or check for stuck jobs (P2).
 
-- `cache_hit_ratio < 85%` for 10m
-    - Severity: P2 (investigate invalidation storms or config drift).
-- `origin_5xx_rate > 1%` (5m)
-    - Severity: P1 (origin health degraded; check storage and compute).
-- `transcoding_queue_depth > 1000`
-    - Severity: P2 (scale transcoder workers or check for stuck jobs).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Run synthetic probes from multiple regions to continuously measure edge latency and availability.
-- Perform periodic failover drills between CDN providers to validate DNS switchover timing.
-- Load-test the upload-to-delivery pipeline under peak conditions (e.g., 10× normal upload rate).
+- **Synthetic**: Global probes to measure edge latency and multi-region availability.
+- **Failover**: Regular multi-CDN failover drills to validate DNS switchover.
+- **Load**: Test upload-to-delivery pipeline at 10x normal traffic.
 
-### Backups & Data Retention
-- Store all original uploads in a cross-region replicated object store with versioning enabled.
-- Retain transcoded variants with lifecycle rules (e.g., delete unused renditions after 90 days).
-- Keep CDN access logs for 30 days for debugging and aggregate to long-term analytics storage.
+### Retention & Backups
+
+- **Originals**: Cross-region replicated object store with versioning.
+- **Renditions**: Transcoded variants managed via 90-day lifecycle rules.
+- **Logs**: 30-day access logs for debugging; aggregated for long-term analytics.

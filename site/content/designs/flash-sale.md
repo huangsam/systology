@@ -90,27 +90,25 @@ graph TD
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: 99.9% of admitted users can complete a reservation within 500 ms.
 - SLO: 0% over-sell rate (linearizable inventory accuracy).
 - SLIs: reservation_latency_p99, inventory_accuracy (Redis vs. Order DB reconciliation), waiting_room_admission_rate, payment_success_rate, abandoned_reservation_rate.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `redis_inventory_missing`: P0 (state lost; halt sale and restore from DB).
+- `reservation_latency > 1s`: P1 (backend saturation; trigger load shedding).
+- `abandoned_reservations > 30%`: P2 (check payment flow or adjust TTL).
 
-- `redis_inventory_key_missing` for any active SKU
-    - Severity: P0 (inventory state lost; halt sale and restore from Order DB).
-- `reservation_latency_p99 > 1s` for 2m
-    - Severity: P1 (backend saturation; trigger additional load shedding or scale pods).
-- `abandoned_reservation_rate > 30%` (5m window)
-    - Severity: P2 (investigate payment flow issues or adjust reservation TTL).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Run full-scale load tests simulating 2× expected peak (2 million concurrent users) in a staging environment before each sale event.
-- Chaos-test Redis failover: kill the primary and verify Sentinel / Cluster promotes a replica within the reservation TTL window without inventory loss.
-- End-to-end test the reservation TTL reaper to ensure expired holds are correctly released back to inventory.
+- **Load**: Test at 2x peak (2M users) in staging before each event.
+- **Chaos**: Kill Redis primary and verify Sentinel failover without data loss.
+- **Reaper**: End-to-end test TTL reaper to ensure hold recycling.
 
-### Backups & Data Retention
-- Snapshot Redis inventory state immediately before and after each sale event for forensic reconciliation.
-- Retain all order and payment records in the Order DB indefinitely for compliance and dispute resolution.
-- Archive waiting-room and rate-limiting logs for 30 days to support post-event capacity analysis.
+### Retention & Backups
+
+- **Forensics**: Snapshot Redis state immediately before/after sale events.
+- **Orders**: All records in SQL DB retained indefinitely for compliance.
+- **Logs**: Archive waiting-room and rate-limit logs for 30-day capacity analysis.

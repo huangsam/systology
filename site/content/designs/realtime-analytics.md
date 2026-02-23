@@ -87,27 +87,25 @@ graph LR
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: P99 end-to-end event processing latency (collector to OLAP) < 500 ms.
 - SLO: Dashboard data freshness < 2 seconds from the latest processed event.
 - SLIs: event_processing_latency_p99, consumer_lag_seconds, dashboard_freshness_lag, event_drop_rate, dlq_event_count.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `consumer_lag > 30s`: Scale consumers or check processing bottlenecks (P1).
+- `event_drop_rate > 0.1%`: Check schema validation or collector health (P2).
+- `dlq_growth > 100/min`: Investigate late arrivals or malformed events (P2).
 
-- `consumer_lag_seconds > 30` for 5m
-    - Severity: P1 (stream processor falling behind; scale consumers or investigate processing bottleneck).
-- `event_drop_rate > 0.1%` (5m)
-    - Severity: P2 (events being shed or rejected; check schema validation and collector health).
-- `dlq_event_count increases > 100/min`
-    - Severity: P2 (excessive late arrivals or malformed events; investigate producer timestamps).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Replay historical Kafka topics through a staging pipeline to validate windowing and aggregation logic before promoting changes.
-- Chaos-test: kill Flink task managers and verify that exactly-once checkpointing restores state without data loss or duplication.
-- Load-test at 3× peak event rate to validate autoscaling behavior and identify bottlenecks in the collector, Kafka, and OLAP layers.
+- **Replay**: Re-run historical topics in staging to validate windowing logic.
+- **Chaos**: Kill task managers to verify exactly-once checkpoint restoration.
+- **Scale**: Load-test at 3x peak to validate collector and OLAP throughput.
 
-### Backups & Data Retention
-- Raw events in the data lake retained for 1 year (regulatory and ML retraining).
-- OLAP aggregation tables retained for 90 days at minute granularity; rolled up to hourly granularity for 1 year.
-- Kafka topic retention set to 7 days for replay; longer retention via the data lake archive.
+### Retention & Backups
+
+- **Lake**: Raw events in S3/GCS retained 1 year for audit and ML.
+- **OLAP**: 90-day minute-level aggs; 1 year hourly roll-ups.
+- **Kafka**: 7-day retention for replay; mirrored to data lake archive.

@@ -97,27 +97,25 @@ graph TD
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: P99 inference latency < 200 ms for all production models.
 - SLO: 99.9% availability of the inference API (including fallback responses).
 - SLIs: inference_latency_p99, inference_error_rate, model_load_time, gpu_utilization, batch_fill_ratio, canary_accuracy_delta.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `inference_latency_p99 > 180ms`: Investigate GPU contention (P2).
+- `inference_error_rate > 0.5%`: Consider rollback or fallback activation (P1).
+- `canary_accuracy < baseline - 2%`: Auto-rollback underperforming canary (P1).
 
-- `inference_latency_p99 > 180ms` for 5m
-    - Severity: P2 (approaching SLO; investigate GPU contention or model regression).
-- `inference_error_rate > 0.5%` (5m)
-    - Severity: P1 (model health issue; check logs and consider rollback or fallback activation).
-- `canary_accuracy < baseline - 2%` for 15m
-    - Severity: P1 (canary model underperforming; auto-rollback to stable version).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Load-test each new model version at 2× peak QPS before canary rollout to validate latency and throughput.
-- Run shadow-mode evaluation: send production traffic to the new model without serving its results, and compare metrics offline.
-- Chaos-test GPU node failures; verify that the orchestrator reschedules model servers and that the fallback activates within 30 seconds.
+- **Load-Test**: Validate 2x peak QPS for each new version before canary.
+- **Shadow**: Run offline baseline comparisons via production traffic mirrors.
+- **Chaos**: Kill GPU nodes and verify 30s fallback/reschedule timing.
 
-### Backups & Data Retention
-- All model artifacts are immutable in the registry; retain at least the last 10 versions for instant rollback.
-- Store inference logs (request/response pairs, sampled) for 14 days for debugging and model improvement.
-- Archive model evaluation metrics and A/B test results indefinitely for long-term model quality tracking.
+### Retention & Backups
+
+- **Artifacts**: Immutable registry retains last 10 versions for instant rollback.
+- **Logs**: Sampled request/response pairs kept 14 days for debugging.
+- **A/B**: Archive evaluation metrics and test results indefinitely for tracking.

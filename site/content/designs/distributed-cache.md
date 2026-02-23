@@ -83,27 +83,23 @@ graph LR
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: Cache hit ratio ≥ 95% for object lookups.
 - SLO: P99 cache read latency < 5 ms; P99 cache write latency < 10 ms.
 - SLIs: cache_hit_ratio, cache_latency_p99, eviction_rate, memory_utilization_percent, connection_pool_utilization.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `cache_hit_ratio < 90%`: investigate eviction pressure (P2).
+- `memory_utilization > 85%`: scale cluster or review TTLs (P2).
+- `cache_latency_p99 > 15ms`: check network or hot keys (P1).
 
-- `cache_hit_ratio < 90%` for 5m
-    - Severity: P2 (investigate eviction pressure or workload change).
-- `cache_memory_utilization > 85%`
-    - Severity: P2 (scale cluster or review TTLs / eviction thresholds).
-- `cache_latency_p99 > 15ms` for 3m
-    - Severity: P1 (check network, slow commands, or hot keys).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Run chaos tests: kill individual cache nodes and verify consistent-hashing redistributes keys with minimal miss spike.
-- Load-test with realistic VCS workloads (clone, fetch, push) to validate throughput and latency under 2× peak traffic.
-- Integration-test cache invalidation paths to ensure stale objects are never served after a push.
+- **Chaos/Load**: Kill nodes to verify hash ring redistribution; load-test at 2x peak traffic.
+- **Verification**: Integration-test cache invalidation paths for strict object freshness.
 
-### Backups & Data Retention
-- The cache is ephemeral by design; the Git object store is authoritative. No cache backups are needed.
-- Enable Redis RDB snapshots only for faster warm-up after planned maintenance restarts.
-- Retain cache metrics and slow-log data for 30 days for capacity planning and debugging.
+### Retention & Backups
+
+- **Data Policy**: Ephemeral by design (authoritative store in Git); snapshots for maintenance warm-up.
+- **Retention**: 30d metrics retention for capacity planning and debugging.

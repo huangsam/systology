@@ -85,27 +85,25 @@ graph LR
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: 99% of daily batch pipelines complete within the 2-hour SLA window.
 - SLO: Feature freshness < 4 hours (time from raw ingestion to feature-store availability).
 - SLIs: pipeline_duration_p95, feature_freshness_lag, data_quality_pass_rate, row_count_delta_percent.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `pipeline_duration > 2h`: Investigate bottleneck tasks (P1).
+- `quality_pass_rate < 99%`: Quarantine affected data partitions (P2).
+- `row_count_delta > 20%`: Verify upstream source health (P2).
 
-- `pipeline_duration > 2h`
-    - Severity: P1 (SLA at risk; investigate bottleneck tasks).
-- `data_quality_pass_rate < 99%` (per run)
-    - Severity: P2 (bad data entering feature store; quarantine affected partitions).
-- `row_count_delta > 20%` vs. previous run
-    - Severity: P2 (unexpected data volume change; verify source health).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Run the full DAG on a staging dataset daily; compare output features against a frozen golden snapshot.
-- Integration-test each connector with a mock source to verify pagination, retry, and checkpoint behavior.
-- Perform quarterly backfill drills to validate that historical re-processing produces bit-identical features.
+- **Snapshots**: Daily staging runs compared against frozen golden snapshots.
+- **Connectors**: Integration-test mocks for pagination and retry behavior.
+- **Backfills**: Quarterly drills to ensure reproducible bit-identical historical data.
 
-### Backups & Data Retention
-- Raw data (landing zone) retained for 1 year in cold storage for replay and auditing.
-- Feature store partitions retained for 90 days (active) + 1 year (archived) for reproducibility.
-- Pipeline metadata and lineage stored in the catalog with no expiry for compliance and debugging.
+### Retention & Backups
+
+- **Landing**: Raw data retained 1y in cold storage for replay/audit.
+- **Feature Store**: 90-day active partitions; 1y archived for reproducibility.
+- **Lineage**: Metadata and lineage stored indefinitely for compliance.

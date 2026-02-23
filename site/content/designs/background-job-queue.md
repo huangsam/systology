@@ -88,26 +88,24 @@ graph LR
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: 99% of jobs start processing within 5 minutes of enqueue.
 - SLO: 99.9% of jobs succeed (or move to DLQ) within configured retry policy.
 - SLIs: queue_depth, job_start_latency_p95, job_completion_latency_p99, job_success_rate (1m/5m windows).
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `queue_depth > 500`: Scale workers or investigate producer flood (P1).
+- `job_failure_rate > 3%`: Check recent code or dependency health (P2).
+- `DLQ_growth > threshold`: Inspect failing payloads via dashboard (P2).
 
-- `queue_depth > 500` for 5m
-    - Severity: P1 (scale workers / investigate producer flood).
-- `job_failure_rate > 3%` (5m)
-    - Severity: P2 (investigate recent code or dependency failures).
-- `DLQ_size increases > threshold`
-    - Severity: P2 (inspect failing payloads).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Run regular capacity and chaos tests (worker crashes, storage latency, network partitions).
-- Add unit/integration tests for idempotency and retry semantics.
-- Canary job handler changes with a small percentage of traffic before full rollout.
+- **Load/Chaos**: Test worker crashes, storage latency, and network partitions.
+- **Idempotency**: Verify retry semantics and duplicate prevention via integration tests.
+- **Canary**: Roll out job handler changes to 5% traffic before full promotion.
 
-### Backups & Data Retention
-- Keep job metadata in a replicated DB with TTL for historical debugging (30–90 days).
-- Archive completed job logs and store large artifacts in object storage with lifecycle rules to control cost.
+### Retention & Backups
+
+- **Metadata**: Replicated DB with 30–90 day TTL for historical debugging.
+- **Logs**: Archive completed job logs and artifacts with lifecycle rules.

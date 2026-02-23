@@ -57,4 +57,22 @@ Describe the system design in detail: key components and their responsibilities,
 
 ## Operational Excellence
 
-Define Service Level Indicators (SLIs) and Service Level Objectives (SLOs) for your system—what does success look like? Outline the monitoring and alerting strategy (key metrics, dashboards, on-call runbooks). Include operational considerations like graceful degradation, canary releases, rollback procedures, and failover strategies.
+### SLIs / SLOs
+
+Define Service Level Indicators (SLIs) and Service Level Objectives (SLOs) for your system—what does success look like?
+
+### Monitoring & Alerts
+
+- `metric_threshold_crossed`: Symptom and severity (P1/P2).
+- `resource_exhaustion`: Scale or mitigation strategy (P2).
+
+### Reliability & Resiliency
+
+- **Tests**: Load tests, synthetic probes, or integration suites.
+- **Chaos**: Failure injection (component crash, network latency).
+- **Rollout**: Canary, blue-green, or automated rollback strategy.
+
+### Retention & Backups
+
+- **DR**: Replication, snapshots, and RPO/RTO targets.
+- **Policy**: Data retention periods for hot/cold storage.

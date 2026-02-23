@@ -90,27 +90,25 @@ graph LR
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: 99% of click events are reflected in query results within 1 minute of event time.
 - SLO: 99.9% of query API requests return in < 500 ms.
 - SLIs: kafka_consumer_lag, aggregation_window_latency_p95, query_latency_p99, dedup_false_positive_rate, fraud_flag_rate.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts'
 
-Alerts:
+- `kafka_consumer_lag > 60s`: Scale stream tasks or check spikes (P1).
+- `bloom_filter_saturation > 90%`: Resize or rotate filter (P2).
+- `reconciliation_discrepancy > 0.1%`: Check real-time vs batch drift (P2).
 
-- `kafka_consumer_lag > 60s` for 5m
-    - Severity: P1 (scale stream processor tasks or investigate upstream spike).
-- `dedup_bloom_filter_saturation > 90%`
-    - Severity: P2 (rotate or resize filter to maintain target false-positive rate).
-- `reconciliation_discrepancy > 0.1%`
-    - Severity: P2 (investigate drift between real-time and batch aggregates).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Replay historical Kafka topics through the pipeline in a staging environment to validate aggregation accuracy and late-event handling.
-- Chaos-test by killing stream processor task managers mid-checkpoint to verify exactly-once recovery semantics.
-- Load-test the ingestion layer at 2× peak (400 k events/sec) to validate backpressure and autoscaling behaviour.
+- **Verification**: Replay historical Kafka topics to validate aggregation and late-event handling.
+- **Chaos**: Kill task managers mid-checkpoint to verify exactly-once recovery.
+- **Load**: Test ingestion at 2x peak traffic to validate backpressure and scaling.
 
-### Backups & Data Retention
-- Retain raw click events in Kafka with 7-day retention for replay and reconciliation.
-- Store aggregated data in the OLAP store with a 90-day hot tier and archive older partitions to cold object storage for compliance.
-- Back up fraud model artefacts and feature stores separately with versioning for auditability.
+### Retention & Backups
+
+- **Kafka**: 7-day retention for replay and reconciliation.
+- **OLAP**: 90-day hot tier; 1y archive in cold object storage.
+- **Models**: Versioned fraud model artifacts and features for auditability.

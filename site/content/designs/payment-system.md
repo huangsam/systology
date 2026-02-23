@@ -93,27 +93,25 @@ graph TD
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: 99.99% of payment API requests return a response (success or well-defined error) within 2 seconds.
 - SLO: 0 ledger imbalances (debits and credits sum to zero at all times).
 - SLIs: payment_success_rate, gateway_latency_p99, ledger_balance_check, reconciliation_discrepancy_count, idempotency_cache_hit_rate.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `payment_success_rate < 95%`: Check gateway status and recent deploys (P1).
+- `ledger_imbalance != 0`: P0 (data integrity violation; halt writes immediately).
+- `reconciliation_discrepancy > 0`: Flag for finance review after hourly job (P2).
 
-- `payment_success_rate < 95%` (5m)
-    - Severity: P1 (gateway degradation or integration bug; check gateway status page and recent deploys).
-- `ledger_imbalance != 0`
-    - Severity: P0 (data integrity violation; halt writes, investigate immediately).
-- `reconciliation_discrepancy_count > 0` after hourly job
-    - Severity: P2 (flag for finance team review; investigate settlement report gaps).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Run end-to-end payment flows against gateway sandbox/test environments in CI to catch integration regressions.
-- Chaos-test gateway timeouts: inject artificial latency and verify the state machine correctly marks payments as `FAILED` and the idempotency layer handles retries.
-- Audit the ledger monthly by re-deriving all balances from raw entries and comparing against cached aggregates.
+- **Integrations**: End-to-end flows against gateway sandboxes in CI.
+- **Chaos**: Inject gateway timeouts to verify state machine and idempotency.
+- **Audit**: Monthly balance re-derivation from raw entries vs. aggregates.
 
-### Backups & Data Retention
-- Replicate the ledger and payment databases across availability zones with synchronous replication (RPO = 0).
-- Retain all payment and ledger records for 7 years minimum to meet financial regulatory requirements.
-- Store PCI-scoped token vault backups in an encrypted, access-audited cold store with separate key management.
+### Retention & Backups
+
+- **Replication**: Multi-AZ sync replication for ledger and payment DBs (RPO=0).
+- **Compliance**: Retain all payment/ledger records for 7 years minimum.
+- **Security**: PCI-scoped token vault backups in encrypted cold store.

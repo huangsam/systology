@@ -87,27 +87,25 @@ graph TD
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: 99.9% of search queries return results within 200 ms.
 - SLO: Location updates reflected in search results within 30 seconds (eventual consistency target).
 - SLIs: search_latency_p99, cache_hit_ratio_by_cell_precision, location_update_lag_p95, query_result_count_avg, shard_hotspot_qps.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `search_latency_p99 > 500ms`: Check shard fan-out or cache misses (P1).
+- `cache_hit_ratio < 80%`: Review TTL policy or scale hot-cell cache (P2).
+- `location_update_lag > 60s`: Scale ingestion consumers or check DB (P2).
 
-- `search_latency_p99 > 500ms` for 3m
-    - Severity: P1 (investigate cache misses, slow shard, or query fan-out issues).
-- `cache_hit_ratio < 80%` (5m)
-    - Severity: P2 (hot cells may have been evicted; review TTL policy or scale cache).
-- `location_update_lag_p95 > 60s`
-    - Severity: P2 (ingestion pipeline may be backlogged; scale consumers or check DB write throughput).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Validate spatial accuracy by running a suite of known-distance test cases (golden set of POI pairs with pre-computed distances) against the search API.
-- Load-test with geographically realistic query distributions (zipfian over city centres) at 2× peak QPS to verify cache effectiveness and tail latency.
-- Chaos-test shard failover: take one geohash shard offline and verify queries gracefully degrade (return partial results or expand to neighbouring shards).
+- **Accuracy**: Validate geospatial distance accuracy via pre-computed golden sets.
+- **Realistic Load**: Test with zipfian query distribution over dense city centers.
+- **Geofail**: Chaos-test shard outages to verify graceful partial results.
 
-### Backups & Data Retention
-- Replicate the Spatial Index DB across availability zones; take daily snapshots for disaster recovery.
-- Retain raw GPS update logs for 7 days in a streaming store for replay and debugging.
-- Archive historical POI data (closures, relocations) for analytics and data quality auditing.
+### Retention & Backups
+
+- **Index**: Multi-AZ replication with daily snapshots for DR.
+- **Logs**: 7-day raw GPS update retention for replay and debugging.
+- **Archive**: Historical POI lifecycle data (closures/relocations) for auditing.

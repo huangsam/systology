@@ -93,27 +93,25 @@ graph TD
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: P99 query latency < 50 ms for keyword search; < 150 ms for hybrid (keyword + vector) search.
 - SLO: 99.99% availability of the search API.
 - SLIs: query_latency_p99, index_freshness_lag, query_error_rate, recall_at_k, shard_replica_lag.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `query_latency_p99 > 40ms`: Investigate slow shards or heavy queries (P2).
+- `shard_replica_lag > 30s`: Check replication health and network (P2).
+- `query_error_rate > 0.1%`: Check shard health and query parsing (P1).
 
-- `query_latency_p99 > 40ms` for 5m
-    - Severity: P2 (approaching SLO; investigate slow shards or heavy queries).
-- `shard_replica_lag > 30s`
-    - Severity: P2 (replica falling behind; check replication health and network).
-- `query_error_rate > 0.1%` (5m)
-    - Severity: P1 (search API errors; check shard health and query parsing).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Run nightly relevance evaluation suites (NDCG, MAP, recall@K) against labelled query-document pairs; fail CI if metrics drop below baseline.
-- Load-test at 2× peak QPS with representative query distributions; verify latency SLOs hold and no shard becomes a bottleneck.
-- Chaos-test: take down individual shard replicas and verify that the scatter-gather layer routes around failures transparently.
+- **Relevance**: Nightly evaluation (NDCG, MAP) against labelled query sets.
+- **Load**: Test at 2x peak QPS with representative query distributions.
+- **Chaos**: Kill shard replicas to verify transparent scatter-gather routing.
 
-### Backups & Data Retention
-- Source documents are authoritative; the index can be rebuilt from source. Keep index snapshots for fast recovery (rebuild time < 1 hour for full corpus).
-- Retain search query logs (anonymised) for 90 days for relevance tuning and analytics.
-- Archive click-through and A/B test data indefinitely for long-term ranking model training.
+### Retention & Backups
+
+- **Index**: Authoritative source allows rebuilds; snapshots for < 1h recovery.
+- **Logs**: Anonymized query logs kept 90 days for tuning and analytics.
+- **A/B**: Archive click-through and test data indefinitely for model training.

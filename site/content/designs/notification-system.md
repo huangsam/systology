@@ -96,27 +96,25 @@ graph TD
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: 99% of high-priority notifications delivered to the external provider within 5 seconds of API receipt.
 - SLO: 99.9% overall delivery success rate (excluding user opt-outs and invalid tokens).
 - SLIs: dispatch_latency_p95_by_priority, delivery_success_rate, bounce_rate, queue_depth_by_priority, rate_limit_rejection_rate.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `high_priority_queue_depth > 100`: Scale consumers or check providers (P1).
+- `bounce_rate > 5%`: Check for stale tokens or provider filtering (P2).
+- `rate_limit_rejections > 10%`: Request quota increase or redistribute (P2).
 
-- `high_priority_queue_depth > 100` for 2m
-    - Severity: P1 (high-priority dispatch is falling behind; scale consumers or investigate provider issues).
-- `bounce_rate > 5%` for any channel (10m)
-    - Severity: P2 (check for stale tokens, bad email lists, or provider-side filtering).
-- `rate_limit_rejections > 10%` of traffic (5m)
-    - Severity: P2 (approaching provider quota ceiling; request limit increase or redistribute traffic).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Integration-test each channel adapter against provider sandbox environments to validate rendering, delivery, and receipt handling.
-- Chaos-test by failing one channel adapter (e.g., SMS) and verifying that only that channel's messages are affected, with no cross-channel impact.
-- Load-test the fanout worker with a 10-million-user broadcast to verify batching, queue throughput, and memory footprint.
+- **Integrations**: Validate each channel against provider sandboxes.
+- **Chaos**: Fail one channel to verify no cross-channel impact.
+- **Scale**: Load-test fanout worker with 10M-user broadcast batching.
 
-### Backups & Data Retention
-- Retain delivery tracking records for 90 days for debugging and analytics; archive to cold storage for compliance (1 year).
-- Store notification templates with version history in a Git-backed store or versioned DB for audit and rollback.
-- Back up user preference data with the main user DB; keep Redis cache ephemeral with warm-up on restart.
+### Retention & Backups
+
+- **Tracking**: Logs kept 90 days; archive to cold storage for 1 year.
+- **Templates**: Git-backed or versioned DB store for audit and rollback.
+- **Preferences**: SQL backup for primary data; Redis cache is ephemeral.

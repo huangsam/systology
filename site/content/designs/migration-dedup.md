@@ -86,27 +86,25 @@ graph LR
 ## Operational Excellence
 
 ### SLIs / SLOs
+
 - SLO: Complete 10 TB migration within 24 hours.
 - SLO: Post-migration reconciliation shows 0 mismatches (100% data integrity).
 - SLIs: migration_throughput_gbps, chunk_completion_rate, dedup_ratio, reconciliation_mismatch_count, checkpoint_lag.
 
-### Monitoring & Alerts (examples)
+### Monitoring & Alerts
 
-Alerts:
+- `migration_throughput < 100GB/hr`: Investigate bottlenecks (P1).
+- `reconciliation_mismatches > 0`: Halt migration and investigate data integrity (P1).
+- `chunk_failure_rate > 5%`: Check source connectivity or target errors (P2).
 
-- `migration_throughput < 100 GB/hr` for 30m
-    - Severity: P1 (SLA at risk; investigate bottleneck workers or throttling).
-- `reconciliation_mismatch_count > 0`
-    - Severity: P1 (data integrity issue; halt migration and investigate).
-- `chunk_failure_rate > 5%`
-    - Severity: P2 (investigate source connectivity or target write errors).
+### Reliability & Resiliency
 
-### Testing & Reliability
-- Run a dry-run migration against a staging copy of the target to validate transforms, dedup logic, and reconciliation before touching production.
-- Chaos-test by killing workers mid-chunk and verify that checkpoint-based resumption produces identical results.
-- Benchmark dedup hash index under realistic key counts (billions of hashes) to validate memory and lookup latency.
+- **Dry-run**: Run against staging target to validate dedup and transforms.
+- **Chaos**: Kill workers mid-chunk and verify checkpoint-based resumption.
+- **Benchmark**: Test hash index at billion-key scale for memory and latency.
 
-### Backups & Data Retention
-- Retain the source dataset unmodified until reconciliation passes and a post-migration bake-in period (7–14 days) completes.
-- Keep checkpoint and state DB records for 90 days for debugging and auditing.
-- Archive migration logs and reconciliation reports for compliance (1 year minimum).
+### Retention & Backups
+
+- **Source**: Retained unmodified until 7–14 day post-migration bake-in passes.
+- **State**: Checkpoint records kept for 90 days for debugging/audit.
+- **Compliance**: Archive logs and reconciliation reports for 1 year minimum.
