@@ -429,6 +429,7 @@ code,
 }
 
 .prose li {
+  margin-bottom: var(--space-sm);
   padding-left: var(--space-xs);
 }
 
