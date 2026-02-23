@@ -102,6 +102,37 @@ main.container {
 }
 
 /* ==============================
+   Transitions & Animations
+   ============================== */
+a,
+button,
+input,
+table,
+thead,
+tbody,
+tr,
+th,
+td,
+blockquote,
+pre,
+code,
+.theme-toggle,
+.card,
+.post-card,
+.badge,
+.link-pill,
+.term-pill,
+.term-pill .count,
+.site-header,
+.site-nav a,
+.site-footer,
+.social-links a,
+.related,
+.listing li {
+  transition: var(--transition);
+}
+
+/* ==============================
    Interactive Elements
    ============================== */
 
@@ -118,7 +149,6 @@ main.container {
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  transition: var(--transition);
 }
 
 .theme-toggle:hover,
@@ -167,7 +197,6 @@ main.container {
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: var(--transition);
 }
 
 .pagination a:hover,
@@ -185,7 +214,6 @@ main.container {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01));
   border: 1px solid var(--border);
   border-radius: 12px;
-  transition: var(--transition);
 }
 
 .card {
@@ -242,7 +270,6 @@ main.container {
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: var(--transition);
 }
 
 .title-group {
@@ -298,7 +325,6 @@ main.container {
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  transition: var(--transition);
 }
 
 .link-pill:hover,
@@ -319,7 +345,6 @@ main.container {
   color: var(--text);
   font-size: 0.95rem;
   font-weight: 500;
-  transition: var(--transition);
 }
 
 .term-pill:hover,
@@ -337,7 +362,6 @@ main.container {
   padding: var(--space-micro) var(--space-sm);
   border-radius: 6px;
   border: 1px solid var(--border);
-  transition: var(--transition);
 }
 
 .term-pill:hover .count {
@@ -507,7 +531,6 @@ th {
 .site-header {
   border-bottom: 1px solid var(--border);
   background: transparent;
-  transition: var(--transition);
 }
 
 .site-header .container {
@@ -546,7 +569,6 @@ th {
   font-size: 0.95rem;
   padding: var(--space-xs) 0.375rem;
   border-radius: 6px;
-  transition: var(--transition);
 }
 
 .site-nav a:hover,
@@ -564,7 +586,6 @@ th {
   color: var(--muted);
   font-size: 0.95rem;
   padding: var(--space-lg) 0 var(--space-2xl);
-  transition: var(--transition);
 }
 
 .footer-inner {
@@ -588,7 +609,6 @@ th {
   color: var(--muted);
   padding: var(--space-xs) 0.375rem;
   border-radius: 6px;
-  transition: var(--transition);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -690,7 +710,6 @@ span.muted {
   margin-top: var(--space-4xl);
   padding-top: var(--space-2xl);
   border-top: 1px solid var(--border);
-  transition: var(--transition);
 }
 
 .related h3 {
@@ -748,7 +767,6 @@ span.muted {
 .listing li {
   padding: 0.625rem 0;
   border-bottom: 1px solid var(--border);
-  transition: var(--transition);
 }
 
 .listing li:last-child {
