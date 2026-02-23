@@ -69,20 +69,29 @@ graph TD
 
 ### Deep Dive
 
-- **Priority routing:** incoming notification requests are classified into priority tiers (high / normal / low) based on the notification type (e.g., security alerts = high, order updates = normal, marketing = low). Each tier maps to a separate message queue with independent consumer groups, ensuring that a flood of marketing messages never delays a critical security alert.
-- **Channel adapters:** each delivery channel (Push / SMS / Email) is encapsulated in a pluggable adapter behind a common `Deliver(message)` interface. Adapters handle provider-specific concerns: APNs/FCM token management for push, Twilio/SNS API contracts for SMS, SES/SendGrid connection pooling for email. Adding a new channel (e.g., Slack, WhatsApp) requires only implementing the adapter interface.
-- **Template engine with i18n:** notifications reference versioned templates stored in a Template Service. Templates use a lightweight markup (Mustache / Handlebars) with variable interpolation. Localisation is handled by keying templates on `(template_id, locale)` pairs; a fallback chain (`user_locale → region_default → en`) ensures every user receives a rendered message.
-- **User preference store:** a dedicated Preferences DB stores per-user opt-in/opt-out flags, quiet hours, and channel preferences. The dispatcher consults preferences before sending and silently drops or defers messages that violate the user's settings. Preferences are cached in Redis with a short TTL to avoid a DB lookup on every dispatch.
-- **Rate limiting:** two layers of rate limiting. Platform-level: global token-bucket rate limits per channel to stay within provider quotas (e.g., 100 SMS/sec via Twilio). User-level: per-user sliding-window limits (e.g., max 5 push notifications per hour) to prevent notification fatigue and reduce uninstall rates.
-- **Delivery tracking and receipts:** every outbound message is assigned a unique `delivery_id` and tracked through states (`QUEUED → DISPATCHED → DELIVERED → READ | BOUNCED | FAILED`). Channel adapters asynchronously consume provider webhooks (delivery receipts, bounce notifications) and update the Delivery Tracker DB, enabling real-time delivery dashboards and retry decisions.
-- **Fanout for broadcast notifications:** for large-audience broadcasts (e.g., app-wide announcements), the API accepts a segment definition rather than individual recipient lists. A Fanout Worker resolves the segment against the user store in batches, enqueuing individual messages into the appropriate priority queue. This avoids exploding the request payload and allows progress tracking.
-- **Retry and dead-letter handling:** failed deliveries are retried with exponential backoff (capped at 3 attempts for SMS/push, 5 for email). Permanently failed messages (hard bounces, invalid tokens) are routed to a DLQ for inspection and trigger automatic preference updates (e.g., mark push token as stale).
+- **Priority routing:** High/Normal/Low tiers mapped to independent queues and consumer groups. Prevents lower-priority spikes (e.g., marketing) from blocking critical alerts (e.g., security).
+
+- **Channel adapters:** Pluggable adapters (Push, SMS, Email) behind a `Deliver()` interface. Encapsulates provider-specific logic like token management (FCM/APNs) or connection pooling (SES/SendGrid).
+
+- **Template engine & i18n:** Versioned templates with Mustache/Handlebars interpolation. Localisation keyed by `(template_id, locale)` with a fallback chain (`user_locale → region_default → en`).
+
+- **User preferences:** Dedicated DB/Cache for opt-in flags, quiet hours, and channel overrides. Dispatchers consult Redis-cached preferences to drop/defer messages.
+
+- **Double-layer rate limiting:** Global token-buckets enforce provider quotas (e.g., 100 SMS/sec); user-level sliding windows prevent spam and reduce app uninstalls.
+
+- **Delivery tracking:** Outbound messages tracked through lifecycle states (`QUEUED → DISPATCHED → DELIVERED → READ`). Adapters consume provider webhooks to update statuses for real-time dashboards.
+
+- **Broadcast fanout:** For app-wide alerts, workers resolve user segments in batches and enqueue individual messages. Avoids massive payloads and enables progress tracking for large campaigns.
+
+- **Retries & DLQ:** Failed deliveries use exponential backoff (3–5 attempts). Permanent failures route to a Dead Letter Queue and trigger stale-token updates in user profiles.
 
 ### Trade-offs
 
-- Per-priority queues vs. single queue with priority field: separate queues provide strong isolation and independent scaling, but increase operational overhead (more queues to monitor and tune); a single priority queue is simpler but risks head-of-line blocking if the consumer cannot process fast enough.
-- Push-based delivery vs. pull-based (inbox model): push is lower latency for real-time engagement but requires managing device tokens and handling offline users; an inbox/pull model is more reliable for guaranteed delivery but adds read latency and a polling or WebSocket infrastructure.
-- Inline template rendering vs. pre-rendered messages: inline rendering allows last-minute personalisation and A/B testing, but adds latency in the dispatch path; pre-rendering at enqueue time is faster but locks in content and makes template corrections harder after enqueue.
+- **Per-priority vs. Single Priority Queue:** Separate queues offer better isolation and scaling but higher operational overhead; a single queue is simpler but risks head-of-line blocking.
+
+- **Push vs. Pull (Inbox) Model:** Push is lower latency but requires complex token/offline management; Pull is more reliable but adds read latency and polling infra.
+
+- **Inline vs. Pre-rendering:** Inline allows last-minute A/B testing and personalization but adds dispatch latency; Pre-rendering is faster at dispatch but less flexible.
 
 ## Operational Excellence
 

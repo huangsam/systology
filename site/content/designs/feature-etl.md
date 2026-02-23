@@ -62,19 +62,25 @@ graph LR
 
 ### Deep Dive
 
-- **Source connectors:** build modular, pluggable connectors for each data source (databases via CDC, blob stores, streaming topics, REST APIs). Each connector handles authentication, pagination, and checkpoint tracking so that extraction is resumable and idempotent.
-- **Transform DAG and orchestration:** model transformations as a directed acyclic graph (e.g., Airflow DAG or dbt-style dependency graph). Each node is a pure function: `(input partitions, config) → output partition`. Run the DAG on a schedule or trigger it via new-data events. Use an orchestrator (Airflow, Dagster, Prefect) for dependency resolution, retries, and backfill.
-- **Idempotent loads:** write output partitions atomically using a `partition_key + run_id` scheme. If a run is re-executed, it overwrites the same partition, producing identical results. This guarantees that reruns don't create duplicate features and that the feature store converges to the correct state.
-- **Reproducibility:** pin all transform code, library versions, and config in a versioned artifact (container image or locked requirements file). Tag each output partition with the code version and input data snapshot hash so that any feature set can be reproduced exactly.
-- **Schema evolution:** define feature schemas in a registry (e.g., Avro, Protobuf, or a feature-store schema). Use backward-compatible evolution rules: new columns with defaults are safe; column removals or type changes require a migration step and downstream notification.
-- **Backfill strategy:** support historical backfill by accepting a date range parameter. Partition data by date so that backfills process only affected partitions without reprocessing the entire dataset. Run backfills at lower priority to avoid starving production pipelines.
-- **Data quality and validation:** embed data-quality checks (Great Expectations, dbt tests) into the DAG as validation nodes: null-rate checks, range checks, row-count drift detection. Fail the pipeline early on quality violations before bad features reach the store.
+- **Source connectors:** Pluggable connectors for CDC, blob stores, and APIs. Handles auth, pagination, and checkpointing to ensure extraction is resumable and idempotent.
+
+- **Transform DAG:** Pure functions `(input, config) → output`. Orchestration (Airflow/Dagster) manages dependency resolution, retries, and backfills for reproducible runs.
+
+- **Idempotent loads:** Overwrites output partitions using a `partition_key + run_id` scheme. Ensures reruns converge to the same state without creating duplicate features in the store.
+
+- **Reproducibility:** Versioned artifacts (containers) pin all code and dependencies. Output partitions tagged with code versions and data hashes allow bit-for-bit reconstruction.
+
+- **Schema evolution:** Enforced via a registry (Avro/Protobuf). Backward-compatible rules ensure new columns with defaults don't break downstream training.
+
+- **Backfill strategy:** Supports date-range parameters and prioritizes production pipelines. Date-partitioning allows re-processing specific windows without needing a full scan.
+
+- **Data quality:** Embedded validation nodes (Great Expectations) perform null-rate and drift checks. Pipelines fail early to prevent bad data from reaching models.
 
 ### Trade-offs
 
-- Batch vs. micro-batch vs. streaming: batch (hourly/daily) is simplest and sufficient for most ML training loops; streaming gives fresher features but adds complexity (exactly-once, state management); micro-batch (e.g., Spark Structured Streaming) is a middle ground.
-- Centralised orchestrator vs. event-driven: an orchestrator provides a single pane of glass for scheduling and lineage but becomes a single point of failure; event-driven execution is more resilient but harder to reason about dependency ordering.
-- Schema registry: enforces contracts and catches breaking changes early but adds a dependency and requires team discipline to register schemas before writing producers.
+- **Batch vs. Streaming:** Batch is simpler and sufficient for most ML loops; Streaming offers lower latency but increases architectural complexity (state, exactly-once).
+
+- **Centralized vs. Event-driven Orchestration:** Centralized provides better lineage and visibility but is a single point of failure; Event-driven is resilient but harder to debug.
 
 ## Operational Excellence
 

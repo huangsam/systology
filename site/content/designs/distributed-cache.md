@@ -58,19 +58,27 @@ graph LR
 
 ### Deep Dive
 
-- **Data model and key design:** cache Git objects (blobs, trees, commits) and pack-index lookups keyed by their SHA hash. Use prefixed keys (`obj:<sha>`, `tree:<sha>`, `ref:<branch>`) to namespace object types and allow targeted eviction or monitoring per category.
-- **Consistent hashing and sharding:** partition the keyspace across cache nodes using consistent hashing with virtual nodes to minimise key redistribution when nodes join or leave. This keeps rebalancing to ~1/N of keys rather than a full reshuffle.
-- **Eviction policy:** use an LRU eviction policy for general objects. For hot metadata (branch tips, HEAD refs) pin entries with longer TTLs or use an LFU variant to keep frequently accessed items resident.
-- **Cache-aside pattern:** the application checks the cache first; on a miss it reads from the Git object store, populates the cache, and returns. Writes go directly to the backend store and invalidate the cache key. This avoids write amplification in the cache layer and keeps the store as the source of truth.
-- **Hot-key mitigation:** for extremely popular repositories or refs, replicate hot keys across multiple shards (key replication) or use a local in-process L1 cache (bounded LRU, 1–5 s TTL) in front of the distributed cache to absorb thundering-herd reads.
-- **Serialisation and compression:** store objects in compressed form (zstd or LZ4) to reduce memory footprint. The CPU cost of decompression is negligible compared to a network round-trip to the backend store.
-- **Thread safety and concurrency:** use pipelining and connection pooling (one pool per app server) to maximise throughput. Employ `SETNX`-style locks or read-through cache-fill fences to prevent stampeding multiple backend fetches for the same cold key.
+- **Data model:** Prefixed keys (`obj:`, `tree:`, `ref:`) namespace Git objects by SHA hashes. Enables targeted monitoring and category-specific eviction policies.
+
+- **Consistent hashing:** Sharding across nodes using virtual nodes to minimize redistribution when cluster scale changes. Limits rebalancing to ~1/N of keyspace.
+
+- **Eviction policies:** Standard LRU for general objects. Hot metadata (branch tips, HEAD) uses LFU or pinned entries to ensure high-priority data remains resident.
+
+- **Cache-aside pattern:** Apps check cache first, then read-through to store on miss. Writes bypass cache and invalidate keys, ensuring the store is the source of truth.
+
+- **Hot-key mitigation:** Key replication across shards for viral repos. Local L1 in-process caches absorb thundering herds before queries reach the distributed layer.
+
+- **Storage optimization:** Objects are zstd/LZ4 compressed in-memory. Decompression CPU costs are negligible compared to the network I/O saved from misses.
+
+- **Concurrency:** Connection pooling and pipelining maximize throughput. `SETNX` locks or fill-fences prevent multiple servers from fetching the same cold key.
 
 ### Trade-offs
 
-- Cache-aside vs. write-through: cache-aside is simpler and avoids unnecessary cache writes, but risks brief staleness after backend updates; write-through ensures freshness at the cost of added write latency and cache churn for infrequently-read objects.
-- LRU vs. LFU: LRU is simple and works well for recency-driven access patterns; LFU retains long-term popular objects better but is more complex to implement and slower to adapt to shifting workloads.
-- Compression: reduces memory usage by 2–4× but adds CPU overhead per request; on cache-heavy workloads the tradeoff is almost always worthwhile.
+- **Cache-aside vs. Write-through:** Cache-aside is simpler and lighter but risks minor staleness; Write-through ensures freshness but adds write latency.
+
+- **LRU vs. LFU:** LRU is efficient for recency-based workloads; LFU excels at retaining long-term popular items but is slower to adapt to changing traffic.
+
+- **Compression Overhead:** Reduces memory costs by 2–4x but increases request-time CPU; typically a net win given network and memory constraints.
 
 ## Operational Excellence
 

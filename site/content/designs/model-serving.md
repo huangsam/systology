@@ -74,19 +74,25 @@ graph TD
 
 ### Deep Dive
 
-- **Model registry and versioning:** store every trained model as an immutable, versioned artifact (ONNX, TorchScript, SavedModel) in an object store with metadata (training run, dataset hash, metrics). The registry tracks which version is live, canary, and shadow, enabling instant rollback to any previous version.
-- **Serving runtime:** use a high-performance inference server (Triton, TorchServe, TF Serving) that loads models on startup and serves predictions via gRPC/REST. Support multiple model formats and hardware backends (CPU, GPU, TPU) with a unified API.
-- **Request batching:** aggregate incoming requests into micro-batches (e.g., 8–32 inputs) with a short wait window (5–10 ms). Batching amortises GPU kernel launch overhead and increases throughput by 3–10× with only marginal latency increase. Use adaptive batch sizing based on current load.
-- **GPU scheduling and resource management:** assign models to GPU instances based on memory requirements and latency SLOs. Use model-level resource quotas and support GPU sharing (MPS or time-slicing) for smaller models. Place latency-sensitive models on dedicated GPUs; batch/offline models can share.
-- **Canary and blue-green rollouts:** deploy new model versions as canary (5–10% traffic), compare accuracy and latency metrics against the stable version in real-time, and auto-promote or rollback. Use feature flags or header-based routing so that specific users or test traffic can be sent to the canary explicitly.
-- **Fallback and degradation:** maintain a lightweight fallback model (e.g., logistic regression, cached predictions, or a smaller distilled model) that activates when the primary model is unhealthy or latency exceeds the SLO. The fallback trades accuracy for availability and ensures the API never returns errors to end users.
-- **Pre- and post-processing:** run feature extraction, normalisation, and output formatting in the serving pipeline as vectorised transforms. Keep preprocessing deterministic and version it alongside the model to avoid training-serving skew.
+- **Model Registry:** Immutable, versioned storage for ONNX/TorchScript artifacts. Metadata tracks training runs and metrics, enabling instant, safe rollbacks.
+
+- **Serving Runtime:** High-performance inference servers (Triton/TorchServe) support gRPC/REST. Unified APIs allow serving multiple formats across CPU, GPU, and TPU backends.
+
+- **Micro-batching:** Aggregates requests (8–32 inputs) within a 5–10ms window. Dramatically increases GPU throughput by amortizing kernel launch overhead.
+
+- **Resource Management:** Assigns models to GPU pools based on memory needs. Uses MPS (sharing) for small models and dedicated instances for latency-critical traffic.
+
+- **Canary Rollouts:** Deploys new versions to 5–10% of traffic. Real-time accuracy/latency comparisons against baseline automate promotion or rollback decisions.
+
+- **Fallback & Degradation:** Activates distilled models or cached predictions when primaries fail or exceed SLOs. Ensures consistent API availability despite backend issues.
+
+- **Preprocessing:** Runs feature normalization and formatting as vectorized transforms in the serving pipeline. Versioned with the model to eliminate training-serving skew.
 
 ### Trade-offs
 
-- Batching vs. latency: larger batches improve throughput and GPU utilization but increase tail latency for requests that arrive at the start of a batch window; systems must tune batch size and wait time per SLO tier.
-- GPU sharing vs. isolation: sharing GPUs across models maximizes utilization but introduces noisy-neighbour effects; dedicated GPUs guarantee latency but leave capacity idle during low traffic.
-- Rich serving framework vs. custom server: frameworks like Triton provide out-of-the-box batching, multi-model, and multi-backend support but add abstraction layers; custom servers offer maximum control but require significant engineering investment.
+- **Batch Size vs. Latency:** Larger batches maximize throughput but increase tail latency (P99); requires per-model tuning to balance cost against responsiveness.
+
+- **GPU Sharing vs. Isolation:** Sharing maximizes cost-efficiency but risks noisy-neighbor effects; Isolation guarantees performance but leaves capacity idle during troughs.
 
 ## Operational Excellence
 

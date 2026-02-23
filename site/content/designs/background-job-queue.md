@@ -63,20 +63,27 @@ graph LR
 
 ### Deep Dive
 
-- **Queue backend:** prefer durable, partitioned queues (Redis Streams / Kafka / SQS); use Redis Streams for low-latency + simple ops, SQS/Kafka for larger scale and replayability.
-- **Payload strategy:** keep messages small (IDs + metadata). Store large media in object storage and reference by URL to avoid queue bloat.
-- **Worker model:** pull-based workers with leases/visibility timeouts and periodic heartbeats. Use worker-side concurrency controls and per-worker resource limits (CPU/memory/cgroup).
-- **Idempotency:** every job must have a dedup key / idempotency token and be safe to run multiple times. Persist job status (`PENDING` → `RUNNING` → `SUCCEEDED` | `FAILED`) in a Job DB to avoid double work.
-- **Retries & poison messages:** exponential backoff with jitter, capped retries (e.g., 5 attempts), then move to a Dead-Letter Queue (DLQ) for manual inspection or automated recovery.
-- **Prioritization & QoS:** implement separate queues (or priority fields) for latency-sensitive vs. batch jobs; apply token-bucket rate limiting when calling external services.
-- **Scaling strategy:** autoscale workers on queue depth and worker CPU utilization; partition work by job type to scale independently.
-- **Transactions & consistency:** use at-least-once semantics internally and rely on idempotent handlers; do not attempt expensive exactly-once semantics across distributed systems.
-- **Security & isolation:** run untrusted/long-running jobs in isolated sandboxes (containers) with strict resource quotas and network egress controls.
+- **Queue backend:** Partitioned/durable queues (Redis Streams, Kafka, SQS). Redis is ideal for low-latency; Kafka/SQS for massive scale and native replayability.
+
+- **Payload strategy:** Messages contain IDs and metadata; large payloads (media, reports) are stored in object storage (S3) with references in the message to prevent bloat.
+
+- **Worker model:** Pull-based workers with visibility timeouts and heartbeats. Per-worker resource limits (CPU/memory) and local concurrency controls ensure stability.
+
+- **Idempotency:** Every job uses a dedup key/token. Statuses (`PENDING → RUNNING → SUCCESS/FAIL`) are persisted in a Job DB to prevent double-processing.
+
+- **Retries & DLQ:** Exponential backoff with jitter (e.g., 5 attempts) before routing to a Dead-Letter Queue (DLQ) for manual inspection or scripted recovery.
+
+- **Priority & QoS:** Separate queues for latency-sensitive vs. batch jobs. Token-bucket rate limiting prevents overwhelming downstream internal or external services.
+
+- **Autoscaling:** Workers scale based on queue depth and CPU utilization. Independent scaling per job type ensures high-throughput tasks don't starve small, fast jobs.
+
+- **Isolation:** Untrusted or long-running tasks execute in isolated containers/sandboxes with strict network and resource quotas to protect the host system.
 
 ### Trade-offs
 
-- Redis Streams: low-latency + simple, but requires careful persistence/ops for large retention. Kafka/SQS: better for guaranteed delivery and reprocessing at scale but adds operational complexity.
-- Inline payloads: simpler but increases queue size and risk of message loss; object store references increase system complexity but are more robust for large files.
+- **Redis Streams vs. Kafka/SQS:** Redis is faster/simpler; Kafka/SQS scales better for multi-day retention and multi-consumer reprocessing.
+
+- **Inline vs. External Payloads:** Inline is simpler but adds bloat; External (S3) is robust for large files but increases architectural complexity.
 
 ## Operational Excellence
 

@@ -61,18 +61,25 @@ graph LR
 
 ### Deep Dive
 
-- **Multi-tier cache hierarchy:** deploy edge PoPs close to users for L1 cache, with a regional origin shield (L2) that collapses concurrent cache misses into a single origin fetch. This dramatically reduces origin load and bandwidth costs when content goes viral.
-- **Cache invalidation strategy:** use surrogate keys (tags) on objects so that a single purge command can invalidate all variants of a resource (different resolutions, formats). Prefer short TTLs (30–60 s) with `stale-while-revalidate` for dynamic metadata, and long TTLs (30 d+) with explicit purge for immutable media assets.
-- **Upload and transcoding pipeline:** accept uploads through a dedicated upload service that writes raw files to object storage and enqueues a transcoding job. Workers produce multiple renditions (resolution, codec, thumbnail) and write outputs back to object storage, then warm the CDN by issuing a prefetch to the edge.
-- **Signed URLs and access control:** generate time-limited signed URLs or signed cookies for private content. Enforce token verification at the edge so that unauthorized requests never reach the origin. Rotate signing keys periodically and support key overlap windows for zero-downtime rotation.
-- **Image and video optimization:** serve modern formats (WebP, AVIF, H.265) with content negotiation via `Accept` headers. Apply on-the-fly image resizing at the edge for rarely-requested dimensions, and pre-generate popular variants.
-- **Multi-CDN and failover:** use DNS-based or anycast routing to distribute traffic across multiple CDN providers. Implement health-check probes and automatic failover so that an edge outage redirects users to healthy PoPs within seconds.
+- **Multi-tier caching:** Edge PoPs provide L1 cache. A regional Origin Shield (L2) collapses concurrent misses into a single fetch, protecting origin from viral traffic.
+
+- **Invalidation strategy:** Surrogate keys (tags) enable purging all resolution/format variants at once. Uses short TTLs with `stale-while-revalidate` for metadata.
+
+- **Upload pipeline:** Upload service writes raw files to S3 and enqueues transcoding. Workers generate renditions (720p, 1080p, etc.) and pre-warm the CDN edge via prefetch.
+
+- **Security & Access:** Time-limited signed URLs or cookies verified at the edge. Rotatable signing keys allow for zero-downtime security updates.
+
+- **Content Optimization:** Modern formats (WebP, AVIF, H.265) served via `Accept` header negotiation. Real-time resizing handles rare dimensions at the edge.
+
+- **Multi-CDN Failover:** Anycast or DNS-based routing distributes traffic. Health-check probes trigger automatic failover to healthy PoPs if a provider degrades.
 
 ### Trade-offs
 
-- Origin shield: reduces origin traffic significantly but adds an extra hop of latency on cold-cache requests; without it, origin can be overwhelmed during cache-busting events.
-- On-the-fly transforms: flexible and storage-efficient but CPU-intensive at the edge and risk latency spikes; pre-generating variants eliminates edge compute cost but increases storage and transcoding time.
-- Multi-CDN: improves resilience and allows vendor negotiation but increases operational complexity and makes cache invalidation harder to coordinate across providers.
+- **Origin Shield vs. Direct:** Shield reduces load significantly but adds a latency hop for cold-cache requests; direct is faster for misses but risks origin collapse.
+
+- **On-the-fly vs. Pre-generation:** Transforms save storage but increase edge CPU and latency; Pre-generation is faster to serve but increases storage costs.
+
+- **Multi-CDN vs. Single Provider:** Multi-CDN increases resilience but doubles configuration overhead and complicates cache invalidation sync.
 
 ## Operational Excellence
 

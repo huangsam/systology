@@ -62,20 +62,27 @@ graph TD
 
 ### Deep Dive
 
-- **Geospatial indexing — Geohash vs. Quadtree:** use Geohash encoding to convert latitude/longitude into a hierarchical string prefix (e.g., `9q8yyk`). Nearby POIs share a common prefix, enabling range queries on a standard B-tree index. Alternatively, a Quadtree recursively subdivides 2-D space into quadrants until each leaf contains fewer than N POIs, supporting variable-density regions. Geohash is simpler and works well with key-value stores; Quadtree is better for highly non-uniform density (e.g., city centres vs. rural areas).
-- **Search with expanding rings:** a proximity query at precision level P fetches all POIs in the user's geohash cell and its 8 neighbours. If fewer than K results are found, the search "rings out" by reducing precision (expanding the cell size) and re-querying. This adaptive approach avoids over-fetching in dense areas while still returning results in sparse regions.
-- **Read/write path separation:** reads (search queries) are served from read replicas and a Redis-backed geo-cache to minimise latency (target < 200 ms). Writes (location updates, new POIs) go to the primary Spatial Index DB and asynchronously invalidate or update affected cache cells. This separation allows independent scaling of the read-heavy workload (50 k QPS) from the low-throughput write path.
-- **Location update pipeline:** for moving POIs (e.g., delivery drivers), a dedicated ingestion service accepts batched GPS updates over a persistent connection (WebSocket or gRPC stream). Updates are coalesced (latest-wins per entity within a 5-second window) and flushed to the Spatial DB in bulk, reducing write amplification. Stale locations (no update in > 10 minutes) are flagged and excluded from search results.
-- **Caching hot geohash cells:** popular cells (city centres, tourist areas) are pre-warmed in Redis using the `GEOADD` / `GEORADIUS` commands. Cache entries are keyed by `geo:<precision>:<cell>` with a TTL proportional to the cell's write frequency (e.g., 60 s for high-churn, 10 min for static business listings). Cache-aside pattern ensures cache freshness without write-through overhead.
-- **Result ranking and filtering:** raw spatial results are post-filtered by category, rating, open-now status, and user preferences. Ranking incorporates distance, relevance score (text match if keyword search is combined), and business quality signals. Final results are paginated and returned with distance annotations.
-- **Sharding by geohash prefix:** the Spatial Index DB is sharded on the first N characters of the geohash key. This co-locates geographically nearby POIs on the same shard, enabling single-shard neighbour queries. Hot shards (e.g., Manhattan) are split further or assigned to higher-capacity nodes.
-- **Multi-resolution support:** the API accepts a `radius` parameter and dynamically selects the appropriate geohash precision level. Small radii (< 1 km) use precision 6–7; large radii (50 km) use precision 4–5. This avoids scanning an excessive number of cells for wide searches.
+- **Geospatial Indexing:** Uses Geohashing to map 2D coordinates to hierarchical string prefixes. Enables fast range queries on standard B-trees; Quadtrees as an alternative for variable density.
+
+- **Expanding Ring Search:** Queries start at high precision and "ring out" if results are sparse. Avoids over-fetching in dense centers while ensuring results in rural areas.
+
+- **Read/Write Path Separation:** Read-heavy traffic (50k QPS) served from replicas and Geo-caches. Writes bypass the hot path, asynchronously updating the spatial index.
+
+- **Location Pipeline:** Moving entities stream batched GPS updates via gRPC. Coalesced latest-wins flushing reduces write amplification while maintaining freshness.
+
+- **Geo-caching:** Hot geohash cells pre-warmed in Redis (`GEOADD`). TTLs are tuned based on cell churn (e.g., 1m for moving entities, 10m for static businesses).
+
+- **Ranking & Filtering:** Spatial results post-filtered by rating, "open now", and categories. Personalization and business quality signals drive final ordering.
+
+- **Sharding by Prefix:** Partitions the spatial DB on geohash prefixes. Co-locates nearby POIs on the same shard to minimize cross-shard fan-out for local searches.
+
+- **Multi-resolution Support:** API maps requested radii to optimal geohash precision. Dynamic selection prevents scanning excessive points for wide-area searches.
 
 ### Trade-offs
 
-- Geohash vs. Quadtree: Geohash is simpler to implement on top of existing sorted indexes and distributes well across shards, but suffers from edge effects at cell boundaries (two physically close POIs can fall into non-adjacent cells); Quadtrees handle variable density gracefully but require custom in-memory data structures and are harder to distribute.
-- Caching full result sets vs. caching raw POI data: caching pre-built result pages per cell is faster for repeated queries but wastes memory on low-traffic cells and makes personalised ranking harder; caching individual POI records is more flexible but requires assembling and ranking results on every request.
-- Precision vs. recall in expanding ring search: starting at high precision returns fewer, more relevant results quickly but may miss nearby POIs across cell boundaries; starting at low precision guarantees completeness but returns more data that must be filtered and sorted.
+- **Geohash vs. Quadtree:** Geohash is simpler and shatters well for sharding but has boundary "blind spots"; Quadtrees are density-aware but harder to distribute.
+
+- **Cache Full Results vs. Raw POIs:** Caching results is faster for repetition but memory-heavy; Caching raw POIs is flexible for ranking but increases per-request compute.
 
 ## Operational Excellence
 

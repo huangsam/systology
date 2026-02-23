@@ -64,19 +64,27 @@ graph TD
 
 ### Deep Dive
 
-- **Federated averaging (FedAvg) protocol:** the coordinator broadcasts the current global model to a sampled subset of devices. Each device trains locally on its private data for several epochs, then sends a model update (gradient or weight delta) back. The aggregator averages the updates, weighted by each device's sample count, to produce a new global model. Repeat for hundreds of rounds until convergence.
-- **Secure aggregation:** use cryptographic secure aggregation (e.g., Bonawitz et al. protocol) so that the server only sees the sum of client updates, never individual updates. This guarantees that even a compromised server cannot reconstruct any single device's data. Support dropout tolerance so that rounds succeed even when some clients go offline mid-round.
-- **Differential privacy (DP):** apply local or central DP to bound the influence of any single device. Clip per-device gradients to a fixed L2 norm, then add calibrated Gaussian noise. Track a cumulative privacy budget (ε, δ) and halt training or switch to a public dataset when the budget is exhausted.
-- **Client selection and scheduling:** sample clients proportionally to data volume, but stratify by device type and timezone to ensure representativeness and avoid mobile‑bias. Enforce minimum battery level and Wi-Fi connectivity before participation. Schedule rounds during off-peak hours to reduce user impact.
-- **Communication efficiency:** compress updates using quantisation (e.g., 8-bit or ternary gradients), sparsification (send only top-k gradient elements), or learned compression codecs. This reduces per-round bandwidth from megabytes to kilobytes for large models, making federated learning feasible on mobile networks.
-- **Heterogeneity and non-IID data:** device datasets are typically non-IID and imbalanced. Use techniques like FedProx (proximal regularisation) or scaffold (control variates) to stabilise convergence. Run periodic evaluations on a held-out server-side validation set to detect divergence.
-- **Model versioning and rollout:** store each global checkpoint with a round number and evaluation metrics. Roll out the updated model to production gradually (canary → percentage ramp → full fleet) and monitor accuracy and fairness metrics before promoting.
+- **FedAvg protocol:** Coordinator broadcasts parameters to a client subset. Devices train locally and return gradients; server averages updates to produce the next model.
+
+- **Secure aggregation:** Cryptographic protocols ensure the server only sees the aggregate sum, never individual updates. Includes dropout tolerance for connectivity issues.
+
+- **Differential Privacy (DP):** Clips gradients and adds noise to bound individual device influence. Tracks a cumulative (ε, δ) budget to halt training when limits are reached.
+
+- **Client scheduling:** Stratified sampling ensures representation. Participation restricted to devices on Wi-Fi with sufficient battery to minimize user impact.
+
+- **Communication efficiency:** Quantization (8-bit) and sparsification (Top-K gradients) reduce bandwidth. Vital for making ML feasible over mobile networks for large models.
+
+- **Non-IID handling:** Techniques like FedProx stabilize convergence across heterogeneous datasets. Periodic server-side validation detects divergence early.
+
+- **Model rollouts:** Checkpointed models roll out via canary stages. Monitoring accuracy and fairness across device cohorts ensures quality before full promotion.
 
 ### Trade-offs
 
-- Secure aggregation vs. performance: cryptographic protocols add 2–5× overhead per round and increase coordinator complexity; without them, a compromised server can reconstruct individual updates, creating a privacy risk.
-- Differential privacy vs. model accuracy: stronger privacy guarantees (lower ε) inject more noise and reduce model accuracy; teams must choose a privacy-accuracy operating point based on regulatory requirements and data sensitivity.
-- Client sampling breadth vs. round speed: sampling more clients per round improves update quality but increases round latency and bandwidth; small samples are faster but noisier.
+- **Secure Agg vs. Performance:** Cryptography adds significant overhead and complexity but is essential to prevent a compromised server from reconstructing private user data.
+
+- **DP vs. Accuracy:** Stronger privacy injects more noise, reducing accuracy. Teams must balance regulatory compliance against model performance requirements.
+
+- **Sample Breadth vs. Round Speed:** Larger cohorts improve gradient quality but increase round latency and bandwidth; smaller samples are faster but noisier.
 
 ## Operational Excellence
 

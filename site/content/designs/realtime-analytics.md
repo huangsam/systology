@@ -62,19 +62,27 @@ graph LR
 
 ### Deep Dive
 
-- **Event collection and ingestion:** deploy a stateless collector fleet behind a load balancer that accepts events over HTTPS (or gRPC). Validate, enrich (timestamp, geo-IP, session ID), and publish each event to a partitioned Kafka topic. Partition by user ID or session ID to preserve ordering within a user's session.
-- **Stream processing engine:** use Apache Flink (or Kafka Streams for simpler cases) for stateful stream processing. Implement tumbling, sliding, and session windows to compute aggregations (page views per minute, unique users per hour, session duration). Flink's exactly-once checkpointing ensures aggregation accuracy even during failures.
-- **Windowing and watermarks:** define event-time watermarks to track processing progress and handle out-of-order events. Use allowed-lateness thresholds (e.g., 5 minutes) to accept late arrivals and update previously emitted aggregations. Events arriving after the lateness window are routed to a dead-letter topic for batch reconciliation.
-- **OLAP sink and query layer:** write computed aggregations to a columnar OLAP store (ClickHouse, Apache Druid, or BigQuery) optimised for fast analytical queries. Partition tables by time (hourly/daily) for efficient range scans. Expose a query API that dashboards poll or that pushes updates via WebSocket for near-real-time displays.
-- **Raw event archival:** mirror the raw Kafka topic to a data lake (S3/GCS in Parquet format) via a Kafka Connect sink for historical analysis, machine learning, and regulatory compliance. This decouples the real-time path from batch workloads.
-- **Backpressure and load shedding:** implement backpressure from the stream processor to the collector (via Kafka consumer lag). If lag exceeds a threshold, shed non-critical events (e.g., impression pings) or degrade dashboard refresh rate rather than dropping high-value events (purchases, errors).
-- **Schema management:** enforce an Avro or Protobuf schema registry for event payloads. Producers must register schemas before publishing; the stream processor validates incoming events against the registry, rejecting malformed messages to protect downstream consumers.
+- **Event ingestion:** Stateless collector fleet behind LB accepts HTTPS/gRPC. Events enriched (Geo-IP, session ID) and published to Kafka. Partitioning by `session_id` ensures intra-session ordering.
+
+- **Stream processing:** Apache Flink performs stateful aggregations (metrics per min/hour). Flink’s exactly-once checkpointing ensures accuracy across tumbling, sliding, and session windows.
+
+- **Watermarks & lateness:** Event-time watermarks handle out-of-order data. Allowed-lateness thresholds accept late events and trigger aggregate updates; data exceeding the window routes to a DLQ.
+
+- **OLAP query layer:** Aggregates written to columnar stores (ClickHouse/Druid) optimized for range scans. A Query API supports dashboard polling or WebSocket pushes for real-time visibility.
+
+- **Event archival:** Raw Kafka topics mirrored to a data lake (S3/GCS) in Parquet via Kafka Connect. Decouples real-time processing from historical analysis and ML training.
+
+- **Load shedding:** Backpressure from stream processor (via Kafka lag) triggers shedding of non-critical events (e.g., pings) to protect high-value data and maintain freshness.
+
+- **Schema registry:** Enforces Avro/Protobuf schemas. Producers register schemas before publishing; processor validates messages to prevent corrupted sinks.
 
 ### Trade-offs
 
-- Flink vs. Kafka Streams: Flink provides richer windowing, savepoints, and exactly-once guarantees across sinks, but requires a dedicated cluster; Kafka Streams runs as a library inside application pods, simplifying deployment but limiting state-management capabilities.
-- Event-time vs. processing-time: event-time windowing produces accurate aggregations but requires watermark management and handling late data; processing-time is simpler but can produce inconsistent results under lag or reprocessing.
-- OLAP store choice: ClickHouse offers excellent single-node performance and simpler ops; Druid excels at high-concurrency sub-second queries but is more complex to operate; managed services (BigQuery) eliminate ops burden but limit tuning control and may increase cost.
+- **Flink vs. Kafka Streams:** Flink offers robust exactly-once state management but requires a cluster; Kafka Streams is a lightweight library but lacks comprehensive multi-sink guarantees.
+
+- **Event-time vs. Processing-time:** Event-time is accurate but requires complex watermark management; Processing-time is simpler but inconsistent under lag or replay.
+
+- **OLAP Choice:** ClickHouse is simpler for high-perf single-nodes; Druid scales better for high-concurrency queries; Managed (BigQuery) reduces ops but limits tuning.
 
 ## Operational Excellence
 

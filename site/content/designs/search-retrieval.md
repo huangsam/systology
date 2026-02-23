@@ -68,19 +68,27 @@ graph TD
 
 ### Deep Dive
 
-- **Inverted index:** build a term-to-posting-list index for full-text search. Store positional information for phrase queries and proximity scoring. Use immutable segments with periodic merges (LSM-tree style) to support efficient writes without blocking reads. Compress posting lists with variable-byte or PForDelta encoding to reduce I/O.
-- **Hybrid ranking (BM25 + embeddings):** combine lexical scoring (BM25 / TF-IDF) with semantic scoring from dense vector embeddings. First-stage retrieval uses the inverted index for candidate generation (top-1000), then a re-ranker applies a cross-encoder or learned-to-rank model on the candidate set to produce the final top-K results. This two-stage approach balances recall and precision efficiently.
-- **Sharding and replication:** partition the index by document hash across N shards. Each shard has R replicas for fault tolerance and read throughput. Use a scatter-gather pattern: the query is sent to all shards in parallel, each returns its local top-K, and the gather layer merges and re-ranks across shards.
-- **Index refresh and near-real-time search:** new or updated documents are written to a write-ahead log and a small in-memory segment (refreshed every 1–5 seconds). Periodic background merges compact small segments into larger ones. This provides near-real-time searchability without the cost of per-document index commits.
-- **Query processing pipeline:** parse the query, expand with synonyms, apply spell correction, and rewrite using learned query-rewriting models. Support filters (facets, date ranges, ACLs) as bit-set intersections applied before scoring to reduce the candidate set early.
-- **Relevance tuning and feedback:** log click-through data and use it to train learning-to-rank models. Run online A/B tests on ranking changes. Provide an explain API that returns the scoring breakdown for debugging relevance issues.
-- **Multi-tenancy and access control:** enforce per-tenant index isolation (separate shards or filtered aliases) and document-level ACLs evaluated at query time. Use Bloom filters on ACL fields to quickly skip unauthorised documents during posting-list traversal.
+- **Inverted index:** Term-to-posting-list index with positional data for phrase queries. Uses immutable segments and LSM-tree style merges for non-blocking reads. Posting lists are PForDelta-compressed.
+
+- **Hybrid ranking:** Combines BM25 lexical scoring with dense vector semantic embeddings. A two-stage pipeline uses the inverted index for candidate generation, followed by a cross-encoder re-ranker.
+
+- **Sharding & replication:** Document-hash partitioning across N shards with R replicas. Employs a scatter-gather pattern: queries execute in parallel, and results are merged at the gather layer.
+
+- **NRT index refresh:** Updates written to a WAL and in-memory segment, refreshed every 1–5 seconds. Background merges compact segments, providing searchability without frequent commit costs.
+
+- **Query pipeline:** Handles parsing, synonym expansion, and spell correction. Filters (facets, ACLs) use bit-set intersections to prune the candidate set before scoring.
+
+- **Relevance feedback loops:** Click-through logs drive learning-to-rank model training. An `explain` API exposes scoring breakdowns for debugging and A/B testing ranking adjustments.
+
+- **Security & Multi-tenancy:** Per-tenant shard isolation and document-level ACLs. Bloom filters on ACL fields enable fast skipping of unauthorized documents during traversal.
 
 ### Trade-offs
 
-- Lexical vs. semantic search: BM25 is fast, interpretable, and requires no GPU, but misses semantic similarity (synonyms, paraphrases); dense vector search captures meaning but is compute-intensive and harder to debug. Hybrid balances both at the cost of pipeline complexity.
-- Near-real-time vs. batch indexing: NRT indexing (1–5 s refresh) satisfies most use cases but adds memory pressure and compaction overhead; batch indexing (minutes/hours) is simpler but delays document visibility.
-- Scatter-gather vs. single-node: scatter-gather scales horizontally and handles larger corpora but adds network hops and merge overhead; a single large node is simpler when the index fits in memory.
+- **Lexical vs. Semantic Search:** Lexical (BM25) is fast/interpretable; Semantic (Vector) captures meaning but is GPU-heavy. Hybrid balances both at the cost of complexity.
+
+- **NRT vs. Batch Indexing:** NRT (1–5s) provides immediate visibility but adds memory/compaction pressure; Batch is more efficient but delays document availability.
+
+- **Scatter-Gather vs. Single-Node:** Scatter-Gather scales horizontally for massive corpora but adds network hops; Single-Node is simpler but limited by machine capacity.
 
 ## Operational Excellence
 

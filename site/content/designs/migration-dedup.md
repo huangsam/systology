@@ -63,19 +63,25 @@ graph LR
 
 ### Deep Dive
 
-- **Chunking and scanning:** divide the source dataset into logical chunks (by primary-key range, date partition, or fixed-size blocks). Each chunk is an independent unit of work that can be migrated, retried, or skipped without affecting other chunks. Chunks are sized to fit in memory (e.g., 100 MB) to limit per-worker resource usage.
-- **Content-hash deduplication:** compute a content hash (SHA-256 or xxHash) for each record or object. Maintain a hash index (Bloom filter for fast negative lookups, backed by a persistent hash-to-location map) to detect duplicates. When a duplicate is found, write a reference to the existing copy instead of re-migrating the data.
-- **Idempotent writes and upserts:** use upsert semantics (INSERT ON CONFLICT UPDATE) in the target system so that re-running a chunk produces the same final state. Tag each record with a `migration_run_id` to distinguish fresh writes from replayed ones.
-- **Resumable checkpoints:** after each chunk completes, persist a checkpoint record (`chunk_id`, `status`, `row_count`, `hash`) to a state database. On restart, the system skips already-completed chunks and resumes from the last incomplete one. This makes the entire migration restartable without re-processing.
-- **Reconciliation and validation:** after the bulk migration, run a reconciliation pass that reads both source and target in parallel, comparing row counts, checksums, and sampled record values. Report mismatches and optionally re-migrate only the divergent chunks.
-- **Rollback strategy:** before migration, snapshot or version the target dataset (e.g., database snapshot, object-store versioning). If post-migration validation reveals corruption, restore from the snapshot. For append-only targets, tag migrated records so they can be bulk-deleted.
-- **Parallelism and throttling:** run multiple migration workers in parallel, each assigned a set of chunks. Apply rate limiting and backpressure to avoid overwhelming the source or target systems. Use adaptive throttling that backs off when source read latency or target write latency exceeds a threshold.
+- **Chunking & Scanning:** Data divided into independent units (100MB ranges). Allows parallel processing, resumes on failure, and limits per-worker memory usage.
+
+- **Content-hash Dedup:** Uses SHA-256 for record fingerprinting. A Bloom filter combined with a persistent KV map detects existing targets to prevent redundant writes.
+
+- **Idempotent Upserts:** Employs `INSERT ON CONFLICT UPDATE` semantics. Tags records with `migration_run_id` so re-running a chunk safely converges to the correct state.
+
+- **Resumable Checkpoints:** Persists chunk status (`pending`, `syncing`, `verified`) to a State DB. System skips completed chunks on restart, enabling zero-waste recovery.
+
+- **Reconciliation:** Parallel pass compares source and target checksums/counts. Identifies divergent chunks for targeted re-migration, ensuring 100% data integrity.
+
+- **Rollback Strategy:** Uses target snapshots or record-tagging. Enables atomic restoration if post-migration validation fails, protecting data against corruption.
+
+- **Throttling:** Adaptive controls back off based on source/target latency. Prevents the migration from impacting production system performance.
 
 ### Trade-offs
 
-- Inline dedup vs. post-migration dedup: inline dedup (hash-check before write) avoids writing duplicates at all but requires a fast hash index in the critical path; post-migration dedup is simpler to implement but wastes write bandwidth and storage temporarily.
-- Full reconciliation vs. sampling: full reconciliation guarantees correctness but is expensive (reads the entire dataset twice); sampling-based reconciliation is faster but can miss localised corruption.
-- Snapshot rollback vs. record-level rollback: snapshots are simple and atomic but require enough storage headroom for a full copy; record-level rollback is space-efficient but more complex and slower to execute.
+- **Inline vs. Post-migration Dedup:** Inline saves bandwidth/storage but adds latency; Post-migration simplifies the write path but generates temporary waste.
+
+- **Full vs. Sampled Reconciliation:** Full guarantees bit-identical results but is expensive; Sampling is faster but can miss small-scale or localized data corruption.
 
 ## Operational Excellence
 
