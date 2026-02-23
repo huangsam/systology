@@ -82,3 +82,16 @@ Default to conservative operations that preserve originals and require explicit 
 The default mode should be copy-not-move: keep originals intact until the migration is verified. Destructive operations (deleting originals, overwriting conflicts) require explicit flags (`--delete-originals`, `--overwrite`). Show a summary and require confirmation before destructive actions: `"This will delete 47,832 files from /photos/. Type 'yes' to confirm."`.
 
 **Anti-pattern — Delete on Success:** Automatically deleting source files as soon as they're uploaded. A network corruption during upload could go undetected, leaving you with a corrupted copy and no original. Keep originals until a separate verification pass confirms every file was transferred intact. Only then offer deletion as an explicit, separate step.
+
+## Decision Framework
+
+Choose your migration strategy based on the data volume and the required uptime for the system:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Zero Downtime** | Dual-Write / Shadow-Read| Verifies data in parallel before switching over the read path. |
+| **Operational Simplicity**| Offline Batch Move | Cleanest approach; avoids complex dual-write logic if downtime is okay. |
+| **High Data Integrity** | Snapshot Comparison | Directly compares source and sink to catch silent corruption. |
+| **Resumeability** | Checkpointed Markers | Ensures large migrations can restart from where they left off after failure. |
+
+**Decision Heuristic:** "Choose **Shadow-Reads** before committing to a full cutover. Seeing real traffic fail on the new system is better than finding out after the old one is deleted."

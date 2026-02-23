@@ -74,3 +74,20 @@ Partition work by natural keys (file ID, user ID, shard number) and assign parti
 For CPU-bound work (hashing, compression, solving), thread pools with work-stealing (Rayon in Rust, `ForkJoinPool` in Java) are effective. For IO-bound work (API calls, file downloads), async task pools or process pools avoid GIL contention in Python.
 
 **Anti-pattern — Parallelism Without Measurement:** Spinning up 64 threads because "more is faster." Thread contention, context switching, and memory overhead can make parallel code slower than sequential. Benchmark with varying worker counts and find the knee of the curve. See the [Background Job Queue]({{< ref "/designs/background-job-queue" >}}) design for a production-grade approach to worker scaling.
+
+## Decision Framework
+
+When optimizing algorithms, use the following guide to choose your battle:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Maintainability** | Clarity & O(n log n) | Lower cognitive load for the team; easier to fix bugs. |
+| **P99 Latency** | Memory Discipline | Avoiding allocations reduces GC/allocator jitter. |
+| **Bulk Throughput** | Parallelism | Horizontally scaling work processes more data per second. |
+| **Reproducibility** | Deterministic Seeds | Essential for debugging production failures. |
+
+**Decision Heuristic:** "Choose **Profiling** before **Cleverness**. Only reach for complex data structures when a flame graph proves the simple way is your primary bottleneck."
+
+## Cross-principle Notes
+
+See the [Monitoring & Observability]({{< ref "/principles/monitoring" >}}) principles for broader guidance on structured logging that applies well to algorithm traces.

@@ -82,3 +82,16 @@ Allow user-configurable safety policies with whitelists, blacklists, and max-eff
 Implement a policy configuration file that defines: (1) allowed actions (whitelist of operations the agent may perform), (2) prohibited actions (blacklist of sensitive operations), (3) max-effect thresholds (e.g., "may delete at most 50 emails per run"), and (4) confirmation requirements (e.g., "require approval before deleting anything older than 1 year"). Provide presets: conservative (read-only, no destructive actions), balanced (moderate automation with confirmations), and permissive (full automation for power users).
 
 **Anti-pattern — All-or-Nothing Permission:** An agent that either has full access or doesn't work. "Grant full email access or uninstall the app" is not a reasonable choice. Implement granular permissions so users can allow reading but not deleting, or allow processing attachments but not forwarding emails. Partial functionality is better than no functionality.
+
+## Decision Framework
+
+Choose your privacy pattern based on the sensitivity of the data and the required utility for the model:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Maximum Safety** | Client-side Processing | Sensitive PII never leaves the user's device. |
+| **High Model Utility** | Tokenization/Masking | Replaces PII with synthetic IDs while keeping context. |
+| **Audit Compliance** | Local-only Logging | Ensures debugging data isn't centralized or persistent. |
+| **User Trust** | Differential Privacy | Adds noise to aggregates to prevent specific identification. |
+
+**Decision Heuristic:** "Choose **Client-side Execution** when the privacy risk involves high-value PII (keys, auth, identity) that the model doesn't need to see."

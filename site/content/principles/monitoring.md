@@ -112,3 +112,16 @@ Implement log scrubbing at the structured logging layer: redact fields matching 
 See the [Privacy & Agents]({{< ref "/principles/privacy-agents" >}}) principles for comprehensive guidance on data minimization and consent that applies to all observability data.
 
 **Anti-pattern — Logging Request Bodies:** Logging full HTTP request and response bodies for debugging. This captures passwords, tokens, personal data, and sensitive business data in your log aggregator—which may not have the same access controls as your application database. Log metadata (status codes, durations, paths) and mask or omit bodies.
+
+## Decision Framework
+
+Choose your monitoring strategy based on the signal-to-noise ratio you need for your operational scale:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **High Granularity** | Structured Logging | Enables deep-trace debugging and per-request analysis. |
+| **High Aggregate Perf**| Metrics (Counters/Gauges)| Lightweight and perfect for real-time dashboards/alerts. |
+| **User Flow Context** | Distributed Tracing | Visualizes bottlenecks across service boundaries. |
+| **Alert Accuracy** | SLI/SLO Targets | Focuses on user-impact rather than server-level noise. |
+
+**Decision Heuristic:** "Choose **Metrics** for detection and **Traces** for investigation. Don't drown in logs before you have a high-level dashboard to guide the search."

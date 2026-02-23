@@ -19,9 +19,16 @@ Include language-specific or framework-specific guidance where helpful:
 
 **Anti-pattern — Name and describe a common pitfall** that violates this principle. Use memorable examples (e.g., "Leaky Abstraction Avalanche," "Hot Key Blindness") so readers can spot similar issues in their own code. Explain why the anti-pattern seems attractive and what goes wrong when it's used.
 
-## Another Principle
+## Decision Framework
 
-Repeat the same narrative structure: explain the principle, provide language-specific guidance, and contrast with a memorable anti-pattern. Focus on reasoning and applicability rather than checklists.
+Use this section to provide a clear heuristic or trade-off matrix for the principle. This should help the reader make a choice based on their specific constraints.
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Constraint A** | Option 1 | Benefit/Trade-off |
+| **Constraint B** | Option 2 | Benefit/Trade-off |
+
+**Decision Heuristic:** "Choose **[Tactic]** when **[Context]** is more important than **[Alternative]**."
 
 ## Cross-principle Notes
 

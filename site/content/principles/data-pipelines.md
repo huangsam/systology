@@ -112,3 +112,16 @@ Implement field-level encryption or tokenization for PII columns at ingestion ti
 See the [Privacy & Agents]({{< ref "/principles/privacy-agents" >}}) principles for deeper guidance on data minimization and consent in automated systems.
 
 **Anti-pattern — PII in Logs:** Logging full records (including names, emails, IPs) for debugging convenience. A single log aggregation query can expose millions of users' data. Redact PII at the logging boundary and use synthetic IDs for debugging.
+
+## Decision Framework
+
+Choose your pipeline architecture based on data volume and latency requirements:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Absolute Accuracy** | Batch (Event-time) | Easiest to rebuild and verify from raw source of truth. |
+| **Sub-second Insights**| Streaming (Flink) | Processes events as they arrive; handles late data. |
+| **High Reproducibility**| Immutable Sinks | Avoids side-effects, making re-runs safe and atomic. |
+| **Operational Simplicity**| Cloud-Native Managed | Removes infrastructure toil at the cost of knob-tuning. |
+
+**Decision Heuristic:** "Choose **Idempotent Sinks** over complex transactions. It's cheaper to make retries safe than to make failures impossible."

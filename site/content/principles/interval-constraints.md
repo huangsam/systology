@@ -42,6 +42,19 @@ This pattern moves the complexity from the stream processor's memory to the stor
 
 **Anti-pattern — Non-Idempotent Merge** — Sending speculative corrections to a sink that only supports blind appends (e.g., a simple log). This results in double-counting or orphaned estimates. Your choice of interval strategy is a primary constraint on your choice of sink.
 
+## Decision Framework
+
+Choose your windowing strategy based on the tension between your Latency SLA and your integrity requirements:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Real-time Speed** | Speculative | Users see updates immediately; corrects later. |
+| **Audit Accuracy** | Pessimistic | First result is the final result; no retractions. |
+| **System Simplicity** | Pessimistic | No need for complex merge or retraction logic. |
+| **Cost Efficiency** | Batch Sealing | Maximizes compression and minimizes ops overhead. |
+
+**Decision Heuristic:** "Choose **Speculative Windowing** only when the cost of stale data (latency) is higher than the cost of correction (complexity)."
+
 ## Cross-principle Notes
 
 This principle extends the **Time Semantics** section in [Data Pipelines]({{< ref "/principles/data-pipelines" >}}). For a production example of speculative intervals in action, see the **Deep Dive & Trade-offs** in the [Ad Click Aggregator]({{< ref "/designs/ad-click-aggregator" >}}), where a 1-minute reporting SLA forces the system to handle fraud corrections as late-arriving retractions.

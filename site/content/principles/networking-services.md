@@ -132,3 +132,16 @@ Use the circuit breaker pattern: after N consecutive failures to a downstream se
 See the [Distributed Cache]({{< ref "/designs/distributed-cache" >}}) design for how caching provides resilience layers alongside performance.
 
 **Anti-pattern — All-or-Nothing Dependency:** Treating every downstream service as critical. If the recommendation service is down, should the entire product page fail? Usually not—show the product without recommendations. Classify dependencies as critical (payment must succeed) vs. optional (recommendations are nice-to-have) and degrade gracefully for optional ones.
+
+## Decision Framework
+
+Choose your networking protocol based on the latency and reliability requirements of the communication:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **High-Throughput** | gRPC (HTTP/2) | Binary serialization and multiplexing reduce overhead. |
+| **Wide Compatibility** | REST (HTTP/1.1) | Easiest for browser and external partner integration. |
+| **Real-time Events** | WebSockets | Persistent duplex connection for instant updates. |
+| **Resilient Retries** | Service Mesh | Offloads retry, timeout, and circuit breaking from app code. |
+
+**Decision Heuristic:** "Choose **gRPC** for internal service-to-service calls and **REST** for public-facing edge APIs."

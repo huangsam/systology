@@ -82,3 +82,16 @@ Monitor retrieval quality continuously: track average relevance scores, click-th
 See the [Monitoring & Observability]({{< ref "/principles/monitoring" >}}) principles for broader guidance on SLIs, alerting, and dashboards that applies to retrieval system monitoring.
 
 **Anti-pattern — Set and Forget:** Building a retrieval system, shipping it, and never monitoring retrieval quality. Over months, document additions, deletions, and updates cause the index to drift. New query patterns emerge that the original model handles poorly. Without monitoring, quality degrades silently until users complain—by which time trust is already eroded.
+
+## Decision Framework
+
+Choose your retrieval strategy based on the structure of the data and the type of queries being performed:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Exact Keyword Match** | Lexical Search (BM25) | Best for names, IDs, and specific technical terminology. |
+| **Semantic Meaning** | Vector Search (RAG) | Understands intent and concepts rather than just matching characters. |
+| **Complex Relations** | Graph Search | navigates connections between entities (e.g., social networks). |
+| **Real-time Updates** | LSM-based Stores | Optimized for high write volumes and point lookups for fresh data. |
+
+**Decision Heuristic:** "Choose **Hybrid Search** (Lexical + Vector) when accuracy is more important than pure semantic novelty."

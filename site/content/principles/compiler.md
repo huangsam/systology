@@ -78,3 +78,16 @@ Prioritize correctness first, then add optimizations incrementally with benchmar
 The ordering matters: a correct slow compiler can be optimized, but a fast incorrect compiler generates wrong programs that erode trust. Gate optimizations behind flags (`-O0`, `-O1`, `-O2`) so users can disable them when debugging, and ensure the unoptimized path is always available as a correctness baseline.
 
 **Anti-pattern — Optimization Without Tests:** Adding an optimization pass (constant folding, dead code elimination, loop unrolling) without adding regression tests that exercise the corner cases. Every optimization is a potential source of miscompilation—test the edge cases explicitly, not just the obvious wins.
+
+## Decision Framework
+
+Choose your compiler architecture based on the target audience and longevity of the language:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Instructional Clarity**| Single-Pass/Tree-Walk | Easiest for students to map source code to execution. |
+| **Production Speed** | Multi-Pass with SSA | Allows for complex optimizations like DCE and inlining. |
+| **Developer Velocity** | Incremental Artifacts | Minimizes recompile times for large codebases. |
+| **Reliable Portability**| Stable C-API / LLVM | Leverages existing backends for multiple CPU targets. |
+
+**Decision Heuristic:** "Choose **Clean IR Boundaries** over performance hacks. A well-structured pipeline is easier to optimize later than a tangled monolithic pass is to fix."

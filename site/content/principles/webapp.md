@@ -86,3 +86,16 @@ Provide docker-compose setups for consistent local environments with seed data a
 A new developer should be able to: `git clone && docker-compose up && open localhost:8000` and see a running application with realistic seed data within 15 minutes. Include: a `docker-compose.yml` with the app, database, cache, and any dependent services; a seed script that populates the database with realistic test data; and a Makefile or justfile with common commands (`make test`, `make lint`, `make seed`, `make shell`). Document common workflows in CONTRIBUTING.md.
 
 **Anti-pattern — "Check the Wiki for Setup":** A setup process that requires reading a 20-page wiki, installing 15 tools manually, obtaining credentials from other team members, and following platform-specific instructions. Every friction point in local setup is a multiplier on wasted developer time. Containerize the environment and automate the setup to a single command.
+
+## Decision Framework
+
+Choose your web application architecture based on the interactivity and SEO requirements:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **SEO / Fast Loading** | Server-Side Rendering (SSR)| Pre-renders pages on the server for crawlers and slow clients. |
+| **High Interactivity** | Single-Page App (SPA) | Provides a fluid, app-like experience after the initial load. |
+| **Static Content** | Static Site Gen (SSG) | Maximizes security and speed for content that changes infrequently. |
+| **Resilient State** | Optimistic UI Updates | Improves perceived latency by updating the UI before the server confirms. |
+
+**Decision Heuristic:** "Choose **SSR/SSG** for the content shell and **SPA/Islands** for the interactive features. Don't force a heavy JS bundle on users just to read text."

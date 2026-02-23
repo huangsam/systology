@@ -84,3 +84,16 @@ Build strong foundations in supervised/unsupervised learning, neural networks, a
 Study the fundamentals: gradient descent mechanics, loss function design, regularization theory, bias-variance tradeoff, attention mechanisms. When you understand *why* learning rate warmup helps transformers or *why* batch normalization stabilizes training, you can debug training failures from first principles rather than blindly trying Stack Overflow suggestions.
 
 **Anti-pattern — Copy-Paste ML:** Copying training loops from tutorials without understanding the components. When training diverges, you have no mental model for diagnosis—is it the learning rate, the loss function, the data, or a bug? Foundational understanding turns "it doesn't work" into "the loss is NaN because gradients exploded due to an unscaled learning rate with this optimizer."
+
+## Decision Framework
+
+Choose your ML experimentation pattern based on the stage of the model lifecycle:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Rapid Iteration** | Notebook-based Trials | Lowest friction for exploring data and testing initial ideas. |
+| **Production Stability**| Scripted Training Jobs | Ensures reproducibility through versioned code and artifacts. |
+| **Model Comparison** | Feature Store / Registry| Provides a single source of truth for features and model performance. |
+| **Low Overfitting** | Automated Validation | Prevents human bias from leaking into model evaluation metrics. |
+
+**Decision Heuristic:** "Choose **Versioned Artifacts** over raw notebooks. An experiment is only as valuable as its ability to be reproduced exactly."

@@ -99,3 +99,16 @@ Design interfaces to be forward-compatible where possible (optional fields, capa
 Use capability negotiation: when the host initializes a plugin, exchange version info and feature flags. The host can then avoid calling methods the plugin doesn't support, and the plugin can adapt to the host's capabilities. This is more flexible than strict version pinning and degrades gracefully across version mismatches.
 
 **Anti-pattern — Version Lock-step:** Requiring all plugins to be compiled against the exact same version of the host API. This creates an all-or-nothing upgrade situation where one lagging plugin blocks the entire ecosystem from updating. Design for version ranges with explicit incompatibility thresholds.
+
+## Decision Framework
+
+Choose your extensibility pattern based on the trust level and performance needs of your extensions:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Maximum Performance**| Trait/Interface Hooks | Zero-cost abstraction within the same address space. |
+| **System Resilience** | Process Isolation | Prevents a single plugin crash from killing the host. |
+| **Plugin Diversity** | Stable C-ABI / FFI | Allows extensions to be written in any language. |
+| **Loose Coupling** | Registry/Discovery | Decouples host logic from concrete plugin types. |
+
+**Decision Heuristic:** "Choose **Interface Compliance Tests** before supporting more plugins. One buggy plugin that breaks invariants destroys the value of the entire ecosystem."

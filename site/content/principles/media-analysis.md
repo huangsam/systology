@@ -84,3 +84,16 @@ For applications that analyze personal photos or videos (face detection, locatio
 See the [Privacy & Agents]({{< ref "/principles/privacy-agents" >}}) principles for comprehensive guidance on consent, data minimization, and audit logging that applies directly to media processing of personal data.
 
 **Anti-pattern — Silent Cloud Upload:** Sending images to a cloud API for analysis without informing the user. Even if the API's privacy policy is fine, the user didn't consent to their photos leaving the device. Explicit opt-in isn't just good practice—it's increasingly a legal requirement (GDPR, CCPA).
+
+## Decision Framework
+
+Choose your media analysis pattern based on the complexity of the media and the latency required for the analysis:
+
+| If you need... | ...choose this | because... |
+| :--- | :--- | :--- |
+| **Real-time Detection**| Stream Processing | Detects events (e.g., motion, faces) with sub-second latency. |
+| **High Accuracy** | Batch Processing | Allows for deeper, multi-pass model inference on high-res media. |
+| **Cost Efficiency** | Edge Processing | Reduces cloud egress by analyzing data on-device before uploading. |
+| **Searchability** | Feature Extraction | Converts heavy media into small, indexable vectors or tags. |
+
+**Decision Heuristic:** "Choose **Metadata Extraction** before full media storage. It's cheaper to search a 1KB vector than to re-process a 10MB image every time."
