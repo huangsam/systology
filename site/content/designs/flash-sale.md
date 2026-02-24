@@ -67,11 +67,6 @@ Redis provides a high-speed volatile cache for atomic inventory counters and sho
 
 ## Deep Dive & Trade-offs
 
-
-- **Virtual waiting room:** Token-bucket batch admission smooths the thundering herd, redirecting excess traffic to static polling pages.
-
-- **Atomic inventory:** Redis Lua scripts safely `DECR` counters only if ≥ 0, achieving high concurrency without SQL row-level locks.
-
 {{< pseudocode id="atomic-inventory" title="Atomic Inventory Deduction (Redis Lua)" >}}
 ```python
 import redis
@@ -109,6 +104,12 @@ def try_reserve(sku_id, amount_needed):
         raise Exception("Sold out or not enough inventory")
 ```
 {{< /pseudocode >}}
+
+### Deep Dive
+
+- **Virtual waiting room:** Token-bucket batch admission smooths the thundering herd, redirecting excess traffic to static polling pages.
+
+- **Atomic inventory:** Redis Lua scripts safely `DECR` counters only if ≥ 0, achieving high concurrency without SQL row-level locks.
 
 - **Two-phase purchase:** Phase 1 reserves inventory with a TTL; Phase 2 confirms on payment. A background reaper recycles expired holds.
 
