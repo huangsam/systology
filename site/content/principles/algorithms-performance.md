@@ -11,8 +11,6 @@ draft: false
 
 Choose algorithms that are well-understood and documented, with clear complexity analysis—correctness and maintainability often outweigh marginal performance gains. Study canonical implementations (dynamic programming, graphs, backtracking) to build deep patterns into your mental model.
 
-When selecting between two viable approaches, prefer the one with a tighter asymptotic bound **only if** the constant factors and implementation complexity are comparable. A clean O(n log n) solution almost always beats a convoluted O(n) approach that nobody on the team can maintain.
-
 See how [Rustoku]({{< ref "/deep-dives/rustoku" >}}) applies MRV heuristics and bitmasking to keep backtracking tight, and how [Grit]({{< ref "/deep-dives/grit" >}}) uses LRU caching for object storage—both prioritize clarity alongside speed.
 
 **Anti-pattern — Premature Cleverness:** Reaching for exotic data structures (skip lists, Fibonacci heaps) before proving the simple approach is too slow. The debugging cost of a clever structure you don't fully understand outweighs the theoretical speedup.

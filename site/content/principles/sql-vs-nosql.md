@@ -33,18 +33,23 @@ Use NoSQL when you need massive horizontal write scalability, schema flexibility
 
 "NoSQL" is not a single technology. It's an umbrella term for non-relational databases.
 
-*   **Key-Value (Redis, DynamoDB):** The simplest model. Highly performant for simple lookups. Best for caching, session management, or simple configurations.
-*   **Document (MongoDB, Couchbase):** Stores data as JSON-like documents. Great for un-normalized data with varying structures (e.g., user profiles, product catalogs).
-*   **Wide-Column (Cassandra, HBase):** Optimized for heavy write throughput and querying by row/column keys. Best for time-series data or massive event logging.
-*   **Graph (Neo4j):** Optimized for storing and traverses relationships (nodes and edges). Best for recommendation engines or social networks.
+- **Key-Value (Redis, DynamoDB):** The simplest model. Highly performant for simple lookups. Best for caching, session management, or simple configurations.
+
+- **Document (MongoDB, Couchbase):** Stores data as JSON-like documents. Great for un-normalized data with varying structures (e.g., user profiles, product catalogs).
+
+- **Wide-Column (Cassandra, HBase):** Optimized for heavy write throughput and querying by row/column keys. Best for time-series data or massive event logging.
+
+- **Graph (Neo4j):** Optimized for storing and traverses relationships (nodes and edges). Best for recommendation engines or social networks.
 
 ## The CAP Theorem Context
 
 Understand how your choice maps to the CAP theorem (Consistency, Availability, Partition Tolerance).
 
 In a distributed system, you must tolerate partitions (P). This leaves a choice between Consistency (C) and Availability (A) during a network partition.
-*   **SQL (typically CP):** Prioritizes consistency. If a node goes down or a partition occurs, the system might refuse writes to prevent inconsistent states.
-*   **NoSQL (often AP):** Prioritizes availability. During a partition, nodes might accept writes independently, resolving conflicts later (eventual consistency).
+
+- **SQL (typically CP):** Prioritizes consistency. If a node goes down or a partition occurs, the system might refuse writes to prevent inconsistent states.
+
+- **NoSQL (often AP):** Prioritizes availability. During a partition, nodes might accept writes independently, resolving conflicts later (eventual consistency).
 
 ## Decision Framework
 
