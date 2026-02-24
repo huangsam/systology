@@ -45,7 +45,7 @@ Use NoSQL when you need massive horizontal write scalability, schema flexibility
 
 ## Specialized Databases
 
-Beyond the strict SQL (OLTP) vs. NoSQL divide, modern systems often require purpose-built databases:
+Beyond the strict SQL vs. NoSQL divide, modern systems often require purpose-built databases:
 
 - **Time-Series (Prometheus, InfluxDB):** Optimized specifically for time-stamped data, high ingestion rates, and continuous time-based aggregations. Best for system monitoring, metrics, and IoT sensor data.
 
