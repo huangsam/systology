@@ -835,3 +835,155 @@ span.muted {
     --gutter: var(--space-xl);
   }
 }
+
+/* ==============================
+   Feature-Specific: Pseudocode Modal
+   ============================== */
+.pseudocode-container {
+  margin: var(--space-lg) 0;
+}
+
+.pseudocode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--accent-weak);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.pseudocode-toggle:hover,
+.pseudocode-toggle:focus-visible {
+  background: var(--accent-weak-up);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .pseudocode-toggle {
+  border: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+.pseudocode-modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.pseudocode-modal.active {
+  display: flex;
+}
+
+.pseudocode-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 36, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: opacity 0.2s ease;
+}
+
+[data-theme="dark"] .pseudocode-modal-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.pseudocode-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  /* Wider for code */
+  max-height: 85vh;
+  margin: 0 var(--space-md);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Header/body handle scrolling */
+  z-index: 1001;
+  animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .pseudocode-modal-content {
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.pseudocode-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-xl);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.pseudocode-modal-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pseudocode-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  margin-left: var(--space-md);
+  flex-shrink: 0;
+}
+
+.pseudocode-modal-close:hover,
+.pseudocode-modal-close:focus-visible {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.pseudocode-modal-body {
+  padding: 0 var(--space-xl) var(--space-xl) var(--space-xl);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Tweak prose styling inside the modal for better fit */
+  font-size: 0.85rem;
+}
+
+.pseudocode-modal-body pre {
+  margin: var(--space-md) 0;
+  /* Less margin in modal */
+}

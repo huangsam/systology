@@ -60,6 +60,48 @@ Prefixed keys namespace the cache, allowing distinct eviction strategies for dif
 
 ## Deep Dive & Trade-offs
 
+{{< pseudocode id="consistent-hashing" title="Consistent Hashing Ring" >}}
+```python
+import hashlib
+import bisect
+
+class ConsistentHashRing:
+    def __init__(self, num_virtual_nodes=100):
+        self.num_vnodes = num_virtual_nodes
+        self.ring = []       # Sorted list of hashed virtual node positions
+        self.nodes = {}      # Maps hash_val -> physical_node_id
+
+    def add_node(self, node_id):
+        # Create multiple virtual nodes for each physical node
+        for i in range(self.num_vnodes):
+            vnode_key = f"{node_id}#vnode{i}"
+            hash_val = self._hash(vnode_key)
+
+            bisect.insort(self.ring, hash_val) # Keep ring sorted
+            self.nodes[hash_val] = node_id
+
+    def get_node(self, key):
+        if not self.ring:
+            return None
+
+        hash_val = self._hash(key)
+
+        # Binary search to find the first vnode on the ring AFTER the key's hash
+        idx = bisect.bisect_right(self.ring, hash_val)
+
+        # Wrap around to the beginning if we passed the last node
+        if idx == len(self.ring):
+            idx = 0
+
+        target_vnode_hash = self.ring[idx]
+        return self.nodes[target_vnode_hash]
+
+    def _hash(self, key):
+        # Use MD5 or SHA-1 to map the string to a 32-bit integer space
+        return int(hashlib.md5(key.encode('utf-8')).hexdigest(), 16)
+```
+{{< /pseudocode >}}
+
 ### Deep Dive
 
 - **Consistent hashing:** Virtual nodes evenly distribute shards and limit rebalancing overhead during cluster scaling.

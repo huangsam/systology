@@ -64,6 +64,37 @@ The Spatial Index maps 2D coordinates into 1D strings (Geohashes) stored in a B-
 
 ## Deep Dive & Trade-offs
 
+{{< pseudocode id="geohash-search" title="Geohash Radius Search" >}}
+```python
+def get_nearby_pois(lat, lon, radius_km):
+    # 1. Determine optimal geohash precision based on radius
+    # e.g., radius 5km -> precision 5 (approx 4.9km x 4.9km cell)
+    precision = calculate_precision(radius_km)
+
+    # 2. Compute the center geohash
+    center_hash = geohash.encode(lat, lon, precision)
+
+    # 3. Get the center cell AND its 8 neighbors to handle edge cases
+    # (where the user is near the boundary of a geohash cell)
+    search_hashes = geohash.get_neighbors(center_hash)
+    search_hashes.append(center_hash)
+
+    results = []
+
+    # 4. Query the Spatial DB (B-Tree) for POIs in these 9 prefixes
+    for g_hash in search_hashes:
+        # Fast prefix scan: SELECT * FROM spatial_db WHERE geohash LIKE 'g_hash%'
+        pois_in_cell = db.prefix_search(g_hash)
+
+        # 5. Post-filter exact distances (Haversine formula)
+        for poi in pois_in_cell:
+            if haversine_distance(lat, lon, poi.lat, poi.lon) <= radius_km:
+                results.append(poi)
+
+    return sort_by_rating_and_relevance(results)
+```
+{{< /pseudocode >}}
+
 ### Deep Dive
 
 - **Geospatial Indexing:** Geohashing maps 2D coordinates to hierarchical string prefixes, enabling fast range queries directly on standard B-trees.

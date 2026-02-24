@@ -1,0 +1,21 @@
+<div class="pseudocode-container">
+  <button class="pseudocode-toggle" aria-expanded="false" aria-controls="{{ .Get "id" }}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    View Pseudocode: {{ .Get "title" }}
+  </button>
+
+  <div id="{{ .Get "id" }}" class="pseudocode-modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle-{{ .Get "id" }}">
+    <div class="pseudocode-modal-overlay"></div>
+    <div class="pseudocode-modal-content">
+      <div class="pseudocode-modal-header">
+        <h3 id="modalTitle-{{ .Get "id" }}" class="pseudocode-modal-title">Pseudocode: {{ .Get "title" }}</h3>
+        <button class="pseudocode-modal-close" aria-label="Close modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="pseudocode-modal-body">
+        {{ .Inner | markdownify }}
+      </div>
+    </div>
+  </div>
+</div>

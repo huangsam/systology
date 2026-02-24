@@ -1,0 +1,69 @@
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const toggles = document.querySelectorAll('.pseudocode-toggle');
+  const closeButtons = document.querySelectorAll('.pseudocode-modal-close');
+  const overlays = document.querySelectorAll('.pseudocode-modal-overlay');
+
+  function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    // Set active class to display: flex
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+
+    // Make sure we focus inside the modal for accessibility
+    const closeBtn = modal.querySelector('.pseudocode-modal-close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeModal(modal) {
+    if (!modal) return;
+
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+
+    // Restore scrolling
+    document.body.style.overflow = '';
+
+    // Return focus to the toggle button that opened it
+    const toggleBtn = document.querySelector(`.pseudocode-toggle[aria-controls="${modal.id}"]`);
+    if (toggleBtn) toggleBtn.focus();
+  }
+
+  // Open events
+  toggles.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modalId = btn.getAttribute('aria-controls');
+      openModal(modalId);
+    });
+  });
+
+  // Close events on buttons
+  closeButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const modal = e.target.closest('.pseudocode-modal');
+      closeModal(modal);
+    });
+  });
+
+  // Close events on background click
+  overlays.forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      const modal = e.target.closest('.pseudocode-modal');
+      closeModal(modal);
+    });
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const activeModal = document.querySelector('.pseudocode-modal.active');
+      if (activeModal) closeModal(activeModal);
+    }
+  });
+});
+</script>
