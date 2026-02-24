@@ -94,20 +94,8 @@ Kafka buffers high-throughput raw streams and intermediate aggregates. A columna
 - SLO: Dashboard data freshness < 2 seconds from the latest processed event.
 - SLIs: event_processing_latency_p99, consumer_lag_seconds, dashboard_freshness_lag, event_drop_rate, dlq_event_count.
 
-### Monitoring & Alerts
-
-- `consumer_lag > 30s`: Scale consumers or check processing bottlenecks (P1).
-- `event_drop_rate > 0.1%`: Check schema validation or collector health (P2).
-- `dlq_growth > 100/min`: Investigate late arrivals or malformed events (P2).
-
 ### Reliability & Resiliency
 
 - **Replay**: Re-run historical topics in staging to validate windowing logic.
 - **Chaos**: Kill task managers to verify exactly-once checkpoint restoration.
 - **Scale**: Load-test at 3x peak to validate collector and OLAP throughput.
-
-### Retention & Backups
-
-- **Lake**: Raw events in S3/GCS retained 1 year for audit and ML.
-- **OLAP**: 90-day minute-level aggs; 1 year hourly roll-ups.
-- **Kafka**: 7-day retention for replay; mirrored to data lake archive.

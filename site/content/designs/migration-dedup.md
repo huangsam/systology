@@ -95,20 +95,8 @@ A Hash Index combining a Bloom filter and a Key-Value map accelerates duplicate 
 - SLO: Post-migration reconciliation shows 0 mismatches (100% data integrity).
 - SLIs: migration_throughput_gbps, chunk_completion_rate, dedup_ratio, reconciliation_mismatch_count, checkpoint_lag.
 
-### Monitoring & Alerts
-
-- `migration_throughput < 100GB/hr`: Investigate bottlenecks (P1).
-- `reconciliation_mismatches > 0`: Halt migration and investigate data integrity (P1).
-- `chunk_failure_rate > 5%`: Check source connectivity or target errors (P2).
-
 ### Reliability & Resiliency
 
 - **Dry-run**: Run against staging target to validate dedup and transforms.
 - **Chaos**: Kill workers mid-chunk and verify checkpoint-based resumption.
 - **Benchmark**: Test hash index at billion-key scale for memory and latency.
-
-### Retention & Backups
-
-- **Source**: Retained unmodified until 7–14 day post-migration bake-in passes.
-- **State**: Checkpoint records kept for 90 days for debugging/audit.
-- **Compliance**: Archive logs and reconciliation reports for 1 year minimum.

@@ -95,20 +95,8 @@ The Global Model Store acts as a versioned object registry for network weights, 
 - SLO: Model accuracy on the server-side validation set improves or remains stable across rounds (no regression > 1%).
 - SLIs: round_duration_p95, client_participation_rate, model_accuracy_delta, privacy_budget_consumed, dropped_client_rate.
 
-### Monitoring & Alerts
-
-- `round_duration > 50min`: Check slow clients or network health (P2).
-- `accuracy_delta < -2%`: Potential poisoning or drift; halt training (P1).
-- `privacy_budget > 80%`: Plan transition or halt due to DP limit (P2).
-
 ### Reliability & Resiliency
 
 - **Simulation**: Verify convergence with non-IID data in synthetic rounds.
 - **Adversarial**: Test poisoning defenses via rogue client injection.
 - **Load**: Test aggregation at 10x client concurrency for memory/throughput.
-
-### Retention & Backups
-
-- **Checkpoints**: Last 30 rounds in versioned object store; milestones archived.
-- **Policy**: No server-side raw data; client data never leaves device.
-- **Metadata**: Round-level stats retained indefinitely for audit/compliance.

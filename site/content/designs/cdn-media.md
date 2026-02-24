@@ -91,20 +91,8 @@ Object storage manages raw uploads, transcoded media, and access logs. The CDN l
 - SLO: P99 latency < 100 ms for cached content, < 500 ms for cache misses through origin shield.
 - SLIs: cache_hit_ratio, origin_request_rate, edge_latency_p99, upload_success_rate, transcoding_duration_p95.
 
-### Monitoring & Alerts
-
-- `cache_hit_ratio < 85%`: Investigate invalidation storms or config drift (P2).
-- `origin_5xx_rate > 1%`: Check origin storage and compute health (P1).
-- `transcoding_queue > 1000`: Scale transcoder workers or check for stuck jobs (P2).
-
 ### Reliability & Resiliency
 
 - **Synthetic**: Global probes to measure edge latency and multi-region availability.
 - **Failover**: Regular multi-CDN failover drills to validate DNS switchover.
 - **Load**: Test upload-to-delivery pipeline at 10x normal traffic.
-
-### Retention & Backups
-
-- **Originals**: Cross-region replicated object store with versioning.
-- **Renditions**: Transcoded variants managed via 90-day lifecycle rules.
-- **Logs**: 30-day access logs for debugging; aggregated for long-term analytics.

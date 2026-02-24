@@ -100,20 +100,8 @@ An Inverted Index combines an in-memory dictionary with compressed on-disk posti
 - SLO: 99.99% availability of the search API.
 - SLIs: query_latency_p99, index_freshness_lag, query_error_rate, recall_at_k, shard_replica_lag.
 
-### Monitoring & Alerts
-
-- `query_latency_p99 > 40ms`: Investigate slow shards or heavy queries (P2).
-- `shard_replica_lag > 30s`: Check replication health and network (P2).
-- `query_error_rate > 0.1%`: Check shard health and query parsing (P1).
-
 ### Reliability & Resiliency
 
 - **Relevance**: Nightly evaluation (NDCG, MAP) against labelled query sets.
 - **Load**: Test at 2x peak QPS with representative query distributions.
 - **Chaos**: Kill shard replicas to verify transparent scatter-gather routing.
-
-### Retention & Backups
-
-- **Index**: Authoritative source allows rebuilds; snapshots for < 1h recovery.
-- **Logs**: Anonymized query logs kept 90 days for tuning and analytics.
-- **A/B**: Archive click-through and test data indefinitely for model training.

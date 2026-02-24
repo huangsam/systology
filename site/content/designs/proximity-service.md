@@ -94,20 +94,8 @@ The Spatial Index maps 2D coordinates into 1D strings (Geohashes) stored in a B-
 - SLO: Location updates reflected in search results within 30 seconds (eventual consistency target).
 - SLIs: search_latency_p99, cache_hit_ratio_by_cell_precision, location_update_lag_p95, query_result_count_avg, shard_hotspot_qps.
 
-### Monitoring & Alerts
-
-- `search_latency_p99 > 500ms`: Check shard fan-out or cache misses (P1).
-- `cache_hit_ratio < 80%`: Review TTL policy or scale hot-cell cache (P2).
-- `location_update_lag > 60s`: Scale ingestion consumers or check DB (P2).
-
 ### Reliability & Resiliency
 
 - **Accuracy**: Validate geospatial distance accuracy via pre-computed golden sets.
 - **Realistic Load**: Test with zipfian query distribution over dense city centers.
 - **Geofail**: Chaos-test shard outages to verify graceful partial results.
-
-### Retention & Backups
-
-- **Index**: Multi-AZ replication with daily snapshots for DR.
-- **Logs**: 7-day raw GPS update retention for replay and debugging.
-- **Archive**: Historical POI lifecycle data (closures/relocations) for auditing.

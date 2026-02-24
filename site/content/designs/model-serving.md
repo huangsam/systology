@@ -104,20 +104,8 @@ An immutable Model Registry stores versioned binaries and runtimes, enabling ins
 - SLO: 99.9% availability of the inference API (including fallback responses).
 - SLIs: inference_latency_p99, inference_error_rate, model_load_time, gpu_utilization, batch_fill_ratio, canary_accuracy_delta.
 
-### Monitoring & Alerts
-
-- `inference_latency_p99 > 180ms`: Investigate GPU contention (P2).
-- `inference_error_rate > 0.5%`: Consider rollback or fallback activation (P1).
-- `canary_accuracy < baseline - 2%`: Auto-rollback underperforming canary (P1).
-
 ### Reliability & Resiliency
 
 - **Load-Test**: Validate 2x peak QPS for each new version before canary.
 - **Shadow**: Run offline baseline comparisons via production traffic mirrors.
 - **Chaos**: Kill GPU nodes and verify 30s fallback/reschedule timing.
-
-### Retention & Backups
-
-- **Artifacts**: Immutable registry retains last 10 versions for instant rollback.
-- **Logs**: Sampled request/response pairs kept 14 days for debugging.
-- **A/B**: Archive evaluation metrics and test results indefinitely for tracking.

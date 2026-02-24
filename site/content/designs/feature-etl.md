@@ -94,20 +94,8 @@ A medallion Data Lake (Bronze, Silver, Gold), heavily partitioned by date and gr
 - SLO: Feature freshness < 4 hours (time from raw ingestion to feature-store availability).
 - SLIs: pipeline_duration_p95, feature_freshness_lag, data_quality_pass_rate, row_count_delta_percent.
 
-### Monitoring & Alerts
-
-- `pipeline_duration > 2h`: Investigate bottleneck tasks (P1).
-- `quality_pass_rate < 99%`: Quarantine affected data partitions (P2).
-- `row_count_delta > 20%`: Verify upstream source health (P2).
-
 ### Reliability & Resiliency
 
 - **Snapshots**: Daily staging runs compared against frozen golden snapshots.
 - **Connectors**: Integration-test mocks for pagination and retry behavior.
 - **Backfills**: Quarterly drills to ensure reproducible bit-identical historical data.
-
-### Retention & Backups
-
-- **Landing**: Raw data retained 1y in cold storage for replay/audit.
-- **Feature Store**: 90-day active partitions; 1y archived for reproducibility.
-- **Lineage**: Metadata and lineage stored indefinitely for compliance.

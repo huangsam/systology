@@ -90,18 +90,7 @@ Prefixed keys namespace the cache, allowing distinct eviction strategies for dif
 - SLO: P99 cache read latency < 5 ms; P99 cache write latency < 10 ms.
 - SLIs: cache_hit_ratio, cache_latency_p99, eviction_rate, memory_utilization_percent, connection_pool_utilization.
 
-### Monitoring & Alerts
-
-- `cache_hit_ratio < 90%`: investigate eviction pressure (P2).
-- `memory_utilization > 85%`: scale cluster or review TTLs (P2).
-- `cache_latency_p99 > 15ms`: check network or hot keys (P1).
-
 ### Reliability & Resiliency
 
 - **Chaos/Load**: Kill nodes to verify hash ring redistribution; load-test at 2x peak traffic.
 - **Verification**: Integration-test cache invalidation paths for strict object freshness.
-
-### Retention & Backups
-
-- **Data Policy**: Ephemeral by design; snapshots for maintenance warm-up.
-- **Retention**: 30d metrics retention for capacity planning and debugging.

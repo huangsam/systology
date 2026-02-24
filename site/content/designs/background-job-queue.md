@@ -95,19 +95,8 @@ Message brokers buffer the high-throughput primary job queue. A relational datab
 - SLO: 99.9% of jobs succeed (or move to DLQ) within configured retry policy.
 - SLIs: queue_depth, job_start_latency_p95, job_completion_latency_p99, job_success_rate (1m/5m windows).
 
-### Monitoring & Alerts
-
-- `queue_depth > 500`: Scale workers or investigate producer flood (P1).
-- `job_failure_rate > 3%`: Check recent code or dependency health (P2).
-- `DLQ_growth > threshold`: Inspect failing payloads via dashboard (P2).
-
 ### Reliability & Resiliency
 
 - **Load/Chaos**: Test worker crashes, storage latency, and network partitions.
 - **Idempotency**: Verify retry semantics and duplicate prevention via integration tests.
 - **Canary**: Roll out job handler changes to 5% traffic before full promotion.
-
-### Retention & Backups
-
-- **Metadata**: Replicated DB with 30–90 day TTL for historical debugging.
-- **Logs**: Archive completed job logs and artifacts with lifecycle rules.

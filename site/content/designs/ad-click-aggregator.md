@@ -89,20 +89,8 @@ Kafka topics buffer high-throughput temporary streams, partitioned by ad ID to g
 - SLO: 99.9% of query API requests return in < 500 ms.
 - SLIs: kafka_consumer_lag, aggregation_window_latency_p95, query_latency_p99, dedup_false_positive_rate, fraud_flag_rate.
 
-### Monitoring & Alerts
-
-- `kafka_consumer_lag > 60s`: Scale stream tasks or check spikes (P1).
-- `bloom_filter_saturation > 90%`: Resize or rotate filter (P2).
-- `reconciliation_discrepancy > 0.1%`: Check real-time vs batch drift (P2).
-
 ### Reliability & Resiliency
 
 - **Verification**: Replay historical Kafka topics to validate aggregation and late-event handling.
 - **Chaos**: Kill task managers mid-checkpoint to verify exactly-once recovery.
 - **Load**: Test ingestion at 2x peak traffic to validate backpressure and scaling.
-
-### Retention & Backups
-
-- **Kafka**: 7-day retention for replay and reconciliation.
-- **OLAP**: 90-day hot tier; 1y archive in cold object storage.
-- **Models**: Versioned fraud model artifacts and features for auditability.

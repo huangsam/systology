@@ -103,20 +103,8 @@ Redis Streams or Kafka buffer high-throughput transient payloads and routing met
 - SLO: 99.9% overall delivery success rate (excluding user opt-outs and invalid tokens).
 - SLIs: dispatch_latency_p95_by_priority, delivery_success_rate, bounce_rate, queue_depth_by_priority, rate_limit_rejection_rate.
 
-### Monitoring & Alerts
-
-- `high_priority_queue_depth > 100`: Scale consumers or check providers (P1).
-- `bounce_rate > 5%`: Check for stale tokens or provider filtering (P2).
-- `rate_limit_rejections > 10%`: Request quota increase or redistribute (P2).
-
 ### Reliability & Resiliency
 
 - **Integrations**: Validate each channel against provider sandboxes.
 - **Chaos**: Fail one channel to verify no cross-channel impact.
 - **Scale**: Load-test fanout worker with 10M-user broadcast batching.
-
-### Retention & Backups
-
-- **Tracking**: Logs kept 90 days; archive to cold storage for 1 year.
-- **Templates**: Git-backed or versioned DB store for audit and rollback.
-- **Preferences**: SQL backup for primary data; Redis cache is ephemeral.

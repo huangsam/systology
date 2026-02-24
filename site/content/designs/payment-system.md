@@ -100,20 +100,8 @@ An Idempotency Store (Redis/Postgres) caches request signatures to prevent doubl
 - SLO: 0 ledger imbalances (debits and credits sum to zero at all times).
 - SLIs: payment_success_rate, gateway_latency_p99, ledger_balance_check, reconciliation_discrepancy_count, idempotency_cache_hit_rate.
 
-### Monitoring & Alerts
-
-- `payment_success_rate < 95%`: Check gateway status and recent deploys (P1).
-- `ledger_imbalance != 0`: P0 (data integrity violation; halt writes immediately).
-- `reconciliation_discrepancy > 0`: Flag for finance review after hourly job (P2).
-
 ### Reliability & Resiliency
 
 - **Integrations**: End-to-end flows against gateway sandboxes in CI.
 - **Chaos**: Inject gateway timeouts to verify state machine and idempotency.
 - **Audit**: Monthly balance re-derivation from raw entries vs. aggregates.
-
-### Retention & Backups
-
-- **Replication**: Multi-AZ sync replication for ledger and payment DBs (RPO=0).
-- **Compliance**: Retain all payment/ledger records for 7 years minimum.
-- **Security**: PCI-scoped token vault backups in encrypted cold store.

@@ -99,20 +99,8 @@ Redis provides a high-speed volatile cache for atomic inventory counters and sho
 - SLO: 0% over-sell rate (linearizable inventory accuracy).
 - SLIs: reservation_latency_p99, inventory_accuracy (Redis vs. Order DB reconciliation), waiting_room_admission_rate, payment_success_rate, abandoned_reservation_rate.
 
-### Monitoring & Alerts
-
-- `redis_inventory_missing`: P0 (state lost; halt sale and restore from DB).
-- `reservation_latency > 1s`: P1 (backend saturation; trigger load shedding).
-- `abandoned_reservations > 30%`: P2 (check payment flow or adjust TTL).
-
 ### Reliability & Resiliency
 
 - **Load**: Test at 2x peak (2M users) in staging before each event.
 - **Chaos**: Kill Redis primary and verify Sentinel failover without data loss.
 - **Reaper**: End-to-end test TTL reaper to ensure hold recycling.
-
-### Retention & Backups
-
-- **Forensics**: Snapshot Redis state immediately before/after sale events.
-- **Orders**: All records in SQL DB retained indefinitely for compliance.
-- **Logs**: Archive waiting-room and rate-limit logs for 30-day capacity analysis.
