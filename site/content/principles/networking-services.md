@@ -23,6 +23,8 @@ Implement exponential backoff with jitter for transient failures (5xx, timeouts)
 
 Use a standard formula: `delay = min(base * 2^attempt + random_jitter, max_delay)`. Start at 1s, cap at 60s, add ±25% jitter to prevent thundering herd when many clients retry simultaneously. Classify errors: 429 (rate limited) → retry with the `Retry-After` header; 500/502/503 → retry with backoff; 400/401/403/404 → do not retry (fix the request).
 
+See [Photohaul]({{< ref "/deep-dives/photohaul" >}}) for an example of handling exponential backoff and retries when dealing with cloud storage API rate limits.
+
 **Anti-pattern — Retry Storms:** Retrying immediately without backoff or jitter. When a service is overloaded and returns 503, 1000 clients immediately retrying at the same instant creates a thundering herd that prevents recovery. Exponential backoff with jitter spreads retries across time, giving the service room to recover.
 
 **Anti-pattern — Retrying Non-retryable Errors:** Retrying a 400 Bad Request. The request is malformed; sending it again won't fix it. You burn resources, fill logs with identical errors, and delay the real fix (correcting the request). Classify errors before retrying.
@@ -67,7 +69,7 @@ Use OAuth 2.0 flows for third-party integrations and implement token refresh log
 
 For user-facing APIs, use OAuth 2.0 with PKCE (for public clients) or client credentials (for server-to-server). Store tokens in OS keychains or encrypted config, never in plaintext files or environment variables visible in process listings. Implement automatic token refresh with jitter to prevent synchronized refresh storms. For service-to-service auth, use mutual TLS (mTLS) or signed JWTs with short expiration.
 
-See the [Privacy & Agents]({{< ref "/principles/privacy-agents" >}}) principles for guidance on token and credential safety in automated systems.
+See [Mailprune]({{< ref "/deep-dives/mailprune" >}}) for an example of implementing OAuth 2.0 flows with local secure credential storage for an email processing agent. For broader guidance on token and credential safety in automated systems, see the [Privacy & Agents]({{< ref "/principles/privacy-agents" >}}) principles.
 
 **Anti-pattern — Long-lived API Keys:** Using a single API key with no rotation that has admin-level access. If the key leaks (and it will—in logs, configs, error messages), the blast radius is maximum. Use short-lived tokens with automatic rotation and scope permissions to the minimum required.
 

@@ -45,7 +45,7 @@ When your pipeline processes an image, carry forward the original's EXIF (camera
 
 **Anti-pattern — Metadata Stripping:** Silently discarding EXIF and codec data during processing because "we only need the pixels." When a downstream consumer needs to sort by capture date, geolocate images, or audit which camera produced artifacts, that metadata is irrecoverable. Preserve everything; let consumers decide what to discard.
 
-See the [Migration & Deduplication]({{< ref "/principles/migration-dedup" >}}) principles for related guidance on metadata fidelity during large-scale file processing.
+See [Photohaul]({{< ref "/deep-dives/photohaul" >}}) for an example of preserving EXIF metadata during large-scale photo migrations and deduplication. For related guidance on metadata fidelity, see the [Migration & Deduplication]({{< ref "/principles/migration-dedup" >}}) principles.
 
 ## Performance Engineering
 

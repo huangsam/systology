@@ -13,6 +13,8 @@ Emit structured metrics for throughput, latency, and error rates alongside busin
 
 Follow the RED method for services (Rate, Errors, Duration) and the USE method for resources (Utilization, Saturation, Errors). Use a consistent naming convention like `{service}_{component}_{metric}_{unit}` (e.g., `api_orders_request_duration_seconds`). Emit both counters and histograms—counters tell you *how many*, histograms tell you *how long*. Expose business KPIs (revenue per minute, signups per hour) alongside technical metrics so on-call engineers can correlate system behavior with business impact.
 
+See how [Chowist]({{< ref "/deep-dives/chowist" >}}) exposes structured metrics and logging for a twelve-factor web app.
+
 **Anti-pattern — Metric Overload:** Emitting thousands of high-cardinality metrics (one per user ID, one per URL path) without aggregation. This explodes storage costs, slows dashboards, and makes it impossible to find signal in the noise. Aggregate at the source: use bounded label sets (HTTP method, status code bucket, service name) and push high-cardinality data to logs or traces instead.
 
 ## Structured Logging
@@ -69,7 +71,7 @@ Track consumer lag, watermark progression, and checkpoint health for streaming j
 
 For Kafka-based pipelines, monitor `consumer_group_lag` (records behind the latest offset), `checkpoint_duration_ms`, and `records_per_second`. For Flink, track watermark delay (how far behind event-time the watermark is) and backpressure indicators per operator. Alert when consumer lag exceeds your freshness SLO—if you promise 1-minute freshness and lag is 5 minutes, you're violating your contract.
 
-See the [Data Pipelines]({{< ref "/principles/data-pipelines" >}}) principles for deeper treatment of backpressure, partitioning, and fault tolerance that directly affect observability.
+See [Flink Trial]({{< ref "/deep-dives/flink-trial" >}}) and [Spark Trial]({{< ref "/deep-dives/spark-trial" >}}) for examples of monitoring data pipeline throughput and checkpointing. For a related treatment of backpressure, partitioning, and fault tolerance that directly affect observability, see the [Data Pipelines]({{< ref "/principles/data-pipelines" >}}) principles.
 
 ## Dashboard & Visualization
 

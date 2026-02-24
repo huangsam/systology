@@ -87,6 +87,8 @@ Provide deterministic test datasets and record seed values and runtime configs t
 
 Structure pipeline tests in three tiers: (1) unit tests for individual transforms with in-memory collections, (2) integration tests that run mini-pipelines against local runners with fixture data, and (3) end-to-end regression tests that compare output against golden datasets. Record the full configuration (runner version, parallelism, configs) alongside test results.
 
+See [Spark Trial]({{< ref "/deep-dives/spark-trial" >}}) for an end-to-end ETL example demonstrating reproducible aggregations across schema drift in a batch context.
+
 **Anti-pattern — "It Worked on My Laptop":** Testing only with the DirectRunner / local mode and assuming it'll behave identically on a cluster. Runner-specific behaviors (serialization, parallelism, shuffle) surface only at scale. Test on a staging cluster with production-like data volumes before deploying.
 
 ## Cost & Resource Efficiency

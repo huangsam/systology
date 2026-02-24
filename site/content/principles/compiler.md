@@ -63,6 +63,8 @@ Build a verifier pass that runs after each transformation and checks structural 
 
 **Anti-pattern — Trust the Transform:** Assuming that if a transformation pass compiles, it produces correct IR. Compiler bugs are insidious because they produce programs that *almost* work. A verifier catches the subtle cases where a register is used before definition or a phi node references a non-dominating block.
 
+See [VirtuC]({{< ref "/deep-dives/virtuc" >}}) for an implementation of a compiler that emits LLVM IR and explicitly runs a verifier pass before backend compilation.
+
 ## Tooling & Teaching Aids
 
 Provide AST and IR visualizers, interactive REPLs, and documentation with examples—these tools help both compiler developers and users understand the pipeline and debug problems faster.

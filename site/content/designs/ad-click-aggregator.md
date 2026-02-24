@@ -95,7 +95,7 @@ graph LR
 - SLO: 99.9% of query API requests return in < 500 ms.
 - SLIs: kafka_consumer_lag, aggregation_window_latency_p95, query_latency_p99, dedup_false_positive_rate, fraud_flag_rate.
 
-### Monitoring & Alerts'
+### Monitoring & Alerts
 
 - `kafka_consumer_lag > 60s`: Scale stream tasks or check spikes (P1).
 - `bloom_filter_saturation > 90%`: Resize or rotate filter (P2).
