@@ -4,7 +4,7 @@ description: "Choosing the right database paradigm for your system."
 summary: "A framework for deciding between SQL (relational, ACID) and NoSQL (distributed, flexible schema) databases based on data structure, scalability needs, and consistency requirements."
 tags: ["database"]
 categories: ["principles"]
-draft: true
+draft: false
 ---
 
 ## The Core Philosophy
@@ -37,9 +37,17 @@ Use NoSQL when you need massive horizontal write scalability, schema flexibility
 
 - **Document (MongoDB, Couchbase):** Stores data as JSON-like documents. Great for un-normalized data with varying structures (e.g., user profiles, product catalogs).
 
-- **Wide-Column (Cassandra, HBase):** Optimized for heavy write throughput and querying by row/column keys. Best for time-series data or massive event logging.
+- **Wide-Column (Cassandra, HBase):** Optimized for heavy write throughput and querying by row/column keys. Best for massive event logging or as a foundational layer for other models.
 
 - **Graph (Neo4j):** Optimized for storing and traverses relationships (nodes and edges). Best for recommendation engines or social networks.
+
+## Specialized Databases
+
+Beyond the strict SQL (OLTP) vs. NoSQL divide, modern systems often require purpose-built databases:
+
+- **Time-Series (Prometheus, InfluxDB):** Optimized specifically for time-stamped data, high ingestion rates, and continuous time-based aggregations. Best for system monitoring, metrics, and IoT sensor data.
+
+- **Columnar / OLAP (ClickHouse, Redshift):** Stores data by columns rather than rows. Optimized for fast analytical queries over massive datasets. While they often use SQL as their query language, they serve a fundamentally different purpose (analytics) than row-based SQL databases (transactional).
 
 ## The CAP Theorem Context
 
@@ -61,5 +69,7 @@ Choose your database based on data structure and scale:
 | **Schema Flexibility** | Document (MongoDB) | It allows rapid iteration on data models without expensive schema migrations. |
 | **Massive Write Scale** | Wide-Column (Cassandra) | It scales horizontally seamlessly and handles high-velocity ingestion without locking. |
 | **Relationship Traversal** | Graph (Neo4j) | It traverses complex networks efficiently, rather than expensive SQL `JOIN`s. |
+| **Metrics & Monitoring** | Time-Series (Prometheus) | It is purpose-built for high-frequency timestamped data and time-window aggregations. |
+| **Heavy Analytics** | Columnar/OLAP (ClickHouse) | It stores data in columns, making aggregations across massive datasets extremely fast. |
 
 **Decision Heuristic:** "Start with **PostgreSQL** (SQL). Only move to **NoSQL** when you have a specific, overriding requirement (like massive horizontal write scaling or a highly unstructured dataset) that relational databases cannot solve efficiently."
