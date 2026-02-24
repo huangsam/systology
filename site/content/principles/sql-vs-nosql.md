@@ -2,7 +2,7 @@
 title: "SQL vs. NoSQL"
 description: "Choosing the right database paradigm for your system."
 summary: "A framework for deciding between SQL (relational, ACID) and NoSQL (distributed, flexible schema) databases based on data structure, scalability needs, and consistency requirements."
-tags: ["data-design", "storage"]
+tags: ["database"]
 categories: ["principles"]
 draft: true
 ---
