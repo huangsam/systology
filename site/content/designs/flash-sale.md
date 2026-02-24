@@ -43,11 +43,11 @@ graph TD
     Payment --> Orders
 {{< /mermaid >}}
 
-Users hit the CDN/Edge layer, which queues bursting traffic into a Virtual Waiting Room. Admitted users pass through an API Gateway to a Reservation service that claims inventory atomically in Redis and writes a temporary hold to the sharded Orders DB. Upon successful checkout via the Payment service, the hold is converted into a confirmed order in the database.
+The CDN/Edge layer queues bursting traffic into a Virtual Waiting Room. Admitted users pass through an API Gateway to a Reservation service that atomically claims inventory in Redis and writes a temporary hold to the sharded Orders DB. Checkout via the Payment service converts holds into confirmed orders.
 
 ## Data Design
 
-The data layer is bifurcated into a high-speed volatile cache and a durable transactional store. Redis acts as the critical fast-path for atomic inventory counters and short-lived idempotency keys to ensure users don't double-book. The SQL Orders database provides the canonical, long-term truth for transactions, utilizing optimistic concurrency control to handle explosive write bursts safely.
+Redis provides a high-speed volatile cache for atomic inventory counters and short-lived idempotency keys. The SQL Orders database provides durable transactional truth, utilizing optimistic concurrency control to handle write bursts safely.
 
 ### Inventory Key-Space (Redis)
 | Key Pattern | Value Type | Description | TTL |
@@ -69,19 +69,19 @@ The data layer is bifurcated into a high-speed volatile cache and a durable tran
 
 ### Deep Dive
 
-- **Virtual waiting room:** Admits users in batches via token-bucket once traffic thresholds are exceeded. Simple static pages poll admission endpoints to smooth the thundering herd.
+- **Virtual waiting room:** Token-bucket batch admission smooths the thundering herd, redirecting excess traffic to static polling pages.
 
-- **Atomic inventory:** Managed in Redis using Lua scripts. `DECR` operations succeed only if the counter remains ≥ 0, providing safe, high-concurrency without row-level locks.
+- **Atomic inventory:** Redis Lua scripts safely `DECR` counters only if ≥ 0, achieving high concurrency without SQL row-level locks.
 
-- **Two-phase purchase:** Phase 1 reserves inventory with a TTL (e.g., 10m). Phase 2 confirms on payment. A background reaper releases expired holds back to the pool.
+- **Two-phase purchase:** Phase 1 reserves inventory with a TTL; Phase 2 confirms on payment. A background reaper recycles expired holds.
 
-- **Edge load shedding:** CDN/Edge enforces IP rate limits. API gateways shed traffic (503 Retry-After) based on backend concurrency, protecting the reservation core.
+- **Edge load shedding:** Edge IP rate limits and API gateway backend-concurrency shedding (503 Retry-After) protect the core.
 
-- **Sharded Order DB:** Horizontally sharded by `order_id` with optimistic concurrency control. Distributes the massive write-burst across multiple database nodes.
+- **Sharded Order DB:** Horizontal sharding by `order_id` combined with optimistic concurrency control distributes the massive write-burst.
 
-- **Idempotent requests:** Client-generated keys deduplicated in a short-lived Redis store. Prevents double-charges or double-reservations from network retries.
+- **Idempotent requests:** Short-lived Redis deduplication of client-generated keys prevents double-charges from network retries.
 
-- **Bot mitigation:** CAPTCHA at the waiting room boundary plus device fingerprinting and behavioral analysis blocks automated scalper bots.
+- **Bot mitigation:** Waiting-room CAPTCHAs, device fingerprinting, and behavioral analysis block automated scalpers.
 
 ### Trade-offs
 

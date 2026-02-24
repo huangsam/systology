@@ -42,11 +42,11 @@ graph LR
     Fraud -.->|flag| Dedup
 {{< /mermaid >}}
 
-The architecture ingests events via a stateless HTTP/gRPC API behind a global load balancer, appending them to Kafka. A two-stage deduplication process (Bloom filter followed by Redis check) filters duplicates before streaming engines (like Flink or Spark) perform 1-minute event-time tumbling window aggregations. Final counts are upserted into an OLAP store (ClickHouse/Druid) for real-time querying. In parallel, a fraud detection sidecar scores events and feeds flags back to the deduplication stage to correct counts.
+Stateless HTTP/gRPC APIs ingest events into Kafka. A two-stage deduplication (Bloom filter + Redis) filters duplicates before stream engines (Flink/Spark) perform 1-minute tumbling window aggregations. Final counts map to an OLAP store (ClickHouse/Druid), while a parallel fraud sidecar feeds corrections back to the dedup stage.
 
 ## Data Design
 
-The data layer is split between high-throughput temporary streams and long-term analytical storage. Kafka manages the ingest pipelines using topic partitioning to guarantee order per ad. The reporting backend utilizes a columnar OLAP database tailored for real-time aggregations and sub-second roll-ups by campaign.
+Kafka topics buffer high-throughput temporary streams, partitioned by ad ID to guarantee ordering. A columnar OLAP database tailored for real-time aggregations provides long-term reporting and sub-second roll-ups.
 
 ### Message Stream (Kafka Topics)
 | Topic | Partition Key | Description | Retention |
@@ -67,11 +67,11 @@ The data layer is split between high-throughput temporary streams and long-term 
 
 ### Deep Dive
 
-- **Exactly-once semantics:** Kafka transactional producers + stream engine checkpointing. Atomic read-process-write cycles and idempotent OLAP upserts keyed by `(ad_id, window)` ensure end-to-end consistency.
+- **Exactly-once semantics:** Kafka transactional producers and stream engine checkpointing ensure atomic cycles. Idempotent OLAP upserts guarantee end-to-end consistency.
 
-- **Backpressure & flow control:** Token-bucket rate limits per advertiser at ingestion. Consumer lag thresholds trigger autoscaling of stream task slots to maintain 1-minute freshness SLO.
+- **Backpressure & flow control:** Rate limits per advertiser throttle ingestion. Consumer lag thresholds trigger autoscaling to maintain a 1-minute freshness SLO.
 
-- **Data reconciliation:** Nightly batch job re-reads raw events to validate real-time aggregates. Generates adjustment records if discrepancies exceed tolerance, ensuring billing integrity.
+- **Data reconciliation:** Nightly batch jobs re-read raw events to validate real-time aggregates, generating adjustment records for discrepancies to ensure billing integrity.
 
 ### Trade-offs
 

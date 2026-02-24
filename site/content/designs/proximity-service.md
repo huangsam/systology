@@ -42,11 +42,11 @@ graph TD
     Ingest --> Spatial
 {{< /mermaid >}}
 
-Mobile clients send requests through a Load Balancer to split Read and Write traffic. Read APIs serve search queries by first checking a fast Geo-Cache and falling back to a Spatial Database on misses. The Write API asynchronously processes updates from moving entities or business owners via an Ingestion pipeline, which eventually updates the Spatial Database to reflect the new locations.
+Mobile clients route through a Load Balancer that splits Read and Write traffic. Read APIs check a fast Geo-Cache before falling back to a Spatial Database for search queries. Write APIs asynchronously ingest location updates from moving entities, eventually updating the Spatial Database.
 
 ## Data Design
 
-Data is structured to optimize geospatial queries and rich metadata lookups. The Spatial Index maps 2D coordinates into 1D strings (Geohashes) stored in a B-Tree, enabling fast prefix-based proximity searches. Secondary POI Metadata is stored in a NoSQL or Document database, heavily indexed to support full-text search, category filtering, and rating-based ranking.
+The Spatial Index maps 2D coordinates into 1D strings (Geohashes) stored in a B-Tree for fast prefix-proximity searches. A secondary NoSQL database stores heavily-indexed POI Metadata for full-text search, filtering, and ranking.
 
 ### Spatial Index (B-Tree + Geohash)
 | Key (Geohash) | Value | Shard Strategy | Purpose |
@@ -66,19 +66,19 @@ Data is structured to optimize geospatial queries and rich metadata lookups. The
 
 ### Deep Dive
 
-- **Geospatial Indexing:** Uses Geohashing to map 2D coordinates to hierarchical string prefixes. Enables fast range queries on standard B-trees; Quadtrees as an alternative for variable density.
+- **Geospatial Indexing:** Geohashing maps 2D coordinates to hierarchical string prefixes, enabling fast range queries directly on standard B-trees.
 
-- **Expanding Ring Search:** Queries start at high precision and "ring out" if results are sparse. Avoids over-fetching in dense centers while ensuring results in rural areas.
+- **Expanding Ring Search:** Queries start at high precision, only "ringing out" if results are sparse, avoiding over-fetching in dense centers.
 
-- **Location Pipeline:** Moving entities stream batched GPS updates via gRPC. Coalesced latest-wins flushing reduces write amplification while maintaining freshness.
+- **Location Pipeline:** Moving entities stream batched gRPC updates. Coalesced latest-wins flushing minimizes write amplification while maintaining tracking freshness.
 
-- **Geo-caching:** Hot geohash cells pre-warmed in Redis (`GEOADD`). TTLs are tuned based on cell churn (e.g., 1m for moving entities, 10m for static businesses).
+- **Geo-caching:** Redis (`GEOADD`) pre-warms hot geohash cells. TTLs are strictly tuned to cell churn (e.g., 1m for movers, 10m for static businesses).
 
-- **Ranking & Filtering:** Spatial results post-filtered by rating, "open now", and categories. Personalization and business quality signals drive final ordering.
+- **Ranking & Filtering:** Spatial results are post-filtered by operational metadata (ratings, hours), then ordered via personalization and business quality signals.
 
-- **Sharding by Prefix:** Partitions the spatial DB on geohash prefixes. Co-locates nearby POIs on the same shard to minimize cross-shard fan-out for local searches.
+- **Sharding by Prefix:** Partitioning the spatial DB on geohash prefixes physically co-locates nearby POIs, eliminating cross-shard fan-out for local searches.
 
-- **Multi-resolution Support:** API maps requested radii to optimal geohash precision. Dynamic selection prevents scanning excessive points for wide-area searches.
+- **Multi-resolution Support:** The API dynamically maps requested radii to optimal geohash precisions, preventing excessive point scans during wide-area searches.
 
 ### Trade-offs
 

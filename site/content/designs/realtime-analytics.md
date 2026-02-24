@@ -42,11 +42,11 @@ graph LR
     Kafka -.->|archive| Lake
 {{< /mermaid >}}
 
-Web and mobile apps emit events to a stateless Collector fleet, which enriches the payloads before publishing them to Kafka. A Stream Processor (like Flink) consumes from Kafka, computing stateful aggregations based on event-time watermarks, and sinking the results into an OLAP database that powers real-time Dashboards. Late-arriving events that fall outside the allowed windows are routed to a Dead Letter Queue (DLQ), while all raw events are continuously archived to a Data Lake for historical analysis.
+Apps emit events to a stateless Collector fleet that enriches payloads and publishes to Kafka. A Stream Processor (Flink) consumes the stream, computes stateful aggregations using event-time watermarks, and sinks results into an OLAP database for real-time Dashboards. Late events exceeding allowed windows route to a DLQ, while all raw events archive continuously to a Data Lake.
 
 ## Data Design
 
-The data storage strategy balances high-throughput buffering, ultra-fast analytics, and cheap long-term retention. Kafka topics act as the resilient buffer for raw event streams and intermediate aggregates. The OLAP datastore (like ClickHouse or Druid) uses heavily partitioned, columnar tables to support millisecond querying over broad time ranges, while the Data Lake provides infinite retention of the raw Parquet files.
+Kafka buffers high-throughput raw streams and intermediate aggregates. A columnar OLAP datastore (ClickHouse/Druid) uses heavy partitioning for millisecond analytics querying, while the Data Lake provides cheap, infinite retention for raw Parquet files.
 
 ### Event Stream (Kafka Topics)
 | Topic | Partition Key | Throughput | Retention |
@@ -66,17 +66,17 @@ The data storage strategy balances high-throughput buffering, ultra-fast analyti
 
 ### Deep Dive
 
-- **Stream processing:** Apache Flink performs stateful aggregations (metrics per min/hour). Flink’s exactly-once checkpointing ensures accuracy across tumbling, sliding, and session windows.
+- **Stream processing:** Apache Flink computes stateful aggregations, relying on exactly-once checkpointing for accuracy across varied time windows.
 
-- **Watermarks & lateness:** Event-time watermarks handle out-of-order data. Allowed-lateness thresholds accept late events and trigger aggregate updates; data exceeding the window routes to a DLQ.
+- **Watermarks & lateness:** Event-time watermarks handle out-of-order data. Allowed-lateness settings trigger retroactive updates, dropping older data to a DLQ.
 
-- **OLAP query layer:** Aggregates written to columnar stores (ClickHouse/Druid) optimized for range scans. A Query API supports dashboard polling or WebSocket pushes for real-time visibility.
+- **OLAP query layer:** Columnar stores optimized for range scans support Query APIs for dashboard polling and real-time WebSocket pushes.
 
-- **Event archival:** Raw Kafka topics mirrored to a data lake (S3/GCS) in Parquet via Kafka Connect. Decouples real-time processing from historical analysis and ML training.
+- **Event archival:** Kafka Connect mirrors raw topics to a data lake in Parquet, completely decoupling real-time processing from offline ML training.
 
-- **Load shedding:** Backpressure from stream processor (via Kafka lag) triggers shedding of non-critical events (e.g., pings) to protect high-value data and maintain freshness.
+- **Load shedding:** Kafka lag backpressure triggers dynamic shedding of non-critical events to protect high-value data freshness.
 
-- **Schema registry:** Enforces Avro/Protobuf schemas. Producers register schemas before publishing; processor validates messages to prevent corrupted sinks.
+- **Schema registry:** A centralized registry enforces Avro/Protobuf schemas, validating messages stream-side to prevent corrupted OLAP sinks.
 
 ### Trade-offs
 

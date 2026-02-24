@@ -42,11 +42,11 @@ graph LR
     Transform -.->|lineage| Catalog
 {{< /mermaid >}}
 
-An Orchestrator triggers data ingestion from external raw sources into a multi-tier Data Lake. Transformation jobs configured as Directed Acyclic Graphs (DAGs) pull data from the lake, process it into ML features, and publish the final vectors to a Feature Store used for model training. Along the way, transformation metadata and data dependencies are directly recorded into a Lineage Catalog.
+An Orchestrator triggers data ingestion from raw sources into a multi-tier Data Lake. Transformation DAGs pull data, process ML features, and publish vectors to a Feature Store for model training. Lineage Catalogs record transformation metadata and data dependencies.
 
 ## Data Design
 
-Data is organized hierarchically. The Data Lake utilizes a medallion architecture (Bronze, Silver, Gold), heavily partitioned by date and feature group to accelerate batch reads. The serving side relies on a low-latency Feature Store optimized as a key-value database for quick lookup of specific user or product tensors by the training pipeline.
+A medallion Data Lake (Bronze, Silver, Gold), heavily partitioned by date and group, accelerates batch reads. A low-latency Feature Store (KV database) serves specific user or product tensors quickly to the training pipeline.
 
 ### Data Lake Partitioning (S3/HDFS/Warehouse)
 | Layer | Partition Key | Format | Retention |
@@ -66,19 +66,19 @@ Data is organized hierarchically. The Data Lake utilizes a medallion architectur
 
 ### Deep Dive
 
-- **Source connectors:** Pluggable connectors for CDC, blob stores, and APIs. Handles auth, pagination, and checkpointing to ensure extraction is resumable and idempotent.
+- **Source connectors:** Pluggable connectors (CDC, blob stores, APIs) handle auth, pagination, and checkpointing for resumable, idempotent extraction.
 
-- **Transform DAG:** Pure functions `(input, config) → output`. Orchestration (Airflow/Dagster) manages dependency resolution, retries, and backfills for reproducible runs.
+- **Transform DAG:** Orchestrators (Airflow/Dagster) manage pure function `(input, config) → output` dependencies, retries, and backfills reproducible runs.
 
-- **Idempotent loads:** Overwrites output partitions using a `partition_key + run_id` scheme. Ensures reruns converge to the same state without creating duplicate features in the store.
+- **Idempotent loads:** Partition overwrites using a `partition_key + run_id` scheme ensure reruns converge to the same state without duplication.
 
-- **Reproducibility:** Versioned artifacts (containers) pin all code and dependencies. Output partitions tagged with code versions and data hashes allow bit-for-bit reconstruction.
+- **Reproducibility:** Versioned containers pin code, and data hashes on output partitions allow bit-for-bit reconstruction.
 
-- **Schema evolution:** Enforced via a registry (Avro/Protobuf). Backward-compatible rules ensure new columns with defaults don't break downstream training.
+- **Schema evolution:** Backward-compatible rules in a registry (Avro/Protobuf) prevent new columns from breaking downstream training.
 
-- **Backfill strategy:** Supports date-range parameters and prioritizes production pipelines. Date-partitioning allows re-processing specific windows without needing a full scan.
+- **Backfill strategy:** Date-partitioning limits scans to specific windows, naturally supporting backfills while prioritizing production pipelines.
 
-- **Data quality:** Embedded validation nodes (Great Expectations) perform null-rate and drift checks. Pipelines fail early to prevent bad data from reaching models.
+- **Data quality:** Embedded validation nodes (Great Expectations) fail pipelines early on null-rate or drift violations.
 
 ### Trade-offs
 

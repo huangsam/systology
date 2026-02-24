@@ -53,11 +53,11 @@ graph TD
     ServerB -.->|on error| Fallback
 {{< /mermaid >}}
 
-Client inference requests arrive at a Gateway, which forwards them to a Router responsible for traffic splitting. The Router directs a small percentage of requests to a Canary server pool and the majority to the Stable production pool, both of which dynamically pull versioned models from the Registry and execute on dedicated GPU Pools. If any server encounters an error or latency spike, requests are rerouted to a lightweight Fallback Model to preserve availability.
+A Gateway forwards client requests to a Router that splits traffic between a small Canary pool and a large Stable production pool. Both pools dynamically execute versioned models from a Registry on dedicated GPUs. Errors or latency spikes automatically reroute to a lightweight Fallback Model to preserve availability.
 
 ## Data Design
 
-The system's state centers on immutable model definitions and volatile inference telemetry. The Model Registry acts as the source of truth for versioned binaries, runtimes, and canary flags, allowing for instant rollbacks. Inference Logs capture the real-time request distributions, confidence scores, and hardware utilization to drive automated promotion or fallback decisions.
+An immutable Model Registry stores versioned binaries and runtimes, enabling instant rollbacks. Volatile Inference Logs capture real-time distributions, confidence scores, and hardware metrics to drive automated promotion or fallback decisions.
 
 ### Model Registry (Object Store + Metadata)
 | Registry Field | Type | Description | Immutable |
@@ -78,19 +78,17 @@ The system's state centers on immutable model definitions and volatile inference
 
 ### Deep Dive
 
-- **Model Registry:** Immutable, versioned storage for ONNX/TorchScript artifacts. Metadata tracks training runs and metrics, enabling instant, safe rollbacks.
+- **Serving Runtime:** High-performance inference servers (Triton/TorchServe) provide unified gRPC/REST APIs across varied GPU backends.
 
-- **Serving Runtime:** High-performance inference servers (Triton/TorchServe) support gRPC/REST. Unified APIs allow serving multiple formats across CPU, GPU, and TPU backends.
+- **Micro-batching:** Aggregating requests within a 5-10ms window amortizes kernel launch overhead, dramatically increasing GPU throughput.
 
-- **Micro-batching:** Aggregates requests (8–32 inputs) within a 5–10ms window. Dramatically increases GPU throughput by amortizing kernel launch overhead.
+- **Resource Management:** GPUs are assigned based on memory needs, using MPS for sharing small models and isolating latency-critical traffic.
 
-- **Resource Management:** Assigns models to GPU pools based on memory needs. Uses MPS (sharing) for small models and dedicated instances for latency-critical traffic.
+- **Canary Rollouts:** Routing 5-10% of traffic to new versions enables automated, metrics-driven promotion or rollback.
 
-- **Canary Rollouts:** Deploys new versions to 5–10% of traffic. Real-time accuracy/latency comparisons against baseline automate promotion or rollback decisions.
+- **Fallback & Degradation:** Distilled fallback models or cached predictions automatically activate during latency spikes or primary failures to strictly meet SLOs.
 
-- **Fallback & Degradation:** Activates distilled models or cached predictions when primaries fail or exceed SLOs. Ensures consistent API availability despite backend issues.
-
-- **Preprocessing:** Runs feature normalization and formatting as vectorized transforms in the serving pipeline. Versioned with the model to eliminate training-serving skew.
+- **Preprocessing:** Vectorized transforms for feature normalization run inside the serving pipeline, versioned alongside the model to eliminate training-serving skew.
 
 ### Trade-offs
 

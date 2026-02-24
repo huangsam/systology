@@ -41,11 +41,11 @@ graph LR
     Transcoder --> CDN
 {{< /mermaid >}}
 
-Users access media assets globally through a CDN edge layer. Cache misses are routed through a regional Origin Shield to collapse concurrent requests before hitting the Origin servers and underlying storage. In parallel, a separate upload pipeline takes raw user files, transcodes them into optimal renditions, and uploads the results to storage while proactively pre-warming the CDN edge caches.
+Users access media via a global CDN edge. Cache misses route through a regional Origin Shield to collapse concurrent requests before hitting the Origin storage. Concurrently, an upload pipeline transcodes raw files into optimized renditions and pre-warms the CDN edges.
 
 ## Data Design
 
-The data layer is organized around object storage for large media files and CDN cache schemas for rapid delivery. Object storage acts as the definitive origin, segregating raw uploads from transcoded media assets and static access logs. The CDN dictates cache key patterns and validation lifetimes using surrogate keys to invalidate related assets simultaneously.
+Object storage manages raw uploads, transcoded media, and access logs. The CDN layer defines cache key patterns and validation lifetimes, using surrogate keys for bulk invalidations.
 
 ### Object Storage Layout (S3)
 | Bucket | Prefix / Path | Retention | Description |
@@ -65,15 +65,15 @@ The data layer is organized around object storage for large media files and CDN 
 
 ### Deep Dive
 
-- **Multi-tier caching:** Edge PoPs provide L1 cache. A regional Origin Shield (L2) collapses concurrent misses into a single fetch, protecting origin from viral traffic.
+- **Multi-tier caching:** A regional Origin Shield (L2 cache) collapses concurrent edge misses, protecting the origin from viral traffic.
 
-- **Invalidation strategy:** Surrogate keys (tags) enable purging all resolution/format variants at once. Uses short TTLs with `stale-while-revalidate` for metadata.
+- **Invalidation strategy:** Surrogate keys allow bulk purging of related variants, while short TTLs use `stale-while-revalidate` for metadata.
 
-- **Security & Access:** Time-limited signed URLs or cookies verified at the edge. Rotatable signing keys allow for zero-downtime security updates.
+- **Security & Access:** Time-limited signed URLs and rotatable keys provide zero-downtime secure delivery at the edge.
 
-- **Content Optimization:** Modern formats (WebP, AVIF, H.265) served via `Accept` header negotiation. Real-time resizing handles rare dimensions at the edge.
+- **Content Optimization:** Real-time resizing and `Accept` header negotiation deliver modern, optimal formats (WebP/AVIF).
 
-- **Multi-CDN Failover:** Anycast or DNS-based routing distributes traffic. Health-check probes trigger automatic failover to healthy PoPs if a provider degrades.
+- **Multi-CDN Failover:** DNS-based anycast routing and health probes ensure automatic failover during provider degradation.
 
 ### Trade-offs
 

@@ -39,11 +39,11 @@ graph LR
     Cache -.->|replication| CacheReplica[Replica]
 {{< /mermaid >}}
 
-Clients issue requests through a Load Balancer to a fleet of App Servers. The App Servers implement a cache-aside pattern, querying a distributed caching layer for Git objects or pack indexes. If a cache miss occurs, the App Server fetches data from the definitive backend and populates the cache. The caching layer replicates data across shards and replicas to handle node failures and distribute load.
+App Servers behind a Load Balancer query a distributed cache using a cache-aside pattern. On a miss, servers fetch from the backend and populate the cache. The cache replicates data across shards to distribute load and tolerate node failures.
 
 ## Data Design
 
-The cache keyspace relies on prefixed keys to uniquely identify different object types—such as raw blobs, pack file indexes, or reference pointers—each requiring distinct eviction strategies based on their access patterns. Underlying metadata tracks the consistent hash ring mappings and real-time node health for cluster membership.
+Prefixed keys namespace the cache, allowing distinct eviction strategies for different object types (blobs, indexes). Internal metadata tracks the consistent hash ring and real-time node health.
 
 ### Cache Key-Space (KV)
 | Prefix | Key Format | Value Type | Description |
@@ -62,19 +62,17 @@ The cache keyspace relies on prefixed keys to uniquely identify different object
 
 ### Deep Dive
 
-- **Data model:** Prefixed keys (`obj:`, `tree:`, `ref:`) namespace Git objects by SHA hashes. Enables targeted monitoring and category-specific eviction policies.
+- **Consistent hashing:** Virtual nodes evenly distribute shards and limit rebalancing overhead during cluster scaling.
 
-- **Consistent hashing:** Sharding across nodes using virtual nodes to minimize redistribution when cluster scale changes. Limits rebalancing to ~1/N of keyspace.
+- **Eviction policies:** General objects use standard LRU, while hot metadata relies on LFU or pinned entries for high retention.
 
-- **Eviction policies:** Standard LRU for general objects. Hot metadata (branch tips, HEAD) uses LFU or pinned entries to ensure high-priority data remains resident.
+- **Cache-aside pattern:** Read-through fetching on miss keeps the cache fresh. Writes bypass the cache and invalidate keys to maintain consistency.
 
-- **Cache-aside pattern:** Apps check cache first, then read-through to store on miss. Writes bypass cache and invalidate keys, ensuring the store is the source of truth.
+- **Hot-key mitigation:** Key replication and local L1 in-process caches absorb thundering herds for viral queries.
 
-- **Hot-key mitigation:** Key replication across shards for viral repos. Local L1 in-process caches absorb thundering herds before queries reach the distributed layer.
+- **Storage optimization:** In-memory zstd/LZ4 compression reduces costs, trading negligible CPU for significant network I/O savings.
 
-- **Storage optimization:** Objects are zstd/LZ4 compressed in-memory. Decompression CPU costs are negligible compared to the network I/O saved from misses.
-
-- **Concurrency:** Connection pooling and pipelining maximize throughput. `SETNX` locks or fill-fences prevent multiple servers from fetching the same cold key.
+- **Concurrency:** Connection pools and pipelining maximize throughput. Fill-fences (`SETNX`) block redundant requests for the same cold key.
 
 ### Trade-offs
 

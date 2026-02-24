@@ -43,11 +43,11 @@ graph LR
     Reconciler --> Target
 {{< /mermaid >}}
 
-A Scanner reads chunks of data from the Source system and consults a Hash Index to quickly filter out records that have already been migrated. The Migrator processes the remaining unique records, writing them to the Target system while periodically checkpointing progress to a State DB. In parallel, a Reconciler verifies data integrity by comparing data blocks between the Source and Target to ensure no records were corrupted or missed.
+A Scanner reads Source data chunks, consulting a Hash Index to filter out already-migrated records. A Migrator writes unique records to the Target system while checkpointing progress to a State DB. Concurrently, a Reconciler compares Source and Target blocks to ensure data integrity.
 
 ## Data Design
 
-Storage is partitioned between the live migration state and the deduplication index. The Hash Index employs a memory-efficient Bloom filter backed by a Key-Value map for exact target locations, accelerating the duplicate detection process. A relational State Database tracks the exact status of each chunk (e.g., pending, syncing, verified) to guarantee idempotent boundary resumption.
+A Hash Index combining a Bloom filter and a Key-Value map accelerates duplicate detection. A relational State Database tracks the exact status of each chunk (pending, syncing, verified) to guarantee idempotent resumption.
 
 ### Hash Index (Bloom Filter + KV Map)
 | Store | Purpose | Key / Pattern | Value |
@@ -67,19 +67,19 @@ Storage is partitioned between the live migration state and the deduplication in
 
 ### Deep Dive
 
-- **Chunking & Scanning:** Data divided into independent units (100MB ranges). Allows parallel processing, resumes on failure, and limits per-worker memory usage.
+- **Chunking & Scanning:** Dividing data into independent ranges enables parallel processing, bounded memory usage, and granular resumption.
 
-- **Content-hash Dedup:** Uses SHA-256 for record fingerprinting. A Bloom filter combined with a persistent KV map detects existing targets to prevent redundant writes.
+- **Content-hash Dedup:** SHA-256 fingerprinting using a Bloom filter and persistent KV map detects and prevents redundant target writes.
 
-- **Idempotent Upserts:** Employs `INSERT ON CONFLICT UPDATE` semantics. Tags records with `migration_run_id` so re-running a chunk safely converges to the correct state.
+- **Idempotent Upserts:** `INSERT ON CONFLICT UPDATE` semantics and `migration_run_id` tags ensure chunk re-runs converge to the correct state safely.
 
-- **Resumable Checkpoints:** Persists chunk status (`pending`, `syncing`, `verified`) to a State DB. System skips completed chunks on restart, enabling zero-waste recovery.
+- **Resumable Checkpoints:** Persisting chunk statuses to a State DB allows the system to skip completed chunks on restart, enabling zero-waste recovery.
 
-- **Reconciliation:** Parallel pass compares source and target checksums/counts. Identifies divergent chunks for targeted re-migration, ensuring 100% data integrity.
+- **Reconciliation:** A parallel process compares checksums and counts, identifying divergent chunks for targeted re-migration.
 
-- **Rollback Strategy:** Uses target snapshots or record-tagging. Enables atomic restoration if post-migration validation fails, protecting data against corruption.
+- **Rollback Strategy:** Target snapshots or record-tagging enables atomic restoration if validation fails, protecting against corruption.
 
-- **Throttling:** Adaptive controls back off based on source/target latency. Prevents the migration from impacting production system performance.
+- **Throttling:** Adaptive throttling backs off dynamically based on source/target latency to protect live production performance.
 
 ### Trade-offs
 

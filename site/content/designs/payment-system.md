@@ -45,11 +45,11 @@ graph TD
     Recon --> Ledger
 {{< /mermaid >}}
 
-Client payment requests are received by an API and processed by a Payment State Machine, which orchestrates the complex lifecycle of a transaction. It communicates with external Gateways (Stripe, PayPal) to authorize and capture funds, while simultaneously recording double-entry bookkeeping records in a durable Ledger. All state changes are published to an Event Bus, triggering webhooks for downstream services and feeding offline Reconciliation jobs.
+An API receives client requests, driving a Payment State Machine that orchestrates the transaction lifecycle. The State Machine calls external Gateways to authorize and capture funds, while synchronously writing double-entry records to a durable Ledger. All state transitions publish to an Event Bus, triggering downstream webhooks and offline Reconciliation.
 
 ## Data Design
 
-The system relies on strict data models to guarantee transactional integrity. An Idempotency Store (often Redis or Postgres) temporarily caches request signatures to prevent double-charging during network retries. The core Internal Ledger utilizes a relational SQL database with append-only tables to record immutable debit and credit entries, ensuring all accounts perfectly balance.
+An Idempotency Store (Redis/Postgres) caches request signatures to prevent double-charging. The core Internal Ledger uses a relational database with append-only tables for immutable debit and credit entries, ensuring strict financial balance.
 
 ### Idempotency Store (Redis/Postgres)
 | Key Pattern | Value | TTL | Purpose |
@@ -70,19 +70,19 @@ The system relies on strict data models to guarantee transactional integrity. An
 
 ### Deep Dive
 
-- **Payment state machine:** Strict transitions (`CREATED → AUTHORIZED → CAPTURED → SETTLED`). Invalid moves are rejected; all state changes are persisted atomically with full audit metadata.
+- **Payment state machine:** Strict transitions (`CREATED → AUTHORIZED → CAPTURED`) reject invalid moves. Every change persists atomically with full audit metadata.
 
-- **Double-entry ledger:** Offsetting debit/credit entries (sum to zero). Append-only model ensures integrity; corrections use compensating entries rather than mutations for auditing.
+- **Double-entry ledger:** Offsetting append-only debit/credit entries sum to zero. Corrections require new compensating entries, preserving the immutable audit trail.
 
-- **Gateway abstraction:** Unified interface (`authorize`, `capture`, `refund`). Decouples business logic from provider APIs (Stripe, PayPal), enabling routing rules and provider migrations.
+- **Gateway abstraction:** A unified interface (`authorize`, `capture`) decouples business logic from provider APIs, easing routing and migrations.
 
-- **Reconciliation jobs:** Hourly jobs pull gateway settlement reports to validate against the internal ledger. Nightly deep reconciliations re-derive balances from raw entries to flag discrepancies.
+- **Reconciliation jobs:** Hourly jobs validate gateway settlement reports against the ledger. Nightly deep passes re-derive balances from raw entries to catch subtle discrepancies.
 
-- **PCI-DSS isolation:** Card data tokenized at the edge via SDKs. Backend handles only opaque tokens stored in a secure vault, keeping the main application out of PCI scope.
+- **PCI-DSS isolation:** Edge SDKs tokenize card data. The backend handles only opaque tokens in a secure vault, entirely bypassing PCI scope.
 
-- **Event-driven webhooks:** State changes emit events to Kafka/SNS. A dispatcher delivers these to downstream services (order, notification) with at-least-once semantics and HMAC signatures.
+- **Event-driven webhooks:** Kafka/SNS dispatches state change events to downstream services with at-least-once delivery and HMAC signatures.
 
-- **Currency & FX:** Amounts stored as integers in the smallest unit (cents) to avoid floating-point errors. Multi-currency uses FX rates captured at authorization, tracking original and settled values.
+- **Currency & FX:** Integer math on smallest units (cents) avoids floating-point errors. Multi-currency tracks FX rates captured at exact authorization time.
 
 ### Trade-offs
 

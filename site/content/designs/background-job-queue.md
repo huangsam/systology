@@ -40,11 +40,11 @@ graph LR
     DB --> Dashboard
 {{< /mermaid >}}
 
-Clients submit jobs to an API layer, which places messages onto a durable queue. A pool of pull-based workers picks up the jobs, performing the heavy execution and writing large payloads to object storage. Worker status and job metadata are pushed to a relational database, which powers an operational dashboard for visibility into job progress and failures.
+Clients submit jobs via an API to a durable queue. Pull-based workers execute tasks, writing payloads to object storage. Worker status and job metadata are synced to a relational database, powering a real-time operational dashboard.
 
 ## Data Design
 
-The data storage splits transient job states from long-term payload storage. The primary job queue uses high-throughput message brokers or streams, while the job status store relies on a relational database to track idempotency and execution state. Large payloads are stored in an external blob store, referenced only by URI in the messages.
+Message brokers buffer the high-throughput primary job queue. A relational database tracks idempotency and execution status. Large payloads reside in an external blob store, referenced via URI to keep messages small.
 
 ### Job Message Format (Redis Streams / SQS)
 | Field | Type | Description |
@@ -67,19 +67,19 @@ The data storage splits transient job states from long-term payload storage. The
 
 ### Deep Dive
 
-- **Queue backend:** Partitioned/durable queues (Redis Streams, Kafka, SQS). Redis is ideal for low-latency; Kafka/SQS for massive scale and native replayability.
+- **Queue backend:** Redis Streams offers low-latency; Kafka/SQS scale massively with native replayability.
 
-- **Worker model:** Pull-based workers with visibility timeouts and heartbeats. Per-worker resource limits (CPU/memory) and local concurrency controls ensure stability.
+- **Worker model:** Pull-based workers use visibility timeouts and heartbeats, with local resource limits to ensure stability.
 
-- **Idempotency:** Every job uses a dedup key/token. Statuses (`PENDING → RUNNING → SUCCESS/FAIL`) are persisted in a Job DB to prevent double-processing.
+- **Idempotency:** Unique deduction keys and persistent database statuses prevent duplicate processing.
 
-- **Retries & DLQ:** Exponential backoff with jitter (e.g., 5 attempts) before routing to a Dead-Letter Queue (DLQ) for manual inspection or scripted recovery.
+- **Retries & DLQ:** Jobs retry using exponential backoff with jitter before routing to a Dead-Letter Queue (DLQ).
 
-- **Priority & QoS:** Separate queues for latency-sensitive vs. batch jobs. Token-bucket rate limiting prevents overwhelming downstream internal or external services.
+- **Priority & QoS:** Dedicated queues isolate latency-sensitive from batch jobs. Token-bucket rate limits protect downstream services.
 
-- **Autoscaling:** Workers scale based on queue depth and CPU utilization. Independent scaling per job type ensures high-throughput tasks don't starve small, fast jobs.
+- **Autoscaling:** Workers scale independently per job type based on queue depth and CPU utilization.
 
-- **Isolation:** Untrusted or long-running tasks execute in isolated containers/sandboxes with strict network and resource quotas to protect the host system.
+- **Isolation:** Untrusted jobs execute in sandboxed containers with strict resource quotas.
 
 ### Trade-offs
 

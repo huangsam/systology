@@ -48,11 +48,11 @@ graph TD
     Indexer -.->|updates| ShardN
 {{< /mermaid >}}
 
-A Query Parser processes the user's input before distributing the request across multiple shards via a Scatter operation. Each shard executes a Local Rank-K retrieval in parallel (combining lexical and semantic signals), returning its top candidates. The Scatter-Gather coordinator merges these local results, passes them through an ML-driven Re-Ranker to optimize the final order, and returns the absolute Top-K Results to the user. Independently, an Index Writer constantly streams updates into the specific shards.
+A Query Parser scatters inputs across multiple shards. Each shard executes parallel Local Rank-K retrievals combining lexical and semantic signals. A Scatter-Gather coordinator merges shard results, passing candidates through an ML Re-Ranker to optimize the final Top-K absolute order. An independent Index Writer continuously streams updates into shards.
 
 ## Data Design
 
-The search data structures must support both rapid text matching and dense vector similarity. The Inverted Index splits terms into an in-memory dictionary and highly compressed on-disk posting lists for keyword search. In parallel, a Vector Store leverages proximity graphs (like HNSW) to index document embeddings for semantic search, alongside JSON metadata for hard faceting.
+An Inverted Index combines an in-memory dictionary with compressed on-disk posting lists for rapid keyword search. A Vector Store leverages HNSW proximity graphs for dense semantic search alongside JSON metadata for exact faceting.
 
 ### Inverted Index (SSTables/Segments)
 | Component | Structure | Description | Storage |
@@ -72,17 +72,17 @@ The search data structures must support both rapid text matching and dense vecto
 
 ### Deep Dive
 
-- **Inverted index:** Term-to-posting-list index with positional data for phrase queries. Uses immutable segments and LSM-tree style merges for non-blocking reads. Posting lists are PForDelta-compressed.
+- **Inverted index:** PForDelta-compressed posting lists with positional data use immutable segments and LSM merges to guarantee non-blocking reads.
 
-- **Hybrid ranking:** Combines BM25 lexical scoring with dense vector semantic embeddings. A two-stage pipeline uses the inverted index for candidate generation, followed by a cross-encoder re-ranker.
+- **Hybrid ranking:** BM25 lexical candidate generation combines with dense vector semantic embeddings in a two-stage cross-encoder re-ranking pipeline.
 
-- **NRT index refresh:** Updates written to a WAL and in-memory segment, refreshed every 1–5 seconds. Background merges compact segments, providing searchability without frequent commit costs.
+- **NRT index refresh:** In-memory segments backed by a WAL refresh every 1–5 seconds, providing near real-time searchability without synchronous commit costs.
 
-- **Query pipeline:** Handles parsing, synonym expansion, and spell correction. Filters (facets, ACLs) use bit-set intersections to prune the candidate set before scoring.
+- **Query pipeline:** Resolves synonyms and spelling before utilizing bit-set intersections for facets and ACLs to densely prune before scoring.
 
-- **Relevance feedback loops:** Click-through logs drive learning-to-rank model training. An `explain` API exposes scoring breakdowns for debugging and A/B testing ranking adjustments.
+- **Relevance feedback loops:** Click-through telemetry implicitly trains learning-to-rank models, aided by an explicit `explain` API for tuning breakdowns.
 
-- **Security & Multi-tenancy:** Per-tenant shard isolation and document-level ACLs. Bloom filters on ACL fields enable fast skipping of unauthorized documents during traversal.
+- **Security & Multi-tenancy:** Shard-level tenant isolation pairs with Bloom filters on document ACLs to rapidly skip unauthorized tokens during traversal.
 
 ### Trade-offs
 

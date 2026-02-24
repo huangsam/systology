@@ -47,11 +47,11 @@ graph TD
     Dispatch --> Tracker[(Tracker)]
 {{< /mermaid >}}
 
-Internal services generate notification requests and send them to a central API. A Router inspects the payload and routes messages into priority-tiered queues (High, Normal, Low) to prevent bulk messages from blocking critical alerts. Pluggable Dispatch workers consume from these queues, formatting the messages and delivering them via external providers (Push, SMS, Email) while logging the delivery status to a Tracker database.
+Internal services send notification requests to a central API. A Router inspects payloads and routes them into tiered queues (High, Normal, Low) to prevent bulk campaigns from blocking critical alerts. Pluggable Dispatch workers format and deliver messages via external providers, logging statuses to a Tracker database.
 
 ## Data Design
 
-The data architecture isolates high-throughput message buffering from persistent logging. Redis Streams or Kafka act as the Notification Queue, storing transient payloads and priority routing metadata. A relational Delivery Tracker database durably records receipt statuses and error codes from external providers to support user-facing delivery dashboards and operational monitoring.
+Redis Streams or Kafka buffer high-throughput transient payloads and routing metadata. A relational Delivery Tracker durably records receipt statuses and error codes from external providers for operational monitoring.
 
 ### Notification Queue (Redis Streams / Kafka)
 | Field | Type | Description |
@@ -73,19 +73,19 @@ The data architecture isolates high-throughput message buffering from persistent
 
 ### Deep Dive
 
-- **Channel adapters:** Pluggable adapters (Push, SMS, Email) behind a `Deliver()` interface. Encapsulates provider-specific logic like token management (FCM/APNs) or connection pooling (SES/SendGrid).
+- **Channel adapters:** Pluggable adapters behind a standard `Deliver()` interface encapsulate complex token management and connection pooling per provider.
 
-- **Template engine & i18n:** Versioned templates with Mustache/Handlebars interpolation. Localisation keyed by `(template_id, locale)` with a fallback chain (`user_locale → region_default → en`).
+- **Template engine & i18n:** Versioned templates use Mustache/Handlebars interpolation, resolving localization via a priority chain (`user_locale → region_default → en`).
 
-- **User preferences:** Dedicated DB/Cache for opt-in flags, quiet hours, and channel overrides. Dispatchers consult Redis-cached preferences to drop/defer messages.
+- **User preferences:** Redis-cached opt-ins, quiet hours, and channel overrides instruct Dispatchers to dynamically drop or defer messages.
 
-- **Double-layer rate limiting:** Global token-buckets enforce provider quotas (e.g., 100 SMS/sec); user-level sliding windows prevent spam and reduce app uninstalls.
+- **Double-layer rate limiting:** Global token-buckets enforce provider quotas, while user-level sliding windows block spam and prevent app uninstalls.
 
-- **Delivery tracking:** Outbound messages tracked through lifecycle states (`QUEUED → DISPATCHED → DELIVERED → READ`). Adapters consume provider webhooks to update statuses for real-time dashboards.
+- **Delivery tracking:** Adapters ingest provider webhooks to transition outbound message lifecycles (`QUEUED → DISPATCHED → DELIVERED → READ`) for real-time dashboards.
 
-- **Broadcast fanout:** For app-wide alerts, workers resolve user segments in batches and enqueue individual messages. Avoids massive payloads and enables progress tracking for large campaigns.
+- **Broadcast fanout:** Workers batch-resolve user segments and enqueue individual messages, avoiding massive payloads and enabling targeted retries for large campaigns.
 
-- **Retries & DLQ:** Failed deliveries use exponential backoff (3–5 attempts). Permanent failures route to a Dead Letter Queue and trigger stale-token updates in user profiles.
+- **Retries & DLQ:** Failed deliveries retry with exponential backoff. Permanent failures hit a Dead Letter Queue and trigger stale-token cleanups.
 
 ### Trade-offs
 

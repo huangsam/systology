@@ -43,11 +43,11 @@ graph TD
     GlobalModel -->|averaged params| Coordinator
 {{< /mermaid >}}
 
-A central Coordinator broadcasts the current global model parameters to a Device Selector, which samples a subset of available client devices. These devices train the model locally using their private data and send encrypted weight updates to a Secure Aggregator. The Aggregator accumulates these updates cryptographically—ensuring individual device data remains private—and then writes the averaged parameters to the Global Store for the Coordinator to use in the next round.
+A Coordinator broadcasts global model parameters to a Device Selector that samples client devices. Devices train locally on private data and send encrypted weight updates to a Secure Aggregator. Cryptographic aggregation preserves privacy before writing averaged parameters back to the Global Store for the next round.
 
 ## Data Design
 
-Data is segregated between transient round metadata and the persistent Global Model Store. The model store acts as a versioned object registry holding the aggregated network weights and model architectures, alongside privacy spend logs. A separate relational database tracks the telemetry for each federated training round, including participation rates, dropout metrics, and server-side validation accuracy.
+The Global Model Store acts as a versioned object registry for network weights, architectures, and privacy spend logs. A separate relational database tracks per-round telemetry (participation, dropouts, validation accuracy).
 
 ### Global Model Store (Object Store / Registry)
 | Artifact | Type | Description | Versioning |
@@ -68,17 +68,17 @@ Data is segregated between transient round metadata and the persistent Global Mo
 
 ### Deep Dive
 
-- **Secure aggregation:** Cryptographic protocols ensure the server only sees the aggregate sum, never individual updates. Includes dropout tolerance for connectivity issues.
+- **Secure aggregation:** Cryptographic protocols ensure the server only sees the aggregate sum, protecting individual updates while tolerating device dropouts.
 
-- **Differential Privacy (DP):** Clips gradients and adds noise to bound individual device influence. Tracks a cumulative (ε, δ) budget to halt training when limits are reached.
+- **Differential Privacy (DP):** Clipping gradients and adding noise bounds individual influence. A cumulative (ε, δ) budget halts training upon exhaustion.
 
-- **Client scheduling:** Stratified sampling ensures representation. Participation restricted to devices on Wi-Fi with sufficient battery to minimize user impact.
+- **Client scheduling:** Stratified sampling targets devices on Wi-Fi with sufficient battery to minimize user impact while ensuring representation.
 
-- **Communication efficiency:** Quantization (8-bit) and sparsification (Top-K gradients) reduce bandwidth. Vital for making ML feasible over mobile networks for large models.
+- **Communication efficiency:** Quantization (8-bit) and sparsification (Top-K gradients) drastically reduce bandwidth for mobile network feasibility.
 
-- **Non-IID handling:** Techniques like FedProx stabilize convergence across heterogeneous datasets. Periodic server-side validation detects divergence early.
+- **Non-IID handling:** Techniques like FedProx stabilize convergence across heterogeneous client datasets, caught early by server-side validation.
 
-- **Model rollouts:** Checkpointed models roll out via canary stages. Monitoring accuracy and fairness across device cohorts ensures quality before full promotion.
+- **Model rollouts:** Checkpoints deploy via canary stages, promoting only after monitoring accuracy and fairness across device cohorts.
 
 ### Trade-offs
 
