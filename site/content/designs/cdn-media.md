@@ -41,7 +41,11 @@ graph LR
     Transcoder --> CDN
 {{< /mermaid >}}
 
+Users access media assets globally through a CDN edge layer. Cache misses are routed through a regional Origin Shield to collapse concurrent requests before hitting the Origin servers and underlying storage. In parallel, a separate upload pipeline takes raw user files, transcodes them into optimal renditions, and uploads the results to storage while proactively pre-warming the CDN edge caches.
+
 ## Data Design
+
+The data layer is organized around object storage for large media files and CDN cache schemas for rapid delivery. Object storage acts as the definitive origin, segregating raw uploads from transcoded media assets and static access logs. The CDN dictates cache key patterns and validation lifetimes using surrogate keys to invalidate related assets simultaneously.
 
 ### Object Storage Layout (S3)
 | Bucket | Prefix / Path | Retention | Description |
@@ -64,8 +68,6 @@ graph LR
 - **Multi-tier caching:** Edge PoPs provide L1 cache. A regional Origin Shield (L2) collapses concurrent misses into a single fetch, protecting origin from viral traffic.
 
 - **Invalidation strategy:** Surrogate keys (tags) enable purging all resolution/format variants at once. Uses short TTLs with `stale-while-revalidate` for metadata.
-
-- **Upload pipeline:** Upload service writes raw files to S3 and enqueues transcoding. Workers generate renditions (720p, 1080p, etc.) and pre-warm the CDN edge via prefetch.
 
 - **Security & Access:** Time-limited signed URLs or cookies verified at the edge. Rotatable signing keys allow for zero-downtime security updates.
 

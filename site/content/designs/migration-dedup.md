@@ -43,7 +43,11 @@ graph LR
     Reconciler --> Target
 {{< /mermaid >}}
 
+A Scanner reads chunks of data from the Source system and consults a Hash Index to quickly filter out records that have already been migrated. The Migrator processes the remaining unique records, writing them to the Target system while periodically checkpointing progress to a State DB. In parallel, a Reconciler verifies data integrity by comparing data blocks between the Source and Target to ensure no records were corrupted or missed.
+
 ## Data Design
+
+Storage is partitioned between the live migration state and the deduplication index. The Hash Index employs a memory-efficient Bloom filter backed by a Key-Value map for exact target locations, accelerating the duplicate detection process. A relational State Database tracks the exact status of each chunk (e.g., pending, syncing, verified) to guarantee idempotent boundary resumption.
 
 ### Hash Index (Bloom Filter + KV Map)
 | Store | Purpose | Key / Pattern | Value |

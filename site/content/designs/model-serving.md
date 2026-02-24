@@ -53,7 +53,11 @@ graph TD
     ServerB -.->|on error| Fallback
 {{< /mermaid >}}
 
+Client inference requests arrive at a Gateway, which forwards them to a Router responsible for traffic splitting. The Router directs a small percentage of requests to a Canary server pool and the majority to the Stable production pool, both of which dynamically pull versioned models from the Registry and execute on dedicated GPU Pools. If any server encounters an error or latency spike, requests are rerouted to a lightweight Fallback Model to preserve availability.
+
 ## Data Design
+
+The system's state centers on immutable model definitions and volatile inference telemetry. The Model Registry acts as the source of truth for versioned binaries, runtimes, and canary flags, allowing for instant rollbacks. Inference Logs capture the real-time request distributions, confidence scores, and hardware utilization to drive automated promotion or fallback decisions.
 
 ### Model Registry (Object Store + Metadata)
 | Registry Field | Type | Description | Immutable |

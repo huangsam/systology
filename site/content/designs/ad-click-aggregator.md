@@ -42,7 +42,11 @@ graph LR
     Fraud -.->|flag| Dedup
 {{< /mermaid >}}
 
+The architecture ingests events via a stateless HTTP/gRPC API behind a global load balancer, appending them to Kafka. A two-stage deduplication process (Bloom filter followed by Redis check) filters duplicates before streaming engines (like Flink or Spark) perform 1-minute event-time tumbling window aggregations. Final counts are upserted into an OLAP store (ClickHouse/Druid) for real-time querying. In parallel, a fraud detection sidecar scores events and feeds flags back to the deduplication stage to correct counts.
+
 ## Data Design
+
+The data layer is split between high-throughput temporary streams and long-term analytical storage. Kafka manages the ingest pipelines using topic partitioning to guarantee order per ad. The reporting backend utilizes a columnar OLAP database tailored for real-time aggregations and sub-second roll-ups by campaign.
 
 ### Message Stream (Kafka Topics)
 | Topic | Partition Key | Description | Retention |
@@ -63,17 +67,7 @@ graph LR
 
 ### Deep Dive
 
-- **Ingestion layer:** Stateless HTTP/gRPC behind global LB. Events (click ID, ad ID, fingerprint) validated and appended to Kafka. Partitioning by `ad_id` ensures per-ad ordering.
-
-- **Click deduplication:** Two-stage approach. Stage 1: Probabilistic Bloom filter (0.1% FPR) for fast streaming pass. Stage 2: Definitive Redis set check (TTL = 2x window) for matches. Minimizes memory while ensuring billing accuracy.
-
-- **Windowed aggregation:** Stream processing (Flink/Spark) using 1-minute event-time tumbling windows. Handles out-of-order data with 30s allowed lateness; side outputs capture extremely late events.
-
 - **Exactly-once semantics:** Kafka transactional producers + stream engine checkpointing. Atomic read-process-write cycles and idempotent OLAP upserts keyed by `(ad_id, window)` ensure end-to-end consistency.
-
-- **OLAP query store:** ClickHouse/Druid as the real-time backend. Time-partitioned and indexed by `ad_id`. Supports sub-second roll-ups by campaign and advertiser via a dedicated Query API.
-
-- **Fraud detection sidecar:** Parallel consumer running ML scoring (CTR anomalies, IP clustering). Verdicts published to compacted topic; dedup stage uses these to subtract flagged clicks via correction events.
 
 - **Backpressure & flow control:** Token-bucket rate limits per advertiser at ingestion. Consumer lag thresholds trigger autoscaling of stream task slots to maintain 1-minute freshness SLO.
 

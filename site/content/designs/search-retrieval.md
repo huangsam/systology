@@ -48,7 +48,11 @@ graph TD
     Indexer -.->|updates| ShardN
 {{< /mermaid >}}
 
+A Query Parser processes the user's input before distributing the request across multiple shards via a Scatter operation. Each shard executes a Local Rank-K retrieval in parallel (combining lexical and semantic signals), returning its top candidates. The Scatter-Gather coordinator merges these local results, passes them through an ML-driven Re-Ranker to optimize the final order, and returns the absolute Top-K Results to the user. Independently, an Index Writer constantly streams updates into the specific shards.
+
 ## Data Design
+
+The search data structures must support both rapid text matching and dense vector similarity. The Inverted Index splits terms into an in-memory dictionary and highly compressed on-disk posting lists for keyword search. In parallel, a Vector Store leverages proximity graphs (like HNSW) to index document embeddings for semantic search, alongside JSON metadata for hard faceting.
 
 ### Inverted Index (SSTables/Segments)
 | Component | Structure | Description | Storage |
@@ -71,8 +75,6 @@ graph TD
 - **Inverted index:** Term-to-posting-list index with positional data for phrase queries. Uses immutable segments and LSM-tree style merges for non-blocking reads. Posting lists are PForDelta-compressed.
 
 - **Hybrid ranking:** Combines BM25 lexical scoring with dense vector semantic embeddings. A two-stage pipeline uses the inverted index for candidate generation, followed by a cross-encoder re-ranker.
-
-- **Sharding & replication:** Document-hash partitioning across N shards with R replicas. Employs a scatter-gather pattern: queries execute in parallel, and results are merged at the gather layer.
 
 - **NRT index refresh:** Updates written to a WAL and in-memory segment, refreshed every 1–5 seconds. Background merges compact segments, providing searchability without frequent commit costs.
 

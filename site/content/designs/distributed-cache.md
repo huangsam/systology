@@ -39,7 +39,11 @@ graph LR
     Cache -.->|replication| CacheReplica[Replica]
 {{< /mermaid >}}
 
+Clients issue requests through a Load Balancer to a fleet of App Servers. The App Servers implement a cache-aside pattern, querying a distributed caching layer for Git objects or pack indexes. If a cache miss occurs, the App Server fetches data from the definitive backend and populates the cache. The caching layer replicates data across shards and replicas to handle node failures and distribute load.
+
 ## Data Design
+
+The cache keyspace relies on prefixed keys to uniquely identify different object types—such as raw blobs, pack file indexes, or reference pointers—each requiring distinct eviction strategies based on their access patterns. Underlying metadata tracks the consistent hash ring mappings and real-time node health for cluster membership.
 
 ### Cache Key-Space (KV)
 | Prefix | Key Format | Value Type | Description |

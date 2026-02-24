@@ -43,7 +43,11 @@ graph TD
     Payment --> Orders
 {{< /mermaid >}}
 
+Users hit the CDN/Edge layer, which queues bursting traffic into a Virtual Waiting Room. Admitted users pass through an API Gateway to a Reservation service that claims inventory atomically in Redis and writes a temporary hold to the sharded Orders DB. Upon successful checkout via the Payment service, the hold is converted into a confirmed order in the database.
+
 ## Data Design
+
+The data layer is bifurcated into a high-speed volatile cache and a durable transactional store. Redis acts as the critical fast-path for atomic inventory counters and short-lived idempotency keys to ensure users don't double-book. The SQL Orders database provides the canonical, long-term truth for transactions, utilizing optimistic concurrency control to handle explosive write bursts safely.
 
 ### Inventory Key-Space (Redis)
 | Key Pattern | Value Type | Description | TTL |

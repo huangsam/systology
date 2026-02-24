@@ -42,7 +42,11 @@ graph LR
     Kafka -.->|archive| Lake
 {{< /mermaid >}}
 
+Web and mobile apps emit events to a stateless Collector fleet, which enriches the payloads before publishing them to Kafka. A Stream Processor (like Flink) consumes from Kafka, computing stateful aggregations based on event-time watermarks, and sinking the results into an OLAP database that powers real-time Dashboards. Late-arriving events that fall outside the allowed windows are routed to a Dead Letter Queue (DLQ), while all raw events are continuously archived to a Data Lake for historical analysis.
+
 ## Data Design
+
+The data storage strategy balances high-throughput buffering, ultra-fast analytics, and cheap long-term retention. Kafka topics act as the resilient buffer for raw event streams and intermediate aggregates. The OLAP datastore (like ClickHouse or Druid) uses heavily partitioned, columnar tables to support millisecond querying over broad time ranges, while the Data Lake provides infinite retention of the raw Parquet files.
 
 ### Event Stream (Kafka Topics)
 | Topic | Partition Key | Throughput | Retention |
@@ -61,8 +65,6 @@ graph LR
 ## Deep Dive & Trade-offs
 
 ### Deep Dive
-
-- **Event ingestion:** Stateless collector fleet behind LB accepts HTTPS/gRPC. Events enriched (Geo-IP, session ID) and published to Kafka. Partitioning by `session_id` ensures intra-session ordering.
 
 - **Stream processing:** Apache Flink performs stateful aggregations (metrics per min/hour). Flink’s exactly-once checkpointing ensures accuracy across tumbling, sliding, and session windows.
 

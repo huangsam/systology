@@ -42,7 +42,11 @@ graph TD
     Ingest --> Spatial
 {{< /mermaid >}}
 
+Mobile clients send requests through a Load Balancer to split Read and Write traffic. Read APIs serve search queries by first checking a fast Geo-Cache and falling back to a Spatial Database on misses. The Write API asynchronously processes updates from moving entities or business owners via an Ingestion pipeline, which eventually updates the Spatial Database to reflect the new locations.
+
 ## Data Design
+
+Data is structured to optimize geospatial queries and rich metadata lookups. The Spatial Index maps 2D coordinates into 1D strings (Geohashes) stored in a B-Tree, enabling fast prefix-based proximity searches. Secondary POI Metadata is stored in a NoSQL or Document database, heavily indexed to support full-text search, category filtering, and rating-based ranking.
 
 ### Spatial Index (B-Tree + Geohash)
 | Key (Geohash) | Value | Shard Strategy | Purpose |
@@ -65,8 +69,6 @@ graph TD
 - **Geospatial Indexing:** Uses Geohashing to map 2D coordinates to hierarchical string prefixes. Enables fast range queries on standard B-trees; Quadtrees as an alternative for variable density.
 
 - **Expanding Ring Search:** Queries start at high precision and "ring out" if results are sparse. Avoids over-fetching in dense centers while ensuring results in rural areas.
-
-- **Read/Write Path Separation:** Read-heavy traffic (50k QPS) served from replicas and Geo-caches. Writes bypass the hot path, asynchronously updating the spatial index.
 
 - **Location Pipeline:** Moving entities stream batched GPS updates via gRPC. Coalesced latest-wins flushing reduces write amplification while maintaining freshness.
 

@@ -40,7 +40,11 @@ graph LR
     DB --> Dashboard
 {{< /mermaid >}}
 
+Clients submit jobs to an API layer, which places messages onto a durable queue. A pool of pull-based workers picks up the jobs, performing the heavy execution and writing large payloads to object storage. Worker status and job metadata are pushed to a relational database, which powers an operational dashboard for visibility into job progress and failures.
+
 ## Data Design
+
+The data storage splits transient job states from long-term payload storage. The primary job queue uses high-throughput message brokers or streams, while the job status store relies on a relational database to track idempotency and execution state. Large payloads are stored in an external blob store, referenced only by URI in the messages.
 
 ### Job Message Format (Redis Streams / SQS)
 | Field | Type | Description |
@@ -64,8 +68,6 @@ graph LR
 ### Deep Dive
 
 - **Queue backend:** Partitioned/durable queues (Redis Streams, Kafka, SQS). Redis is ideal for low-latency; Kafka/SQS for massive scale and native replayability.
-
-- **Payload strategy:** Messages contain IDs and metadata; large payloads (media, reports) are stored in object storage (S3) with references in the message to prevent bloat.
 
 - **Worker model:** Pull-based workers with visibility timeouts and heartbeats. Per-worker resource limits (CPU/memory) and local concurrency controls ensure stability.
 

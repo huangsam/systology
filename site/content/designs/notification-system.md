@@ -47,7 +47,11 @@ graph TD
     Dispatch --> Tracker[(Tracker)]
 {{< /mermaid >}}
 
+Internal services generate notification requests and send them to a central API. A Router inspects the payload and routes messages into priority-tiered queues (High, Normal, Low) to prevent bulk messages from blocking critical alerts. Pluggable Dispatch workers consume from these queues, formatting the messages and delivering them via external providers (Push, SMS, Email) while logging the delivery status to a Tracker database.
+
 ## Data Design
+
+The data architecture isolates high-throughput message buffering from persistent logging. Redis Streams or Kafka act as the Notification Queue, storing transient payloads and priority routing metadata. A relational Delivery Tracker database durably records receipt statuses and error codes from external providers to support user-facing delivery dashboards and operational monitoring.
 
 ### Notification Queue (Redis Streams / Kafka)
 | Field | Type | Description |
@@ -68,8 +72,6 @@ graph TD
 ## Deep Dive & Trade-offs
 
 ### Deep Dive
-
-- **Priority routing:** High/Normal/Low tiers mapped to independent queues and consumer groups. Prevents lower-priority spikes (e.g., marketing) from blocking critical alerts (e.g., security).
 
 - **Channel adapters:** Pluggable adapters (Push, SMS, Email) behind a `Deliver()` interface. Encapsulates provider-specific logic like token management (FCM/APNs) or connection pooling (SES/SendGrid).
 

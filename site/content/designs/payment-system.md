@@ -45,7 +45,11 @@ graph TD
     Recon --> Ledger
 {{< /mermaid >}}
 
+Client payment requests are received by an API and processed by a Payment State Machine, which orchestrates the complex lifecycle of a transaction. It communicates with external Gateways (Stripe, PayPal) to authorize and capture funds, while simultaneously recording double-entry bookkeeping records in a durable Ledger. All state changes are published to an Event Bus, triggering webhooks for downstream services and feeding offline Reconciliation jobs.
+
 ## Data Design
+
+The system relies on strict data models to guarantee transactional integrity. An Idempotency Store (often Redis or Postgres) temporarily caches request signatures to prevent double-charging during network retries. The core Internal Ledger utilizes a relational SQL database with append-only tables to record immutable debit and credit entries, ensuring all accounts perfectly balance.
 
 ### Idempotency Store (Redis/Postgres)
 | Key Pattern | Value | TTL | Purpose |
@@ -65,8 +69,6 @@ graph TD
 ## Deep Dive & Trade-offs
 
 ### Deep Dive
-
-- **Idempotency keys:** Client-generated keys stored in Postgres/Redis (24h TTL). Subsequent requests return stored responses without re-executing, preventing double-charges from network retries.
 
 - **Payment state machine:** Strict transitions (`CREATED → AUTHORIZED → CAPTURED → SETTLED`). Invalid moves are rejected; all state changes are persisted atomically with full audit metadata.
 

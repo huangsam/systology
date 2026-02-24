@@ -43,7 +43,11 @@ graph TD
     GlobalModel -->|averaged params| Coordinator
 {{< /mermaid >}}
 
+A central Coordinator broadcasts the current global model parameters to a Device Selector, which samples a subset of available client devices. These devices train the model locally using their private data and send encrypted weight updates to a Secure Aggregator. The Aggregator accumulates these updates cryptographically—ensuring individual device data remains private—and then writes the averaged parameters to the Global Store for the Coordinator to use in the next round.
+
 ## Data Design
+
+Data is segregated between transient round metadata and the persistent Global Model Store. The model store acts as a versioned object registry holding the aggregated network weights and model architectures, alongside privacy spend logs. A separate relational database tracks the telemetry for each federated training round, including participation rates, dropout metrics, and server-side validation accuracy.
 
 ### Global Model Store (Object Store / Registry)
 | Artifact | Type | Description | Versioning |
@@ -63,8 +67,6 @@ graph TD
 ## Deep Dive & Trade-offs
 
 ### Deep Dive
-
-- **FedAvg protocol:** Coordinator broadcasts parameters to a client subset. Devices train locally and return gradients; server averages updates to produce the next model.
 
 - **Secure aggregation:** Cryptographic protocols ensure the server only sees the aggregate sum, never individual updates. Includes dropout tolerance for connectivity issues.
 

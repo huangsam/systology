@@ -42,7 +42,11 @@ graph LR
     Transform -.->|lineage| Catalog
 {{< /mermaid >}}
 
+An Orchestrator triggers data ingestion from external raw sources into a multi-tier Data Lake. Transformation jobs configured as Directed Acyclic Graphs (DAGs) pull data from the lake, process it into ML features, and publish the final vectors to a Feature Store used for model training. Along the way, transformation metadata and data dependencies are directly recorded into a Lineage Catalog.
+
 ## Data Design
+
+Data is organized hierarchically. The Data Lake utilizes a medallion architecture (Bronze, Silver, Gold), heavily partitioned by date and feature group to accelerate batch reads. The serving side relies on a low-latency Feature Store optimized as a key-value database for quick lookup of specific user or product tensors by the training pipeline.
 
 ### Data Lake Partitioning (S3/HDFS/Warehouse)
 | Layer | Partition Key | Format | Retention |
