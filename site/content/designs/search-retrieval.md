@@ -70,6 +70,51 @@ An Inverted Index combines an in-memory dictionary with compressed on-disk posti
 
 ## Deep Dive & Trade-offs
 
+{{< pseudocode id="inverted-index" title="Inverted Index 'AND' Query Intersection" >}}
+```python
+def search_and(query_string, inverted_index):
+    # 1. Tokenize and normalize the query string
+    tokens = tokenize_and_stem(query_string)
+    if not tokens: return []
+
+    # 2. Fetch the posting list (sorted document IDs) for each token
+    posting_lists = []
+    for token in tokens:
+        postings = inverted_index.get(token, [])
+        if not postings: return [] # If any word is missing, AND result is empty
+        posting_lists.append(postings)
+
+    # 3. Sort posting lists by length (shortest first) to optimize intersection
+    posting_lists.sort(key=len)
+
+    # 4. Intersect the shortest list with the subsequent lists
+    # This is a basic 2-pointer intersection algorithm for sorted arrays
+    result = posting_lists[0]
+
+    for i in range(1, len(posting_lists)):
+        current_list = posting_lists[i]
+        new_result = []
+
+        p1 = 0 # Pointer for the accumulated result
+        p2 = 0 # Pointer for the current list
+
+        while p1 < len(result) and p2 < len(current_list):
+            if result[p1] == current_list[p2]:
+                new_result.append(result[p1])
+                p1 += 1
+                p2 += 1
+            elif result[p1] < current_list[p2]:
+                p1 += 1
+            else:
+                p2 += 1
+
+        result = new_result
+        if not result: break # Early exit if intersection becomes empty
+
+    return result
+```
+{{< /pseudocode >}}
+
 ### Deep Dive
 
 - **Inverted index:** PForDelta-compressed posting lists with positional data use immutable segments and LSM merges to guarantee non-blocking reads.

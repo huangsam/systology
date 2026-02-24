@@ -68,6 +68,64 @@ An Idempotency Store (Redis/Postgres) caches request signatures to prevent doubl
 
 ## Deep Dive & Trade-offs
 
+{{< pseudocode id="idempotency-key" title="Idempotent Payment Processing" >}}
+```python
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+def process_payment(idempotency_key, user_id, amount, currency):
+    # 1. Start a database transaction
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+
+            # 2. Try to insert the idempotency key.
+            # If it exists, constraint violation occurs, preventing double processing.
+            try:
+                cur.execute("""
+                    INSERT INTO idempotency_keys (key, status)
+                    VALUES (%s, 'processing')
+                """, (idempotency_key,))
+            except psycopg2.IntegrityError:
+                # Key exists! Fetch the previous result/status and return it
+                cur.execute("SELECT status, response FROM idempotency_keys WHERE key = %s", (idempotency_key,))
+                existing_record = cur.fetchone()
+
+                if existing_record['status'] == 'completed':
+                    return existing_record['response']
+                else:
+                    raise Exception("Concurrent request processing")
+
+            # 3. Proceed with external Gateway call (e.g., Stripe)
+            try:
+                stripe_charge = stripe.Charge.create(
+                    amount=amount,
+                    currency=currency,
+                    source=user_id,
+                    idempotency_key=idempotency_key # Pass down to Stripe too!
+                )
+
+                # 4. Write to internal Double-Entry Ledger
+                record_ledger_entries(cur, charge_id=stripe_charge.id, amount=amount)
+
+                # 5. Update Idempotency record to 'completed'
+                cur.execute("""
+                    UPDATE idempotency_keys
+                    SET status = 'completed', response = %s
+                    WHERE key = %s
+                """, (stripe_charge.id, idempotency_key))
+
+                conn.commit()
+                return stripe_charge.id
+
+            except Exception as e:
+                conn.rollback() # Rollback ledger entries
+                # Make sure to free the idempotency key so user can retry, or mark as failed
+                cur.execute("UPDATE idempotency_keys SET status = 'failed' WHERE key = %s", (idempotency_key,))
+                conn.commit()
+                raise e
+```
+{{< /pseudocode >}}
+
 ### Deep Dive
 
 - **Payment state machine:** Strict transitions (`CREATED → AUTHORIZED → CAPTURED`) reject invalid moves. Every change persists atomically with full audit metadata.

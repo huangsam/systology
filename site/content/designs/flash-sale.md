@@ -67,11 +67,48 @@ Redis provides a high-speed volatile cache for atomic inventory counters and sho
 
 ## Deep Dive & Trade-offs
 
-### Deep Dive
 
 - **Virtual waiting room:** Token-bucket batch admission smooths the thundering herd, redirecting excess traffic to static polling pages.
 
 - **Atomic inventory:** Redis Lua scripts safely `DECR` counters only if ≥ 0, achieving high concurrency without SQL row-level locks.
+
+{{< pseudocode id="atomic-inventory" title="Atomic Inventory Deduction (Redis Lua)" >}}
+```python
+import redis
+
+# Connect to Redis cluster
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# Lua script to check inventory and deduct atomically
+# ARGV[1] = requested amount
+LUA_RESERVE_SCRIPT = """
+local inventory_key = KEYS[1]
+local req_amount = tonumber(ARGV[1])
+
+local current = tonumber(redis.call('GET', inventory_key) or '0')
+
+if current >= req_amount then
+    redis.call('DECRBY', inventory_key, req_amount)
+    return 1 -- Success
+else
+    return 0 -- Failed: Not enough inventory
+end
+"""
+
+# Register script to avoid parsing it on every call
+reserve_inventory = r.register_script(LUA_RESERVE_SCRIPT)
+
+def try_reserve(sku_id, amount_needed):
+    # Executes atomically: guarantees no race condition between GET and DECR
+    success = reserve_inventory(keys=[f"inv:{sku_id}"], args=[amount_needed])
+
+    if success == 1:
+        # Proceed with reservation hold logic (Phase 1)
+        return create_hold(sku_id, amount_needed)
+    else:
+        raise Exception("Sold out or not enough inventory")
+```
+{{< /pseudocode >}}
 
 - **Two-phase purchase:** Phase 1 reserves inventory with a TTL; Phase 2 confirms on payment. A background reaper recycles expired holds.
 

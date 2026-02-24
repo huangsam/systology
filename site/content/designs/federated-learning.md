@@ -66,6 +66,60 @@ The Global Model Store acts as a versioned object registry for network weights, 
 
 ## Deep Dive & Trade-offs
 
+{{< pseudocode id="fedavg-algorithm" title="Federated Averaging (FedAvg)" >}}
+```python
+def federated_averaging(global_model, client_devices, current_round, num_rounds):
+    """
+    Simplified FedAvg Training Loop (Server-side & Client-side)
+    """
+    for round_num in range(current_round, num_rounds):
+
+        # 1. Server: Select a random subset of available clients for this round
+        participating_clients = select_clients(client_devices, fraction=0.1)
+
+        client_updates = []
+        total_data_points = 0
+
+        # 2. Server broadcasts the current global model weights to selected clients
+        global_weights = global_model.get_weights()
+
+        # 3. Clients: Train locally (in parallel)
+        for client in participating_clients:
+            # Client downloads global weights and initializes a local model
+            local_model = initialize_model(global_weights)
+
+            # Client trains on their private, local dataset exclusively
+            client_data_count = client.dataset.size()
+            local_model.train(client.dataset, epochs=5, batch_size=32)
+
+            # Client sends updated weights back (securely/encrypted in reality)
+            client_updates.append({
+                'weights': local_model.get_weights(),
+                'sample_count': client_data_count
+            })
+            total_data_points += client_data_count
+
+        # 4. Server: Securely aggregate updates (weighted average)
+        new_global_weights = []
+
+        # For each layer/parameter in the model:
+        for p_idx in range(len(global_weights)):
+            layer_sum = 0
+
+            # Sum the weighted parameters from all clients
+            for update in client_updates:
+                weight_factor = update['sample_count'] / total_data_points
+                layer_sum += update['weights'][p_idx] * weight_factor
+
+            new_global_weights.append(layer_sum)
+
+        # 5. Server updates the global model for the next round
+        global_model.set_weights(new_global_weights)
+
+    return global_model
+```
+{{< /pseudocode >}}
+
 ### Deep Dive
 
 - **Secure aggregation:** Cryptographic protocols ensure the server only sees the aggregate sum, protecting individual updates while tolerating device dropouts.
