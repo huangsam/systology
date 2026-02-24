@@ -9,6 +9,8 @@ draft: false
 
 ## The Core Philosophy
 
+We are fundamentally choosing between the power of centralized, structured databases (SQL) and the flexibility of distributed, flexible databases (NoSQL).
+
 SQL databases (PostgreSQL, MySQL) are built on the relational model. Data is stored in tables with rigid schemas, and relationships are enforced via foreign keys. They prioritize ACID transactions and consistency.
 
 NoSQL databases (Cassandra, MongoDB, DynamoDB) emerged to handle massive scale. They prioritize horizontal scalability, schema flexibility, and often trade strict consistency for availability and partition tolerance (CAP theorem).
