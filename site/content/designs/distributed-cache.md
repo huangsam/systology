@@ -97,8 +97,9 @@ class ConsistentHashRing:
         return self.nodes[target_vnode_hash]
 
     def _hash(self, key):
-        # Use MD5 or SHA-1 to map the string to a 32-bit integer space
-        return int(hashlib.md5(key.encode('utf-8')).hexdigest(), 16)
+        # Use SHA-256 (or BLAKE3) to map the string to a 256-bit integer space.
+        # .hexdigest() returns a base-16 string, so we parse it with base=16.
+        return int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16)
 ```
 {{< /pseudocode >}}
 
