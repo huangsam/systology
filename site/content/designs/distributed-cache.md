@@ -2,7 +2,7 @@
 title: "Distributed Caching Layer for VCS"
 description: "Performance optimization for version control."
 summary: "Design a distributed cache to reduce I/O and speed up VCS operations by caching objects and hashes with high concurrency and low latency."
-tags: ["caching", "concurrency", "distributed-systems", "monitoring", "performance", "vcs"]
+tags: ["algorithms", "caching", "concurrency", "distributed-systems", "monitoring", "performance", "vcs"]
 categories: ["designs"]
 draft: false
 ---
