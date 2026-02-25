@@ -2,7 +2,7 @@
 title: "Real-Time Collaborative WebApp"
 description: "Stateful synchronization for multiplayer web applications."
 summary: "Design for a Google Docs or Figma style application using WebSockets, Operational Transformation (OT), or CRDTs to maintain consistent state among concurrent writers."
-tags: ["real-time", "concurrency", "distributed-systems"]
+tags: ["concurrency", "distributed-systems", "real-time"]
 categories: ["designs"]
 draft: true
 ---

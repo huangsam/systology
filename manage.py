@@ -13,6 +13,7 @@ Commands:
     tidy      Run full tidy pipeline.
     index     Generate the Lunr.js search index.
     stats     Show tag frequency statistics.
+    tagup     Standardize tags using aliases and removals.
     check     Validate content across site.
 """
 
@@ -330,6 +331,62 @@ def run_sort_tags(content_dir: Path) -> None:
                     path.write_text(new_content, encoding="utf-8")
                     count += 1
     print(f"  Sorted tags in {count} files")
+
+
+# --- Logic: tagup ---
+
+
+# Default rules for 'tagup' maintenance
+TAG_ALIASES = {
+    "video": "media",
+    "processing": "data-pipelines",
+    "authentication": "security",
+    "authorization": "security",
+    "identity": "security",
+    "websockets": "real-time",
+    "stateful": "distributed-systems",
+    "queues": "queues",  # keeping queues as is, or we could alias to message-queues
+}
+
+TAG_REMOVALS = {
+    "foo",
+    "bar",
+}
+
+
+def tagup_in_text(content: str, aliases: dict[str, str], removals: set[str]) -> str:
+    match = re.search(r"^tags:\s*\[(.*?)\]", content, re.MULTILINE)
+    if not match:
+        return content
+    tags_str = match.group(1)
+    tags = [t.strip().strip('"').strip("'") for t in tags_str.split(",") if t.strip()]
+
+    new_tags = set()
+    for t in tags:
+        if t in removals:
+            continue
+        mapped = aliases.get(t, t)
+        if mapped:
+            new_tags.add(mapped)
+
+    sorted_tags = sorted(list(new_tags))
+    new_tags_str = "tags: [" + ", ".join(f'"{t}"' for t in sorted_tags) + "]"
+    return content.replace(match.group(0), new_tags_str)
+
+
+def run_tagup(content_dir: Path) -> None:
+    print("Running tagup...")
+    count = 0
+    for root, _, files in os.walk(content_dir):
+        for file in files:
+            if file.endswith(MD_EXT):
+                path = Path(root) / file
+                content = path.read_text(encoding="utf-8")
+                new_content = tagup_in_text(content, TAG_ALIASES, TAG_REMOVALS)
+                if new_content != content:
+                    path.write_text(new_content, encoding="utf-8")
+                    count += 1
+    print(f"  Applied tags update in {count} files")
 
 
 # --- Logic: format_project ---
@@ -688,6 +745,9 @@ def main():
     stats_parser.add_argument("--json", action="store_true", help="JSON output")
     stats_parser.add_argument("--show-files", action="store_true", help="Show files")
 
+    # Tagup
+    subparsers.add_parser("tagup", help="Standardize tags using predefined aliases and removals")
+
     # Check
     subparsers.add_parser("check", help="Validate content")
 
@@ -718,6 +778,8 @@ def main():
         run_generate_index(content_dir)
     elif args.command == "stats":
         run_tag_stats(content_dir, args.min_count, args.top, args.json, args.show_files)
+    elif args.command == "tagup":
+        run_tagup(content_dir)
     elif args.command == "check":
         run_check(content_dir)
 

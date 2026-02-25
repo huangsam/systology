@@ -2,7 +2,7 @@
 title: "Privacy-First Identity & Access Management"
 description: "Authentication and Authorization gateway with local-first isolation."
 summary: "Design for an Auth0/Keycloak-style identity provider focused on OAuth2/OIDC federation, token lifecycle, and privacy-preserving RBAC."
-tags: ["security", "privacy", "networking"]
+tags: ["networking", "privacy", "security"]
 categories: ["designs"]
 draft: true
 ---
