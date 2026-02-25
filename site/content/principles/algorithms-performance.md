@@ -9,9 +9,11 @@ draft: false
 
 ## Algorithmic Clarity
 
-Choose algorithms that are well-understood and documented, with clear complexity analysis—correctness and maintainability often outweigh marginal performance gains. Study canonical implementations (dynamic programming, graphs, backtracking) to build deep patterns into your mental model.
+Choose algorithms that are well-understood and documented—correctness and maintainability often outweigh marginal performance gains. Study canonical implementations (dynamic programming, graphs, backtracking) to build deep expertise.
 
 See how [Rustoku]({{< ref "/deep-dives/rustoku" >}}) applies MRV heuristics and bitmasking to keep backtracking tight, and how [Grit]({{< ref "/deep-dives/grit" >}}) uses LRU caching for object storage—both prioritize clarity alongside speed.
+
+Practicing [LeetCode](https://leetcode.com/) is a great way to improve algorithmic thinking and problem-solving skills. It's a platform that provides a wide range of algorithm problems with varying difficulty levels.
 
 **Anti-pattern — Premature Cleverness:** Reaching for exotic data structures (skip lists, Fibonacci heaps) before proving the simple approach is too slow. The debugging cost of a clever structure you don't fully understand outweighs the theoretical speedup.
 
