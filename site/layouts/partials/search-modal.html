@@ -18,12 +18,12 @@
     <div class="site-search-body">
       <div id="site-search-default" class="site-search-default">
         <div class="site-search-quick-links">
-          <a href="/categories/" class="site-search-cta">
+          <a href="{{ "categories/" | relURL }}" class="site-search-cta">
             <span class="site-search-cta-icon">📂</span>
             <span class="site-search-cta-text">All Categories</span>
             <span class="site-search-cta-arrow">→</span>
           </a>
-          <a href="/tags/" class="site-search-cta">
+          <a href="{{ "tags/" | relURL }}" class="site-search-cta">
             <span class="site-search-cta-icon">🏷️</span>
             <span class="site-search-cta-text">All Tags</span>
             <span class="site-search-cta-arrow">→</span>
@@ -57,7 +57,7 @@
     let indexLoaded = false;
     function loadIndex() {
       if (indexLoaded) return;
-      fetch('/search-index.json')
+      fetch('{{ "search-index.json" | relURL }}')
         .then(res => res.json())
         .then(data => {
           searchIndex = data.documents;
