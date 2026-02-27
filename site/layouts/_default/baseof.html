@@ -13,25 +13,16 @@
   <meta name="robots" content="index, follow" />
 
   <script>
-    (function () {
-      try {
-        if (localStorage.getItem('theme') === 'dark') {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        }
-      } catch (e) {}
-      // Suppress transitions during initial paint to prevent FOUC
-      var s = document.createElement('style');
-      s.id = 'no-fouc';
-      s.textContent = '*, *::before, *::after { transition: none !important; }';
-      document.head.appendChild(s);
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          var el = document.getElementById('no-fouc');
-          if (el) el.parentNode.removeChild(el);
-        });
-      });
-    })();
+    try {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    } catch (e) {}
   </script>
+  <style>
+    html { background: #ffffff; }
+    html[data-theme="dark"] { background: #0f1724; }
+  </style>
   <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}?v={{ now.Unix }}">
   <link rel="stylesheet" href="{{ "css/syntax.css" | relURL }}?v={{ now.Unix }}">
   <link rel="stylesheet" href="{{ "css/search.css" | relURL }}?v={{ now.Unix }}">
