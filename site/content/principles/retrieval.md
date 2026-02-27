@@ -25,11 +25,11 @@ BM25 excels at exact keyword matches and rare terms (proper nouns, error codes, 
 
 {{< mermaid >}}
 graph LR
-    Query --> BM25[Lexical\nBM25]
-    Query --> Embed[Semantic\nEmbeddings]
+    Query --> BM25[Lexical<br>BM25]
+    Query --> Embed[Semantic<br>Embeddings]
     BM25 --> Fusion[RRF Fusion]
     Embed --> Fusion
-    Fusion --> Rerank[Reranker\nCross-encoder]
+    Fusion --> Rerank[Reranker<br>Cross-encoder]
     Rerank --> Results[Top-k Results]
 {{< /mermaid >}}
 

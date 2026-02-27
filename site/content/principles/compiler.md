@@ -15,13 +15,13 @@ In practice, each compiler phase should consume a well-typed input and produce a
 
 {{< mermaid >}}
 graph LR
-    Src[Source Text] --> Lexer
-    Lexer -->|Tokens| Parser
-    Parser -->|AST| Sema[Semantic\nAnalysis]
-    Sema -->|Annotated AST| Lower[IR Lowering]
-    Lower -->|IR| Opt[Optimizer]
-    Opt -->|Optimized IR| CG[Code Generation]
-    CG --> Binary[Binary / Target]
+    Src[Source] --> Lexer
+    Lexer --> Parser
+    Parser --> Sema[Semantic<br>Analysis]
+    Sema --> Lower[IR Lowering]
+    Lower --> Opt[Optimizer]
+    Opt --> CG[Code Gen]
+    CG --> Binary
 {{< /mermaid >}}
 
 **Anti-pattern — Monolithic Pass:** Combining parsing, type-checking, and code generation into a single function. This makes bugs nearly impossible to isolate and kills incremental compilation potential. If adding a new language feature requires touching every stage simultaneously, your boundaries are too blurry.

@@ -125,12 +125,12 @@ For training-time lookups, front the Silver/Gold layer with a KV store (Redis, D
 
 {{< mermaid >}}
 graph LR
-    Raw[Raw Sources] --> Bronze[Bronze\nRaw Ingestion]
-    Bronze --> Silver[Silver\nValidated Features]
-    Silver --> Gold[Gold\nModel-ready Aggregates]
-    Gold --> KV[Feature Store\nKV Lookup]
-    KV --> Training[Model Training]
-    KV --> Serving[Inference Serving]
+    Raw[Raw Sources] --> Bronze[Bronze<br>Ingestion]
+    Bronze --> Silver[Silver<br>Features]
+    Silver --> Gold[Gold<br>Aggregates]
+    Gold --> KV[Feature Store]
+    KV --> Training[Training]
+    KV --> Serving[Serving]
 {{< /mermaid >}}
 
 See the [Model Serving & Inference]({{< ref "/principles/model-serving" >}}) principles for how feature store outputs feed the serving pipeline and how training-serving skew is prevented.

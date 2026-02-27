@@ -32,9 +32,9 @@ Canaries work best when you define promotion criteria upfront: "promote if P99 l
 {{< mermaid >}}
 graph TD
     Client --> Gateway
-    Gateway --> Router[Router\nCanary Split]
-    Router -->|5-10% canary| Canary[Canary Pool\nNew Version]
-    Router -->|90-95% stable| Stable[Stable Pool\nCurrent Version]
+    Gateway --> Router[Router<br>Canary Split]
+    Router -->|5-10% canary| Canary[Canary Pool<br>New Version]
+    Router -->|90-95% stable| Stable[Stable Pool<br>Current Version]
     Canary --> Gate{Metrics Gate}
     Gate -->|pass| Promote[Promote to 100%]
     Gate -->|fail| Rollback[Rollback]
