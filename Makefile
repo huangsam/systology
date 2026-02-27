@@ -20,7 +20,7 @@ clean:
 	rm -rf site/public
 
 serve: index
-	hugo server -D -s site
+	hugo server -D -s site --baseURL=http://localhost:1313/
 
 tidy:
 	python3 manage.py tidy
