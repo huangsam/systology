@@ -19,8 +19,10 @@
       }
     } catch (e) {}
     document.documentElement.setAttribute('data-loading', '');
-    document.addEventListener('DOMContentLoaded', function () {
-      document.documentElement.removeAttribute('data-loading');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        document.documentElement.removeAttribute('data-loading');
+      });
     });
   </script>
   <style>
