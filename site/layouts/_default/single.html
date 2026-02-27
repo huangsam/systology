@@ -11,7 +11,7 @@
     <div class="tags">
       <span>Tags:</span>
       {{ range . }}
-      {{ partial "components/badge.html" (dict "text" . "url" (printf "/tags/%s/" (. | urlize))) }}
+      {{ partial "components/badge.html" (dict "text" . "url" (printf "tags/%s/" (. | urlize) | relURL)) }}
       {{ end }}
     </div>
     {{ end }}
