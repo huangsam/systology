@@ -9,7 +9,7 @@
   <meta name="description" content="{{ .Description }}">
 
   <link rel="canonical" href="{{ .Permalink }}" />
-  <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml" />
+  <link rel="icon" href="{{ relURL "favicon.svg" }}" type="image/svg+xml" />
   <meta name="robots" content="index, follow" />
 
   <script data-cfasync="false">
@@ -22,8 +22,10 @@
   </script>
   {{ $styles := resources.Get "css/styles.css" | minify }}
   {{ $syntax := resources.Get "css/syntax.css" | minify }}
-  {{ $search := resources.Get "css/search.css" | minify }}
-  <style>{{ $styles.Content | safeCSS }}{{ $syntax.Content | safeCSS }}{{ $search.Content | safeCSS }}</style>
+  <style>
+    {{ $styles.Content | safeCSS }}
+    {{ $syntax.Content | safeCSS }}
+  </style>
 </head>
 
 <body>
@@ -32,11 +34,10 @@
     {{ block "main" . }}{{ end }}
   </main>
   {{ partial "footer.html" . }}
-  {{ partial "search-modal.html" . }}
   {{ partial "components/pseudocode-scripts.html" . }}
 
   <!-- Mermaid diagrams -->
-  <script src="{{ "js/mermaid.min.js" | relURL }}"></script>
+  <script src="{{ relURL "js/mermaid.min.js" }}"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {

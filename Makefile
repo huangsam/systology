@@ -1,4 +1,4 @@
-.PHONY: vendor index build clean serve tidy tags
+.PHONY: vendor build clean serve tidy tags
 
 # https://cdnjs.com/libraries/mermaid
 VERSION ?= 11.12.0
@@ -10,16 +10,13 @@ vendor:
 	@curl -fsSL "$(MERMAID_URL)" -o "$(VENDOR)"
 	@echo "Vendored mermaid $(VERSION) -> $(VENDOR)"
 
-index:
-	python3 manage.py index
-
-build: index
+build:
 	hugo -s site --minify --cleanDestinationDir
 
 clean:
 	rm -rf site/public
 
-serve: index
+serve:
 	hugo server -D -s site --baseURL=http://localhost:1313/
 
 tidy:

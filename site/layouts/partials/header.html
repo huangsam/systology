@@ -1,14 +1,19 @@
 <header class="site-header" role="banner">
   <div class="container header-inner">
-    <a class="brand" href="{{ .Site.Home.RelPermalink }}" aria-label="{{ .Site.Title }}"><img src="{{ "favicon.svg" | relURL }}" alt="" class="logo-icon"> {{
+    <a class="brand" href="{{ .Site.Home.RelPermalink }}" aria-label="{{ .Site.Title }}"><img src="{{ relURL "favicon.svg" }}" alt="" class="logo-icon"> {{
       .Site.Title }}</a>
     <nav class="site-nav" role="navigation" aria-label="Main navigation">
-
-      <button class="search-toggle" data-open-search aria-label="Search">
+      <button class="theme-toggle" onclick="window.location.href='{{ relURL "tags/" }}'" aria-label="Tags">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+          <line x1="7" y1="7" x2="7.01" y2="7" />
+        </svg>
+      </button>
+      <button class="theme-toggle" onclick="window.location.href='{{ relURL "categories/" }}'" aria-label="Categories">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
         </svg>
       </button>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">

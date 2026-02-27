@@ -11,7 +11,7 @@
     {{ $max := 3 }}
     {{ range $i, $t := first $max . }}
     {{ if $i }}, {{ end }}
-    <a href="{{ printf "tags/%s/" ($t | urlize) | relURL }}">{{ $t }}</a>
+    <a href="{{ relURL (printf "tags/%s/" ($t | urlize)) }}">{{ $t }}</a>
     {{ end }}
     {{ $remaining := sub (len .) $max }}
     {{ if gt $remaining 0 }}

@@ -35,9 +35,7 @@ STATIC_DIR = "static"
 ARCHETYPES_DIR = "archetypes"
 CSS_FILES = [
     f"{SITE_DIR}/{STATIC_DIR}/css/styles.css",
-    f"{SITE_DIR}/{STATIC_DIR}/css/search.css",
 ]
-SEARCH_INDEX_PATH = f"{SITE_DIR}/{STATIC_DIR}/search-index.json"
 
 # File Constants
 MD_EXT = ".md"
@@ -442,92 +440,6 @@ def run_format_project(content_dir: Path, archetypes_dir: Path) -> None:
             print(f"  Formatted {count} files in {d}")
 
 
-# --- Logic: generate_search_index ---
-
-
-def extract_fm_search(content: str) -> tuple[dict, str]:
-    match = re.match(r"^---\n(.*?)\n---\n", content, re.DOTALL)
-    if not match:
-        return {}, content
-    fm = {}
-    for line in match.group(1).split("\n"):
-        if ":" in line:
-            key, value = line.split(":", 1)
-            key = key.strip()
-            value = value.strip().strip("\"'")
-            if key == "tags":
-                value = re.findall(r'"([^"]+)"', value)
-            fm[key] = value
-    body = content[match.end() :]
-    return fm, body
-
-
-def extract_preview(body: str, max_length: int = 150) -> str:
-    body = re.sub(r"^#+\s+", "", body, flags=re.MULTILINE)
-    body = re.sub(r"\[([^\]]+)\]\([^\)]+\)", r"\1", body)
-    body = re.sub(r"[*_`]", "", body)
-    parts = body.split("\n\n")
-    if not parts:
-        return ""
-    para = parts[0].strip()
-    if len(para) > max_length:
-        para = para[:max_length].rsplit(" ", 1)[0] + "..."
-    return para
-
-
-def run_generate_index(content_dir: Path) -> None:
-    print("Generating search index...")
-    documents = []
-    doc_id = 0
-    for md_file in sorted(content_dir.rglob(f"*{MD_EXT}")):
-        if "_index.md" in md_file.name or md_file.name.startswith("."):
-            continue
-        try:
-            content = md_file.read_text(encoding="utf-8")
-        except Exception:
-            continue
-
-        fm, body = extract_fm_search(content)
-        if FM_TITLE not in fm:
-            continue
-
-        try:
-            category = md_file.relative_to(content_dir).parts[0]
-        except IndexError:
-            category = "unknown"
-
-        title = fm.get(FM_TITLE, "")
-        desc = fm.get(FM_DESC, "")
-        summary = fm.get(FM_SUMMARY, "")
-        tags = fm.get(FM_TAGS, [])
-
-        preview = desc if desc else extract_preview(body)
-        searchable = f"{title} {desc} {summary} {' '.join(tags) if isinstance(tags, list) else tags}".lower()
-        slug = md_file.stem
-        url = f"/{category}/{slug}/"
-
-        doc = {
-            "id": str(doc_id),
-            "title": title,
-            "description": desc,
-            "preview": preview,
-            "tags": tags if isinstance(tags, list) else [tags],
-            "category": category,
-            "url": url,
-            "content": searchable,
-        }
-        documents.append(doc)
-        doc_id += 1
-
-    index_data = {"documents": documents, "documentCount": len(documents)}
-    # Assuming CWD is project root
-    output_path = Path(SEARCH_INDEX_PATH)
-    output_path.parent.mkdir(exist_ok=True, parents=True)
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(index_data, f)
-    print(f"  Generated search index with {len(documents)} documents at {output_path}")
-
-
 # --- Logic: tag_frequency ---
 
 
@@ -735,9 +647,6 @@ def main():
     # Tidy
     subparsers.add_parser("tidy", help="Run full cleanup pipeline")
 
-    # Index
-    subparsers.add_parser("index", help="Generate search index")
-
     # Stats
     stats_parser = subparsers.add_parser("stats", help="Tag statistics")
     stats_parser.add_argument("--min-count", type=int, default=1, help="Min count")
@@ -774,8 +683,6 @@ def main():
         run_update_links(content_dir)
         run_sort_tags(content_dir)
         run_format_project(content_dir, archetypes_dir)
-    elif args.command == "index":
-        run_generate_index(content_dir)
     elif args.command == "stats":
         run_tag_stats(content_dir, args.min_count, args.top, args.json, args.show_files)
     elif args.command == "tagup":

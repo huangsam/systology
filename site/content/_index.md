@@ -8,7 +8,7 @@ My knowledge base for studying systems at scale, drawing from real-world enginee
 
 ## How to use this?
 
-Type `Cmd/Ctrl+K` to search across all documents. Click the right-most icon in the header to switch between light and dark mode.
+Click the icon in the header to switch between light and dark mode.
 
 ```go
 func main() {
