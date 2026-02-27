@@ -23,6 +23,16 @@ Combine lexical (BM25) and semantic retrieval for robustness—neither alone han
 
 BM25 excels at exact keyword matches and rare terms (proper nouns, error codes, product IDs). Semantic search handles paraphrases, conceptual queries, and fuzzy matches. For a query like "Python connection pool timeout error," BM25 finds documents containing those exact terms while semantic search finds documents about "database client configuration" that discuss the same concept differently. Reciprocal rank fusion (RRF) or weighted linear combination of scores provides a simple, effective fusion strategy.
 
+{{< mermaid >}}
+graph LR
+    Query --> BM25[Lexical\nBM25]
+    Query --> Embed[Semantic\nEmbeddings]
+    BM25 --> Fusion[RRF Fusion]
+    Embed --> Fusion
+    Fusion --> Rerank[Reranker\nCross-encoder]
+    Rerank --> Results[Top-k Results]
+{{< /mermaid >}}
+
 See the [Search & Retrieval]({{< ref "/designs/search-retrieval" >}}) design for a production architecture combining BM25 and vector retrieval with reranking at scale.
 
 **Anti-pattern — Semantic-only Retrieval:** Relying exclusively on vector search. Embeddings are great for conceptual similarity but terrible for exact matches: searching for the error code `ERR_CONNECTION_REFUSED` via semantic search returns results about "network problems" rather than the exact error. Hybrid retrieval covers both precision and recall.

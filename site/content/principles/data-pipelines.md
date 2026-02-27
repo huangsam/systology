@@ -123,6 +123,16 @@ The three-tier split cleanly separates concerns: the Bronze layer preserves raw 
 
 For training-time lookups, front the Silver/Gold layer with a KV store (Redis, DynamoDB, or a feature store like Feast). Structure keys as `{entity_type}:{entity_id}` (e.g., `u:feat:user_123`) so individual feature vectors can be fetched at sub-10ms latency without scanning columnar files.
 
+{{< mermaid >}}
+graph LR
+    Raw[Raw Sources] --> Bronze[Bronze\nRaw Ingestion]
+    Bronze --> Silver[Silver\nValidated Features]
+    Silver --> Gold[Gold\nModel-ready Aggregates]
+    Gold --> KV[Feature Store\nKV Lookup]
+    KV --> Training[Model Training]
+    KV --> Serving[Inference Serving]
+{{< /mermaid >}}
+
 See the [Model Serving & Inference]({{< ref "/principles/model-serving" >}}) principles for how feature store outputs feed the serving pipeline and how training-serving skew is prevented.
 
 **Anti-pattern — Single Flat Lake:** Dumping raw events and processed features into the same S3 prefix with no tier separation. Recomputing features requires filtering through raw data, version history is lost, and consumers can't tell which records are safe to read. Define tiers upfront and write partition conventions before your first ingestion job.

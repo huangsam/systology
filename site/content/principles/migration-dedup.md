@@ -87,6 +87,17 @@ The default mode should be copy-not-move: keep originals intact until the migrat
 
 Choose your migration strategy based on the data volume and the required uptime for the system:
 
+{{< mermaid >}}
+graph LR
+    Write[Write Path] --> OldDB[(Old DB)]
+    Write --> NewDB[(New DB)]
+    Read[Read Path] -->|primary| OldDB
+    Read -.->|shadow reads| NewDB
+    NewDB --> Verify{Results Match?}
+    Verify -->|yes| Cutover[Cutover Reads to New DB]
+    Verify -->|no| Debug[Debug and Fix]
+{{< /mermaid >}}
+
 | If you need... | ...choose this | because... |
 | :--- | :--- | :--- |
 | **Zero Downtime** | Dual-Write / Shadow-Read| Verifies data in parallel before switching over the read path. |

@@ -29,6 +29,19 @@ Route a small fraction of live traffic (5–10%) to a new model version before p
 
 Canaries work best when you define promotion criteria upfront: "promote if P99 latency is within 10% of baseline and accuracy delta on shadow labels is less than 0.5% for 4 hours." Automated rollback triggers—fires if error rate or latency exceeds thresholds—prevent bad canaries from causing extended incidents. Treat the canary decision as a pipeline stage, not a manual review.
 
+{{< mermaid >}}
+graph TD
+    Client --> Gateway
+    Gateway --> Router[Router\nCanary Split]
+    Router -->|5-10% canary| Canary[Canary Pool\nNew Version]
+    Router -->|90-95% stable| Stable[Stable Pool\nCurrent Version]
+    Canary --> Gate{Metrics Gate}
+    Gate -->|pass| Promote[Promote to 100%]
+    Gate -->|fail| Rollback[Rollback]
+    Stable -.->|on error| Fallback[Fallback Model]
+    Canary -.->|on error| Fallback
+{{< /mermaid >}}
+
 See the [ML Experiments]({{< ref "/principles/ml-experiments" >}}) principles for guidance on reproducible model evaluation and artifact versioning that precedes a canary launch.
 
 **Anti-pattern — Big-bang Cutover:** Switching 100% of traffic to a new model version instantaneously. If the new version has a regression, every user is affected immediately. A 5% canary limits blast radius and gives you real-world signal before full commitment.

@@ -147,6 +147,21 @@ Implement graceful degradation when optional services fail and use fallbacks and
 
 Use the circuit breaker pattern: after N consecutive failures to a downstream service, open the circuit (stop making requests) for a cooldown period, then half-open (try a single request) to see if recovery has occurred. During the open state, serve from cache, return a degraded response, or surface "temporarily unavailable" to the user rather than timing out on every request.
 
+{{< mermaid >}}
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open : N consecutive failures
+    Open --> HalfOpen : cooldown expires
+    HalfOpen --> Closed : probe succeeds
+    HalfOpen --> Open : probe fails
+    Closed : Closed
+    note right of Closed : Normal operation
+    Open : Open
+    note right of Open : Fail fast — serve cache
+    HalfOpen : Half-Open
+    note right of HalfOpen : One probe request
+{{< /mermaid >}}
+
 See the [Distributed Cache]({{< ref "/designs/distributed-cache" >}}) design for how caching provides resilience layers alongside performance.
 
 **Anti-pattern — All-or-Nothing Dependency:** Treating every downstream service as critical. If the recommendation service is down, should the entire product page fail? Usually not—show the product without recommendations. Classify dependencies as critical (payment must succeed) vs. optional (recommendations are nice-to-have) and degrade gracefully for optional ones.

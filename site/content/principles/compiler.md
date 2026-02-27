@@ -13,6 +13,17 @@ Maintain clear separation between parsing, semantic analysis, and IR lowering wi
 
 In practice, each compiler phase should consume a well-typed input and produce a well-typed output. The parser emits an AST, semantic analysis produces an annotated AST, and lowering generates an IR—each boundary is a contract. When you need to change how optimization works, you modify one pass without worrying about ripple effects in parsing or code generation.
 
+{{< mermaid >}}
+graph LR
+    Src[Source Text] --> Lexer
+    Lexer -->|Tokens| Parser
+    Parser -->|AST| Sema[Semantic\nAnalysis]
+    Sema -->|Annotated AST| Lower[IR Lowering]
+    Lower -->|IR| Opt[Optimizer]
+    Opt -->|Optimized IR| CG[Code Generation]
+    CG --> Binary[Binary / Target]
+{{< /mermaid >}}
+
 **Anti-pattern — Monolithic Pass:** Combining parsing, type-checking, and code generation into a single function. This makes bugs nearly impossible to isolate and kills incremental compilation potential. If adding a new language feature requires touching every stage simultaneously, your boundaries are too blurry.
 
 ## Deterministic Semantics
