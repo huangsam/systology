@@ -20,8 +20,9 @@
     } catch (e) {}
   </script>
   <style>
-    html { background: #ffffff; color: #0f1724; }
-    html[data-theme="dark"] { background: #0f1724; color: #e2e8f0; }
+    :root { --bg: #ffffff; --text: #0f1724; }
+    [data-theme="dark"] { --bg: #0f1724; --text: #e2e8f0; }
+    html, body { background: var(--bg); color: var(--text); }
   </style>
   <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}">
   <link rel="stylesheet" href="{{ "css/syntax.css" | relURL }}">
