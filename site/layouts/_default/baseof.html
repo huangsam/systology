@@ -18,17 +18,10 @@
         document.documentElement.setAttribute('data-theme', 'dark');
       }
     } catch (e) {}
-    document.documentElement.setAttribute('data-loading', '');
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        document.documentElement.removeAttribute('data-loading');
-      });
-    });
   </script>
   <style>
     html { background: #ffffff; color: #0f1724; }
     html[data-theme="dark"] { background: #0f1724; color: #e2e8f0; }
-    html[data-loading] * { transition: none !important; }
   </style>
   <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}">
   <link rel="stylesheet" href="{{ "css/syntax.css" | relURL }}">
