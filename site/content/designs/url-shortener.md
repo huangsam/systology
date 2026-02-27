@@ -4,7 +4,7 @@ description: "Distributed unique ID generation and read-heavy caching."
 summary: "Design for a highly available, read-heavy service bridging short aliases to long URLs, focusing on Base62 encoding, Snowflake IDs, and collision avoidance."
 tags: ["caching", "database", "distributed-systems", "networking"]
 categories: ["designs"]
-draft: true
+draft: false
 ---
 
 ## Problem Statement & Constraints
