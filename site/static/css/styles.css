@@ -17,8 +17,8 @@
   --gutter: 0.75rem;
   --color-warning: #d97706;
   --color-success: #059669;
-  --transition: all 0.18s ease;
-  --transition-long: all 0.25s ease;
+  --transition: none;
+  --transition-long: none;
   /* Spacing scale */
   --space-nano: 0.05rem;
   --space-micro: 0.125rem;
@@ -98,37 +98,6 @@ main.container {
 :focus-visible {
   outline: var(--focus);
   outline-offset: var(--space-xs);
-}
-
-/* ==============================
-   Transitions & Animations
-   ============================== */
-a,
-button,
-input,
-table,
-thead,
-tbody,
-tr,
-th,
-td,
-blockquote,
-pre,
-code,
-.theme-toggle,
-.card,
-.post-card,
-.badge,
-.link-pill,
-.term-pill,
-.term-pill .count,
-.site-header,
-.site-nav a,
-.site-footer,
-.social-links a,
-.related,
-.listing li {
-  transition: var(--transition);
 }
 
 /* ==============================
