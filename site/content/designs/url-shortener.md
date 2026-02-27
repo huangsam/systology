@@ -33,13 +33,17 @@ graph TD
 
     %% Write Path
     Edge -->|POST /api/v1/data| WriteAPI[Write Service]
-    WriteAPI -.-> IDGen[ID Generator (Snowflake)]
-    WriteAPI --> DB[(SQL/NoSQL Store)]
+    WriteAPI --> IDGen[ID Generator<br/>Snowflake]
+    WriteAPI --> DBPrimary[DB Primary]
+    DBPrimary --> DBReplica[DB Replica]
 
     %% Read Path
-    Edge -->|GET /8aBc1| ReadAPI[Read Service]
-    ReadAPI --> Cache[(Redis Cache)]
-    ReadAPI -.->|"Cache Miss"| DB
+    Edge -->|GET /8aBc1| EdgeCache[Edge Cache]
+    EdgeCache -->|Hit| User
+    EdgeCache -->|Miss| ReadAPI[Read Service]
+    ReadAPI --> RedisCache[Redis Cache]
+    RedisCache -->|Hit| ReadAPI
+    RedisCache -->|Miss| DBReplica
 {{< /mermaid >}}
 
 Reads and writes are logically (or physically) separated. The Write Service relies on a distributed ID generator to avoid database write collisions before converting the numerical ID to a Base62 string. The Read Service heavily leverages a Redis cache (and CDN edge caching) to serve 301 redirects instantly without touching the persistent store.
