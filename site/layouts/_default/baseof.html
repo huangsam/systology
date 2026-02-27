@@ -12,6 +12,8 @@
   <link rel="icon" href="{{ relURL "favicon.svg" }}" type="image/svg+xml" />
   <meta name="robots" content="index, follow" />
 
+  {{ partial "opengraph.html" . }}
+
   <!-- The cfasync setting prevents Cloudflare Rocket Loader from interfering -->
   <script data-cfasync="false">
     try {
