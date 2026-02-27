@@ -73,6 +73,22 @@ See [Mailprune]({{< ref "/deep-dives/mailprune" >}}) for an example of implement
 
 **Anti-pattern — Long-lived API Keys:** Using a single API key with no rotation that has admin-level access. If the key leaks (and it will—in logs, configs, error messages), the blast radius is maximum. Use short-lived tokens with automatic rotation and scope permissions to the minimum required.
 
+### JWT vs. Opaque Tokens
+
+Use short-lived stateless JWTs for fast, decentralized validation and long-lived stateful refresh tokens for revocable sessions. Neither alone is sufficient—the hybrid covers both performance and revocability.
+
+JWTs are verified by any service that holds the public key (fetched from a JWKS endpoint) without a network call to the Auth service. This is critical at scale: with 10k authentications/sec, making a database call per validation would bottleneck the entire platform. The tradeoff is irrevocability—a stolen JWT is valid until it expires. Counter this with short expiry windows (15 minutes) and refresh token rotation: each refresh issues a new refresh token and invalidates the old one, so reuse of a stolen refresh token is detectable.
+
+**Anti-pattern — Long-lived JWTs:** Setting JWT expiry to 24 hours or longer for UX convenience. A stolen long-lived JWT provides day-long unauthorized access with no practical way to revoke it. Short expiry + refresh tokens gives you both convenience and a revocation safety valve.
+
+**Anti-pattern — Token Bloat:** Embedding large user profiles, full role hierarchies, or feature flags into JWT payloads. JWT bytes appear in every HTTP request header. A 4 KB JWT sent 1M times/hour adds 4 GB of header overhead. Encode only the minimum claims needed for authorization (user ID, scopes, expiry). Fetch additional context from a cache if needed.
+
+### RBAC in Tokens
+
+Embed scopes and roles directly in JWT claims for stateless authorization decisions in downstream services. Services can authorize a request without a round-trip to the Auth service or a database.
+
+Structure the `scopes` claim as an array of fine-grained permission strings (e.g., `["read:messages", "write:comments", "admin:billing"]`) rather than coarse-grained role names. Downstream services check the presence of a specific scope—not a role name—which decouples authorization logic from role management. Roles are an admin concern; scopes are an enforcement concern. Keep them separate.
+
 ## Data Serialization & Formats
 
 Choose formats based on tradeoffs: JSON for human debugging, Protocol Buffers for efficiency. Plan for schema evolution with backward/forward compatibility.
@@ -134,6 +150,32 @@ Use the circuit breaker pattern: after N consecutive failures to a downstream se
 See the [Distributed Cache]({{< ref "/designs/distributed-cache" >}}) design for how caching provides resilience layers alongside performance.
 
 **Anti-pattern — All-or-Nothing Dependency:** Treating every downstream service as critical. If the recommendation service is down, should the entire product page fail? Usually not—show the product without recommendations. Classify dependencies as critical (payment must succeed) vs. optional (recommendations are nice-to-have) and degrade gracefully for optional ones.
+
+## Background Job Processing
+
+Use pull-based workers with visibility timeouts and idempotency keys for reliable async task execution. Separate queue backends, retry policies, and DLQ handling from application logic.
+
+Pull-based workers (vs. push-based) give you natural backpressure: workers consume at their own pace and the queue buffers the difference. Visibility timeouts prevent tasks from being lost if a worker crashes mid-execution—the task reappears in the queue after the timeout expires and is picked up by another worker. Pair this with a heartbeat mechanism: long-running workers periodically extend the timeout to signal liveness, preventing premature redelivery.
+
+For idempotency, key each job write on a stable `(owner_id, operation_hash)` combination so client retries during network timeouts don't enqueue duplicate jobs. Persist deduplication keys to a database rather than an in-process cache so restarts don't lose them.
+
+See the [Algorithms & Performance]({{< ref "/principles/algorithms-performance" >}}) principles for worker sizing and parallelism tuning guidance.
+
+**Anti-pattern — Fire-and-Forget Enqueue:** Treating job submission as a best-effort operation with no deduplication and no status visibility. When the client retries after a timeout, the job runs twice. When it silently fails, no one knows. Always confirm enqueue, track job status in a backing store, and surface failures.
+
+### Dead-Letter Queues and Retry Policies
+
+Route jobs to a Dead-Letter Queue (DLQ) after a configurable number of retries with exponential backoff and jitter. The DLQ is not a graveyard—it's an inspection queue that enables informed replay or discard decisions.
+
+Use backoff: `delay = min(base × 2^attempt + jitter, max_delay)` (e.g., 5s base, 5-minute cap, ±25% jitter). Jitter prevents synchronized retry storms when a downstream dependency recovers. After max retries (3–5 for most workloads), move the message to the DLQ with a full context envelope: original payload, error log, attempt count, and timestamps. Alert on DLQ depth—sustained DLQ growth signals a systemic failure, not transient errors.
+
+**Anti-pattern — Silent Discard:** Dropping jobs that have failed N times without routing them to a DLQ or alerting. From the system's perspective, the job completed. From the user's perspective, nothing happened. DLQs are the difference between "this job failed and we know why" and "something went wrong and we have no idea what."
+
+### Priority and QoS
+
+Use dedicated queues per job type or priority tier rather than a single shared queue. This prevents batch workloads from starving latency-sensitive jobs.
+
+For example: a `high_priority` queue for user-initiated requests (must start within 30s), a `default` queue for system-triggered jobs (must start within 5 min), and a `batch` queue for overnight analytics (best-effort). Workers for the `high_priority` queue should never be saturated by batch work. Token-bucket rate limiters on queue admission protect downstream services from burst overload.
 
 ## Decision Framework
 

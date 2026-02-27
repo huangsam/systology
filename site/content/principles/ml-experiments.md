@@ -59,7 +59,7 @@ The progression should be: (1) a single training script with argparse and JSON c
 
 **Anti-pattern — Kubernetes on Day One:** Deploying Kubeflow, Airflow, and a feature store before you have a working training script. Infrastructure complexity should follow experiment complexity, not precede it. If you're running 3 experiments a month from a Jupyter notebook, you don't need a pipeline orchestrator—you need a well-organized script with config files.
 
-See the [Model Serving]({{< ref "/designs/model-serving" >}}) design for when you do need production-grade ML infrastructure: model versioning, canary deployment, and A/B testing at scale.
+See the [Model Serving & Inference]({{< ref "/principles/model-serving" >}}) principles for when you do need production-grade ML infrastructure: model versioning, canary deployment, and A/B testing at scale.
 
 ## Privacy & Data Handling
 

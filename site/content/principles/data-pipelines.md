@@ -115,6 +115,26 @@ See the [Privacy & Agents]({{< ref "/principles/privacy-agents" >}}) principles 
 
 **Anti-pattern — PII in Logs:** Logging full records (including names, emails, IPs) for debugging convenience. A single log aggregation query can expose millions of users' data. Redact PII at the logging boundary and use synthetic IDs for debugging.
 
+## ML Feature Stores
+
+Layer your data lake into raw, feature, and model-ready tiers (medallion architecture) and serve features from a low-latency KV store. Each tier has distinct retention, format, and consumer contracts.
+
+The three-tier split cleanly separates concerns: the Bronze layer preserves raw source data exactly as ingested (append-only, cheap, forever); the Silver layer applies validated transformations partitioned by feature group and version; the Gold layer contains model-ready tensors or aggregates for specific training runs. This separation lets you recompute downstream tiers without touching raw data, which is critical for reproducibility when transformations are refined.
+
+For training-time lookups, front the Silver/Gold layer with a KV store (Redis, DynamoDB, or a feature store like Feast). Structure keys as `{entity_type}:{entity_id}` (e.g., `u:feat:user_123`) so individual feature vectors can be fetched at sub-10ms latency without scanning columnar files.
+
+See the [Model Serving & Inference]({{< ref "/principles/model-serving" >}}) principles for how feature store outputs feed the serving pipeline and how training-serving skew is prevented.
+
+**Anti-pattern — Single Flat Lake:** Dumping raw events and processed features into the same S3 prefix with no tier separation. Recomputing features requires filtering through raw data, version history is lost, and consumers can't tell which records are safe to read. Define tiers upfront and write partition conventions before your first ingestion job.
+
+### Idempotent Partition Loads
+
+Use a `partition_key + run_id` overwrite scheme for feature store writes so any pipeline retry converges to the same result without creating duplicates.
+
+On each run, write feature partitions to a staging path keyed by `(partition_key, run_id)`. Promotion is a rename/overwrite: the new run atomically replaces the previous partition. If the job fails mid-write, the staging artifacts are discarded on retry. Because writes are keyed by `run_id`, concurrent backfill runs targeting the same partition don't corrupt each other—each run owns its own staging prefix.
+
+**Anti-pattern — Append-only Feature Writes:** Writing new feature rows without overwriting stale ones. A reprocessed partition now has both old and new values. Training jobs that read the partition see duplicates, inflating feature statistics and corrupting model training. Overwrite partitions atomically, never append.
+
 ## Decision Framework
 
 Choose your pipeline architecture based on data volume and latency requirements:

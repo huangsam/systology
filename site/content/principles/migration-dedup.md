@@ -33,7 +33,7 @@ Partition work into shards with persistent progress manifests and store checkpoi
 
 Split the input into logical shards (by directory, by file prefix, by date range) and track each shard's progress independently. Write progress to a manifest file (JSON or SQLite) after each shard completes. On restart, read the manifest, skip completed shards, and resume from where you left off. For large shards, checkpoint progress within each shard at intervals (e.g., every 1000 files).
 
-See the [Background Job Queue]({{< ref "/designs/background-job-queue" >}}) design for how job-level checkpointing enables reliable processing of large workloads with retries.
+See the [Networking & Services]({{< ref "/principles/networking-services" >}}) principles for how job-level checkpointing and visibility timeouts enable reliable processing of large workloads with retries.
 
 **Anti-pattern — All-or-Nothing Migration:** Processing 100,000 files in a single transaction that either fully succeeds or fully fails. A single error at file 99,999 forces you to reprocess everything from scratch. Shard the work and checkpoint progress so failures only affect the current shard.
 

@@ -13,7 +13,7 @@ Design versioned JSON schemas for consistent downstream consumption with clear f
 
 Include a `schema_version` field in every output document. When you need to add fields, bump the minor version and keep old fields intact. When you must remove or rename fields, bump the major version and provide a migration script. Downstream consumers can then filter on version and handle each schema explicitly rather than guessing what fields might exist.
 
-See the [Feature ETL]({{< ref "/designs/feature-etl" >}}) design for how schema evolution applies to ML feature pipelines at scale.
+See the [Data Pipelines]({{< ref "/principles/data-pipelines" >}}) principles for how schema evolution and ML feature store patterns apply to ML pipelines at scale.
 
 **Anti-pattern — Schema-free JSON:** Emitting unversioned JSON blobs where field names and types change between releases. Downstream consumers resort to defensive `try/except` blocks around every field access, and silent failures creep in when a field is renamed from `blur_score` to `blurriness`. Explicit schemas with versions eliminate this entire class of bug.
 
@@ -35,7 +35,7 @@ For videos, streaming decode reads frames on demand using a decoder context (`cv
 
 **Anti-pattern — Load-then-Process:** Reading an entire 4K video file into memory before processing. A 1-hour 4K video at 60fps is ~1 TB of uncompressed frames—your process OOMs before analysis begins. Always decode incrementally, processing frame-by-frame or in small batches.
 
-See the [Background Job Queue]({{< ref "/designs/background-job-queue" >}}) design for patterns on managing long-running media processing tasks with retries and progress tracking.
+See the [Networking & Services]({{< ref "/principles/networking-services" >}}) principles for patterns on managing long-running media processing tasks with retries and progress tracking.
 
 ## Metadata Preservation
 
