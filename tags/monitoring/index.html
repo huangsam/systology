@@ -6,14 +6,7 @@
 </button>
 <button class=theme-toggle id=theme-toggle aria-label="Toggle dark mode">
 <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></nav></div></header><main id=content class="container prose"><article><header><h1>Monitoring</h1><p class=meta>12 items</p></header><ul class=listing><li><a href=/systology/designs/background-job-queue/>Background Job Queue for Big Tasks</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/concurrency/>concurrency</a>
-,
-<a href=/systology/tags/distributed-systems/>distributed-systems</a>
-,
-<a href=/systology/tags/monitoring/>monitoring</a>
-<span class=muted>+2 more</span></small><p>Asynchronous job queue design for resource-heavy tasks (video encoding, data processing) with retries, idempotency, DLQ handling, and autoscaling.</p></li><li><a href=/systology/deep-dives/chowist/>Chowist</a>
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></nav></div></header><main id=content class="container prose"><article><header><h1>Monitoring</h1><p class=meta>10 items</p></header><ul class=listing><li><a href=/systology/deep-dives/chowist/>Chowist</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/monitoring/>monitoring</a>
 ,
@@ -24,14 +17,7 @@
 <a href=/systology/tags/caching/>caching</a>
 ,
 <a href=/systology/tags/concurrency/>concurrency</a>
-<span class=muted>+4 more</span></small><p>Design a distributed cache to reduce I/O and speed up VCS operations by caching objects and hashes with high concurrency and low latency.</p></li><li><a href=/systology/designs/feature-etl/>ETL Pipeline for ML Features</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/data-pipelines/>data-pipelines</a>
-,
-<a href=/systology/tags/etl/>etl</a>
-,
-<a href=/systology/tags/ml/>ml</a>
-<span class=muted>+1 more</span></small><p>Robust ETL pipeline for deterministic, reproducible ML feature generation from diverse sources, with idempotence and scale in mind.</p></li><li><a href=/systology/deep-dives/flink-trial/>Flink Trial</a>
+<span class=muted>+4 more</span></small><p>Design a distributed cache to reduce I/O and speed up VCS operations by caching objects and hashes with high concurrency and low latency.</p></li><li><a href=/systology/deep-dives/flink-trial/>Flink Trial</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/analytics/>analytics</a>
 ,
@@ -52,7 +38,11 @@
 <a href=/systology/tags/monitoring/>monitoring</a>
 ,
 <a href=/systology/tags/networking/>networking</a>
-<span class=muted>+2 more</span></small><p>Local-first email auditing and cleanup tool that identifies noisy senders and produces privacy-preserving recommendations.</p></li><li><a href=/systology/principles/monitoring/>Monitoring & Observability</a>
+<span class=muted>+2 more</span></small><p>Local-first email auditing and cleanup tool that identifies noisy senders and produces privacy-preserving recommendations.</p></li><li><a href=/systology/principles/model-serving/>Model Serving & Inference</a>
+<small class=tags>&nbsp;—&nbsp;
+<a href=/systology/tags/ml/>ml</a>
+,
+<a href=/systology/tags/monitoring/>monitoring</a></small><p>Principles for production ML inference: immutable model registries, micro-batching, canary rollouts, fallback degradation, and GPU management.</p></li><li><a href=/systology/principles/monitoring/>Monitoring & Observability</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/monitoring/>monitoring</a></small><p>Best practices for metrics, structured logging, tracing, alerting, and SLO-driven reliability.</p></li><li><a href=/systology/designs/realtime-analytics/>Real-Time Analytics Pipeline</a>
 <small class=tags>&nbsp;—&nbsp;
@@ -61,11 +51,7 @@
 <a href=/systology/tags/data-pipelines/>data-pipelines</a>
 ,
 <a href=/systology/tags/monitoring/>monitoring</a>
-<span class=muted>+2 more</span></small><p>Scalable real-time pipeline to ingest and process high-volume user event streams for immediate analytics and dashboards; handles late arrivals and fault tolerance.</p></li><li><a href=/systology/designs/model-serving/>Scalable Model Serving Inference</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/ml/>ml</a>
-,
-<a href=/systology/tags/monitoring/>monitoring</a></small><p>Infrastructure for real-time ML inference with model versioning, autoscaling, and resource-aware fallbacks.</p></li><li><a href=/systology/designs/search-retrieval/>Search & Retrieval Engine</a>
+<span class=muted>+2 more</span></small><p>Scalable real-time pipeline to ingest and process high-volume user event streams for immediate analytics and dashboards; handles late arrivals and fault tolerance.</p></li><li><a href=/systology/designs/search-retrieval/>Search & Retrieval Engine</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/algorithms/>algorithms</a>
 ,
