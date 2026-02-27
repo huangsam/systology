@@ -35,7 +35,7 @@ For videos, streaming decode reads frames on demand using a decoder context (`cv
 
 **Anti-pattern — Load-then-Process:** Reading an entire 4K video file into memory before processing. A 1-hour 4K video at 60fps is ~1 TB of uncompressed frames—your process OOMs before analysis begins. Always decode incrementally, processing frame-by-frame or in small batches.
 
-See the [Networking & Services]({{< ref "/principles/networking-services" >}}) principles for patterns on managing long-running media processing tasks with retries and progress tracking.
+See the [Service Resilience]({{< ref "/principles/service-resilience" >}}) principles for patterns on managing long-running media processing tasks with retries and progress tracking.
 
 ## Metadata Preservation
 

@@ -45,7 +45,7 @@ Offload expensive tasks to job queues and implement retry logic with idempotent 
 
 When a user uploads a video for processing, don't process it in the HTTP request—return 202 Accepted immediately and enqueue the work. Use Celery (Python), Sidekiq (Ruby), or Bull (Node.js) for task queues backed by Redis or RabbitMQ. Every task must be idempotent (safe to retry) because workers crash and queues deliver at-least-once. Provide a status endpoint (`GET /jobs/{id}`) so clients can poll or use webhooks for completion notification.
 
-See the [Networking & Services]({{< ref "/principles/networking-services" >}}) principles for a comprehensive treatment of job queues with retries, DLQ handling, prioritization, and autoscaling.
+See the [Service Resilience]({{< ref "/principles/service-resilience" >}}) principles for a comprehensive treatment of job queues with retries, DLQ handling, prioritization, and autoscaling.
 
 **Anti-pattern — Synchronous Everything:** Processing a 2-minute video encoding job inside the HTTP request handler. The user sees a spinner, the load balancer times out at 60 seconds, the request fails, and the user retries—now you have two encoding jobs for the same video. Offload anything that takes more than a few seconds to a background queue.
 
