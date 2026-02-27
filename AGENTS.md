@@ -33,6 +33,14 @@ When adding a new page, follow these steps:
 - Run `hugo new -s site deep-dives/bar.md` to create a new deep dive page
 - Run `hugo new -s site principles/baz.md` to create a new principle page
 
+When determining what tags to put on the new page:
+
+- Refer to the existing tags in the `site/content/` directory for consistency
+- Run `make tags` to see a list of all existing tags and their usage counts
+- Choose tags that are relevant to the content, but avoid over-tagging (3-5 is good)
+- If a tag is used once, consider whether it should be merged with an existing tag
+- If a new tag is needed, ensure other pages are updated to use it where relevant
+
 #### Mermaid diagrams
 
 When adding a Mermaid diagram:
