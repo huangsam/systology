@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Outer ring nodes (8 points) -->
+  <circle cx="50" cy="20" r="4.5" fill="#2563eb" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="74" cy="27" r="4.5" fill="#2563eb" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="80" cy="50" r="4.5" fill="#2563eb" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="74" cy="73" r="4.5" fill="#2563eb" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="50" cy="80" r="4.5" fill="#2563eb" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="26" cy="73" r="4.5" fill="#2563eb" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="20" cy="50" r="4.5" fill="#2563eb" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="26" cy="27" r="4.5" fill="#2563eb" stroke="#2563eb" stroke-width="1"/>
+
+  <!-- Connection lines from center to nodes -->
+  <line x1="50" y1="50" x2="50" y2="20" stroke="#2563eb" stroke-width="2.8" opacity="0.7"/>
+  <line x1="50" y1="50" x2="74" y2="27" stroke="#2563eb" stroke-width="2.8" opacity="0.7"/>
+  <line x1="50" y1="50" x2="80" y2="50" stroke="#2563eb" stroke-width="2.8" opacity="0.7"/>
+  <line x1="50" y1="50" x2="74" y2="73" stroke="#2563eb" stroke-width="2.8" opacity="0.7"/>
+  <line x1="50" y1="50" x2="50" y2="80" stroke="#2563eb" stroke-width="2.8" opacity="0.7"/>
+  <line x1="50" y1="50" x2="26" y2="73" stroke="#2563eb" stroke-width="2.8" opacity="0.7"/>
+  <line x1="50" y1="50" x2="20" y2="50" stroke="#2563eb" stroke-width="2.8" opacity="0.7"/>
+  <line x1="50" y1="50" x2="26" y2="27" stroke="#2563eb" stroke-width="2.8" opacity="0.7"/>
+
+  <!-- Center hub node (larger, solid) -->
+  <circle cx="50" cy="50" r="7" fill="#2563eb"/>
+</svg>
