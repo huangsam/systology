@@ -655,7 +655,7 @@ def main():
     stats_parser.add_argument("--show-files", action="store_true", help="Show files")
 
     # Tagup
-    subparsers.add_parser("tagup", help="Standardize tags using predefined aliases and removals")
+    subparsers.add_parser("tagup", help="Standardize tags with aliases and removals")
 
     # Check
     subparsers.add_parser("check", help="Validate content")
