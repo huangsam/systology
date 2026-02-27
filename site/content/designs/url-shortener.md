@@ -71,7 +71,7 @@ This easily covers the 6 Billion requirement, so a 6 or 7 character string is su
 ### Deep Dive
 
 - **ID Generation (Snowflake vs. Auto-Increment):** Using a single PostgreSQL database with an `AUTO_INCREMENT` primary key creates a massive single point of failure and write bottleneck. Instead, use Twitter's **Snowflake** algorithm: a decentralized microservice that generates unique 64-bit integers based on the current timestamp, a machine ID, and an internal counter. This offers highly available, causally-ordered IDs with zero network coordination.
-- **Base62 Encoding:** Rather than hashing the URL directly (which requires checking the DB for MD5 collisions), we take the mathematically guaranteed unique Snowflake ID (e.g., `2009215674938`) and simply convert it from Base10 to Base62.
+- **Base62 Encoding:** Rather than hashing the URL directly (which requires checking the DB for MD5 collisions), we take the mathematically guaranteed unique [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID) (e.g., `2009215674938`) and simply convert it from Base10 to Base62.
 - **Custom Vanity Aliases:** When a user requests `https://sh.rt/my-sale`, the system cannot use the ID Generator. It must attempt to insert the record with a `hash` of `my-sale`. If the DB throws a unique constraint violation, the service rejects the request.
 
 ### Trade-offs
