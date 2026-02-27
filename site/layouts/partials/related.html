@@ -28,6 +28,7 @@
     <li>
       <a href="{{ .RelPermalink }}">{{ .Title }}</a>
       <span class="related-type">
+        {{ if .Draft }}<small class="label-wip">WIP</small>{{ end }}
         {{ if $hasSharedTags }}<small class="label-tag">tag</small>{{ end }}
         {{ if $hasSharedCats }}<small class="label-cat">category</small>{{ end }}
       </span>
