@@ -16,6 +16,14 @@
     </div>
     {{ end }}
   </header>
+
+  {{ if .TableOfContents }}
+  <nav class="toc">
+    <h3>Table of Contents</h3>
+    {{ .TableOfContents }}
+  </nav>
+  {{ end }}
+
   <section>
     {{ .Content }}
   </section>
