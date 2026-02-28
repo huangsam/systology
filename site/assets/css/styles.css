@@ -57,6 +57,11 @@
 /* ==============================
    Base & Typography
    ============================== */
+
+html {
+  scrollbar-gutter: stable;
+}
+
 * {
   box-sizing: border-box;
 }
