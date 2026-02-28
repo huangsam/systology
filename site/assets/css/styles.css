@@ -992,7 +992,6 @@ span.muted {
   color: var(--text);
   text-decoration: none;
   font-size: 0.95rem;
-  transition: color 0.1s ease;
 }
 
 .toc nav a:hover {
