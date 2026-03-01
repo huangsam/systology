@@ -1,6 +1,6 @@
 ---
 title: "Ad Click Aggregator"
-description: "Real-time big data processing for ad events."
+description: "Real-time aggregation for ad click analytics."
 summary: "Design for aggregating ad clicks at massive scale, focusing on deduplication, exactly-once processing, and low-latency reporting."
 tags: ["analytics", "streaming"]
 categories: ["designs"]

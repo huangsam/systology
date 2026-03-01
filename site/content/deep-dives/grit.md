@@ -1,6 +1,6 @@
 ---
 title: "Grit"
-description: "VCS implementation with plumbing/porcelain architecture."
+description: "Version control system with modular architecture."
 summary: "From‑scratch Git implementation in Rust focusing on object storage, performance, and plumbing/porcelain command compatibility."
 tags: ["algorithms", "extensibility", "performance", "rust", "vcs"]
 categories: ["deep-dives"]

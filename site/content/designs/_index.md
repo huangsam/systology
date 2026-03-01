@@ -1,6 +1,6 @@
 ---
 title: "Designs"
-description: "Designing new systems from first principles."
+description: "System design sketches and trade-off analysis."
 summary: "System-design sketches and trade-offs summarizing problem statements, constraints, and architecture options."
 date: "2026-02-16T10:22:20-08:00"
 ---

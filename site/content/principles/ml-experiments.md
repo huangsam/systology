@@ -1,6 +1,6 @@
 ---
 title: "ML Experiments"
-description: "Reproducibility, resource-awareness, and lightweight MLOps."
+description: "Reproducibility and efficiency in ML experiments."
 summary: "Practical guidance for reproducible, resource-aware ML experiments with lightweight MLOps and deterministic evaluation."
 tags: ["ml"]
 categories: ["principles"]

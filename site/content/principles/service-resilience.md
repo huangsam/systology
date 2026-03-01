@@ -1,6 +1,6 @@
 ---
 title: "Service Resilience"
-description: "Idempotency, circuit breakers, async IO, and background job patterns."
+description: "Idempotency, resilience patterns, and async IO."
 summary: "Patterns for reliable service behavior: idempotency, async IO, circuit breakers, background job queues, and observability."
 tags: ["distributed-systems", "networking", "queues"]
 categories: ["principles"]

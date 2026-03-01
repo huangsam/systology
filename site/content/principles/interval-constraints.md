@@ -1,6 +1,6 @@
 ---
 title: "Intervals & Constraints"
-description: "Heuristics for choosing windowing strategies based on SLA tensions."
+description: "Windowing strategies and SLA-based constraints."
 summary: "Balancing Latency (Completeness) against Verification (Integrity) by choosing between Speculative and Pessimistic intervals."
 tags: ["analytics", "data-pipelines", "streaming"]
 categories: ["principles"]

@@ -1,6 +1,6 @@
 ---
 title: "Real-Time Analytics Pipeline"
-description: "Event stream processing and metrics."
+description: "Real-time analytics from event stream processing."
 summary: "Scalable real-time pipeline to ingest and process high-volume user event streams for immediate analytics and dashboards; handles late arrivals and fault tolerance."
 tags: ["analytics", "data-pipelines", "monitoring", "queues", "streaming"]
 categories: ["designs"]

@@ -1,6 +1,6 @@
 ---
 title: "Data Pipelines"
-description: "Time semantics, fault tolerance, etc. for batch/streaming."
+description: "Time semantics and fault tolerance in pipelines."
 summary: "Principles for reliable batch and streaming pipelines: time semantics, fault tolerance, partitioning, observability, and reproducibility."
 tags: ["data-pipelines", "etl", "streaming"]
 categories: ["principles"]

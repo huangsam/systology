@@ -1,6 +1,6 @@
 ---
 title: "AI/ML Workshop"
-description: "AI/ML workshops on model training and evaluation."
+description: "ML workflows: training, evaluation, and benchmarks."
 summary: "Practical, reproducible ML examples (PyTorch/Hugging Face/NumPy) with MPS-aware benchmarks and experiment hygiene for local hardware."
 tags: ["ml", "onboarding", "privacy"]
 categories: ["deep-dives"]

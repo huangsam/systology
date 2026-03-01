@@ -1,6 +1,6 @@
 ---
 title: "Monitoring & Observability"
-description: "Metrics, logging, tracing, alerting for observable systems."
+description: "Observability through metrics, logging, and tracing."
 summary: "Best practices for metrics, structured logging, tracing, alerting, and SLO-driven reliability."
 tags: ["monitoring"]
 categories: ["principles"]
