@@ -11,9 +11,7 @@
       <a href="{{ .RelPermalink }}" style="font-size: var(--text-sm);">View all &rarr;</a>
     </div>
 
-    {{ with .Params.description }}
-    <p style="margin-bottom: var(--space-md); color: var(--text-muted);">{{ . }}</p>
-    {{ end }}
+    <p style="margin-bottom: var(--space-md); color: var(--text-muted);">{{ .Summary }}</p>
 
     <div class="posts-grid">
       {{ $recentPages := first 3 .RegularPagesRecursive.ByDate.Reverse }}
