@@ -15,4 +15,4 @@ taxonomies = { tag = "tags", category = "categories" }
     style = "modus-vivendi"
 
 [outputs]
-  home = ["HTML", "JSON"]
+  home = ["HTML", "JSON", "RSS"]
