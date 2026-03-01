@@ -4,7 +4,7 @@ description: "Distributed chunking and transmuxing pipeline for video processing
 summary: "Design for a scalable video ingestion and transcoding system that chunks media, extracts features, and outputs adaptive bitrates using worker pools."
 tags: ["data-pipelines", "distributed-systems", "media", "streaming"]
 categories: ["designs"]
-draft: true
+draft: false
 date: "2026-02-24T22:34:51-08:00"
 ---
 
@@ -66,6 +66,36 @@ The architecture splits the massive problem of transcoding a single large file i
 | `task:<video_id>:<chunk_idx>:<resolution>` | Enum | `pending`, `running`, `completed`. |
 
 ## Deep Dive & Trade-offs
+
+{{< pseudocode id="video-worker" title="Worker Node Transcoding Loop" >}}
+```python
+def process_transcode_task(queue, obj_store):
+    while True:
+        # 1. Pull the next chunk task from the queue
+        task = queue.poll()
+        if not task:
+            continue
+
+        try:
+            # 2. Download the 5-second raw video chunk
+            raw_chunk = obj_store.download(task.s3_key)
+
+            # 3. Transcode using hardware acceleration or libx264
+            transcoded_chunk = ffmpeg_transcode(raw_chunk, target_res=task.resolution)
+
+            # 4. Upload the processed chunk to the CDN origin store
+            out_key = f"processed/{task.video_id}/{task.resolution}/chunk_{task.idx}.mp4"
+            obj_store.upload(out_key, transcoded_chunk)
+
+            # 5. Acknowledge completion and update tracking DB
+            queue.ack(task.id)
+            update_job_status(task, "completed")
+
+        except Exception as e:
+            queue.nack(task.id) # Re-queue for another worker
+            update_job_status(task, "failed")
+```
+{{< /pseudocode >}}
 
 ### Deep Dive
 

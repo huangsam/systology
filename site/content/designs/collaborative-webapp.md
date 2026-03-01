@@ -4,7 +4,7 @@ description: "Stateful synchronization for multiplayer web applications."
 summary: "Design for a Google Docs or Figma style application using WebSockets, Operational Transformation (OT), or CRDTs to maintain consistent state among concurrent writers."
 tags: ["concurrency", "distributed-systems", "networking"]
 categories: ["designs"]
-draft: true
+draft: false
 date: "2026-02-24T22:34:51-08:00"
 ---
 
@@ -48,13 +48,51 @@ Unlike a stateless CRUD app, the core data model here revolves around a log of o
 
 ### The Operation Stream
 Every action is modeled as an atomic operation.
-- Example Operation: `{ type: "insert", pos: 142, char: "H", replicaId: "A", clock: 7 }`
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `type` | Enum | E.g., `insert`, `delete`, `retain`. |
+| `pos` | Integer | The absolute position in the document text array. |
+| `char` | String | The character being inserted (or omitted if delete). |
+| `replicaId` | String | Unique ID of the client originating this operation. |
+| `clock` | Integer | Logical timestamp (Lamport clock) to enforce causal ordering. |
 
 ### Storage Strategy
 - **In-Memory:** Active documents are held in memory on the Collab Servers (or in Redis) for immediate broadcast.
 - **Cold Storage:** A PostgreSQL or document database stores snapshots of the document to avoid replaying thousands of operations when a new client loads a large doc.
 
 ## Deep Dive & Trade-offs
+
+{{< pseudocode id="crdt-merge" title="Basic LWW (Last-Write-Wins) Map Merge" >}}
+```javascript
+class LWWMap {
+  constructor(replicaId) {
+    this.replicaId = replicaId;
+    this.data = new Map();      // Key -> Value
+    this.timestamps = new Map(); // Key -> Logical Clock (timestamp)
+  }
+
+  set(key, value, timestamp, incomingReplicaId) {
+    const currentTimestamp = this.timestamps.get(key) || 0;
+
+    // Only apply the update if the incoming timestamp is strictly greater,
+    // or if timestamps tie but the incoming replica ID is lexicographically larger.
+    if (timestamp > currentTimestamp ||
+       (timestamp === currentTimestamp && incomingReplicaId > this.replicaId)) {
+      this.data.set(key, value);
+      this.timestamps.set(key, timestamp);
+    }
+  }
+
+  merge(remoteMap) {
+    for (const [key, remoteTimestamp] of remoteMap.timestamps) {
+      const remoteValue = remoteMap.data.get(key);
+      this.set(key, remoteValue, remoteTimestamp, remoteMap.replicaId);
+    }
+  }
+}
+```
+{{< /pseudocode >}}
 
 ### Deep Dive
 
