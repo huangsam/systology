@@ -113,11 +113,12 @@
       btn.addEventListener('click', closeSearch);
     });
 
-    // Search Logic
+    // Splits a query string into lowercase terms, filtering out empty tokens.
     function tokenize(query) {
       return query.toLowerCase().trim().split(/\s+/).filter(Boolean);
     }
 
+    // Returns how many times needle appears in haystack (non-overlapping, case-sensitive).
     function countOccurrences(haystack, needle) {
       if (!needle) return 0;
       let count = 0, pos = 0;
@@ -125,6 +126,7 @@
       return count;
     }
 
+    // Computes a relevance score for a doc based on field weights and term frequency.
     function scoreDoc(doc, q, terms) {
       const title    = (doc.title || '').toLowerCase();
       const contents = (doc.contents || '').toLowerCase();
@@ -161,6 +163,7 @@
       return score;
     }
 
+    // Returns true only if every query term appears in at least one field (AND logic).
     function docMatches(doc, q, terms) {
       const title    = (doc.title || '').toLowerCase();
       const contents = (doc.contents || '').toLowerCase();
@@ -171,6 +174,7 @@
       );
     }
 
+    // Extracts a content preview window centered on the first matching term position.
     function extractSnippet(text, q, terms, maxLen = 200) {
       const lower = text.toLowerCase();
       // Find first match position: prefer exact phrase, then first matching term
@@ -187,6 +191,7 @@
       return (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
     }
 
+    // Filters, scores, sorts, and renders search results for the given query.
     function performSearch(query) {
       if (!searchIndex) return;
 
