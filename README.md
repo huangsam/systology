@@ -1,22 +1,36 @@
 # Systology
 
-Systology is my collection of docs for studying systems at scale. It serves as a knowledge base for my synthesized learnings, drawing from work experience and the world wide web.
+Systology is a collection of systems engineering principles, architectural designs, and hands-on explorations learned through building, maintaining, and analyzing real systems over the past decade. The goal is to make tacit knowledge explicit: what actually works in practice, where the tradeoffs bite hardest, and what patterns scale vs. what patterns fail at the limits.
 
-- Principles: Core ideas and heuristics for system behavior.
-- Designs: System explorations with trade-offs and decisions.
-- Deep Dives: Findings from my public projects on GitHub.
+## What is here
+
+### Principles — Core Heuristics
+
+Foundational ideas about how systems behave: data pipeline design, networking, monitoring, algorithm performance, media analysis, ML experiment hygiene. These capture patterns that apply across many domains.
+
+### Designs — Architectural Explorations
+
+Concrete system designs with explicit tradeoffs: distributed caching, notification systems, search/retrieval, feature ETL, payment systems, etc. Each explores a specific problem space and documents decisions, constraints, and missing pieces.
+
+### Deep Dives — Learning from Real Projects
+
+Reflections on actual projects: [long-term maintenance](site/content/deep-dives/chowist.md) (10+ years of framework evolution), [architectural comparatives](site/content/deep-dives/streaming-frameworks.md) (same problem, different solutions), and [other focused explorations](site/content/deep-dives/) (compilers, RAG systems, git implementations).
 
 ## Getting Started
 
-To run the site locally, please make sure you have [Hugo] installed, then run:
+To run the site locally:
 
 ```shell
-# Start the Hugo development server with drafts enabled
+# Install Hugo via https://gohugo.io/getting-started/installing/
+# Then:
 make serve
 ```
 
-Then you can access the site at `https://localhost:1313/`.
+Access the site at `http://localhost:1313/`.
 
-Happy learning! 🙏
-
-[Hugo]: https://gohugo.io/getting-started/installing/
+To run validation and formatting:
+```shell
+make check   # Validate content
+make tidy    # Format and organize
+make tags    # See all tags and usage
+```
