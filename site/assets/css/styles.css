@@ -736,11 +736,11 @@ span.muted {
 .listing {
   list-style: none;
   padding: 0;
-  margin: var(--space-2xl) 0;
+  margin: var(--space-4xl) 0;
 }
 
 .listing li {
-  padding: 0.625rem 0;
+  padding: var(--space-lg) 0;
   border-bottom: 1px solid var(--border);
 }
 
