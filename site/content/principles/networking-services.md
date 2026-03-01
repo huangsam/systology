@@ -1,7 +1,7 @@
 ---
 title: "Networking & Services"
 description: "API design, rate limiting, retries, and resilience."
-summary: "Practical guidance for API contracts, retries/backoff, rate limiting, timeouts, connection pooling, service discovery, auth, serialization, and TLS."
+summary: "Operational guidance for resilient networked services; detailing robust API contracts, exponential retries with jitter, sliding-window rate limiting, strict timeout budgets, connection pooling, and mutual TLS."
 tags: ["networking"]
 categories: ["principles"]
 draft: false

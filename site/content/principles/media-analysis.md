@@ -1,7 +1,7 @@
 ---
 title: "Media Analysis"
 description: "Media feature extraction and real-time handling."
-summary: "Best practices for media feature extraction: stable schemas, streaming vs. batch modes, metadata preservation, and performance engineering."
+summary: "Best practices for resilient media feature extraction pipelines; ensuring stable representation schemas, choosing between streaming and batch modes, enforcing metadata preservation, and performance engineering."
 tags: ["feature-extraction", "media"]
 categories: ["principles"]
 draft: false

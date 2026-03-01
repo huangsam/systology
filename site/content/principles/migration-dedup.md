@@ -1,7 +1,7 @@
 ---
 title: "Migration & Deduplication"
 description: "Data integrity in migration and deduplication."
-summary: "Practices for safe, idempotent, and efficient large-scale data migration and deduplication."
+summary: "Strategic practices for safe, idempotent, and efficient large-scale data migrations; incorporating reliable deduplication heuristics, checksum-based integrity validation, and seamless fallbacks."
 tags: ["deduplication"]
 categories: ["principles"]
 draft: false
