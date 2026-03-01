@@ -4,17 +4,11 @@ Systology is a collection of systems engineering principles, architectural desig
 
 ## What is here
 
-### Principles — Core Heuristics
+**Principles:** Foundational ideas about how systems behave: data pipeline design, networking, monitoring, algorithm performance, media analysis, ML experiment hygiene. These capture patterns that apply across many domains.
 
-Foundational ideas about how systems behave: data pipeline design, networking, monitoring, algorithm performance, media analysis, ML experiment hygiene. These capture patterns that apply across many domains.
+**Designs:** Concrete system designs with explicit tradeoffs: distributed caching, notification systems, search/retrieval, feature ETL, payment systems, etc. Each explores a specific problem space and documents decisions, constraints, and missing pieces.
 
-### Designs — Architectural Explorations
-
-Concrete system designs with explicit tradeoffs: distributed caching, notification systems, search/retrieval, feature ETL, payment systems, etc. Each explores a specific problem space and documents decisions, constraints, and missing pieces.
-
-### Deep Dives — Learning from Real Projects
-
-Reflections on actual projects: [long-term maintenance](site/content/deep-dives/chowist.md) (10+ years of framework evolution), [architectural comparatives](site/content/deep-dives/streaming-frameworks.md) (same problem, different solutions), and [other focused explorations](site/content/deep-dives/) (compilers, RAG systems, git implementations).
+**Deep Dives:** Reflections on actual projects: [long-term maintenance](site/content/deep-dives/chowist.md) (10+ years of framework evolution), [architectural comparatives](site/content/deep-dives/streaming-frameworks.md) (same problem, different solutions), and [other focused explorations](site/content/deep-dives/) (compilers, RAG systems, git implementations).
 
 ## Getting Started
 
