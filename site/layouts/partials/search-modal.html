@@ -114,6 +114,79 @@
     });
 
     // Search Logic
+    function tokenize(query) {
+      return query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    }
+
+    function countOccurrences(haystack, needle) {
+      if (!needle) return 0;
+      let count = 0, pos = 0;
+      while ((pos = haystack.indexOf(needle, pos)) !== -1) { count++; pos++; }
+      return count;
+    }
+
+    function scoreDoc(doc, q, terms) {
+      const title    = (doc.title || '').toLowerCase();
+      const contents = (doc.contents || '').toLowerCase();
+      const tags     = (doc.tags || []).join(' ').toLowerCase();
+      let score = 0;
+
+      // --- Exact-phrase signals (highest weight) ---
+      if (title === q)            score += 200;
+      else if (title.startsWith(q + ' ') || title.startsWith(q)) score += 80;
+      else if (title.includes(q)) score += 40;
+      if (tags.includes(q))       score += 25;
+      // Content exact-phrase frequency (capped)
+      score += Math.min(countOccurrences(contents, q) * 3, 15);
+
+      // --- Per-term signals (multi-word support) ---
+      if (terms.length > 1) {
+        let allInTitle = true, allInAny = true;
+        for (const term of terms) {
+          const inTitle    = title.includes(term);
+          const inTags     = tags.includes(term);
+          const inContents = contents.includes(term);
+          if (!inTitle) allInTitle = false;
+          if (!inTitle && !inTags && !inContents) { allInAny = false; }
+          if (inTitle)    score += 12;
+          if (inTags)     score += 8;
+          // term frequency in content, capped per term
+          score += Math.min(countOccurrences(contents, term) * 1, 6);
+        }
+        // Bonus: all terms appear in title, or collectively across all fields
+        if (allInTitle) score += 30;
+        if (!allInAny)  score = 0; // require every term to appear somewhere (AND logic)
+      }
+
+      return score;
+    }
+
+    function docMatches(doc, q, terms) {
+      const title    = (doc.title || '').toLowerCase();
+      const contents = (doc.contents || '').toLowerCase();
+      const tags     = (doc.tags || []).join(' ').toLowerCase();
+      // Each term must appear in at least one field
+      return terms.every(term =>
+        title.includes(term) || contents.includes(term) || tags.includes(term)
+      );
+    }
+
+    function extractSnippet(text, q, terms, maxLen = 200) {
+      const lower = text.toLowerCase();
+      // Find first match position: prefer exact phrase, then first matching term
+      let pos = q ? lower.indexOf(q) : -1;
+      if (pos === -1) {
+        for (const term of terms) {
+          const p = lower.indexOf(term);
+          if (p !== -1) { pos = p; break; }
+        }
+      }
+      if (pos === -1) return text.slice(0, maxLen).trim() + (text.length > maxLen ? '…' : '');
+      const start = Math.max(0, pos - 60);
+      const end   = Math.min(text.length, start + maxLen);
+      return (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
+    }
+
     function performSearch(query) {
       if (!searchIndex) return;
 
@@ -127,21 +200,23 @@
       searchDefault.style.display = 'none';
       searchResultsList.style.display = 'block';
 
-      const q = query.toLowerCase();
-      const results = searchIndex.filter(doc => {
-        const contents = (doc.contents || '').toLowerCase();
-        const title = (doc.title || '').toLowerCase();
-        const tags = (doc.tags || []).join(' ').toLowerCase();
-        return title.includes(q) || contents.includes(q) || tags.includes(q);
-      }).slice(0, 15);
+      const q     = query.toLowerCase().trim();
+      const terms = tokenize(query);
 
-      if (results.length === 0) {
+      const scored = searchIndex
+        .filter(doc => docMatches(doc, q, terms))
+        .map(doc => ({ doc, score: scoreDoc(doc, q, terms) }))
+        .filter(({ score }) => score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 15);
+
+      if (scored.length === 0) {
         searchResultsList.innerHTML = '<p class="site-search-no-results">No results found.</p>';
       } else {
-        searchResultsList.innerHTML = results.map(doc => {
-          const preview = (doc.contents || '').slice(0, 200).trim();
+        searchResultsList.innerHTML = scored.map(({ doc }) => {
+          const preview  = extractSnippet(doc.contents || '', q, terms);
           const category = (doc.categories || [])[0] || '';
-          const tags = (doc.tags || []).map(t => `<span class="site-search-badge">${t}</span>`).join('');
+          const tags     = (doc.tags || []).map(t => `<span class="site-search-badge">${t}</span>`).join('');
           return `
             <a href="${doc.permalink}" class="site-search-result">
               <div class="site-search-result-title">${doc.title}</div>
