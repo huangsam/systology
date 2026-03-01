@@ -20,7 +20,7 @@
       {{ range $recentPages }}
       {{ $metaText := delimit (.Params.tags | default slice) ", " }}
       {{ partial "components/post-card.html"
-      (dict "title" .Title "url" .RelPermalink "description" .Summary "metaText" $metaText) }}
+      (dict "title" .Title "url" .RelPermalink "description" .Description "metaText" $metaText) }}
       {{ end }}
     </div>
   </div>
