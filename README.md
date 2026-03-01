@@ -10,7 +10,7 @@ Systology is a collection of systems engineering principles, architectural desig
 
 **Deep Dives:** Reflections on actual projects: [long-term maintenance](site/content/deep-dives/chowist.md) (10+ years of framework evolution), [architectural comparatives](site/content/deep-dives/streaming-frameworks.md) (same problem, different solutions), and [other focused explorations](site/content/deep-dives/) (compilers, RAG systems, git implementations).
 
-## Getting Started
+## Getting started
 
 To run the site locally:
 
