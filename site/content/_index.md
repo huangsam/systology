@@ -9,6 +9,6 @@ My knowledge base for studying systems at scale, drawing from real-world enginee
 
 ```go
 func main() {
-    fmt.Println("Happy learning! 🙏")
+    fmt.Println("Use Cmd/Ctrl+K for search 🙏")
 }
 ```
