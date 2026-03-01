@@ -13,3 +13,6 @@ taxonomies = { tag = "tags", category = "categories" }
     noBackground = true
     lineNos = false
     style = "modus-vivendi"
+
+[outputs]
+  home = ["HTML", "JSON"]

@@ -1,0 +1,11 @@
+{{- $.Store.Add "index" slice -}}
+{{- range .Site.RegularPages -}}
+    {{- $.Store.Add "index"
+        (dict
+            "title" .Title
+            "tags" .Params.tags
+            "categories" .Params.categories
+            "contents" .Plain
+            "permalink" .Permalink) -}}
+{{- end -}}
+{{- $.Store.Get "index" | jsonify -}}
