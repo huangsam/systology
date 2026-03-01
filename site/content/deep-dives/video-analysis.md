@@ -4,6 +4,10 @@ description: "Comparing native and cross-platform video feature extraction."
 summary: "Two approaches to multimodal video feature extraction — Apple-native (Vision, AVFoundation, Core Image) vs. cross-platform C++/Python (OpenCV, pybind11) for ML preprocessing."
 tags: ["extensibility", "feature-extraction", "media"]
 categories: ["deep-dives"]
+links:
+  github:
+    - "https://github.com/huangsam/xcode-trial"
+    - "https://github.com/huangsam/vidicant"
 draft: false
 date: "2026-02-16T10:22:20-08:00"
 ---

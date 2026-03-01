@@ -4,6 +4,10 @@ description: "Comparing Beam and Flink for streaming pipeline design."
 summary: "Two approaches to streaming pipelines — Apache Beam's portable unified model (Java/DirectRunner) vs. Apache Flink's native API with stateful processing and fault tolerance."
 tags: ["data-pipelines", "monitoring", "streaming"]
 categories: ["deep-dives"]
+links:
+  github:
+    - "https://github.com/huangsam/beam-trial"
+    - "https://github.com/huangsam/flink-trial"
 draft: false
 date: "2026-02-16T10:22:20-08:00"
 ---

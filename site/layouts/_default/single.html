@@ -4,7 +4,6 @@
     <div class="title-group">
       <h1>{{ .Title }}</h1>
       {{ if .Draft }}<span class="draft-badge">WIP</span>{{ end }}
-      {{ with .Params.links }}{{ partial "components/external-links.html" . }}{{ end }}
     </div>
     <h2>{{ .Description }}</h2>
     {{ if .Date }}
@@ -17,6 +16,18 @@
       <span>Tags:</span>
       {{ range . }}
       {{ partial "components/badge.html" (dict "text" . "url" (relURL (printf "tags/%s/" (. | urlize)))) }}
+      {{ end }}
+    </div>
+    {{ end }}
+    {{ with .Params.links.github }}
+    <div class="tags">
+      <span>Repositories:</span>
+      {{ if reflect.IsSlice . }}
+      {{ range . }}
+      <a class="badge" href="{{ . }}" target="_blank" rel="noopener">🐙 {{ path.Base . }}</a>
+      {{ end }}
+      {{ else }}
+      <a class="badge" href="{{ . }}" target="_blank" rel="noopener">🐙 {{ path.Base . }}</a>
       {{ end }}
     </div>
     {{ end }}

@@ -4,6 +4,10 @@ description: "Short description"
 summary: "One-line summary used on index pages"
 tags: []
 categories: ["deep-dives"]
+links:
+  github:
+    - "https://github.com/org/repo-one"
+    - "https://github.com/org/repo-two"
 draft: true
 date: "{{ .Date }}"
 ---
