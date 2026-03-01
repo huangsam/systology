@@ -5,48 +5,63 @@
 /* The Modal Backdrop */
 .site-search-modal-container {
   display: none;
-  /* Flex when open */
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   z-index: 9999;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding-top: 10vh;
+  overscroll-behavior: none;
+}
+
+.site-search-modal-container.active {
+  display: flex;
 }
 
 .site-search-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background: rgba(15, 23, 36, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.2s ease;
   cursor: pointer;
-  animation: searchOverlayIn 0.2s ease;
+}
+
+[data-theme="dark"] .site-search-overlay {
+  background: rgba(0, 0, 0, 0.6);
 }
 
 /* The Modal Window */
 .site-search-modal {
   position: relative;
-  background: var(--bg);
-  border-radius: var(--radius);
+  width: 100%;
   max-width: 600px;
-  width: 90%;
-  max-height: 70vh;
+  max-height: 85vh;
+  margin: 0 var(--space-md);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  animation: searchModalIn 0.25s ease;
   overflow: hidden;
+  z-index: 10000;
+  animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .site-search-modal {
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.25);
 }
 
 /* Modal Header (contains Input) */
 .site-search-header {
-  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  padding: var(--space-md) var(--space-xl);
   border-bottom: 1px solid var(--border);
   background: var(--bg);
 }
@@ -55,6 +70,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .site-search-icon {
@@ -63,16 +79,19 @@
   color: var(--muted);
   pointer-events: none;
   display: flex;
+  margin-left: var(--space-xs);
 }
 
 .site-search-input {
   width: 100%;
-  padding: var(--space-md) var(--space-md) var(--space-md) var(--space-3xl);
+  padding: var(--space-md) var(--space-md) var(--space-md)
+    calc(var(--space-xl) + var(--space-lg));
   font-size: 1.1rem;
   border: none;
   background: transparent;
   color: var(--text);
   outline: none;
+  flex: 1;
 }
 
 .site-search-input:focus {
@@ -84,31 +103,33 @@
 }
 
 .site-search-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--muted);
-  padding: var(--space-xs);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: var(--transition);
-  margin-left: var(--space-sm);
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  margin-left: var(--space-md);
+  flex-shrink: 0;
 }
 
-.site-search-close:hover {
-  color: var(--text);
-  background: var(--accent-weak);
-  border-radius: 4px;
+.site-search-close:hover,
+.site-search-close:focus-visible {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 /* Modal Body (Results) */
 .site-search-body {
-  padding: var(--space-lg);
+  padding: var(--space-md) var(--space-xl) var(--space-xl) var(--space-xl);
   overflow-y: auto;
+  overscroll-behavior: none;
   flex: 1;
-  max-height: 60vh;
 }
 
 /* Results */
@@ -211,7 +232,6 @@
 .site-search-cta:hover {
   background: var(--accent-weak);
   border-color: var(--accent);
-  transform: translateY(-2px);
 }
 
 .site-search-cta-icon {
@@ -223,27 +243,12 @@
   flex: 1;
 }
 
-.site-search-cta-arrow {
-  color: var(--muted);
-  font-size: 0.9rem;
-  transition: var(--transition);
-}
-
-.site-search-cta:hover .site-search-cta-arrow {
+.site-search-cta:hover {
   color: var(--accent);
-  transform: translateX(4px);
 }
 
 /* Animations */
-@keyframes searchOverlayIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes searchModalIn {
-  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
+/* modalIn is defined in styles.css */
 
 /* Header Toggle Button */
 .search-toggle {
@@ -270,20 +275,20 @@
 
 /* Responsive */
 @media (max-width: 640px) {
-  .site-search-modal-container {
-    padding-top: 0;
-    align-items: flex-start;
-  }
-
   .site-search-modal {
     width: 100%;
     height: 100%;
     max-height: 100%;
     max-width: 100%;
     border-radius: 0;
+    margin: 0;
   }
 
   .site-search-header {
+    padding: var(--space-md);
+  }
+
+  .site-search-body {
     padding: var(--space-md);
   }
 }

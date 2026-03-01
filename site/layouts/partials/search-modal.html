@@ -1,4 +1,4 @@
-<div id="site-search-modal" class="site-search-modal-container" style="display: none;">
+<div id="site-search-modal" class="site-search-modal-container" aria-hidden="true" role="dialog">
   <div class="site-search-overlay" data-close-search></div>
   <div class="site-search-modal">
     <div class="site-search-header">
@@ -12,21 +12,26 @@
         </span>
         <input type="text" class="site-search-input" id="site-search-input"
           placeholder="Search designs, principles, deep dives..." aria-label="Search" autocomplete="off" />
-        <button class="site-search-close" data-close-search>&times;</button>
+        <button class="site-search-close" data-close-search aria-label="Close modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-x">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
       </div>
     </div>
     <div class="site-search-body">
       <div id="site-search-default" class="site-search-default">
         <div class="site-search-quick-links">
-          <a href="{{ "categories/" | relURL }}" class="site-search-cta">
+          <a href="{{ relURL "categories/" }}" class="site-search-cta">
             <span class="site-search-cta-icon">📂</span>
             <span class="site-search-cta-text">All Categories</span>
-            <span class="site-search-cta-arrow">→</span>
           </a>
-          <a href="{{ "tags/" | relURL }}" class="site-search-cta">
+          <a href="{{ relURL "tags/" }}" class="site-search-cta">
             <span class="site-search-cta-icon">🏷️</span>
             <span class="site-search-cta-text">All Tags</span>
-            <span class="site-search-cta-arrow">→</span>
           </a>
         </div>
       </div>
@@ -69,8 +74,12 @@
     // Open Modal
     function openSearch() {
       loadIndex();
-      searchModal.style.display = 'flex';
+      searchModal.classList.add('active');
+      searchModal.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
+      document.documentElement.style.overscrollBehavior = 'none';
       document.body.style.overflow = 'hidden';
+      document.body.style.overscrollBehavior = 'none';
       setTimeout(() => {
         searchInput.focus();
         if (!searchInput.value.trim()) {
@@ -84,8 +93,12 @@
 
     // Close Modal
     function closeSearch() {
-      searchModal.style.display = 'none';
+      searchModal.classList.remove('active');
+      searchModal.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.overscrollBehavior = '';
       document.body.style.overflow = '';
+      document.body.style.overscrollBehavior = '';
       searchInput.value = '';
       searchResultsList.innerHTML = '';
       searchDefault.style.display = 'block';
@@ -151,13 +164,13 @@
     document.addEventListener('keydown', function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        if (searchModal.style.display === 'none' || searchModal.style.display === '') {
+        if (!searchModal.classList.contains('active')) {
           openSearch();
         } else {
           closeSearch();
         }
       }
-      if (e.key === 'Escape' && searchModal.style.display === 'flex') {
+      if (e.key === 'Escape' && searchModal.classList.contains('active')) {
         closeSearch();
       }
     });
