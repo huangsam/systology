@@ -25,9 +25,11 @@
   </script>
   {{ $styles := resources.Get "css/styles.css" | minify }}
   {{ $syntax := resources.Get "css/syntax.css" | minify }}
+  {{ $search := resources.Get "css/search.css" | minify }}
   <style>
     {{ $styles.Content | safeCSS }}
     {{ $syntax.Content | safeCSS }}
+    {{ $search.Content | safeCSS }}
   </style>
 </head>
 
@@ -37,6 +39,7 @@
     {{ block "main" . }}{{ end }}
   </main>
   {{ partial "footer.html" . }}
+  {{ partial "search-modal.html" . }}
   {{ partial "components/pseudocode-scripts.html" . }}
 
   <!-- Mermaid diagrams -->
