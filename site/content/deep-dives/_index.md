@@ -9,8 +9,4 @@ Long-form investigations, experiments, and research notes. Includes methodology,
 
 ### When to read these
 
-These are not quick study guides or cheat sheets. Instead, treat them as engineering case studies. They are valuable for:
-
-- **System Design Prep:** Reviewing the context, motivation, tradeoffs, and bottlenecks of past projects before an interview.
-- **Project Bootstrapping:** Looking at the "Risks & Mitigations" and "Gap Analysis" sections to avoid reinventing the wheel on similar future projects.
-- **Architectural Reflection:** Measuring personal growth over time by seeing how past bottlenecks and decisions were framed.
+These are not quick study guides or cheat sheets — treat them as engineering case studies. They are useful for reviewing context, motivation, tradeoffs, and bottlenecks before an interview; consulting the "Risks & Mitigations" and "Gap Analysis" sections to avoid reinventing the wheel on similar projects; and measuring personal growth over time by seeing how past decisions were framed.

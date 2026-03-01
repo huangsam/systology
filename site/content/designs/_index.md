@@ -9,8 +9,4 @@ Design explorations, sketches, and trade-offs. Each document outlines a system d
 
 ### When to read these
 
-These documents serve as a sandbox for architectural thinking. They are valuable for:
-
-- **Practicing System Design:** Working through constraints, load estimations, and component interactions in a structured format.
-- **Exploring Trade-offs:** Understanding *why* a certain database or architecture was chosen over another (e.g., SQL vs. NoSQL, polling vs. WebSockets).
-- **Developing Intuition:** Building a mental library of design patterns that can be applied to real-world distributed systems.
+These documents serve as a sandbox for architectural thinking. They are useful for working through constraints, load estimations, and component interactions in a structured format; understanding *why* a certain database or architecture was chosen over another (e.g., SQL vs. NoSQL, polling vs. WebSockets); and building a mental library of design patterns that can be applied to real-world distributed systems.
