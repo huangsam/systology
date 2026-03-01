@@ -1,7 +1,7 @@
 ---
 title: "Flash Sale / Ticketmaster"
 description: "High-concurrency inventory for traffic spikes."
-summary: "Design for handling extreme bursts of traffic where limited inventory must be distributed fairly and consistently under heavy load."
+summary: "A highly resilient system design engineered for seamlessly handling extreme traffic bursts; ensuring strictly limited inventory is definitively distributed fairly and consistently under unprecedented load."
 tags: ["algorithms", "concurrency", "database", "distributed-systems"]
 categories: ["designs"]
 draft: false

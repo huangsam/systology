@@ -1,7 +1,7 @@
 ---
 title: "Privacy-Preserving Federated Learning Platform"
 description: "Federated learning without centralized data."
-summary: "Platform design for federated learning that trains across devices without sharing raw data, with secure aggregation and privacy safeguards."
+summary: "A secure platform design for advanced federated learning pipelines; training models directly across edge devices without sharing raw telemetry, utilizing secure local aggregation and robust privacy safeguards."
 tags: ["algorithms", "distributed-systems", "ml", "privacy"]
 categories: ["designs"]
 draft: false

@@ -1,7 +1,7 @@
 ---
 title: "Distributed Web Crawler"
 description: "Large-scale web crawling with graph traversal."
-summary: "Design for a Google-scale web crawler focusing on Breadth-First Search (BFS), DNS resolution caching, robots.txt politeness, and handling duplicate or malicious domains."
+summary: "A highly resilient architectural design for a Google-scale web crawler; heavily focusing on breadth-first search (BFS), extensive DNS resolution caching, and polite handling of malicious domains."
 tags: ["caching", "data-pipelines", "distributed-systems", "networking"]
 categories: ["designs"]
 draft: false

@@ -1,7 +1,7 @@
 ---
 title: "Proximity Service for Maps"
 description: "Geospatial indexing for location-based search."
-summary: "Design for finding nearby points of interest with low latency, focusing on geospatial data structures like Geohashing or Quadtrees."
+summary: "An optimized system design for discovering nearby points of interest with ultra-low latency; deeply focusing on efficient spatial indexing via Geohashing, Quadtrees, and read-heavy caching tiers."
 tags: ["algorithms", "caching", "database"]
 categories: ["designs"]
 draft: false
