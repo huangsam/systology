@@ -1,6 +1,6 @@
 ---
 title: "Compiler Design"
-description: "Compiler optimization, portability, and resilience."
+description: "Compiler optimization, portability, and system resilience."
 summary: "Guidelines for robust compiler design and implementation; covering clear Intermediate Representation (IR) boundaries, enforcing deterministic semantics, generating actionable error reports, and optimizing for incremental compilation."
 tags: ["compiler"]
 categories: ["principles"]

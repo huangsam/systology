@@ -1,6 +1,6 @@
 ---
 title: "Search & Retrieval Engine"
-description: "High-performance document search and retrieval."
+description: "High-performance document search and retrieval systems."
 summary: "A high-performance search and retrieval engine architecture designed for extensive document and media collections; strictly ensuring low-latency ranking and horizontally scalable inverted indexing."
 tags: ["algorithms", "monitoring", "privacy", "retrieval"]
 categories: ["designs"]

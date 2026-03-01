@@ -1,6 +1,6 @@
 ---
 title: "AI/ML Workshop"
-description: "ML workflows: training, evaluation, and benchmarks."
+description: "ML workflows: training, evaluation, and hardware benchmarks."
 summary: "A carefully curated set of practical, highly reproducible machine learning examples (PyTorch, Hugging Face, NumPy) featuring MPS-aware benchmarks and rigorous experiment hygiene for local hardware."
 tags: ["ml", "onboarding", "privacy"]
 categories: ["deep-dives"]

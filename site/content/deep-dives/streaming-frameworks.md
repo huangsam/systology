@@ -1,6 +1,6 @@
 ---
 title: "Streaming Frameworks"
-description: "Comparing Beam and Flink streaming frameworks."
+description: "Comparative analysis of Beam and Flink streaming frameworks."
 summary: "A deep architectural comparison of streaming pipelines: evaluating Apache Beam's portable unified model (Java/DirectRunner) against Apache Flink's native API for stateful processing and fault tolerance."
 tags: ["data-pipelines", "monitoring", "streaming"]
 categories: ["deep-dives"]

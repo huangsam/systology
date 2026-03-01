@@ -1,6 +1,6 @@
 ---
 title: "Algorithms & Performance"
-description: "Algorithms, performance, and optimization patterns."
+description: "Algorithms, performance optimization, and design patterns."
 summary: "Principles for clear algorithms and effective performance engineering; utilizing strict micro-benchmarking, careful memory allocation discipline, avoiding cache misses, and deterministic random generators."
 tags: ["algorithms", "performance"]
 categories: ["principles"]

@@ -1,6 +1,6 @@
 ---
 title: "Media Analysis"
-description: "Media feature extraction and real-time handling."
+description: "Media feature extraction and real-time handling data flows."
 summary: "Best practices for resilient media feature extraction pipelines; ensuring stable representation schemas, choosing between streaming and batch modes, enforcing metadata preservation, and performance engineering."
 tags: ["feature-extraction", "media"]
 categories: ["principles"]

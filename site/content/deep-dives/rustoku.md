@@ -1,6 +1,6 @@
 ---
 title: "Rustoku"
-description: "High-performance Sudoku solver implementation."
+description: "A high-performance Sudoku solver implementation in Rust."
 summary: "A highly optimized Sudoku solver and generator engineered in Rust using advanced bitmasking and MRV heuristics; emphasizing speed, determinism, and clear, explainable solve traces."
 tags: ["algorithms", "performance", "rust"]
 categories: ["deep-dives"]

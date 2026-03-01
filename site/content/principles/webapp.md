@@ -1,6 +1,6 @@
 ---
 title: "Web App"
-description: "Web app design using 12-factor principles."
+description: "Web application design using the standard 12-factor principles."
 summary: "Guiding principles for production-ready web apps using 12-factor methodologies; encompassing stateless scaling, durable media handling, robust background processing, CI/CD, and deep observability."
 tags: ["extensibility"]
 categories: ["principles"]

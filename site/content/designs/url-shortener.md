@@ -1,6 +1,6 @@
 ---
 title: "URL Shortener & Pastebin"
-description: "Unique ID generation and distributed caching."
+description: "Unique ID generation patterns and robust distributed caching."
 summary: "A robust structural design for a highly available, extremely read-heavy service bridging short aliases to long URLs; implementing Base62 encoding, Snowflake IDs, and strict collision avoidance."
 tags: ["caching", "database", "distributed-systems", "networking"]
 categories: ["designs"]

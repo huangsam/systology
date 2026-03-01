@@ -1,6 +1,6 @@
 ---
 title: "End-to-End Migration & Deduplication"
-description: "Large-scale data migration with deduplication."
+description: "Large-scale data migration with advanced deduplication."
 summary: "A comprehensive system architecture for migrating remarkably large datasets; rigorously enforcing deduplication heuristics, checksum-backed integrity validations, resumability, and strict idempotence."
 tags: ["deduplication", "networking"]
 categories: ["designs"]

@@ -1,6 +1,6 @@
 ---
 title: "Model Serving & Inference"
-description: "Reliable, low-latency ML model inference."
+description: "Reliable and low-latency machine learning model inference."
 summary: "Principles for highly available production ML inference; utilizing immutable model registries, dynamic request micro-batching, safe canary rollouts, graceful fallback degradation, and efficient GPU memory management."
 tags: ["ml", "monitoring"]
 categories: ["principles"]

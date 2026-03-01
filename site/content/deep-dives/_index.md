@@ -1,6 +1,6 @@
 ---
 title: "Deep Dives"
-description: "Long-form explorations of side projects and findings."
+description: "Deep-dive explorations of technical projects and findings."
 summary: "Long-form investigations, experiments, and research notes exploring projects with methodology, findings, and next steps."
 date: "2026-02-16T10:22:20-08:00"
 ---

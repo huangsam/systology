@@ -1,6 +1,6 @@
 ---
 title: "Ragchain"
-description: "RAG system combining search and ML for retrieval."
+description: "RAG system combining search and machine learning retrieval."
 summary: "A comprehensive local RAG stack (ChromaDB + Ollama) designed for strictly private, reproducible retrieval and LLM inference; heavily focusing on hybrid retrieval strategies and index versioning."
 tags: ["ml", "privacy", "retrieval"]
 categories: ["deep-dives"]

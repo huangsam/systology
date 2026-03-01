@@ -1,6 +1,6 @@
 ---
 title: "Photohaul"
-description: "Photo system with media analysis and storage."
+description: "A photo management system with media analysis and storage."
 summary: "A robust Java-based tool engineered for seamlessly organizing and migrating extensive photo collections; featuring rigorous deduplication, automatic metadata preservation, and resumable execution."
 tags: ["deduplication", "extensibility", "media", "networking"]
 categories: ["deep-dives"]

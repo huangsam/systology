@@ -1,6 +1,6 @@
 ---
 title: "Spark Trial"
-description: "Batch processing framework and ETL workflows."
+description: "Batch processing framework and scalable ETL data workflows."
 summary: "An intensive end-to-end ETL processing example leveraging Apache Spark for large-scale parquet datasets; deeply focusing on strict schema handling, optimal partitioning, and reproducible aggregations."
 tags: ["data-pipelines", "etl", "monitoring", "onboarding"]
 categories: ["deep-dives"]

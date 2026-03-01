@@ -1,6 +1,6 @@
 ---
 title: "Extensibility & Plugin Architecture"
-description: "Plugin systems, stable APIs, and safe extensions."
+description: "Plugin systems, stable APIs, and safe system extensions."
 summary: "Architectural guidelines for highly modular systems; covering secure plugin architectures, maintaining stable API contracts, managing cross-language FFI bindings, and defining safe extension points."
 tags: ["extensibility"]
 categories: ["principles"]

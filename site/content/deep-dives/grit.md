@@ -1,6 +1,6 @@
 ---
 title: "Grit"
-description: "Version control system with modular architecture."
+description: "A modular version control system with unique architecture."
 summary: "A from‑scratch, educational Git implementation built entirely in Rust; deeply focusing on object storage mechanics, runtime performance, and full programmatic plumbing/porcelain compatibility."
 tags: ["algorithms", "extensibility", "performance", "rust", "vcs"]
 categories: ["deep-dives"]

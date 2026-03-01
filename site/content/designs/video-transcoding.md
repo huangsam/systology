@@ -1,6 +1,6 @@
 ---
 title: "Video Transcoding & Streaming Pipeline"
-description: "Video transcoding through distributed pipeline."
+description: "Video transcoding systems through distributed pipelines."
 summary: "An inherently scalable video ingestion and transcoding system architecture; asynchronously chunking heavy media, extracting actionable features, and steadily outputting adaptive bitrates via worker pools."
 tags: ["data-pipelines", "distributed-systems", "media", "streaming"]
 categories: ["designs"]

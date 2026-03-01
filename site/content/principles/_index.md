@@ -1,6 +1,6 @@
 ---
 title: "Principles"
-description: "Reusable rules and heuristics from experience."
+description: "Reusable engineering rules and heuristics from experience."
 summary: "Reusable rules, heuristics, and frameworks distilled from practical projects to guide system design and implementation."
 date: "2026-02-16T10:22:20-08:00"
 ---

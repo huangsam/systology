@@ -1,6 +1,6 @@
 ---
 title: "Payment System"
-description: "Global payment processing with reliability."
+description: "Reliable global payment processing system architectures."
 summary: "A resilient architectural design for a highly scalable payment gateway integration and internal ledger system; rigorously ensuring strict idempotency, eventual consistency, and deterministic failure recovery."
 tags: ["algorithms", "database", "distributed-systems"]
 categories: ["designs"]

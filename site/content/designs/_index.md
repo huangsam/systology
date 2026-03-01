@@ -1,6 +1,6 @@
 ---
 title: "Designs"
-description: "System design sketches and trade-off analysis."
+description: "Detailed system design sketches and trade-off analyses."
 summary: "System-design sketches and trade-offs summarizing problem statements, constraints, and architecture options."
 date: "2026-02-16T10:22:20-08:00"
 ---

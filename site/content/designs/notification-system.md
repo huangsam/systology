@@ -1,6 +1,6 @@
 ---
 title: "Notification System"
-description: "Scalable multi-channel notification system."
+description: "A scalable multi-channel notification system architecture."
 summary: "A robust architectural design for a high-throughput, multi-channel notification service supporting push, email, and SMS; featuring strict prioritization queues, tiered rate limiting, and reliable delivery tracking."
 tags: ["distributed-systems", "queues"]
 categories: ["designs"]
