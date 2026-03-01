@@ -1,7 +1,7 @@
 ---
 title: "Chowist"
 description: "Web app evolution across three framework ecosystems."
-summary: "A decade-spanning food discovery app that migrated from Ruby Sinatra → Rails → Django while staying current with tooling, dependencies, and best practices. Lessons from incremental framework migration and maintaining a single codebase through language/ecosystem shifts."
+summary: "A decade-spanning food discovery app migrated from Ruby Sinatra to Rails to Django. Lessons on incremental framework migrations and sustaining a single codebase through ecosystem shifts."
 tags: ["extensibility", "monitoring", "tooling"]
 categories: ["deep-dives"]
 links:

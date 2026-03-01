@@ -1,7 +1,7 @@
 ---
 title: "VirtuC"
 description: "Rust compiler for C subset targeting LLVM IR."
-summary: "Rust-implemented compiler for a C subset that emits LLVM IR and focuses on AST design, semantic checks, and IR validation for teaching."
+summary: "A from-scratch, Rust-implemented compiler designed for a targeted C subset that effectively emits standard LLVM IR; heavily focusing on proper AST design, semantic checking, and IR verification."
 tags: ["algorithms", "compiler", "performance", "rust"]
 categories: ["deep-dives"]
 links:
