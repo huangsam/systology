@@ -18,9 +18,9 @@
     <div class="posts-grid">
       {{ $recentPages := first 3 .RegularPagesRecursive.ByDate.Reverse }}
       {{ range $recentPages }}
-      {{ $metaText := .Summary }}
-      {{ partial "components/post-card.html" (dict "title" .Title "url" .RelPermalink "description" .Params.description
-      "metaText" $metaText) }}
+      {{ $metaText := delimit (.Params.tags | default slice) ", " }}
+      {{ partial "components/post-card.html"
+      (dict "title" .Title "url" .RelPermalink "description" .Summary "metaText" $metaText) }}
       {{ end }}
     </div>
   </div>
