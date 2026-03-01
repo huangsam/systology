@@ -3,15 +3,27 @@
   {{ .Content }}
 </article>
 
-<section>
-  <h2>Sections</h2>
-  <div class="posts-grid">
-    {{ range .Site.Sections }}
-    {{ $metaText := (printf "%d article%s" (len .RegularPagesRecursive) (cond (gt (len .RegularPagesRecursive) 1) "s"
-    "")) }}
-    {{ partial "components/post-card.html" (dict "title" .Title "url" .RelPermalink "description" .Params.description
-    "metaText" $metaText) }}
+<section class="frontpage-categories">
+  {{ range .Site.Sections }}
+  <div class="category-block" style="margin-bottom: var(--space-xl);">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-md);">
+      <h2 style="margin-bottom: 0;">{{ .Title }}</h2>
+      <a href="{{ .RelPermalink }}" style="font-size: var(--text-sm);">View all &rarr;</a>
+    </div>
+
+    {{ with .Params.description }}
+    <p style="margin-bottom: var(--space-md); color: var(--text-muted);">{{ . }}</p>
     {{ end }}
+
+    <div class="posts-grid">
+      {{ $recentPages := first 3 .RegularPagesRecursive.ByDate.Reverse }}
+      {{ range $recentPages }}
+      {{ $metaText := .Summary }}
+      {{ partial "components/post-card.html" (dict "title" .Title "url" .RelPermalink "description" .Params.description
+      "metaText" $metaText) }}
+      {{ end }}
+    </div>
   </div>
+  {{ end }}
 </section>
 {{ end }}

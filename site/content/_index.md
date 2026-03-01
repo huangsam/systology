@@ -6,10 +6,6 @@ title: "Home"
 
 My knowledge base for studying systems at scale, drawing from real-world engineering and synthesized learnings across multiple domains.
 
-## How to use this?
-
-Click the icon in the header to switch between light and dark mode.
-
 ```go
 func main() {
     fmt.Println("Happy learning! 🙏")
