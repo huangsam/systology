@@ -7,6 +7,11 @@
       {{ with .Params.links }}{{ partial "components/external-links.html" . }}{{ end }}
     </div>
     <h2>{{ .Description }}</h2>
+    {{ if .Date }}
+    <p class="post-date" style="color: var(--text-muted); font-size: var(--text-sm); margin-bottom: var(--space-md);">
+      Published on {{ .Date.Format "January 2, 2006" }}
+    </p>
+    {{ end }}
     {{ with .Params.tags }}
     <div class="tags">
       <span>Tags:</span>
