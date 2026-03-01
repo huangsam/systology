@@ -15,7 +15,7 @@
     {{ end }}
     {{ $remaining := sub (len .) $max }}
     {{ if gt $remaining 0 }}
-    <span class="muted">+{{ $remaining }} more</span>
+    <span class="muted">and +{{ $remaining }} more</span>
     {{ end }}
   </small>
   {{ end }}
