@@ -5,6 +5,7 @@ summary: "Scalable real-time pipeline to ingest and process high-volume user eve
 tags: ["analytics", "data-pipelines", "monitoring", "queues", "streaming"]
 categories: ["designs"]
 draft: false
+date: "2026-02-16T16:32:50-08:00"
 ---
 
 ## Problem Statement & Constraints

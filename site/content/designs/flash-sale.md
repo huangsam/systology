@@ -5,6 +5,7 @@ summary: "Design for handling extreme bursts of traffic where limited inventory 
 tags: ["algorithms", "concurrency", "database", "distributed-systems"]
 categories: ["designs"]
 draft: false
+date: "2026-02-17T10:27:08-08:00"
 ---
 
 ## Problem Statement & Constraints

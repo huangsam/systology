@@ -5,6 +5,7 @@ summary: "Guiding principles for production-ready web apps (12-factor-inspired):
 tags: ["extensibility"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Twelve-Factor-ish Structure

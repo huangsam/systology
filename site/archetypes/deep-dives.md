@@ -5,6 +5,7 @@ summary: "One-line summary used on index pages"
 tags: []
 categories: ["deep-dives"]
 draft: true
+date: "{{ .Date }}"
 ---
 
 ## Context & Motivation

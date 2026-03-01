@@ -5,6 +5,7 @@ summary: "Guidelines for plugin architectures, stable APIs, cross-language bindi
 tags: ["extensibility"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Plugin/Backend Abstraction

@@ -5,6 +5,7 @@ summary: "One-line summary used on index pages"
 tags: []
 categories: ["principles"]
 draft: true
+date: "{{ .Date }}"
 ---
 
 ## Principle Name

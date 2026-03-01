@@ -5,6 +5,7 @@ summary: "One-line summary used on index pages"
 tags: []
 categories: ["designs"]
 draft: true
+date: "{{ .Date }}"
 ---
 
 ## Problem Statement & Constraints

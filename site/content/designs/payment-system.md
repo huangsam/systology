@@ -5,6 +5,7 @@ summary: "Design of a scalable payment gateway integration and internal ledger s
 tags: ["algorithms", "database", "distributed-systems"]
 categories: ["designs"]
 draft: false
+date: "2026-02-17T10:27:08-08:00"
 ---
 
 ## Problem Statement & Constraints

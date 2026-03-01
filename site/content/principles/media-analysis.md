@@ -5,6 +5,7 @@ summary: "Best practices for media feature extraction: stable schemas, streaming
 tags: ["feature-extraction", "media"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Define Stable Output Schema

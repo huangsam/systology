@@ -5,6 +5,7 @@ summary: "Practices for safe, idempotent, and efficient large-scale data migrati
 tags: ["deduplication"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Idempotent Operations

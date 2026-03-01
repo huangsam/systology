@@ -5,6 +5,7 @@ summary: "Design for a Google Docs or Figma style application using WebSockets, 
 tags: ["concurrency", "distributed-systems", "networking"]
 categories: ["designs"]
 draft: true
+date: "2026-02-24T22:34:51-08:00"
 ---
 
 ## Problem Statement & Constraints

@@ -5,6 +5,7 @@ summary: "Platform design for federated learning that trains across devices with
 tags: ["algorithms", "distributed-systems", "ml", "privacy"]
 categories: ["designs"]
 draft: false
+date: "2026-02-16T16:32:50-08:00"
 ---
 
 ## Problem Statement & Constraints

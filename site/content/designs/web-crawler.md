@@ -5,6 +5,7 @@ summary: "Design for a Google-scale web crawler focusing on Breadth-First Search
 tags: ["caching", "data-pipelines", "distributed-systems", "networking"]
 categories: ["designs"]
 draft: false
+date: "2026-02-24T22:57:53-08:00"
 ---
 
 ## Problem Statement & Constraints

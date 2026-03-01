@@ -5,6 +5,7 @@ summary: "Practical guidance for API contracts, retries/backoff, rate limiting, 
 tags: ["networking"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## API Design & Contracts

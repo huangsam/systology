@@ -5,6 +5,7 @@ summary: "Principles for clear algorithms and performance engineering: micro-ben
 tags: ["algorithms", "performance"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Algorithmic Clarity

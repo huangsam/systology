@@ -5,6 +5,7 @@ summary: "Design for a scalable video ingestion and transcoding system that chun
 tags: ["data-pipelines", "distributed-systems", "media", "streaming"]
 categories: ["designs"]
 draft: true
+date: "2026-02-24T22:34:51-08:00"
 ---
 
 ## Problem Statement & Constraints

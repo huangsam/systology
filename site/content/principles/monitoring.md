@@ -5,6 +5,7 @@ summary: "Best practices for metrics, structured logging, tracing, alerting, and
 tags: ["monitoring"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Metrics & KPIs

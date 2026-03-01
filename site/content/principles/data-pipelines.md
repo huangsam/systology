@@ -5,6 +5,7 @@ summary: "Principles for reliable batch and streaming pipelines: time semantics,
 tags: ["data-pipelines", "etl", "streaming"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Time Semantics

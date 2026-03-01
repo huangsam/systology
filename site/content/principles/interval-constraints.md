@@ -5,6 +5,7 @@ summary: "Balancing Latency (Completeness) against Verification (Integrity) by c
 tags: ["analytics", "data-pipelines", "streaming"]
 categories: ["principles"]
 draft: false
+date: "2026-02-21T19:38:55-08:00"
 ---
 
 ## Choosing Intervals from Constraints

@@ -5,6 +5,7 @@ summary: "Design a high-performance search and retrieval engine for large docume
 tags: ["algorithms", "monitoring", "privacy", "retrieval"]
 categories: ["designs"]
 draft: false
+date: "2026-02-16T16:32:50-08:00"
 ---
 
 ## Problem Statement & Constraints

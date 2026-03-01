@@ -5,6 +5,7 @@ summary: "Design for a highly available, read-heavy service bridging short alias
 tags: ["caching", "database", "distributed-systems", "networking"]
 categories: ["designs"]
 draft: false
+date: "2026-02-24T22:57:53-08:00"
 ---
 
 ## Problem Statement & Constraints

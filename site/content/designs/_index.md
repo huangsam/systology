@@ -2,6 +2,7 @@
 title: "Designs"
 description: "Designing new systems from first principles."
 summary: "System-design sketches and trade-offs summarizing problem statements, constraints, and architecture options."
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 Design explorations, sketches, and trade-offs. Each document outlines a system design problem inspired by real-world challenges, with problem statements, constraints, and placeholders for architectures and analyses—tied to principles from the `principles/` folder.

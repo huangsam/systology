@@ -7,6 +7,7 @@ categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/mailprune"
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Context & Motivation

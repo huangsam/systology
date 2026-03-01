@@ -5,6 +5,7 @@ summary: "Principles for production ML inference: immutable model registries, mi
 tags: ["ml", "monitoring"]
 categories: ["principles"]
 draft: false
+date: "2026-02-27T15:03:42-08:00"
 ---
 
 ## Immutable Model Registry

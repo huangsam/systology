@@ -5,6 +5,7 @@ summary: "Patterns for reliable service behavior: idempotency, async IO, circuit
 tags: ["distributed-systems", "networking", "queues"]
 categories: ["principles"]
 draft: false
+date: "2026-02-27T15:23:05-08:00"
 ---
 
 ## Idempotency

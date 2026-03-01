@@ -5,6 +5,7 @@ summary: "Privacy-first design rules for agents: local-first defaults, data mini
 tags: ["privacy"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Local-first Default

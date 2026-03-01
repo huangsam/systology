@@ -5,6 +5,7 @@ summary: "Design a distributed cache to reduce I/O and speed up VCS operations b
 tags: ["algorithms", "caching", "concurrency", "distributed-systems", "monitoring", "performance", "vcs"]
 categories: ["designs"]
 draft: false
+date: "2026-02-16T16:32:50-08:00"
 ---
 
 ## Problem Statement & Constraints

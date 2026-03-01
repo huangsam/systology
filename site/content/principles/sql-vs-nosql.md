@@ -5,6 +5,7 @@ summary: "A framework for deciding between SQL (relational, ACID) and NoSQL (dis
 tags: ["database"]
 categories: ["principles"]
 draft: false
+date: "2026-02-23T21:13:27-08:00"
 ---
 
 ## The Core Philosophy

@@ -5,6 +5,7 @@ summary: "Guidelines for compiler design: clear IR boundaries, deterministic sem
 tags: ["compiler"]
 categories: ["principles"]
 draft: false
+date: "2026-02-16T10:22:20-08:00"
 ---
 
 ## Clean IR Boundaries

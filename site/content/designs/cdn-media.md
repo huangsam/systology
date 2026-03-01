@@ -5,6 +5,7 @@ summary: "CDN-backed media delivery architecture for low-latency, highly-availab
 tags: ["caching", "media", "monitoring", "networking", "performance"]
 categories: ["designs"]
 draft: false
+date: "2026-02-16T16:32:50-08:00"
 ---
 
 ## Problem Statement & Constraints
