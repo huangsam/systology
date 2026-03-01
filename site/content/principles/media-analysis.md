@@ -24,7 +24,7 @@ Use cross-platform C++/OpenCV for portable batch pipelines but leverage native A
 
 The decision depends on your deployment target. If you're processing media in a cloud pipeline or a heterogeneous fleet, cross-platform OpenCV gives you one codebase everywhere. If you're running on Apple devices where latency matters, Metal and Vision framework deliver hardware-accelerated performance that OpenCV can't match.
 
-See [Vidicant]({{< ref "/deep-dives/vidicant" >}}) for a cross-platform C++ approach, and [Xcode Trial]({{< ref "/deep-dives/xcode-trial" >}}) for leveraging Apple-native APIs (Metal, Vision, Core ML) for on-device media processing.
+See [Video Analysis]({{< ref "/deep-dives/video-analysis" >}}) for a comparison of the cross-platform C++ approach (OpenCV/pybind11) against Apple-native APIs (Vision, AVFoundation, Core Image) for on-device media processing.
 
 **Anti-pattern — Lowest Common Denominator:** Using only cross-platform APIs even when 95% of your users are on one platform. You sacrifice significant performance and capabilities to serve a theoretical audience. If your data shows most processing happens on macOS, use Metal for the fast path and provide a generic fallback.
 
@@ -72,7 +72,7 @@ Build wheels and native binaries for easy installation and provide CI/CD for cro
 
 For Python libraries with native components, build manylinux wheels (using `cibuildwheel`) and macOS universal2 wheels so users can `pip install` without compiling from source. For CLI tools, provide prebuilt binaries for major platforms via GitHub Releases or Homebrew. Test installation on bare VMs in CI to catch missing dependencies.
 
-See [Vidicant]({{< ref "/deep-dives/vidicant" >}}) for an example of managing cross-platform C++ packaging with Python bindings—where CI-built wheels and cmake instructions reduce installation friction.
+See [Video Analysis]({{< ref "/deep-dives/video-analysis" >}}) for an example of managing cross-platform C++ packaging with Python bindings—where CI-built wheels and cmake instructions reduce installation friction.
 
 **Anti-pattern — "Just Build From Source":** Requiring users to install CMake, OpenCV, and platform-specific SDKs to try your library. 90% of potential users will give up at the first compilation error. Prebuilt packages aren't just convenient—they're essential for adoption.
 

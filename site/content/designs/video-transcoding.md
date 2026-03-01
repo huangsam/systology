@@ -100,7 +100,7 @@ def process_transcode_task(queue, obj_store):
 ### Deep Dive
 
 - **Chunking (Map Phase):** Instead of one server transcoding a 2-hour movie, we split it into 5-second chunks. This allows 1440 workers to process a 2-hour movie entirely in parallel.
-- **Worker Pools:** The transcoders run FFmpeg. They are stateless, pulling a chunk, calculating the new resolution, and pushing the artifact. See the [Vidicant]({{< ref "/deep-dives/vidicant" >}}) deep-dive for extraction logic.
+- **Worker Pools:** The transcoders run FFmpeg. They are stateless, pulling a chunk, calculating the new resolution, and pushing the artifact. See the [Video Analysis]({{< ref "/deep-dives/video-analysis" >}}) deep-dive for extraction logic.
 - **Resumable Uploads:** The edge uses multipart uploads (like S3 Multipart API) so if a user drops connection, they only retry the last 5MB chunk.
 - **Adaptive Bitrate Streaming (ABS):** The system outputs fragments and a playlist file (like HLS). The client player dynamically chooses the 1080p or 480p chunks based on current network bandwidth.
 

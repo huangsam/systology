@@ -72,7 +72,7 @@ Track consumer lag, watermark progression, and checkpoint health for streaming j
 
 For Kafka-based pipelines, monitor `consumer_group_lag` (records behind the latest offset), `checkpoint_duration_ms`, and `records_per_second`. For Flink, track watermark delay (how far behind event-time the watermark is) and backpressure indicators per operator. Alert when consumer lag exceeds your freshness SLO—if you promise 1-minute freshness and lag is 5 minutes, you're violating your contract.
 
-See [Flink Trial]({{< ref "/deep-dives/flink-trial" >}}) and [Spark Trial]({{< ref "/deep-dives/spark-trial" >}}) for examples of monitoring data pipeline throughput and checkpointing. For a related treatment of backpressure, partitioning, and fault tolerance that directly affect observability, see the [Data Pipelines]({{< ref "/principles/data-pipelines" >}}) principles.
+See [Streaming Frameworks]({{< ref "/deep-dives/streaming-frameworks" >}}) and [Spark Trial]({{< ref "/deep-dives/spark-trial" >}}) for examples of monitoring data pipeline throughput and checkpointing. For a related treatment of backpressure, partitioning, and fault tolerance that directly affect observability, see the [Data Pipelines]({{< ref "/principles/data-pipelines" >}}) principles.
 
 ## Dashboard & Visualization
 

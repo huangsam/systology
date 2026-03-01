@@ -53,7 +53,7 @@ Expose performance-critical libraries through stable C APIs with idiomatic wrapp
 
 The pattern: write core logic in a systems language (Rust, C++), expose it via a C ABI (`extern "C"`), then build language-specific wrappers (pybind11 for Python, JNI for Java, NAPI for Node.js) that handle type conversion, error mapping, and memory management idiomatically.
 
-See [Vidicant]({{< ref "/deep-dives/vidicant" >}}) for an example of C++ core with pybind11 Python bindings—the C++ handles performance-critical video processing while Python provides the user-friendly API.
+See [Video Analysis]({{< ref "/deep-dives/video-analysis" >}}) for an example of C++ core with pybind11 Python bindings—the C++ handles performance-critical video processing while Python provides the user-friendly API.
 
 **Anti-pattern — Raw FFI Everywhere:** Forcing library consumers to call C functions directly with manual pointer management, null checks, and error code translation. This gives every consumer of your library the same bug surface area of C. Wrap once, correctly, idiomatically.
 

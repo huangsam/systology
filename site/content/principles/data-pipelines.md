@@ -78,7 +78,7 @@ Use Apache Beam for cross-runner portability when deployment flexibility matters
 
 Beam's unified model lets you write once and deploy on Flink, Spark, Dataflow, or Samza. But each runner has unique strengths: Flink's savepoints and exactly-once, Spark's SQL optimizer, Dataflow's autoscaling. When you need those features, the Beam abstraction becomes a constraint rather than a benefit.
 
-See [Beam Trial]({{< ref "/deep-dives/beam-trial" >}}) for hands-on runner comparison and [Flink Trial]({{< ref "/deep-dives/flink-trial" >}}) for native Flink features that go beyond Beam's portable surface.
+See [Streaming Frameworks]({{< ref "/deep-dives/streaming-frameworks" >}}) for a hands-on comparison of Beam's portable model against native Flink features.
 
 **Anti-pattern — Abstraction Lock-in:** Choosing Beam for portability but then using runner-specific transforms everywhere, getting neither portability nor native performance. Commit to one approach: portable Beam *or* native runner APIs. The middle ground is the worst of both worlds.
 

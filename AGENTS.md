@@ -29,9 +29,10 @@ When running a subagent or curl statements:
 
 When adding a new page, follow these steps:
 
-- Run `hugo new -s site designs/foo.md` to create a new design page
-- Run `hugo new -s site deep-dives/bar.md` to create a new deep dive page
-- Run `hugo new -s site principles/baz.md` to create a new principle page
+- Run `hugo new -s site -k designs designs/foo.md` to create a new design page
+- Run `hugo new -s site -k deep-dives deep-dives/bar.md` to create a new deep dive page
+- Run `hugo new -s site -k deep-dives-comparative deep-dives/bar.md` to create a new deep dive page
+- Run `hugo new -s site -k principles principles/baz.md` to create a new principle page
 
 When determining what tags to put on the new page:
 
