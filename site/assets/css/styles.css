@@ -60,6 +60,7 @@
 
 html {
   scrollbar-gutter: stable;
+  background-color: var(--bg);
 }
 
 * {
@@ -840,6 +841,7 @@ span.muted {
   z-index: 1000;
   align-items: center;
   justify-content: center;
+  overscroll-behavior: none;
 }
 
 .pseudocode-modal.active {
@@ -942,7 +944,7 @@ span.muted {
 .pseudocode-modal-body {
   padding: 0 var(--space-xl) var(--space-xl) var(--space-xl);
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
   /* Tweak prose styling inside the modal for better fit */
   font-size: 0.85rem;
 }
