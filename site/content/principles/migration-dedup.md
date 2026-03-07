@@ -22,9 +22,9 @@ See how [Photohaul]({{< ref "/deep-dives/photohaul" >}}) implements destination-
 
 Use robust hashing (SHA-256, perceptual hashes) with collision detection and balance speed against false positive rates. Different dedup needs (file vs. image) may need different hash types.
 
-For exact file dedup, SHA-256 is the standard—collisions are astronomically unlikely and the hash is well-supported everywhere. For near-duplicate image detection (same photo with different crops, compression, or watermarks), use perceptual hashes like pHash or dHash that tolerate visual similarity. For very large file sets, use a two-stage approach: fast hash (xxHash, CRC32) for a first pass, then SHA-256 only for potential duplicates.
+For exact file dedup, SHA-256 is the standard—collisions are astronomically unlikely and the hash is well-supported everywhere. For near-duplicate image detection (same photo with different crops, compression, or watermarks), use perceptual hashes like pHash or dHash that tolerate visual similarity. For very large file sets, use a two-stage approach: fast non-cryptographic hash (xxHash, CRC32) for a first pass to bucket candidates, then SHA-256 only for potential duplicates to confirm.
 
-**Anti-pattern — MD5 for Dedup:** Using MD5 because "it's fast enough." MD5 has known collision vulnerabilities, and while accidental collisions are rare, adversarial collisions are trivial to construct. For any security-sensitive dedup (financial records, legal documents), use SHA-256. For non-sensitive dedup, xxHash is faster and collision-resistant.
+**Anti-pattern — MD5 for Dedup:** Using MD5 because "it's fast enough." MD5 has known collision vulnerabilities, and while accidental collisions are rare, crafted collisions are feasible to construct. For any security-sensitive dedup (financial records, legal documents), use SHA-256—it's barely slower on modern hardware and eliminates the concern entirely. For non-sensitive dedup where speed is the priority, xxHash is significantly faster (though it is not cryptographically collision-resistant, so use it only where adversarial inputs aren't a concern).
 
 **Anti-pattern — Hash Only, No Verification:** Treating hash matches as definitive proof of duplication without secondary verification. For critical data, compare file sizes and sample bytes after a hash match. The cost of a false positive (deleting a unique file) can far exceed the cost of a secondary check.
 
@@ -86,7 +86,7 @@ The default mode should be copy-not-move: keep originals intact until the migrat
 
 ## Decision Framework
 
-Choose your migration strategy based on the data volume and the required uptime for the system:
+For **database or service migrations** (as opposed to the file-level dedup discussed above), choose your strategy based on the data volume and the required uptime for the system:
 
 {{< mermaid >}}
 graph LR
@@ -94,7 +94,8 @@ graph LR
     Write --> NewDB[(New DB)]
     Read[Read Path] -->|primary| OldDB
     Read -.->|shadow reads| NewDB
-    NewDB --> Verify{Results Match?}
+    OldDB --> Verify{Results Match?}
+    NewDB --> Verify
     Verify -->|yes| Cutover[Cutover Reads to New DB]
     Verify -->|no| Debug[Debug and Fix]
 {{< /mermaid >}}

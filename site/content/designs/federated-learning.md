@@ -44,7 +44,7 @@ graph TD
     GlobalModel -->|averaged params| Coordinator
 {{< /mermaid >}}
 
-A Coordinator broadcasts global model parameters to a Device Selector that samples client devices. Devices train locally on private data and send encrypted weight updates to a Secure Aggregator. Cryptographic aggregation preserves privacy before writing averaged parameters back to the Global Store for the next round.
+A Coordinator broadcasts global model parameters to a Device Selector that samples client devices. Devices train locally on private data and send encrypted weight updates to a Secure Aggregator. Cryptographic aggregation protects individual updates from server inspection before writing averaged parameters back to the Global Store for the next round. (Note: the aggregated model itself can still be susceptible to model inversion or membership inference attacks; secure aggregation is one layer of defense, not a complete privacy solution.)
 
 ## Data Design
 
@@ -123,13 +123,13 @@ def federated_averaging(global_model, client_devices, current_round, num_rounds)
 
 ### Deep Dive
 
-- **Secure aggregation:** Cryptographic protocols ensure the server only sees the aggregate sum, protecting individual updates while tolerating device dropouts.
+- **Secure aggregation:** Cryptographic protocols ensure the server only sees the aggregate sum, protecting individual updates. Dropout-tolerant variants (e.g., Google's protocol) handle device disconnections but require extra communication rounds and more complex key management.
 
-- **Differential Privacy (DP):** Clipping gradients and adding noise bounds individual influence. A cumulative (ε, δ) budget halts training upon exhaustion.
+- **Differential Privacy (DP):** Gradient clipping bounds each client's contribution (a prerequisite for DP), while calibrated noise addition provides the formal (ε, δ) privacy guarantee. A cumulative privacy budget tracks total spend and halts training upon exhaustion.
 
 - **Client scheduling:** Stratified sampling targets devices on Wi-Fi with sufficient battery to minimize user impact while ensuring representation.
 
-- **Communication efficiency:** Quantization (8-bit) and sparsification (Top-K gradients) drastically reduce bandwidth for mobile network feasibility.
+- **Communication efficiency:** Quantization (8-bit) and sparsification (Top-K gradients) drastically reduce bandwidth for mobile network feasibility. However, these techniques can interact poorly with differential privacy: adding DP noise to already-compressed gradients amplifies the noise-to-signal ratio, so teams must carefully tune compression and noise levels together.
 
 - **Non-IID handling:** Techniques like FedProx stabilize convergence across heterogeneous client datasets, caught early by server-side validation.
 
