@@ -102,7 +102,7 @@ class LWWMap {
 
 ### Trade-offs
 
-- **CRDTs vs OT:** Operational Transformation (Google Docs) requires a central server to sequence operations, which is fundamentally harder to scale horizontally. CRDTs are decentralized and theoretically simpler, but their metadata (tombstones for deleted characters) can grow boundlessly, requiring sophisticated garbage collection algorithms.
+- **CRDTs vs OT:** Operational Transformation (Google Docs) requires per-document operation sequencing through a coordination point, which adds a step that CRDTs avoid (though OT scales well in practice by sharding on document ID). CRDTs are decentralized and theoretically simpler, but their metadata (tombstones for deleted characters) can grow boundlessly, requiring sophisticated garbage collection algorithms.
 - **WebSocket Connection Management:** WebSockets hold open file descriptors. A server might handle 10k connections. Load balancing becomes difficult because you can't easily drain connections without interrupting the user experience.
 - **Snapshots vs Pure Event Sourcing:** Storing every single keystroke allows for infinite "Undo" and perfect history replay. However, the database size grows linearly with time. Taking periodic flattening snapshots is required to keep initial load times reasonable.
 

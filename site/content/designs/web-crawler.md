@@ -62,14 +62,14 @@ The architecture operates as a massive distributed Breadth-First Search (BFS). T
 
 - **The URL Frontier & Politeness:** We cannot just use a simple RabbitMQ queue. If `wikipedia.org` appears 10,000 times in the queue, a naive worker pool will fetch from Wikipedia 10,000 times concurrently, committing an accidental DDoS attack. The Frontier must be split into multiple sub-queues (one per domain). A worker only pulls from a domain's queue if *X* seconds have passed since the last fetch to that domain.
 - **DNS Resolution Bottleneck:** A standard OS DNS resolver blocking on every HTTP request will cripple throughput. The crawler must maintain an enormous, distributed DNS cache to avoid standard UDP timeouts.
-- **Bloom Filters for Deduplication:** Checking a SQL database if a URL exists 400 times a second is too slow and expensive. A Bloom Filter (a probabilistic data structure in memory) answers "Has this URL been crawled?" with extreme speed and minimal RAM. If it returns *yes*, it might be wrong (false positive), which is fine—we just skip crawling a page. If it returns *no*, it is mathematically guaranteed to be novel.
+- **Bloom Filters for Deduplication:** Checking a SQL database if a URL exists 400 times a second is too slow and expensive. A Bloom Filter (a probabilistic data structure in memory) answers "Has this URL been crawled?" with extreme speed and minimal RAM. If it returns *yes*, it might be wrong (false positive), which is fine—we just skip crawling a page. If it returns *no*, the URL string is guaranteed to be new to the system (zero false negatives), though the content behind it may still be a duplicate due to URL normalization gaps or redirects.
 - **Spider Traps:** Malicious sites create infinite dynamic URLs (e.g., `site.com/a/b/c/d/...`). The crawler must strictly limit maximum depth from seed and maximum path lengths.
 - **URL Normalization:** `example.com/page`, `example.com/page/`, and `example.com/page?` are often the same resource. Normalization (removing trailing slashes, sorting query parameters, removing fragments, lowercasing domain) is critical before deduplication. Otherwise the crawler wastes resources re-fetching the same content.
 - **HTTP Semantics:** Respect status codes (200=cache, 301/302=redirect, 404=skip, 429=backoff, 5xx=retry) and cache headers (Cache-Control, ETag, Last-Modified). Ignoring these leads to wasted bandwidth and accidental DDoS on already-rate-limited sites.
 
 ### Trade-offs
 
-- **BFS vs. DFS:** Breadth-First Search is strictly superior for standard crawling because Depth-First Search easily gets trapped on a single infinite sub-domain (a spider trap). However, BFS requires massively larger queue memory.
+- **BFS vs. DFS:** Breadth-First Search is strongly preferred for broad web crawling because Depth-First Search easily gets trapped on a single infinite sub-domain (a spider trap). However, BFS requires massively larger queue memory, and focused/topical crawlers may benefit from prioritized DFS or hybrid strategies.
 - **Freshness vs. Coverage:** Is it better to recrawl NYTimes.com every 5 minutes (Freshness) or crawl an obscure blog from 2004 once (Coverage)? The Priority Queue must score URLs heuristically (e.g., PageRank or historical change frequency) to balance these competing goals.
 
 ## Operational Excellence

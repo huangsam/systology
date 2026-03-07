@@ -120,7 +120,11 @@ def process_payment(idempotency_key, user_id, amount, currency):
 
             except Exception as e:
                 conn.rollback() # Rollback ledger entries
-                # Make sure to free the idempotency key so user can retry, or mark as failed
+                # EDGE CASE: If stripe_charge succeeded above but the ledger write
+                # failed, marking the key as 'failed' would allow a retry that
+                # double-charges the customer. In production, check whether the
+                # charge was captured and, if so, mark the key with the charge ID
+                # for reconciliation rather than allowing a blind retry.
                 cur.execute("UPDATE idempotency_keys SET status = 'failed' WHERE key = %s", (idempotency_key,))
                 conn.commit()
                 raise e

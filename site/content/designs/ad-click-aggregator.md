@@ -25,7 +25,7 @@ Design a system to aggregate millions of ad click events in real-time to provide
 - **Consistency:** Exactly-once semantics for billing; hyper-accurate counts (probabilistic structures acceptable for pre-aggregation).
 - **Availability:** Robustness against regional outages or stream spikes.
 - **Workload Profile:**
-    - Read:Write ratio: ~100:1
+    - Read:Write ratio: ~20:80
     - Peak throughput: 200k events/sec
     - Retention: 90 days hot, 1y archive
 
@@ -61,7 +61,7 @@ Kafka topics buffer high-throughput temporary streams, partitioned by ad ID to g
 | :--- | :--- | :--- | :--- |
 | **clicks_agg** | `ad_id` | UInt32 (PK) | Unique advertisement ID. |
 | | `window_ts` | DateTime (PK)| 1-min window start timestamp. |
-| | `click_count`| AggregateSet| Rolling count for the window. |
+| | `click_count`| AggregateFunction| Rolling count for the window. |
 | | `revenue` | Decimal | Sum of bid price for clicked ads. |
 
 ## Deep Dive & Trade-offs
