@@ -12,7 +12,7 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## Context & Motivation
 
-**Context:** `Chowist` is a food discovery web app with 10+ years of active maintenance, originally built in Ruby Sinatra (early 2010s), then migrated to Ruby on Rails (mid-2010s), and eventually to Django (2018–2020). The same core problem—place listings, user profiles, search, recommendations—has been solved three times, each migration driven by specific pain points and ecosystem shifts rather than arbitrary rewrites. Last commit was 10+ years ago, but the project's real value was in the *years of continuous maintenance* before that.
+**Context:** `Chowist` is a food discovery web app with 10+ years of active maintenance, originally built in Ruby Sinatra (early 2010s), then migrated to Ruby on Rails (mid-2010s), and eventually to Django (2018–2020). The same core problem—place listings, user profiles, search, recommendations—has been solved three times, each migration driven by specific pain points and ecosystem shifts rather than arbitrary rewrites. Oldest commit was 10+ years ago, but the project's real value was in the *years of continuous maintenance* before that.
 
 **Motivation:** The real insight isn't the app itself; it's what happens when you steward a codebase for a decade+. Framework choices that seemed perfect become dated. Dependencies drift. Build tooling and language ecosystem evolution force decisions: stay on old versions or invest in upgrades? Most project discussions ignore this reality, treating open source as snapshot releases rather than lived practice. Chowist is a case study in practical framework migration, dependency management at scale, and the compounding cost of falling behind vs. staying current—lessons that only emerge at 10-year timescales.
 

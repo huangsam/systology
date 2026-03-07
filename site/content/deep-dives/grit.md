@@ -27,7 +27,7 @@ date: "2026-02-16T10:22:20-08:00"
 
 - **My Project:** High-performance, educational Git implementation emphasizing the plumbing/porcelain architecture, LRU caching for read performance, and property-based correctness testing. Achieves 3–4× speedups over Git on small-repo micro-benchmarks (init ~2.1ms at 4.1×, add ~4.1ms at 3.4×, status ~5.4ms at 3.3×, commit ~6.0ms at 4.2×) due to lower startup overhead and the Myers diff algorithm implementation.
 - **Industry:** Git itself is highly optimized with decades of development—packfile deltification, bitmap indices for reachability, and multi-pack-index for large repos. Libgit2 provides a C library with comprehensive API coverage. Gitoxide (another Rust implementation) targets full compatibility with extensive packfile support.
-- **Gap Analysis:** To approach Git's robustness: implement packfile support (delta compression, pack-index) for storage efficiency on large repos, add `merge` and `rebase` with three-way merge algorithms, support `.gritignore` patterns for status filtering, and implement `fetch`/`push` with Git's smart HTTP and SSH transport protocols.
+- **Gap Analysis:** To approach Git's robustness: implement packfile support (delta compression, pack-index) for storage efficiency on large repos, add `merge` and `rebase` with three-way merge algorithms, support `.gritignore` patterns for status filtering, implement `fetch`/`push` with Git's smart HTTP and SSH transport protocols, and consider SHA-256 object format support (available since Git 2.29+) for forward compatibility as the ecosystem migrates away from SHA-1.
 
 ## Risks & Mitigations
 

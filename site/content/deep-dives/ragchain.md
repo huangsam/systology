@@ -28,7 +28,7 @@ date: "2026-02-16T10:22:20-08:00"
 
 - **My Project:** Local-only RAG with explicit reproducibility and privacy guarantees. No cloud dependencies. Hybrid retrieval with systematic evaluation. Suitable for personal knowledge bases and privacy-sensitive domains.
 - **Industry:** Cloud RAG offerings (Pinecone + OpenAI, Weaviate Cloud, Amazon Kendra) provide managed scaling, automatic sharding, and access to powerful embedding/generation models, but trade off privacy, repeatability, and cost transparency. They also abstract away retrieval tuning, making quality debugging opaque.
-- **Gap Analysis:** To reach production-grade scale and latency: implement persistent sharding with cross-shard query routing, add ANN (HNSW) search for indices beyond 1M vectors (Chroma uses exact search by default), integrate monitoring for retrieval quality drift (track average relevance scores over time), and build a reranker layer (cross-encoder on top-50 results) to recover precision lost by approximate search.
+- **Gap Analysis:** To reach production-grade scale and latency: implement persistent sharding with cross-shard query routing, tune HNSW parameters (`ef`, `M`) or explore IVF-based indexing for indices beyond 1M vectors, integrate monitoring for retrieval quality drift (track average relevance scores over time), and build a reranker layer (cross-encoder on top-50 results) to recover precision lost by approximate search.
 
 ## Risks & Mitigations
 
