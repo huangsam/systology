@@ -33,7 +33,7 @@ Build a platform for federated learning that trains models across distributed de
 
 {{< mermaid >}}
 graph TD
-    Coordinator[Coordinator] -->|broadcast model params| Selector[Device Selector]
+    Coordinator[Coordinator] -->|select participants| Selector[Device Selector]
     Selector --> DeviceA[Device A]
     Selector --> DeviceB[Device B]
     Selector --> DeviceN["Device N (...)"]
