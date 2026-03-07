@@ -14,7 +14,7 @@
     <p style="margin-bottom: var(--space-md); color: var(--text-muted);">{{ .Summary }}</p>
 
     <div class="posts-grid">
-      {{ $recentPages := first 3 .RegularPagesRecursive.ByDate.Reverse }}
+      {{ $recentPages := first 3 .RegularPagesRecursive.ByLastmod.Reverse }}
       {{ range $recentPages }}
       {{ $metaText := delimit (.Params.tags | default slice) ", " }}
       {{ partial "components/post-card.html"
