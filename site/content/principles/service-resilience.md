@@ -107,17 +107,6 @@ Choose your resilience pattern based on the failure mode you're designing agains
 
 **Decision Heuristic:** "Choose **idempotency first**, then **circuit breakers** at service boundaries, then **dedicated queues** for async work. Any retryable operation without idempotency is a latent duplicate bug."
 
-## Decision Framework
-
-Use this section to provide a clear heuristic or trade-off matrix for the principle. This should help the reader make a choice based on their specific constraints.
-
-| If you need... | ...choose this | because... |
-| :--- | :--- | :--- |
-| **Constraint A** | Option 1 | Benefit/Trade-off |
-| **Constraint B** | Option 2 | Benefit/Trade-off |
-
-**Decision Heuristic:** "Choose **[Tactic]** when **[Context]** is more important than **[Alternative]**."
-
 ## Cross-principle Notes
 
-Optionally, relate multiple principles to each other or reference other pages in the site that go deeper for a production example of this principle in practice.
+For idempotency, circuit breakers, async IO, and background job patterns in the context of networked services, see the [Networking & Services]({{< ref "/principles/networking-services" >}}) principles. For production examples, see the [Payment System]({{< ref "/designs/payment-system" >}}) design (idempotency in financial transactions) and the [Flash Sale]({{< ref "/designs/flash-sale" >}}) design (queue-based load management at extreme scale).

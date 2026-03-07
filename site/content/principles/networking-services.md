@@ -68,7 +68,7 @@ In Kubernetes, services provide built-in L4 load balancing. For more intelligent
 
 Use OAuth 2.0 flows for third-party integrations and implement token refresh logic with secure credential storage. Apply least privilege for service-to-service auth.
 
-For user-facing APIs, use OAuth 2.0 with PKCE (for public clients) or client credentials (for server-to-server). Store tokens in OS keychains or encrypted config, never in plaintext files or environment variables visible in process listings. Implement automatic token refresh with jitter to prevent synchronized refresh storms. For service-to-service auth, use mutual TLS (mTLS) or signed JWTs with short expiration.
+For user-facing APIs, use OAuth 2.0 with PKCE (for public clients) or client credentials (for server-to-server). Store sensitive secrets (API keys, tokens) in OS keychains or encrypted vaults, not in plaintext config files or environment variables that may be exposed via `ps` or `/proc` on shared hosts. (Environment variables are fine for non-secret configuration like service URLs and feature flags.) Implement automatic token refresh with jitter to prevent synchronized refresh storms. For service-to-service auth, use mutual TLS (mTLS) or signed JWTs with short expiration.
 
 See [Mailprune]({{< ref "/deep-dives/mailprune" >}}) for an example of implementing OAuth 2.0 flows with local secure credential storage for an email processing agent. For broader guidance on token and credential safety in automated systems, see the [Privacy & Agents]({{< ref "/principles/privacy-agents" >}}) principles.
 
@@ -78,7 +78,7 @@ See [Mailprune]({{< ref "/deep-dives/mailprune" >}}) for an example of implement
 
 Use short-lived stateless JWTs for fast, decentralized validation and long-lived stateful refresh tokens for revocable sessions. Neither alone is sufficient—the hybrid covers both performance and revocability.
 
-JWTs are verified by any service that holds the public key (fetched from a JWKS endpoint) without a network call to the Auth service. This is critical at scale: with 10k authentications/sec, making a database call per validation would bottleneck the entire platform. The tradeoff is irrevocability—a stolen JWT is valid until it expires. Counter this with short expiry windows (15 minutes) and refresh token rotation: each refresh issues a new refresh token and invalidates the old one, so reuse of a stolen refresh token is detectable.
+JWTs are verified by any service that holds the public key (fetched from a JWKS endpoint) without a network call to the Auth service. This is critical at scale: with 10k authentications/sec, making a database call per validation would bottleneck the entire platform. The tradeoff is irrevocability—a stolen JWT is valid until it expires. Counter this with short expiry windows (15 minutes) and refresh token rotation: each refresh issues a new refresh token and invalidates the old one, so reuse of a stolen refresh token is detectable. Note that rotation catches the *second* use of a stolen token (when the legitimate client's next refresh fails), not the first—short JWT expiry windows limit the damage window.
 
 **Anti-pattern — Long-lived JWTs:** Setting JWT expiry to 24 hours or longer for UX convenience. A stolen long-lived JWT provides day-long unauthorized access with no practical way to revoke it. Short expiry + refresh tokens gives you both convenience and a revocation safety valve.
 

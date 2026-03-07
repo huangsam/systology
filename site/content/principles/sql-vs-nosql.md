@@ -66,6 +66,8 @@ In a distributed system, you must tolerate partitions (P). This leaves a choice 
 
 - **NoSQL (often AP):** Prioritizes availability. During a partition, nodes might accept writes independently, resolving conflicts later (eventual consistency).
 
+> **Caveat:** CAP is a simplified model. In practice, modern databases like CockroachDB and Spanner offer tunable consistency levels, and many SQL deployments with async replicas (e.g., PostgreSQL streaming replication) behave more like AP systems. The C/A tradeoff is a spectrum, not a binary choice — evaluate where your database sits based on its replication and consensus configuration.
+
 ## Decision Framework
 
 Choose your database based on data structure and scale:
