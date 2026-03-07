@@ -33,7 +33,7 @@ graph TD
     User([User]) --> Edge[CDN / API Gateway]
 
     %% Write Path
-    Edge -->|POST /api/v1/data| WriteAPI[Write Service]
+    Edge -->|POST /api/v1/shorten| WriteAPI[Write Service]
     WriteAPI --> IDGen[ID Generator<br/>Snowflake]
     WriteAPI --> DBPrimary[DB Primary]
     DBPrimary --> DBReplica[DB Replica]
