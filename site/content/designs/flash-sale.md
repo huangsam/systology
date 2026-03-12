@@ -1,7 +1,7 @@
 ---
 title: "Flash Sale / Ticketmaster"
 description: "High-concurrency inventory systems for managing traffic spikes."
-summary: "A highly resilient system design engineered for seamlessly handling extreme traffic bursts; ensuring strictly limited inventory is definitively distributed fairly and consistently under unprecedented load."
+summary: "A high-resiliency architecture for extreme traffic bursts, utilizing virtual waiting rooms and atomic inventory management to ensure fair distribution under load."
 tags: ["algorithms", "concurrency", "database", "distributed-systems"]
 categories: ["designs"]
 draft: false
@@ -44,7 +44,7 @@ graph TD
     Payment --> Orders
 {{< /mermaid >}}
 
-The CDN/Edge layer queues bursting traffic into a Virtual Waiting Room. Admitted users pass through an API Gateway to a Reservation service that atomically claims inventory in Redis and writes a temporary hold to the sharded Orders DB. Checkout via the Payment service converts holds into confirmed orders.
+The CDN/Edge layer buffers bursting traffic into a Virtual Waiting Room. Admitted users pass through an API Gateway to a Reservation service that atomically claims inventory in Redis and writes a temporary hold to the sharded Orders DB. Checkout via the Payment service converts holds into confirmed orders.
 
 ## Data Design
 

@@ -12,7 +12,7 @@ date: "2026-02-16T10:22:20-08:00"
 
 Emit structured metrics for throughput, latency, and error rates alongside business KPIs using consistent naming conventions. This provides both technical and product perspectives on system health.
 
-Follow the RED method for services (Rate, Errors, Duration) and the USE method for resources (Utilization, Saturation, Errors). Use a consistent naming convention like `{service}_{component}_{metric}_{unit}` (e.g., `api_orders_request_duration_seconds`). Emit both counters and histograms—counters tell you *how many*, histograms tell you *how long*. Expose business KPIs (revenue per minute, signups per hour) alongside technical metrics so on-call engineers can correlate system behavior with business impact.
+Apply the RED method (Rate, Errors, Duration) for services and the USE method (Utilization, Saturation, Errors) for resources. Use a consistent naming convention like `{service}_{component}_{metric}_{unit}` (e.g., `api_orders_request_duration_seconds`). Emit both counters and histograms—counters track count, while histograms capture latency and size distributions. Expose business KPIs (revenue, signups) alongside technical metrics to correlate system behavior with real-world impact.
 
 See how [Chowist]({{< ref "/deep-dives/chowist" >}}) exposes structured metrics and logging for a twelve-factor web app.
 

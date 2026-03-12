@@ -1,7 +1,7 @@
 ---
 title: "Extensibility & Plugin Architecture"
 description: "Plugin systems, stable APIs, and safe system extensions."
-summary: "Architectural guidelines for highly modular systems; covering secure plugin architectures, maintaining stable API contracts, managing cross-language FFI bindings, and defining safe extension points."
+summary: "Guidelines for architecting modular systems with secure plugin boundaries, stable API contracts, and robust cross-language FFI bindings."
 tags: ["extensibility"]
 categories: ["principles"]
 draft: false
@@ -112,4 +112,4 @@ Choose your extensibility pattern based on the trust level and performance needs
 | **Plugin Diversity** | Stable C-ABI / FFI | Allows extensions to be written in any language. |
 | **Loose Coupling** | Registry/Discovery | Decouples host logic from concrete plugin types. |
 
-**Decision Heuristic:** "Choose **Interface Compliance Tests** before supporting more plugins. One buggy plugin that breaks invariants destroys the value of the entire ecosystem."
+**Decision Heuristic:** "Prioritize **Interface Compliance Tests** before supporting additional plugins. A single buggy extension that breaks invariants destroys the value of the entire ecosystem."

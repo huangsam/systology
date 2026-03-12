@@ -1,7 +1,7 @@
 ---
 title: "Payment System"
 description: "Reliable global payment processing system architectures."
-summary: "A resilient architectural design for a highly scalable payment gateway integration and internal ledger system; rigorously ensuring strict idempotency, eventual consistency, and deterministic failure recovery."
+summary: "A high-integrity architecture for global payment gateways and internal ledgers, emphasizing rigorous idempotency, eventual consistency, and deterministic recovery."
 tags: ["algorithms", "database", "distributed-systems"]
 categories: ["designs"]
 draft: false
@@ -149,11 +149,11 @@ def process_payment(idempotency_key, user_id, amount, currency):
 
 ### Trade-offs
 
-- **Sync vs. Async Gateway Calls:** Sync is simpler for clients but blocks during latency; Async (Webhooks) decouples latency but requires polling/WebSocket infra and client complexity.
+- **Sync vs. Async Gateway Calls:** Synchronous calls simplify client logic but introduce latency-induced blocking; Asynchronous flows (Webhooks) decouple latency but require polling or WebSocket infrastructure.
 
-- **Append-only vs. Mutable Ledger:** Append-only provides a tamper-evident audit trail but increases verbosity; Mutable is simpler for low-scale but risks integrity and auditing gaps.
+- **Append-only vs. Mutable Ledger:** Append-only ledgers provide a tamper-evident audit trail at the cost of verbosity; Mutable models are simpler for low-scale operations but risk integrity gaps.
 
-- **Single vs. Multi-gateway:** Single is operationally simple but risks lock-in/SPOF; Multi-gateway improves resilience but adds routing, reconciliation, and integration complexity.
+- **Single vs. Multi-gateway:** Single gateways are operationally simple but introduce vendor lock-in; Multi-gateway setups improve resilience but add routing and reconciliation complexity.
 
 ## Operational Excellence
 

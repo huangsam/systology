@@ -27,7 +27,7 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## Comparison to Industry Standards
 
-- **My Project:** A cross-platform, explanatory Sudoku engine that prioritizes auditability and human-like logic. It uniquely combines library, CLI, Python, and WASM interfaces into a single source.
+- **My Project:** A multi-target, explanatory Sudoku engine engineered for auditability and human-like logic. It uniquely integrates library, CLI, Python, and WASM interfaces from a single high-performance source.
 - **Industry:** Research-grade solvers (e.g., tdoku) use SIMD-vectorized constraint propagation and cache-line-aligned data structures for maximum throughput. Competition-grade generators use SAT solvers for difficulty classification.
 - **Gap Analysis:** To approach research-level performance, explore SIMD-based candidate elimination (processing multiple cells per instruction). On the qualitative side, the `bitflags` classifier now covers nearly all major human techniques (Swordfish, AIC), significantly narrowing the gap with professional grade scorers.
 

@@ -1,7 +1,7 @@
 ---
 title: "Ad Click Aggregator"
 description: "Real-time aggregation systems for ad click analytics data."
-summary: "A highly scalable system design engineered for continuously aggregating ad clicks at massive global scale; ensuring strict data deduplication, exactly-once processing, and sub-second reporting."
+summary: "A high-throughput streaming architecture for global ad click aggregation, ensuring exactly-once processing, robust deduplication, and sub-second reporting."
 tags: ["analytics", "streaming"]
 categories: ["designs"]
 draft: false
