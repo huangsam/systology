@@ -1,37 +1,39 @@
 ---
 title: "Rustoku"
 description: "A high-performance Sudoku solver implementation in Rust."
-summary: "A highly optimized Sudoku solver and generator engineered in Rust using advanced bitmasking and MRV heuristics; emphasizing speed, determinism, and clear, explainable solve traces."
+summary: "A highly optimized Sudoku engine engineered in Rust, featuring advanced human-like techniques, multi-platform support (Python, WASM), and microsecond-level performance."
 tags: ["algorithms", "performance", "rust"]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/rustoku"
+  demo: "https://sambyte.net/rustoku/"
 draft: false
-date: "2026-02-16T10:22:20-08:00"
+date: "2026-03-12T10:22:20-08:00"
 ---
 
 ## Context & Motivation
 
-**Context:** `Rustoku` implements fast Sudoku solving and generation in Rust, exposing both a library crate and a CLI. The core uses bitmasking for constraint tracking and Minimum Remaining Values (MRV) heuristics to guide backtracking, producing solve traces that map to human-understandable techniques.
+**Context:** `Rustoku` implements fast Sudoku solving and generation in Rust, exposing a library crate, a CLI, and native bindings for Python and WebAssembly. The core uses bitmasking for constraint tracking and Minimum Remaining Values (MRV) heuristics to guide backtracking, producing solve traces that map to complex human-understandable techniques.
 
-**Motivation:** I wanted to recall the lessons I learned in college from building a Sudoku solver in C++, but this time with a focus on Rust's strengths (safety, expressiveness) and modern algorithmic techniques. The challenge was to design a solver that is not only fast (sub-millisecond solves for easy/medium puzzles) but also produces deterministic outputs and human-readable solve paths. Additionally, I wanted to implement a generator that can produce puzzles of varying difficulty while ensuring uniqueness of the solution.
+**Motivation:** I wanted to recall the lessons I learned in college from building a Sudoku solver in C++, but this time with a focus on Rust's strengths (safety, expressiveness) and modern algorithmic techniques. The challenge was to design a solver that is not only fast (sub-millisecond solves) but also produces deterministic outputs and human-readable solve paths. By expanding to WASM and Python, I wanted to prove the portability of the Rust core across different ecosystems.
 
 ## The Local Implementation
 
-- **Current Logic:** Each cell's candidate set is represented as a `u16` bitmask where bit `i` indicates digit `i` is still possible. Constraint propagation uses bitwise AND/OR to update row, column, and box masks (27 `u16` values totaling 54 bytes) in O(1) per elimination. The solver selects the cell with the fewest remaining candidates (MRV heuristic), which empirically reduces backtracking depth by 3–5× compared to left-to-right scanning. The generator produces puzzles by filling a solved grid with a seeded RNG, then iteratively removing clues while verifying the solution remains unique by running the solver and checking that no second solution exists.
-- **Allocation discipline:** the inner solve loop avoids heap allocations entirely—the board is a fixed `[u8; 81]` array (81 bytes for cell values), with 81 `u16` candidate masks (162 bytes) tracking possibilities per cell. Candidate iteration uses `trailing_zeros()` on the bitmask rather than collecting into a `Vec`, and the backtracking stack uses a fixed-size array rather than a `Vec<Frame>`. This keeps the hot path in L1 cache and eliminates allocator overhead, which was critical for achieving microsecond-level solve times on easy/medium puzzles.
-- **Trace generation:** each solve step emits a structured record: `{ cell: (row, col), candidates: [digits], chosen: digit, technique: "naked_single" | "mrv_backtrack" | ... }`. These traces serve dual purposes—debugging incorrect solves and providing human-readable explanations of the solution path.
-- **Bottleneck:** Worst-case backtracking on adversarial puzzles (e.g., 17-clue minimal puzzles designed to maximize search depth) can still take milliseconds. Generator difficulty targeting uses a `bitflags`-based technique classifier that assigns up to 8 techniques per difficulty tier (easy, medium, hard, expert), enabling fine-grained puzzle generation beyond clue count alone.
+- **Advanced Techniques:** The solver has evolved beyond simple backtracking to include a full suite of human-like solving strategies. Using a `bitflags`-based classifier, it handles **Swordfish**, **Jellyfish**, **Skyscraper**, **W-Wings**, **XY-Wings**, and **Alternating Inference Chains (AIC)**. These allow the generator to produce puzzles with precise difficulty tiers (Easy to Expert) and provide explainable solve traces for any valid puzzle.
+- **Multi-Platform Architecture:** To support the web and Python, I implemented a `rustoku-lib::bind` layer. This internal module provides a simplified, serializable API that the `rustoku-wasm` and `rustoku-py` crates use to marshal data. This ensures the core solving logic remains "single-source" while appearing native to JavaScript and Python users.
+- **Allocation discipline:** The inner solve loop avoids heap allocations entirely. The central `Rustoku` struct has a tiny **1KB footprint** (81-byte board + 108-byte mask + 324-byte candidate cache), allowing it to live entirely in the CPU's L1 cache. Backtracking uses a fixed-size stack rather than a `Vec<Frame>`, eliminating allocator overhead and enabling microsecond-level solve times.
+- **Trace generation:** Each solve step emits a structured record: `{ cell: (row, col), candidates: [digits], chosen: digit, technique: "Swordfish" | "Naked Pair" | ... }`. These traces power the interactive web demo, showing users exactly how the engine derived a solution without brute force.
+- **Generator logic:** The generator produces puzzles by filling a solved grid with a seeded RNG, then iteratively removing clues while verifying the solution remains unique by running the solver in `solve_all` mode (utilizing **Rayon** for parallel search when needed).
 
 ## Comparison to Industry Standards
 
-- **My Project:** High-performance, explanatory solver with generation controls and human-like technique mapping. Prioritizes clarity and auditability alongside speed.
+- **My Project:** A cross-platform, explanatory Sudoku engine that prioritizes auditability and human-like logic. It uniquely combines library, CLI, Python, and WASM interfaces into a single source.
 - **Industry:** Research-grade solvers (e.g., tdoku) use SIMD-vectorized constraint propagation and cache-line-aligned data structures for maximum throughput. Competition-grade generators use SAT solvers for difficulty classification.
-- **Gap Analysis:** To approach research-level performance, explore SIMD-based candidate elimination (processing multiple cells per instruction). Difficulty classification is handled via a `bitflags`-based technique classifier (up to 8 techniques per tier across easy, medium, hard, and expert), closing the gap with competition-grade generators that use SAT solvers for difficulty scoring.
+- **Gap Analysis:** To approach research-level performance, explore SIMD-based candidate elimination (processing multiple cells per instruction). On the qualitative side, the `bitflags` classifier now covers nearly all major human techniques (Swordfish, AIC), significantly narrowing the gap with professional grade scorers.
 
 ## Risks & Mitigations
 
-- **Incorrect difficulty classification:** instrument empirical metrics (technique counting, backtracking depth) and tune generator heuristics. Maintain a labeled test set of puzzles with known difficulty grades.
+- **Technique Complexity:** With the addition of advanced techniques like AIC and wings, logic regressions are harder to spot. **Mitigation:** Replaced hardcoded unit tests with a **comprehensive CSV dataset** for batch validation, ensuring every technique correctly prunes candidates across thousands of edge cases.
 - **Performance regressions:** Criterion benchmarks run in CI with statistical comparison against the baseline. Alert on P95 regressions exceeding 5%.
 - **Bitmask correctness:** property-based tests with `proptest` verify that constraint propagation maintains invariants—every valid digit remains in the candidate set and every eliminated digit is genuinely constrained.
 - **Generator non-termination:** cap the number of clue-removal attempts and fall back to regeneration if uniqueness checking exceeds a timeout. Log seeds for puzzles that hit the cap for later investigation.
