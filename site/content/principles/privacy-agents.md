@@ -84,15 +84,29 @@ Implement a policy configuration file that defines: (1) allowed actions (whiteli
 
 **Anti-pattern — All-or-Nothing Permission:** An agent that either has full access or doesn't work. "Grant full email access or uninstall the app" is not a reasonable choice. Implement granular permissions so users can allow reading but not deleting, or allow processing attachments but not forwarding emails. Partial functionality is better than no functionality.
 
-## Decision Framework
+## Agentic Governance
+
+Establish automated guardrails to detect and mitigate "workslop," hallucinations, and unauthorized autonomous actions. Trust but verify.
+
+As agents become more autonomous, the risk of low-quality or incorrect output (workslop) increases. Implement "Linguistic Guardrails" (e.g., using a second model to check for hallucinations) and "Operational Guardrails" (e.g., maximum budget for a task, max number of iterations). Maintain a "Kill Switch" that can immediately suspend all autonomous activity across the system if an anomaly is detected.
+
+**Anti-pattern — Unchecked Autonomy:** Deploying an agent that can interact with external users or APIs without an independent verification layer. A hallucinated promise to a customer or an accidental data deletion is much harder to fix than it is to prevent.
+
+## Confidential Computing & Agents
+
+Use Trusted Execution Environments (TEEs) or confidential VMs to process the most sensitive agentic workloads.
+
+Confidential computing ensures that data is encrypted even while in use (in memory). For agents handling cryptographic keys, financial credentials, or highly private medical/legal data, running the agent logic inside a TEE (like Intel SGX or AWS Nitro Enclaves) provides a hardware-level guarantee that even the infrastructure provider cannot see the sensitive state.
+
+**Anti-pattern — PII in Plaintext Memory:** Processing unmasked sensitive data in standard cloud VMs where it could potentially be captured in memory dumps or accessed by privileged users. Use hardware-backed isolation for high-stakes agents.
 
 Choose your privacy pattern based on the sensitivity of the data and the required utility for the model:
 
 | If you need... | ...choose this | because... |
 | :--- | :--- | :--- |
+| **High Privacy Isolation**| Confidential Computing (TEEs) | Protects data in use from infrastructure access. |
+| **Autonomous Safety** | Agentic Guardrails | Detects hallucinations and limits blast radius of autonomous actions. |
 | **Maximum Safety** | Client-side Processing | Sensitive PII never leaves the user's device. |
 | **High Model Utility** | Tokenization/Masking | Replaces PII with synthetic IDs while keeping context. |
-| **Audit Compliance** | Local-only Logging | Ensures debugging data isn't centralized or persistent. |
-| **User Trust** | Differential Privacy | Adds noise to aggregates to prevent specific identification. |
 
 **Decision Heuristic:** "Choose **Client-side Execution** when the privacy risk involves high-value PII (keys, auth, identity) that the model doesn't need to see."

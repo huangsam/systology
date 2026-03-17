@@ -94,7 +94,22 @@ See the [Monitoring & Observability]({{< ref "/principles/monitoring" >}}) princ
 
 **Anti-pattern — Set and Forget:** Building a retrieval system, shipping it, and never monitoring retrieval quality. Over months, document additions, deletions, and updates cause the index to drift. New query patterns emerge that the original model handles poorly. Without monitoring, quality degrades silently until users complain—by which time trust is already eroded.
 
-## Decision Framework
+## Long-context RAG Dynamics
+
+Leverage large context windows (128K–1M+ tokens) to simplify retrieval, but don't abandon RAG entirely. Use RAG for initial filtering and long-context for final synthesis to balance cost and accuracy.
+
+Models with massive context windows allow you to inject entire documents or multi-document sets directly into the prompt. This eliminates the need for complex chunking and semantic search for smaller corpora. However, "needle-in-a-haystack" performance still varies; models can "lose" information in the middle of extremely long contexts. Use context caching (e.g., Gemini's context caching) to reduce latency and cost when querying the same large document set repeatedly.
+
+**Anti-pattern — Infinite Context Hoarding:** Blindly dumping 500K tokens into every prompt because the model supports it. This leads to high latency, astronomical costs, and degraded reasoning quality as the model struggles to attend to the most relevant information. RAG remains a critical "relevance filter" for the long-context window.
+
+## Agentic Retrieval Loops
+
+Enable agents to decide *when* and *what* to search for through multi-turn reasoning, rather than relying on a single static query.
+
+In an agentic workflow, retrieval is a tool. The agent may search, analyze the results, realize a gap, and search again with a more refined query (e.g., "Search for X," then "Search for Y mentioned in the previous results"). This "Self-Correction" or "Multi-hop" retrieval is far more robust for complex questions than "One-shot" retrieval.
+
+**Anti-pattern — Static Query Assumption:** Assuming a single user query is sufficient for retrieval. Most complex questions require multiple lookups or clarification steps. Design your retrieval system as a tool that an agent can invoke iteratively.
+
 
 Choose your retrieval strategy based on the structure of the data and the type of queries being performed:
 
@@ -102,7 +117,8 @@ Choose your retrieval strategy based on the structure of the data and the type o
 | :--- | :--- | :--- |
 | **Exact Keyword Match** | Lexical Search (BM25) | Best for names, IDs, and specific technical terminology. |
 | **Semantic Meaning** | Vector Search (RAG) | Understands intent and concepts rather than just matching characters. |
-| **Complex Relations** | Graph Search | navigates connections between entities (e.g., social networks). |
-| **Real-time Updates** | LSM-based Stores | Optimized for high write volumes and point lookups for fresh data. |
+| **Complex Relations** | Graph Search | Navigates connections between entities (e.g., social networks). |
+| **Long-form Narrative** | Long-context Windows | Preserves document structure and nuanced context without chunking. |
+| **Iterative Discovery**| Agentic Tool-use | Handles multi-step research where subsequent queries depend on initial results. |
 
 **Decision Heuristic:** "Choose **Hybrid Search** (Lexical + Vector) when accuracy is more important than pure semantic novelty."

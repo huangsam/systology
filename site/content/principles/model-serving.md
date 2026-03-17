@@ -81,14 +81,30 @@ Emit: `inference_latency_p99`, `batch_fill_ratio`, `gpu_utilization`, `model_ver
 
 See the [Monitoring & Observability]({{< ref "/principles/monitoring" >}}) principles for SLO construction and alerting patterns that apply directly to inference services.
 
-## Decision Framework
+## Context Caching for Agentic Workflows
+
+Implement prefix caching to reduce latency and cost for long-running conversations with large system prompts or document-heavy contexts.
+
+Prefix caching stores the KV-cache of a fixed prefix (e.g., a system prompt + a set of retrieval documents) so that subsequent requests with the same prefix can skip re-processing it. This is highly effective for agents that maintain a long history or frequently reference the same information. Use a TTL-based cache for frequent prefixes and purge based on least-recently-used (LRU) patterns.
+
+**Anti-pattern — Re-processing Identical Contexts:** Sending the exact same 50K token document set to an LLM for every turn of an agentic loop. This multiplies costs and introduces unnecessary latency. Use model-native or provider-specific context caching whenever possible.
+
+## Specialized SLM Serving
+
+Deploy Small Language Models (SLMs) for specialized sub-tasks like routing, summarization, or structured data extraction to optimize cost and latency.
+
+Modern SLMs (e.g., Phi-3, Mistral-7B, Phi-4) often match larger models on specific, constrained tasks. In a multi-agent system, route low-complexity tasks to SLMs and reserve the "frontier" models (GPT-4, Claude 3.5) for complex reasoning and final synthesis. Quantize SLMs (4-bit, 8-bit) to run them efficiently on commodity hardware or share GPU memory (MPS).
+
+**Anti-pattern — Over-provisioning Reasoning:** Using the most expensive frontier model for trivial tasks like "classify this email into 4 categories" or "summarize this 200-word paragraph." SLMs provide better throughput and lower costs for these high-volume sub-tasks.
 
 Choose your model serving configuration based on the primary constraint for your workload:
 
 | If you need... | ...choose this | because... |
 | :--- | :--- | :--- |
 | **Lowest P99 Latency** | Dedicated GPU + no sharing | Eliminates noisy-neighbor contention; predictable tail latency. |
-| **Maximum Throughput** | Micro-batching + shared GPU (MPS) | Amortizes kernel launch cost; maximizes GPU utilization. |
+| **High-Volume Throughput**| Micro-batching + shared GPU (MPS) | Amortizes kernel launch cost; maximizes GPU utilization. |
+| **Agentic Latency** | Context Caching (Prefix Caching) | Skips re-processing large static prefixes; reduces TTFT (Time to First Token). |
+| **Cost Optimization** | Specialized SLMs (Quantized) | Handles low-complexity sub-tasks at a fraction of larger model costs. |
 | **Safe Rollout** | Canary (5–10%) + metrics gate | Limits blast radius; automated promotion prevents human error. |
 | **Graceful Degradation** | Distilled fallback model (always warm) | Preserves SLA compliance during primary failure; loaded in memory, not fetched on demand. |
 | **Cost Efficiency** | Multi-model GPU sharing (MPS) | Keeps utilization high for many small models; acceptable when latency SLAs are loose. |

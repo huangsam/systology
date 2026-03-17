@@ -116,15 +116,29 @@ See the [Privacy & Agents]({{< ref "/principles/privacy-agents" >}}) principles 
 
 **Anti-pattern — Logging Request Bodies:** Logging full HTTP request and response bodies for debugging. This captures passwords, tokens, personal data, and sensitive business data in your log aggregator—which may not have the same access controls as your application database. Log metadata (status codes, durations, paths) and mask or omit bodies.
 
-## Decision Framework
+## Reasoning Trace Observability
+
+Capture and visualize the "thoughts" and multi-step reasoning of agentic workflows. Monitoring the final result is insufficient; you must monitor the path taken to get there.
+
+Instrument agentic loops to emit "Reasoning Traces" (Chain-of-Thought logs) alongside standard tool-use events. This allows developers to debug *where* an agent went off-track: was it a bad retrieval, a flawed plan, or a hallucinated tool output? Store these traces in a tree structure that maps to the multi-agent hierarchy.
+
+**Anti-pattern — Black-box Agents:** Running autonomous loops that only emit "Success" or "Failure" at the end. Without internal reasoning traces, debugging a failure is impossible, and users cannot build trust in the system's decisions.
+
+## Agentic Cost Monitoring
+
+Track and cap the cumulative cost of autonomous loops in real-time. Agentic workflows can trigger hundreds of API calls, leading to rapid cost escalation.
+
+Implement a "Session Budget" or "Task Quota" at the orchestration layer. Track the total token usage and cost across all sub-agents and tools for a single request. Set hard limits that pause the agent and notify the operator if the budget is exceeded. Predict total task cost based on the initial plan and historical averages to provide early warnings.
+
+**Anti-pattern — Unbounded Token Spend:** Letting an agent run in a retry loop or a "searching for a needle" loop without a cost cap. A single autonomous task could accidentally spend hundreds of dollars in LLM API fees if it gets stuck.
 
 Choose your monitoring strategy based on the signal-to-noise ratio you need for your operational scale:
 
 | If you need... | ...choose this | because... |
 | :--- | :--- | :--- |
+| **Agentic Debugging** | Reasoning Traces | Visualizes internal logic and tool-use sequences. |
+| **Cost Control** | Token Quotas & Budgets | Prevents runaway costs in autonomous loops. |
 | **High Granularity** | Structured Logging | Enables deep-trace debugging and per-request analysis. |
 | **High Aggregate Perf**| Metrics (Counters/Gauges)| Lightweight and perfect for real-time dashboards/alerts. |
-| **User Flow Context** | Distributed Tracing | Visualizes bottlenecks across service boundaries. |
-| **Alert Accuracy** | SLI/SLO Targets | Focuses on user-impact rather than server-level noise. |
 
 **Decision Heuristic:** "Choose **Metrics** for detection and **Traces** for investigation. Don't drown in logs before you have a high-level dashboard to guide the search."
