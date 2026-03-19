@@ -671,11 +671,6 @@ span.muted {
   stroke-width: 2;
 }
 
-.mermaid .flowchart-link {
-  stroke: var(--muted);
-  stroke-width: 1.5;
-}
-
 .mermaid text {
   fill: var(--text);
   font-family: inherit;
@@ -684,15 +679,6 @@ span.muted {
 [data-theme="dark"] .mermaid {
   background: var(--blockquote-bg);
   border-color: var(--border);
-}
-
-[data-theme="dark"] .mermaid .flowchart-link {
-  stroke: var(--text) !important;
-}
-
-[data-theme="dark"] .mermaid .marker {
-  stroke: var(--text) !important;
-  fill: var(--text) !important;
 }
 
 /* ==============================
