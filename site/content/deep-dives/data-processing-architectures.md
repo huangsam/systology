@@ -19,6 +19,31 @@ date: "2026-02-16T10:22:20-08:00"
 
 **Motivation:** Choosing the right framework involves balancing latency, throughput, time semantics, and runner portability. A batch-first approach (Spark) is often the most reliable for rebuilding historical data, while streaming (Flink/Beam) is required for real-time insights. Exploring all three surfaces the practical tradeoffs between these paradigms.
 
+{{< mermaid >}}
+graph TD
+    subgraph Unified ["Unified Layer"]
+        B[Beam API]
+    end
+
+    B -- "Translates to" --> S
+    B -- "Translates to" --> F
+    B -- "Translates to" --> D
+
+    subgraph Batch ["Batch Execution"]
+        S[Spark] --> S_Opt[Catalyst Optimizer]
+        S_Opt --> S_Exec[Tungsten Execution]
+    end
+
+    subgraph Stream ["Streaming Execution"]
+        F[Flink] --> F_State[RocksDB State]
+        F_State --> F_Sem[Event-time / Watermarks]
+    end
+
+    subgraph Managed ["Cloud Execution"]
+        D[Cloud Dataflow]
+    end
+{{< /mermaid >}}
+
 ## Approach 1: spark-trial (Batch ETL)
 
 - **Overview:** A Scala/SBT project performing end-to-end ETL on NYC Yellow Taxi trip data. It demonstrates schema alignment across multiple years of parquet data, statistical aggregations (yearly/quarterly), and rigorous validation.
@@ -45,9 +70,11 @@ date: "2026-02-16T10:22:20-08:00"
 | Feature | Spark (Batch) | Beam (Portable) | Flink (Native) |
 | :--- | :--- | :--- | :--- |
 | **Primary Use** | Historical Rebuilds / ETL | Multi-cloud / Unified | Low-latency Streaming |
-| **API Focus** | Schema & SQL (Dataset) | Portability (PCollection) | Stateful Control (ProcessFunction) |
+| **API Focus** | Schema & SQL (Dataset) | Portability (PTransform) | Stateful Control (ProcessFunction) |
 | **Fault Tolerance**| RDD Lineage / Checkpoints | Runner-dependent | Incremental Checkpoints (RocksDB) |
 | **Time Semantics** | N/A (Batch) | Event-time (Portable) | Event-time (Native) |
+| **Typical Latency**| Minutes to Hours | Seconds to Minutes | Sub-second |
+| **Op Complexity** | Moderate | High (Indirection) | High (State Mgmt) |
 
 Spark's strength is its robust batch ecosystem and SQL optimization, making it the baseline for accurate, rebuiltable historical data. Beam offers the highest abstraction, trading off some native performance for the ability to swap runners as infrastructure evolves. Flink provides the most granular control over state and time, making it the pragmatic choice for high-stakes streaming systems where latency and operator-level tuning matter most.
 
