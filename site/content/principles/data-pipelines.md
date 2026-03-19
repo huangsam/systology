@@ -78,7 +78,7 @@ Use Apache Beam for cross-runner portability when deployment flexibility matters
 
 Beam's unified model lets you write once and deploy on Flink, Spark, Dataflow, or Samza. But each runner has unique strengths: Flink's savepoints and exactly-once, Spark's SQL optimizer, Dataflow's autoscaling. When you need those features, the Beam abstraction becomes a constraint rather than a benefit.
 
-See [Streaming Frameworks]({{< ref "/deep-dives/streaming-frameworks" >}}) for a hands-on comparison of Beam's portable model against native Flink features.
+See [Data Processing Architectures]({{< ref "/deep-dives/data-processing-architectures" >}}) for a hands-on comparison of Beam's portable model against native Flink features.
 
 **Anti-pattern — Abstraction Lock-in:** Choosing Beam for portability but then using runner-specific transforms everywhere, getting neither portability nor native performance. Commit to one approach: portable Beam *or* native runner APIs. The middle ground is the worst of both worlds.
 
@@ -88,7 +88,7 @@ Provide deterministic test datasets and record seed values and runtime configs t
 
 Structure pipeline tests in three tiers: (1) unit tests for individual transforms with in-memory collections, (2) integration tests that run mini-pipelines against local runners with fixture data, and (3) end-to-end regression tests that compare output against golden datasets. Record the full configuration (runner version, parallelism, configs) alongside test results.
 
-See [Spark Trial]({{< ref "/deep-dives/spark-trial" >}}) for an end-to-end ETL example demonstrating reproducible aggregations across schema drift in a batch context.
+See [Data Processing Architectures]({{< ref "/deep-dives/data-processing-architectures" >}}) for an end-to-end ETL example demonstrating reproducible aggregations across schema drift in a batch context.
 
 **Anti-pattern — "It Worked on My Laptop":** Testing only with the DirectRunner / local mode and assuming it'll behave identically on a cluster. Runner-specific behaviors (serialization, parallelism, shuffle) surface only at scale. Test on a staging cluster with production-like data volumes before deploying.
 
