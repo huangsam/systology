@@ -51,5 +51,5 @@ When adding a Mermaid diagram:
 
 When deciding between top-down (TD) and left-right (LR) graph orientations:
 
-- Use `TD` for system topologies, where the flow is naturally hierarchical
-- Use `LR` for data/processing pipelines, where the flow is more linear and left-to-right
+- Use `TD` for system topologies, where flow is hierarchical or has high branch factor
+- Use `LR` for data pipelines, where flow is linear or has left-to-right tendencies
