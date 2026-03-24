@@ -29,9 +29,9 @@ Design a distributed web crawler (e.g., the ingestion agent for a search engine,
 
 {{< mermaid >}}
 graph TD
-    Seed[Seed URLs] --> Frontier[(URL Frontier Queue)]
+    A[Seed URLs] --> B[(URL Frontier Queue)]
 
-    Frontier --> Workers[Fetcher Workers]
+    B --> Workers[Fetcher Workers]
 
     Workers -.->|1. Resolve| DNS[Custom DNS Cache]
     Workers -.->|2. Check| Robots[Robots.txt Cache]

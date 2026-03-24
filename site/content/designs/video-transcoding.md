@@ -2,7 +2,7 @@
 title: "Video Transcoding & Streaming Pipeline"
 description: "Video transcoding systems through distributed pipelines."
 summary: "An inherently scalable video ingestion and transcoding system architecture; asynchronously chunking heavy media, extracting actionable features, and steadily outputting adaptive bitrates via worker pools."
-tags: ["data-pipelines", "distributed-systems", "media", "streaming"]
+tags: ["data-pipelines", "distributed-systems", "infrastructure", "media", "streaming", "video"]
 categories: ["designs"]
 draft: false
 date: "2026-02-24T22:34:51-08:00"
@@ -31,6 +31,7 @@ Design a video processing platform (like YouTube or Netflix) capable of ingestin
 
 {{< mermaid >}}
 graph TD
+    A[Input Storage] --> B[Job Scheduler]
     Users --> GW[API Gateway]
     GW --> Uploader[Upload Service]
     Uploader --> RawStorage[Raw Object Store]
