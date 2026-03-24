@@ -2,7 +2,7 @@
 title: "Data Processing Architectures"
 description: "Comparative analysis of batch and streaming frameworks."
 summary: "A deep architectural comparison of data processing pipelines: evaluating Apache Spark's batch ETL model against Apache Beam's portable unified model and Apache Flink's native API for stateful processing."
-tags: ["data-pipelines", "etl", "monitoring", "streaming"]
+tags: ["data-pipelines", "monitoring", "streaming"]
 categories: ["deep-dives"]
 links:
   github:
