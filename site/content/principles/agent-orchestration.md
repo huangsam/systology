@@ -2,7 +2,7 @@
 title: "Agent Orchestration"
 description: "Coordinating multi-agent systems and long-running workflows."
 summary: "Principles for architecting autonomous multi-agent systems; focusing on stateful orchestration, unified memory across agents, hand-off protocols, and human-in-the-loop governance for long-running workflows."
-tags: ["distributed-systems", "ml"]
+tags: [distributed-systems, ml]
 categories: ["principles"]
 draft: false
 date: "2026-03-17T09:54:30-07:00"

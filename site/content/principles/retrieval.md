@@ -2,7 +2,7 @@
 title: "Retrieval & RAG"
 description: "Building robust information retrieval systems and RAG stacks."
 summary: "Operational principles for robust search retrieval and RAG pipelines; focusing on hybrid lexical-semantic retrieval techniques, long-term embedding model stability, automated ranking evaluation, and privacy-aware indexing."
-tags: ["retrieval"]
+tags: [retrieval]
 categories: ["principles"]
 draft: false
 date: "2026-02-16T10:22:20-08:00"

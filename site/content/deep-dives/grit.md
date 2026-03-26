@@ -2,7 +2,7 @@
 title: "Grit"
 description: "A modular version control system with unique architecture."
 summary: "A from‑scratch Git implementation in Rust; exploring content-addressable storage, plumbing/porcelain layering, and high-performance object caching."
-tags: ["algorithms", "extensibility", "performance", "rust", "vcs"]
+tags: [algorithms, extensibility, performance, systems-programming, vcs]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/grit"

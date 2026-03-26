@@ -2,7 +2,7 @@
 title: "Algorithms & Performance"
 description: "Algorithms, performance optimization, and design patterns."
 summary: "Principles for clear algorithms and effective performance engineering; utilizing strict micro-benchmarking, careful memory allocation discipline, avoiding cache misses, and deterministic random generators."
-tags: ["algorithms", "performance"]
+tags: [algorithms, performance]
 categories: ["principles"]
 draft: false
 date: "2026-02-16T10:22:20-08:00"

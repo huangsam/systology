@@ -2,7 +2,7 @@
 title: "Video Analysis"
 description: "Video feature extraction: native vs cross-platform flows."
 summary: "An exploration of multimodal video feature extraction comparing Apple-native frameworks (Vision, AVFoundation, Core Image) against cross-platform C++/Python toolchains (OpenCV, pybind11) for ML prep."
-tags: ["extensibility", "feature-extraction", "media", "onboarding"]
+tags: [extensibility, media, ml]
 categories: ["deep-dives"]
 links:
   github:

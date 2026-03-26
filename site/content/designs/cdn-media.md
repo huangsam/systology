@@ -2,7 +2,7 @@
 title: "Global CDN Media Serving"
 description: "A distributed CDN architecture for global media delivery."
 summary: "A robust edge-optimized CDN-backed media delivery architecture; designed explicitly for seamless, highly available global media serving with completely decoupled background upload processing."
-tags: ["caching", "media", "monitoring", "networking", "performance"]
+tags: [caching, media, monitoring, networking, performance]
 categories: ["designs"]
 draft: false
 date: "2026-02-16T16:32:50-08:00"

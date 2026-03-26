@@ -36,8 +36,11 @@ TAG_ALIASES = {
     "google-cloud-storage": "gcs",
     "amazon-s3": "s3",
     "aws-s3": "s3",
+    "feature-extraction": "ml",
+    "rust": "systems-programming",
 }
 
 TAG_REMOVALS = [
     "spark-trial",
+    "onboarding",
 ]

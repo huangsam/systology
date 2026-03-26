@@ -2,7 +2,7 @@
 title: "Extensibility & Plugin Architecture"
 description: "Plugin systems, stable APIs, and safe system extensions."
 summary: "Guidelines for architecting modular systems with secure plugin boundaries, stable API contracts, and robust cross-language FFI bindings."
-tags: ["extensibility"]
+tags: [extensibility]
 categories: ["principles"]
 draft: false
 date: "2026-02-16T10:22:20-08:00"
