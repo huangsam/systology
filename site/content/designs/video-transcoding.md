@@ -2,7 +2,7 @@
 title: "Video Transcoding & Streaming Pipeline"
 description: "Video transcoding systems through distributed pipelines."
 summary: "An inherently scalable video ingestion and transcoding system architecture; asynchronously chunking heavy media, extracting actionable features, and steadily outputting adaptive bitrates via worker pools."
-tags: ["data-pipelines", "distributed-systems", "infrastructure", "media", "streaming", "video"]
+tags: ["data-pipelines", "distributed-systems", "media", "streaming"]
 categories: ["designs"]
 draft: false
 date: "2026-02-24T22:34:51-08:00"
@@ -30,27 +30,23 @@ Design a video processing platform (like YouTube or Netflix) capable of ingestin
 ## High-Level Architecture
 
 {{< mermaid >}}
-graph TD
-    A[Input Storage] --> B[Job Scheduler]
+graph LR
     Users --> GW[API Gateway]
     GW --> Uploader[Upload Service]
     Uploader --> RawStorage[Raw Object Store]
-    Uploader --> Queue[Kafka/Message Queue]
-    Queue --> Chunker[Chunking Service]
-    Chunker --> ChunkStorage[Chunk Object Store]
-    Chunker --> TaskQueue[Job Queue]
-    TaskQueue --> Workers[Transcoder Worker Pool]
-    Workers --> Merger[Merger Service]
-    Merger --> CDNStorage[CDN Origin Store]
+    Uploader --> Queue[Kafka Queue]
+    Queue --> Workers[Transcoder Worker Pool]
+    Workers -- "Range Requests" --> RawStorage
+    Workers --> CDNStorage[CDN Origin Store]
+    Workers --> Metadata[(Job Metadata)]
 {{< /mermaid >}}
 
-The architecture splits the massive problem of transcoding a single large file into a MapReduce-like pattern. An initial service splits the video into small chunks (e.g., 5 seconds each). A horizontally scaled worker pool processes these chunks independently. Finally, a merger service reassembles the processed chunks into continuous streaming manifests.
+The architecture leverages a "MapReduce" pattern optimized for large-scale media. Instead of an explicit preprocessing stage, worker nodes pull video metadata from a queue and use HTTP Range Requests to fetch and transcode logical chunks independently. This "on-the-fly" chunking reduces intermediate storage overhead and IO latency. Finally, workers or a lightweight coordinator finalize the streaming manifests.
 
 ## Data Design
 
 ### Storage Layers
-- **Raw Object Store (S3-compatible):** Stores the original user upload. Usually configured for high durability (Standard tier).
-- **Chunk Object Store:** Temporary cache for intermediate 5-second raw chunks. Requires high throughput/low latency as workers constantly pull from here.
+- **Raw Object Store (S3-compatible):** Stores the original user upload. High-durability layer serving as the source for all transcoder range requests.
 - **CDN Origin Store:** The final destination for transcoded segments and `.m3u8` manifests.
 
 ### Video Metadata Schema (SQL)
@@ -78,10 +74,10 @@ def process_transcode_task(queue, obj_store):
             continue
 
         try:
-            # 2. Download the 5-second raw video chunk
-            raw_chunk = obj_store.download(task.s3_key)
+            # 2. Download specific byte range for the chunk
+            raw_chunk = obj_store.download_range(task.s3_key, task.byte_range)
 
-            # 3. Transcode using hardware acceleration or libx264
+            # 3. Transcode using hardware acceleration
             transcoded_chunk = ffmpeg_transcode(raw_chunk, target_res=task.resolution)
 
             # 4. Upload the processed chunk to the CDN origin store
@@ -100,7 +96,7 @@ def process_transcode_task(queue, obj_store):
 
 ### Deep Dive
 
-- **Chunking (Map Phase):** Instead of one server transcoding a 2-hour movie, we split it into 5-second chunks. This creates 1,440 independent chunks that a worker pool can process in parallel, dramatically reducing end-to-end time.
+- **On-the-fly Chunking:** Instead of pre-splitting files, workers use standard HTTP range headers to fetch only the data needed for a specific time-slice (e.g., 5 seconds). This eliminates the "Chunking Service" bottleneck and reduces data duplication across storage buckets.
 - **Worker Pools:** The transcoders run FFmpeg. They are stateless, pulling a chunk, calculating the new resolution, and pushing the artifact. See the [Video Analysis]({{< ref "/deep-dives/video-analysis" >}}) deep-dive for extraction logic.
 - **Resumable Uploads:** The edge uses multipart uploads (like S3 Multipart API) so if a user drops connection, they only retry the last 5MB chunk.
 - **Adaptive Bitrate Streaming (ABS):** The system outputs fragments and a playlist file (like HLS). The client player dynamically chooses the 1080p or 480p chunks based on current network bandwidth.

@@ -2,7 +2,7 @@
 title: "Notification System"
 description: "High-throughput, multi-channel notification dispatch architecture."
 summary: "A robust architectural design for a high-throughput, multi-channel notification service supporting push, email, and SMS; featuring strict prioritization queues, tiered rate limiting, and reliable delivery tracking."
-tags: ["distributed-systems", "queues"]
+tags: ["distributed-systems", "networking", "performance", "queues"]
 categories: ["designs"]
 draft: false
 date: "2026-02-17T10:27:08-08:00"
@@ -33,7 +33,7 @@ Build a central notification system that allows various internal services to sen
 ## High-Level Architecture
 
 {{< mermaid >}}
-graph TD
+graph LR
     A[Application Services] --> B[Notification Service]
     B --> Router
     Router --> HQ[High Q]
