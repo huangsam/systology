@@ -41,7 +41,8 @@
   {{ partial "components/pseudocode-scripts.html" . }}
 
   <!-- Mermaid diagrams -->
-  <script src="{{ relURL "js/mermaid.min.js" }}"></script>
+  {{ $mermaid := resources.Get "js/mermaid.min.js" | fingerprint }}
+  <script src="{{ $mermaid.RelPermalink }}" integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous"></script>
 
   {{ $main := resources.Get "js/main.js" | minify | fingerprint }}
   <script src="{{ $main.RelPermalink }}" defer></script>
