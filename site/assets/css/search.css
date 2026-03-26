@@ -27,7 +27,7 @@
   cursor: pointer;
 }
 
-[data-theme="dark"] .site-search-overlay {
+[data-theme='dark'] .site-search-overlay {
   background: rgba(0, 0, 0, 0.6);
 }
 
@@ -51,7 +51,7 @@
   animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-[data-theme="dark"] .site-search-modal {
+[data-theme='dark'] .site-search-modal {
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.5),
     0 10px 10px -5px rgba(0, 0, 0, 0.25);
@@ -84,8 +84,7 @@
 
 .site-search-input {
   width: 100%;
-  padding: var(--space-md) var(--space-md) var(--space-md)
-    calc(var(--space-xl) + var(--space-lg));
+  padding: var(--space-md) var(--space-md) var(--space-md) calc(var(--space-xl) + var(--space-lg));
   font-size: 1.1rem;
   border: none;
   background: transparent;

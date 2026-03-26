@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Open events
-  toggles.forEach(btn => {
+  toggles.forEach((btn) => {
     btn.addEventListener('click', () => {
       const modalId = btn.getAttribute('aria-controls');
       openModal(modalId);
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Close events on buttons
-  closeButtons.forEach(btn => {
+  closeButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const modal = e.target.closest('.pseudocode-modal');
       closeModal(modal);
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Close events on background click
-  overlays.forEach(overlay => {
+  overlays.forEach((overlay) => {
     overlay.addEventListener('click', (e) => {
       const modal = e.target.closest('.pseudocode-modal');
       closeModal(modal);

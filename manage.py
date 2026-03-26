@@ -32,10 +32,8 @@ MAX_DESC_LEN = 160
 SITE_DIR = "site"
 CONTENT_DIR = "content"
 STATIC_DIR = "static"
+ASSETS_DIR = "assets"
 ARCHETYPES_DIR = "archetypes"
-CSS_FILES = [
-    f"{SITE_DIR}/{STATIC_DIR}/css/styles.css",
-]
 
 # File Constants
 MD_EXT = ".md"
@@ -387,22 +385,6 @@ def run_tagup(content_dir: Path) -> None:
     print(f"  Applied tags update in {count} files")
 
 
-# --- Logic: format_project ---
-
-
-def format_css(file_path: str) -> None:
-    path = Path(file_path)
-    if not path.exists():
-        return
-    try:
-        subprocess.run(
-            ["prettier", "--write", str(path)], check=True, capture_output=True
-        )
-        print(f"  Formatted {file_path}")
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        pass
-
-
 def process_md_format(file_path: Path) -> bool:
     try:
         content = file_path.read_text(encoding="utf-8")
@@ -417,16 +399,12 @@ def process_md_format(file_path: Path) -> bool:
     return False
 
 
-def run_format_project(content_dir: Path, archetypes_dir: Path) -> None:
+def run_format_project(site_dir: Path, content_dir: Path, archetypes_dir: Path) -> None:
     print("Running format_project...")
-    # CSS
-    for css in CSS_FILES:
-        try:
-            # handle relative paths from CWD if needed, but here we assume running from root
-            if os.path.exists(css):
-                format_css(css)
-        except Exception:
-            pass
+    # CSS & JS in assets (respects .prettierignore)
+    assets_dir = site_dir / ASSETS_DIR
+    if assets_dir.exists():
+        format_prettier(str(assets_dir))
 
     # Markdown
     for d in [content_dir, archetypes_dir]:
@@ -438,6 +416,19 @@ def run_format_project(content_dir: Path, archetypes_dir: Path) -> None:
                 count += 1
         if count > 0:
             print(f"  Formatted {count} files in {d}")
+
+
+def format_prettier(file_path: str) -> None:
+    path = Path(file_path)
+    if not path.exists():
+        return
+    try:
+        subprocess.run(
+            ["prettier", "--write", str(path)], check=True, capture_output=True
+        )
+        print(f"  Formatted {file_path}")
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        pass
 
 
 # --- Logic: tag_frequency ---
@@ -682,7 +673,7 @@ def main():
         run_add_summary_desc(content_dir)
         run_update_links(content_dir)
         run_sort_tags(content_dir)
-        run_format_project(content_dir, archetypes_dir)
+        run_format_project(site_dir, content_dir, archetypes_dir)
     elif args.command == "stats":
         run_tag_stats(content_dir, args.min_count, args.top, args.json, args.show_files)
     elif args.command == "tagup":

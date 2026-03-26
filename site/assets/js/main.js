@@ -15,11 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
         tertiaryColor: '#e6e9ee',
         noteBkgColor: '#f0f9ff',
         noteBorderColor: '#2563eb',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       },
       flowchart: { useMaxWidth: true, curve: 'linear' },
       sequence: { useMaxWidth: true },
-      gantt: { useWidth: undefined }
+      gantt: { useWidth: undefined },
     });
   }
 
@@ -29,7 +29,9 @@ document.addEventListener('DOMContentLoaded', function () {
     toggle.addEventListener('click', function () {
       var dark = document.documentElement.getAttribute('data-theme') === 'dark';
       document.documentElement.setAttribute('data-theme', dark ? '' : 'dark');
-      try { localStorage.setItem('theme', dark ? 'light' : 'dark'); } catch (e) { }
+      try {
+        localStorage.setItem('theme', dark ? 'light' : 'dark');
+      } catch (e) {}
     });
   }
 });

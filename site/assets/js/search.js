@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
   function loadIndex() {
     if (indexLoaded || !indexUrl) return;
     fetch(indexUrl)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         searchIndex = data;
         indexLoaded = true;
       })
-      .catch(err => console.error('Failed to load search index:', err));
+      .catch((err) => console.error('Failed to load search index:', err));
   }
 
   // Open Modal
@@ -62,11 +62,14 @@ document.addEventListener('DOMContentLoaded', function () {
     searchResultsList.style.display = 'none';
   }
 
-  openButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => { e.preventDefault(); openSearch(); });
+  openButtons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openSearch();
+    });
   });
 
-  closeButtons.forEach(btn => {
+  closeButtons.forEach((btn) => {
     btn.addEventListener('click', closeSearch);
   });
 
@@ -78,8 +81,12 @@ document.addEventListener('DOMContentLoaded', function () {
   // Returns how many times needle appears in haystack (non-overlapping, case-sensitive).
   function countOccurrences(haystack, needle) {
     if (!needle) return 0;
-    let count = 0, pos = 0;
-    while ((pos = haystack.indexOf(needle, pos)) !== -1) { count++; pos++; }
+    let count = 0,
+      pos = 0;
+    while ((pos = haystack.indexOf(needle, pos)) !== -1) {
+      count++;
+      pos++;
+    }
     return count;
   }
 
@@ -100,13 +107,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Per-term signals (multi-word support) ---
     if (terms.length > 1) {
-      let allInTitle = true, allInAny = true;
+      let allInTitle = true,
+        allInAny = true;
       for (const term of terms) {
         const inTitle = title.includes(term);
         const inTags = tags.includes(term);
         const inContents = contents.includes(term);
         if (!inTitle) allInTitle = false;
-        if (!inTitle && !inTags && !inContents) { allInAny = false; }
+        if (!inTitle && !inTags && !inContents) {
+          allInAny = false;
+        }
         if (inTitle) score += 12;
         if (inTags) score += 8;
         // term frequency in content, capped per term
@@ -126,8 +136,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const contents = (doc.contents || '').toLowerCase();
     const tags = (doc.tags || []).join(' ').toLowerCase();
     // Each term must appear in at least one field
-    return terms.every(term =>
-      title.includes(term) || contents.includes(term) || tags.includes(term)
+    return terms.every(
+      (term) => title.includes(term) || contents.includes(term) || tags.includes(term)
     );
   }
 
@@ -139,7 +149,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (pos === -1) {
       for (const term of terms) {
         const p = lower.indexOf(term);
-        if (p !== -1) { pos = p; break; }
+        if (p !== -1) {
+          pos = p;
+          break;
+        }
       }
     }
     if (pos === -1) return text.slice(0, maxLen).trim() + (text.length > maxLen ? '…' : '');
@@ -166,8 +179,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const terms = tokenize(query);
 
     const scored = searchIndex
-      .filter(doc => docMatches(doc, q, terms))
-      .map(doc => ({ doc, score: scoreDoc(doc, q, terms) }))
+      .filter((doc) => docMatches(doc, q, terms))
+      .map((doc) => ({ doc, score: scoreDoc(doc, q, terms) }))
       .filter(({ score }) => score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 15);
@@ -175,11 +188,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (scored.length === 0) {
       searchResultsList.innerHTML = '<p class="site-search-no-results">No results found.</p>';
     } else {
-      searchResultsList.innerHTML = scored.map(({ doc }) => {
-        const preview = extractSnippet(doc.contents || '', q, terms);
-        const category = (doc.categories || [])[0] || '';
-        const tags = (doc.tags || []).map(t => `<span class="site-search-badge">${t}</span>`).join('');
-        return `
+      searchResultsList.innerHTML = scored
+        .map(({ doc }) => {
+          const preview = extractSnippet(doc.contents || '', q, terms);
+          const category = (doc.categories || [])[0] || '';
+          const tags = (doc.tags || [])
+            .map((t) => `<span class="site-search-badge">${t}</span>`)
+            .join('');
+          return `
             <a href="${doc.permalink}" class="site-search-result">
               <div class="site-search-result-title">${doc.title}</div>
               <div class="site-search-result-preview">${preview}</div>
@@ -188,7 +204,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${tags}
               </div>
             </a>`;
-      }).join('');
+        })
+        .join('');
     }
   }
 
