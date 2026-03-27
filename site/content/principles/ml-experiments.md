@@ -2,7 +2,7 @@
 title: "ML Experiments"
 description: "Reproducibility and efficiency in ML experiment workflows."
 summary: "Guidance for reproducible, resource-aware machine learning experiments; leveraging lightweight MLOps primitives, strict environment versioning, seed management, and rigorous, deterministic model evaluation protocols."
-tags: [ml]
+tags: [machine-learning]
 categories: ["principles"]
 draft: false
 date: "2026-02-16T10:22:20-08:00"

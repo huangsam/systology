@@ -2,7 +2,7 @@
 title: "VirtuC"
 description: "A Rust compiler for a C subset targeting the LLVM backend."
 summary: "A from-scratch, Rust-implemented compiler designed for a targeted C subset that effectively emits standard LLVM IR; heavily focusing on proper AST design, semantic checking, and IR verification."
-tags: [algorithms, compiler, performance, systems-programming]
+tags: [algorithms, compilers, performance, systems-programming]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/virtuc"

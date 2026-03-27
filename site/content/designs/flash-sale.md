@@ -2,7 +2,7 @@
 title: "Flash Sale / Ticketmaster"
 description: "High-concurrency inventory systems for managing traffic spikes."
 summary: "A high-resiliency architecture for extreme traffic bursts, utilizing virtual waiting rooms and atomic inventory management to ensure fair distribution under load."
-tags: [concurrency, consistency, database, resilience]
+tags: [concurrency, consistency, databases, resilience]
 categories: ["designs"]
 draft: false
 date: "2026-02-17T10:27:08-08:00"

@@ -2,7 +2,7 @@
 title: "SQL vs. NoSQL"
 description: "Choosing the right database paradigm for complex systems."
 summary: "A decision-making framework for choosing between SQL (relational, strict ACID) and NoSQL (distributed, flexible schemas) databases, evaluating data structures, horizontal scalability needs, and tunable consistency requirements."
-tags: [consistency, database, replication]
+tags: [consistency, databases, replication]
 categories: ["principles"]
 draft: false
 date: "2026-02-23T21:13:27-08:00"

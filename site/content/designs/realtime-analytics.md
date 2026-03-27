@@ -2,7 +2,7 @@
 title: "Real-Time Analytics Pipeline"
 description: "Real-time analytics using event stream processing flows."
 summary: "A highly scalable real-time streaming pipeline engineered to continuously ingest and process high-volume user event streams; gracefully handling late arrivals and robust fault tolerance protocols."
-tags: [analytics, data-pipelines, olap, queues, streaming]
+tags: [analytics, data-pipelines, olap, queuing, streaming]
 categories: ["designs"]
 draft: false
 date: "2026-02-16T16:32:50-08:00"

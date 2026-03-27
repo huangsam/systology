@@ -35,8 +35,8 @@ TAG_ALIASES = {
     "goog-cloud-storage": "gcs",
     "google-cloud-storage": "gcs",
     "amazon-s3": "s3",
-    "aws-s3": "s3",
-    "feature-extraction": "ml",
+    "feature-extraction": "machine-learning",
+    "ml": "machine-learning",
     "rust": "systems-programming",
     "vcs": "systems-programming",
     # Resilience
@@ -49,14 +49,15 @@ TAG_ALIASES = {
     # Concurrency & Synchronization
     "atomic": "concurrency",
     "locking": "concurrency",
-    "synchronization": "concurrency",
+    "synchronization": "synchronization",
     "conflict-resolution": "concurrency",
     # Networking & Messaging
-    "websocket": "networking",
+    "websocket": "websocket",
     "delivery": "networking",
     "fan-out": "networking",
     "channel": "networking",
-    "redirect": "networking",
+    "redirect": "redirection",
+    "redirects": "redirection",
     "resolution": "networking",
     # Algorithms
     "hashing": "algorithms",
@@ -71,8 +72,13 @@ TAG_ALIASES = {
     "chunking": "media",
     # Databases
     "consistency-models": "consistency",
-    "relational": "database",
-    "non-relational": "database",
+    "database": "databases",
+    "databases": "databases",
+    "relational": "databases",
+    "non-relational": "databases",
+    # Pattern Alignment
+    "queues": "queuing",
+    "compiler": "compilers",
 }
 
 TAG_REMOVALS = [
