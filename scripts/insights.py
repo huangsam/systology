@@ -234,7 +234,7 @@ def get_words(text: str, multiplier: int = 1) -> list[str]:
     return res * multiplier
 
 
-def _collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
+def collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
     """Walk content and collect tags and tokenized words."""
     docs = []
     global_tags = set()
@@ -275,7 +275,7 @@ def _collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
     return docs, global_tags
 
 
-def _report_tag_distribution(docs: list[dict]) -> None:
+def report_tag_distribution(docs: list[dict]) -> None:
     """Analyze and print tag usage statistics and guideline adherence."""
     tag_counts = Counter()
     untagged = []
@@ -308,7 +308,7 @@ def _report_tag_distribution(docs: list[dict]) -> None:
             print(f"  [OVERFLOW] {p}: {count} tags (Recommend 3-5)")
 
 
-def _report_tag_cooccurrence(docs: list[dict]) -> None:
+def report_tag_cooccurrence(docs: list[dict]) -> None:
     """Analyze and print tag co-occurrence (Jaccard Similarity)."""
     tag_to_docs = defaultdict(set)
     for i, d in enumerate(docs):
@@ -338,7 +338,7 @@ def _report_tag_cooccurrence(docs: list[dict]) -> None:
             print(f"  - {tA} / {tB} ({(score * 100):.0f}%)")
 
 
-def _report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
+def report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
     """Analyze TF-IDF scores and print tag recommendations grouped by section."""
     total_docs = len(docs)
     df = Counter()
@@ -406,12 +406,12 @@ def _report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None
 
 def generate_insights(content_dir: Path) -> None:
     """Run modular insights analysis and print reporting."""
-    docs, global_tags = _collect_docs(content_dir)
+    docs, global_tags = collect_docs(content_dir)
 
     if not docs:
         print("No markdown documents found.")
         return
 
-    _report_tag_distribution(docs)
-    _report_tag_cooccurrence(docs)
-    _report_tag_recommendations(docs, global_tags)
+    report_tag_distribution(docs)
+    report_tag_cooccurrence(docs)
+    report_tag_recommendations(docs, global_tags)

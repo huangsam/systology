@@ -6,7 +6,7 @@ import re
 from .constants import FM_DELIM
 
 
-def _strip_quotes(s: str) -> str:
+def strip_quotes(s: str) -> str:
     s = s.strip()
     if (s.startswith('"') and s.endswith('"')) or (
         s.startswith("'") and s.endswith("'")

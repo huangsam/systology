@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from collections import Counter, defaultdict
 from .constants import FM_DELIM, FM_TAGS, MD_EXT, TAG_ALIASES, TAG_REMOVALS
-from .utils import _strip_quotes
+from .utils import strip_quotes
 
 
 def run_sort_tags(content_dir: Path) -> None:
@@ -51,7 +51,7 @@ def parse_tags_from_text(text: str) -> list[str]:
     # Inline list
     m = re.search(r"^\s*" + FM_TAGS + r"\s*:\s*\[([^\]]*)\]", fm_text, re.MULTILINE)
     if m:
-        return [_strip_quotes(p) for p in m.group(1).split(",") if p.strip()]
+        return [strip_quotes(p) for p in m.group(1).split(",") if p.strip()]
 
     # Single scalar
     m = re.search(
@@ -60,7 +60,7 @@ def parse_tags_from_text(text: str) -> list[str]:
         re.MULTILINE,
     )
     if m:
-        return [_strip_quotes(m.group(1))]
+        return [strip_quotes(m.group(1))]
 
     # Block list
     block_start = None
@@ -73,7 +73,7 @@ def parse_tags_from_text(text: str) -> list[str]:
         tags = []
         for line in lines_fm[block_start + 1 :]:
             if re.match(r"^\s*-\s+(.+)", line):
-                tags.append(_strip_quotes(re.sub(r"^\s*-\s+", "", line).strip()))
+                tags.append(strip_quotes(re.sub(r"^\s*-\s+", "", line).strip()))
             elif line.strip() and not line[0].isspace():
                 break
         return tags
@@ -135,7 +135,7 @@ def tagup_in_text(text: str, aliases: dict, removals: list) -> str:
         tags = [t.strip() for t in tags_str.split(",") if t.strip()]
         new_tags = []
         for t in tags:
-            clean_t = _strip_quotes(t).lower()
+            clean_t = strip_quotes(t).lower()
             if clean_t in removals:
                 continue
             new_t = aliases.get(clean_t, clean_t)
