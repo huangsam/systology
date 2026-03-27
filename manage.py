@@ -49,6 +49,7 @@ def main():
     if args.command == "tidy":
         run_normalize(content_dir)
         run_add_summary_desc(content_dir)
+        run_tagup(content_dir)
         run_sort_tags(content_dir)
         run_format_project(site_dir, content_dir, archetypes_dir)
     elif args.command == "stats":

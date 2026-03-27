@@ -52,6 +52,7 @@ TAG_ALIASES = {
     "synchronization": "synchronization",
     "conflict-resolution": "concurrency",
     # Networking & Messaging
+    "api-design": "protocols",
     "websocket": "websocket",
     "delivery": "networking",
     "fan-out": "networking",

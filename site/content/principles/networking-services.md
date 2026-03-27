@@ -2,7 +2,7 @@
 title: "Networking & Services"
 description: "API design, rate limiting, retries, and modular resilience."
 summary: "Operational guidance for resilient networked services; detailing robust API contracts, exponential retries with jitter, sliding-window rate limiting, strict timeout budgets, connection pooling, and mutual TLS."
-tags: [api-design, data-flows, dns, resilience, traffic-control]
+tags: [data-flows, dns, protocols, resilience, traffic-control]
 categories: ["principles"]
 draft: false
 date: "2026-02-16T10:22:20-08:00"
