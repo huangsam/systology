@@ -110,11 +110,3 @@ def run_add_summary_desc(content_dir: Path) -> None:
             p.write_text(new_text, encoding="utf-8")
             count += 1
     print(f"  Updated {count} files")
-
-
-def run_update_links(content_dir: Path) -> None:
-    """Update internal links within Markdown files to be Hugo-friendly."""
-    print("Running update_internal_links...")
-    # Logic for updating .md links to be Hugo friendly
-    # Placeholder for brevity, similar to manage.py
-    print("  Updated 0 files")

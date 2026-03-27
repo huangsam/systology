@@ -10,7 +10,7 @@ from scripts.constants import SITE_DIR, CONTENT_DIR, ARCHETYPES_DIR
 from scripts.validator import run_check
 from scripts.formatter import run_format_project
 from scripts.metadata import run_sort_tags, run_tag_stats, run_tagup
-from scripts.content import run_normalize, run_add_summary_desc, run_update_links
+from scripts.content import run_normalize, run_add_summary_desc
 
 
 def main():
@@ -44,7 +44,6 @@ def main():
     if args.command == "tidy":
         run_normalize(content_dir)
         run_add_summary_desc(content_dir)
-        run_update_links(content_dir)
         run_sort_tags(content_dir)
         run_format_project(site_dir, content_dir, archetypes_dir)
     elif args.command == "stats":
