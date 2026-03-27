@@ -221,7 +221,7 @@ STOP_WORDS = {
 }
 
 
-def get_words(text: str) -> list[str]:
+def get_words(text: str, multiplier: int = 1) -> list[str]:
     """Tokenize text into lowercase words (length >= 4)."""
     # Remove code blocks and shortcodes
     text = re.sub(r"```.*?```", " ", text, flags=re.DOTALL)
@@ -230,7 +230,8 @@ def get_words(text: str) -> list[str]:
 
     # Extract words (at least 4 chars)
     words = re.findall(r"\b[a-z]{4,}\b", text.lower())
-    return [w for w in words if w not in STOP_WORDS]
+    res = [w for w in words if w not in STOP_WORDS]
+    return res * multiplier
 
 
 def _collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
@@ -252,8 +253,16 @@ def _collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
         for t in tags:
             global_tags.add(t)
 
+        # Meta weighting: prioritize core topics from frontmatter
+        meta_text = ""
+        if fm_lines:
+            # Simple metadata extraction for weighting
+            for line in fm_lines:
+                if line.startswith("title:") or line.startswith("summary:"):
+                    meta_text += " " + line.split(":", 1)[1]
+
         body_text = "\n".join(body_lines) if body_lines else ""
-        words = get_words(body_text)
+        words = get_words(body_text) + get_words(meta_text, multiplier=5)
 
         docs.append(
             {
@@ -267,11 +276,19 @@ def _collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
 
 
 def _report_tag_distribution(docs: list[dict]) -> None:
-    """Analyze and print tag usage statistics."""
+    """Analyze and print tag usage statistics and guideline adherence."""
     tag_counts = Counter()
+    untagged = []
+    overtagged = []
+
     for d in docs:
         for t in d["tags"]:
             tag_counts[t] += 1
+        cnt = len(d["tags"])
+        if cnt == 0:
+            untagged.append(str(d["path"]))
+        elif cnt > 5:
+            overtagged.append((str(d["path"]), cnt))
 
     total_docs = len(docs)
     underused = [tag for tag, count in tag_counts.items() if count == 1]
@@ -282,6 +299,13 @@ def _report_tag_distribution(docs: list[dict]) -> None:
         print("Underused (orphaned):", ", ".join(sorted(underused)))
     if overused:
         print("Overused (broad):", ", ".join(sorted(overused)))
+
+    if untagged or overtagged:
+        print("\nGuideline Warnings (Tag Density):")
+        for p in sorted(untagged):
+            print(f"  [MISSING] {p}: 0 tags (Recommend 3-5)")
+        for p, count in sorted(overtagged):
+            print(f"  [OVERFLOW] {p}: {count} tags (Recommend 3-5)")
 
 
 def _report_tag_cooccurrence(docs: list[dict]) -> None:
@@ -315,14 +339,14 @@ def _report_tag_cooccurrence(docs: list[dict]) -> None:
 
 
 def _report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
-    """Analyze TF-IDF scores and print tag recommendations."""
+    """Analyze TF-IDF scores and print tag recommendations grouped by section."""
     total_docs = len(docs)
     df = Counter()
     for d in docs:
         for w in set(d["words"]):
             df[w] += 1
 
-    recommendations = {}
+    recommendations = defaultdict(list)
     for d in docs:
         doc_path = str(d["path"])
         doc_length = len(d["words"])
@@ -361,14 +385,23 @@ def _report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None
                 break
 
         if established_finds or new_candidates:
-            res = [f"[{t}]" for t in sorted(list(established_finds))] + new_candidates
-            recommendations[doc_path] = res
+            res_list = [
+                f"[{t}]" for t in sorted(list(established_finds))
+            ] + new_candidates
+            recommendations[doc_path] = res_list
 
     if recommendations:
         print("\nRecommendations (Found [Existing] or New Candidates):")
-        for path in sorted(recommendations.keys()):
-            rec_list = recommendations[path]
-            print(f"  {path}: {', '.join(rec_list)}")
+        # Sort by section (top-level directory)
+        sections = defaultdict(list)
+        for path, recs in recommendations.items():
+            section = path.split("/", 1)[0] if "/" in path else "other"
+            sections[section].append((path, recs))
+
+        for section in sorted(sections.keys()):
+            print(f"  [{section.upper()}]")
+            for path, recs in sorted(sections[section]):
+                print(f"    {path}: {', '.join(recs)}")
 
 
 def generate_insights(content_dir: Path) -> None:
