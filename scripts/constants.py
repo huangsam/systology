@@ -38,6 +38,41 @@ TAG_ALIASES = {
     "aws-s3": "s3",
     "feature-extraction": "ml",
     "rust": "systems-programming",
+    "vcs": "systems-programming",
+    # Resilience
+    "circuit-breaker": "resilience",
+    "retries": "resilience",
+    # Monitoring & Observability
+    "telemetry": "monitoring",
+    "metrics": "monitoring",
+    "observability": "monitoring",
+    # Concurrency & Synchronization
+    "atomic": "concurrency",
+    "locking": "concurrency",
+    "synchronization": "concurrency",
+    "conflict-resolution": "concurrency",
+    # Networking & Messaging
+    "websocket": "networking",
+    "delivery": "networking",
+    "fan-out": "networking",
+    "channel": "networking",
+    "redirect": "networking",
+    "resolution": "networking",
+    # Algorithms
+    "hashing": "algorithms",
+    "traversal": "algorithms",
+    # Orchestration
+    "autonomous": "orchestration",
+    "coordinator": "orchestration",
+    # Privacy & Decentralization
+    "secure-aggregation": "privacy",
+    "decentralized": "privacy",
+    # Media
+    "chunking": "media",
+    # Databases
+    "consistency-models": "consistency",
+    "relational": "database",
+    "non-relational": "database",
 }
 
 TAG_REMOVALS = [

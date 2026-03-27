@@ -2,7 +2,7 @@
 title: "Privacy & Agents"
 description: "Safe and transparent agents for managing sensitive user data."
 summary: "Privacy-first design rules for autonomous AI agents; establishing local-first execution defaults, strict data minimization and redaction, explicit user consent flows, and transparent, auditable action logs."
-tags: [privacy]
+tags: [data-flows, privacy]
 categories: ["principles"]
 draft: false
 date: "2026-02-16T10:22:20-08:00"

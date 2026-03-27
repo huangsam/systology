@@ -2,7 +2,7 @@
 title: "Monitoring & Observability"
 description: "Observability through metrics, logging, and trace data."
 summary: "Best practices for establishing robust observability using RED/USE metrics, contextual structured logging, distributed tracing, actionable alerting, and SLO-driven reliability engineering."
-tags: [data-pipelines, distributed-systems, monitoring]
+tags: [monitoring]
 categories: ["principles"]
 draft: false
 date: "2026-02-16T10:22:20-08:00"
