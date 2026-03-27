@@ -233,12 +233,11 @@ def get_words(text: str) -> list[str]:
     return [w for w in words if w not in STOP_WORDS]
 
 
-def generate_insights(content_dir: Path) -> None:
-    """Run insights analysis and print minimal reporting."""
+def _collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
+    """Walk content and collect tags and tokenized words."""
     docs = []
     global_tags = set()
 
-    # Pass 1: Collect files, tags, and terms
     for p in content_dir.rglob(f"*{MD_EXT}"):
         if p.name.startswith(".") or p.name == "_index.md":
             continue
@@ -252,6 +251,7 @@ def generate_insights(content_dir: Path) -> None:
         tags = parse_tags_from_text(text) if fm_lines is not None else []
         for t in tags:
             global_tags.add(t)
+
         body_text = "\n".join(body_lines) if body_lines else ""
         words = get_words(body_text)
 
@@ -263,12 +263,11 @@ def generate_insights(content_dir: Path) -> None:
                 "word_counts": Counter(words),
             }
         )
+    return docs, global_tags
 
-    if not docs:
-        print("No markdown documents found.")
-        return
 
-    # --- 1. Tag Distribution Analysis ---
+def _report_tag_distribution(docs: list[dict]) -> None:
+    """Analyze and print tag usage statistics."""
     tag_counts = Counter()
     for d in docs:
         for t in d["tags"]:
@@ -279,14 +278,14 @@ def generate_insights(content_dir: Path) -> None:
     overused = [tag for tag, count in tag_counts.items() if count > (total_docs * 0.25)]
 
     print(f"Stats: {total_docs} docs, {len(tag_counts)} unique tags")
-
     if underused:
         print("Underused (orphaned):", ", ".join(sorted(underused)))
-
     if overused:
         print("Overused (broad):", ", ".join(sorted(overused)))
 
-    # --- 2. Tag Co-occurrence (Jaccard Similarity) ---
+
+def _report_tag_cooccurrence(docs: list[dict]) -> None:
+    """Analyze and print tag co-occurrence (Jaccard Similarity)."""
     tag_to_docs = defaultdict(set)
     for i, d in enumerate(docs):
         for t in d["tags"]:
@@ -298,10 +297,8 @@ def generate_insights(content_dir: Path) -> None:
 
     for i in range(len(tags_list)):
         for j in range(i + 1, len(tags_list)):
-            tA = tags_list[i]
-            tB = tags_list[j]
-            docsA = tag_to_docs[tA]
-            docsB = tag_to_docs[tB]
+            tA, tB = tags_list[i], tags_list[j]
+            docsA, docsB = tag_to_docs[tA], tag_to_docs[tB]
 
             intersection = len(docsA.intersection(docsB))
             union = len(docsA.union(docsB))
@@ -316,15 +313,16 @@ def generate_insights(content_dir: Path) -> None:
         for tA, tB, score in sorted(redundancies, key=lambda x: x[2], reverse=True):
             print(f"  - {tA} / {tB} ({(score * 100):.0f}%)")
 
-    # --- 3. Tag Recommendations ---
-    # Compute Document Frequency (DF) for each word
+
+def _report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
+    """Analyze TF-IDF scores and print tag recommendations."""
+    total_docs = len(docs)
     df = Counter()
     for d in docs:
         for w in set(d["words"]):
             df[w] += 1
 
     recommendations = {}
-
     for d in docs:
         doc_path = str(d["path"])
         doc_length = len(d["words"])
@@ -338,7 +336,6 @@ def generate_insights(content_dir: Path) -> None:
             doc_scores[w] = tfidf
 
         top_words = sorted(doc_scores.items(), key=lambda x: x[1], reverse=True)
-
         established_finds = set()
         new_candidates = []
 
@@ -364,13 +361,24 @@ def generate_insights(content_dir: Path) -> None:
                 break
 
         if established_finds or new_candidates:
-            # Format: established tags in brackets
             res = [f"[{t}]" for t in sorted(list(established_finds))] + new_candidates
             recommendations[doc_path] = res
 
     if recommendations:
         print("\nRecommendations (Found [Existing] or New Candidates):")
-        # Sorted by path for stability
         for path in sorted(recommendations.keys()):
             rec_list = recommendations[path]
             print(f"  {path}: {', '.join(rec_list)}")
+
+
+def generate_insights(content_dir: Path) -> None:
+    """Run modular insights analysis and print reporting."""
+    docs, global_tags = _collect_docs(content_dir)
+
+    if not docs:
+        print("No markdown documents found.")
+        return
+
+    _report_tag_distribution(docs)
+    _report_tag_cooccurrence(docs)
+    _report_tag_recommendations(docs, global_tags)
