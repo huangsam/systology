@@ -24,7 +24,8 @@ Access the site at `http://localhost:1313/`.
 
 To run validation and formatting:
 ```shell
-make check   # Validate content
-make tidy    # Format and organize
-make tags    # See all tags and usage
+make check      # Validate content
+make tidy       # Format and organize
+make tags       # See tag usage counts
+make insights   # Get tag recommendations (LLM feedback loop)
 ```

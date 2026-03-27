@@ -36,11 +36,15 @@ When adding a new page, follow these steps:
 
 When determining what tags to put on the new page:
 
-- Refer to the existing tags in the `site/content/` directory for consistency
-- Run `make tags` to see a list of all existing tags and their usage counts
-- Choose tags that are relevant to the content, but avoid over-tagging (3-5 is good)
-- If a tag is used once, consider whether it should be merged with an existing tag
-- If a new tag is needed, ensure other pages are updated to use it where relevant
+- Run `make insights` to get recommendations based on existing taxonomy (LLM feedback loop).
+- Refer to `make tags` to see a list of all existing tags and their usage counts.
+- Choose tags that are relevant to the content, but avoid over-tagging (3-5 is good).
+- Prioritize "Established" tags (in brackets from `make insights`) to maintain consistency.
+- If a new tag is needed, ensure other pages are updated to use it where relevant.
+
+### Tagging Feedback Loop
+
+To reduce token spend and maintain a consistent taxonomy, agents should rely on the local `make insights` tool rather than asking the LLM to "invent" categories. This provides a deterministic bridge between the current content and the repository's established site-wide categories.
 
 #### Mermaid diagrams
 
