@@ -2,7 +2,7 @@
 title: "Photohaul"
 description: "A photo management system with media analysis and storage."
 summary: "A robust Java-based tool engineered for seamlessly organizing and migrating extensive photo collections; featuring rigorous deduplication, automatic metadata preservation, and resumable execution."
-tags: [deduplication, extensibility, media, networking]
+tags: [deduplication, extensibility, media, traffic-control]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/photohaul"
