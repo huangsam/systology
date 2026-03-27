@@ -240,7 +240,7 @@ def generate_insights(content_dir: Path) -> None:
 
     # Pass 1: Collect files, tags, and terms
     for p in content_dir.rglob(f"*{MD_EXT}"):
-        if p.name.startswith("."):
+        if p.name.startswith(".") or p.name == "_index.md":
             continue
 
         try:
