@@ -8,6 +8,7 @@ from .constants import ASSETS_DIR, MD_EXT
 
 
 def process_md_format(file_path: Path) -> bool:
+    """Clean up trailing whitespace in a Markdown file."""
     try:
         content = file_path.read_text(encoding="utf-8")
         lines = content.splitlines()
@@ -22,6 +23,7 @@ def process_md_format(file_path: Path) -> bool:
 
 
 def format_prettier(file_path: str) -> None:
+    """Run Prettier formatting on a given file or directory path."""
     path = Path(file_path)
     if not path.exists():
         return
@@ -35,6 +37,7 @@ def format_prettier(file_path: str) -> None:
 
 
 def run_format_project(site_dir: Path, content_dir: Path, archetypes_dir: Path) -> None:
+    """Format project assets and Markdown content using Prettier and custom logic."""
     print("Running format_project...")
     # CSS & JS in assets (respects .prettierignore)
     assets_dir = site_dir / ASSETS_DIR

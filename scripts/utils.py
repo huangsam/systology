@@ -16,6 +16,7 @@ def _strip_quotes(s: str) -> str:
 
 
 def extract_fm_body(text: str) -> tuple[list[str] | None, list[str]]:
+    """Split Markdown text into frontmatter lines and body lines."""
     lines = text.splitlines()
     i = 0
     while i < len(lines) and lines[i].strip() == "":
@@ -31,6 +32,7 @@ def extract_fm_body(text: str) -> tuple[list[str] | None, list[str]]:
 
 
 def parse_fm(fm_lines: list[str]) -> dict[str, str]:
+    """Parse frontmatter lines into a key-value dictionary."""
     fm = {}
     pattern = re.compile(
         r"^\s*([A-Za-z0-9_\-]+)\s*:\s*(?:\"([^\"]*)\"|'([^']*)'|([^#].*))?"

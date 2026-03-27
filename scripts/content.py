@@ -9,6 +9,7 @@ from .utils import extract_fm_body, parse_fm
 
 
 def has_frontmatter(lines: list[str]) -> bool:
+    """Check if a list of lines begins with frontmatter delimiters."""
     if not lines:
         return False
     first = lines[0].strip()
@@ -16,6 +17,7 @@ def has_frontmatter(lines: list[str]) -> bool:
 
 
 def extract_first_h1(lines: list[str]) -> str | None:
+    """Extract the first top-level Markdown heading from a list of lines."""
     for ln in lines:
         m = re.match(r"^#\s+(.*)", ln)
         if m:
@@ -24,6 +26,7 @@ def extract_first_h1(lines: list[str]) -> str | None:
 
 
 def normalize_file(path: Path) -> bool:
+    """Normalize the formatting and frontmatter of a single Markdown file."""
     text = path.read_text(encoding="utf-8")
     lines = text.splitlines()
     changed = False
@@ -56,6 +59,7 @@ def normalize_file(path: Path) -> bool:
 
 
 def run_normalize(content_dir: Path) -> None:
+    """Run normalization across all Markdown files in the content directory."""
     print("Running normalize_content...")
     count = 0
     for p in content_dir.rglob(f"*{MD_EXT}"):
@@ -66,6 +70,7 @@ def run_normalize(content_dir: Path) -> None:
 
 
 def run_add_summary_desc(content_dir: Path) -> None:
+    """Ensure all Markdown files have summary and description frontmatter fields."""
     print("Running add_summary_description...")
     count = 0
     for p in content_dir.rglob(f"*{MD_EXT}"):
@@ -108,6 +113,7 @@ def run_add_summary_desc(content_dir: Path) -> None:
 
 
 def run_update_links(content_dir: Path) -> None:
+    """Update internal links within Markdown files to be Hugo-friendly."""
     print("Running update_internal_links...")
     # Logic for updating .md links to be Hugo friendly
     # Placeholder for brevity, similar to manage.py

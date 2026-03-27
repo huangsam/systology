@@ -9,6 +9,7 @@ from .utils import extract_fm_body, parse_fm
 
 
 def check_file(p: Path, content_root: Path) -> list[str]:
+    """Validate a single Markdown file for missing frontmatter, broken links, or missing images."""
     errors = []
     try:
         text = p.read_text(encoding="utf-8")
@@ -69,6 +70,7 @@ def check_file(p: Path, content_root: Path) -> list[str]:
 
 
 def run_check(content_dir: Path) -> None:
+    """Run comprehensive validation across all Markdown files in the content directory."""
     print("Running check...")
     error_count = 0
     for p in sorted(content_dir.rglob(f"*{MD_EXT}")):

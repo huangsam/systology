@@ -12,6 +12,7 @@ from .utils import _strip_quotes
 
 
 def run_sort_tags(content_dir: Path) -> None:
+    """Alphabetically sort tags within the frontmatter of all Markdown files."""
     print("Running sort_tags...")
     count = 0
     for p in content_dir.rglob(f"*{MD_EXT}"):
@@ -32,6 +33,7 @@ def run_sort_tags(content_dir: Path) -> None:
 
 
 def parse_tags_from_text(text: str) -> list[str]:
+    """Extract a list of tags from frontmatter in a Markdown text block."""
     lines = text.splitlines()
     if not lines or lines[0].strip() != FM_DELIM:
         return []
@@ -81,6 +83,7 @@ def parse_tags_from_text(text: str) -> list[str]:
 def run_tag_stats(
     content_dir: Path, min_count: int, top: int, json_out: bool, show_files: bool
 ) -> None:
+    """Calculate and display usage statistics for tags across all Markdown content."""
     counter = Counter()
     files_for_tag = defaultdict(list)
 
@@ -121,6 +124,8 @@ def run_tag_stats(
 
 
 def tagup_in_text(text: str, aliases: dict, removals: list) -> str:
+    """Apply tag aliases and removals to frontmatter tags within a text string."""
+
     # Logic for tag replacement in frontmatter
     # This is a bit complex in manage.py, simplified here for modularity
     # Standard approach is to parse, modify, then dump.
@@ -143,6 +148,7 @@ def tagup_in_text(text: str, aliases: dict, removals: list) -> str:
 
 
 def run_tagup(content_dir: Path) -> None:
+    """Apply site-wide tag aliases and removals across all Markdown files."""
     print("Running tagup...")
     count = 0
     for root, _, files in os.walk(content_dir):
