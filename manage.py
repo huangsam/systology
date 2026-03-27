@@ -30,6 +30,11 @@ def main():
     # Tagup
     subparsers.add_parser("tagup", help="Standardize tags")
 
+    # Insights
+    subparsers.add_parser(
+        "insights", help="Analyze tag distribution, co-occurrence, and TF-IDF"
+    )
+
     # Check
     subparsers.add_parser("check", help="Validate content")
 
@@ -50,6 +55,10 @@ def main():
         run_tag_stats(content_dir, args.min_count, args.top, args.json, args.show_files)
     elif args.command == "tagup":
         run_tagup(content_dir)
+    elif args.command == "insights":
+        from scripts.insights import generate_insights
+
+        generate_insights(content_dir)
     elif args.command == "check":
         run_check(content_dir)
 

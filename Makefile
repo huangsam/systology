@@ -1,4 +1,4 @@
-.PHONY: vendor build clean serve tidy tags
+.PHONY: vendor build clean serve tidy tags insights
 
 # https://cdnjs.com/libraries/mermaid
 VERSION ?= 11.12.0
@@ -27,3 +27,6 @@ check:
 
 tags:
 	python3 manage.py stats --top 40
+
+insights:
+	python3 manage.py insights
