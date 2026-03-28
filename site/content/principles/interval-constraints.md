@@ -2,7 +2,7 @@
 title: "Intervals & Constraints"
 description: "Windowing strategies and SLA-based complex system constraints."
 summary: "A framework for balancing Latency (system Completeness) against Verification (data Integrity) by effectively choosing between Speculative execution and Pessimistic consensus intervals."
-tags: [analytics, data-pipelines, streaming]
+tags: [analytics, data-pipelines, integrity, streaming]
 categories: ["principles"]
 draft: false
 date: "2026-02-21T19:38:55-08:00"

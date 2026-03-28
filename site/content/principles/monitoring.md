@@ -2,7 +2,7 @@
 title: "Monitoring & Observability"
 description: "Observability through metrics, logging, and trace data."
 summary: "Best practices for establishing robust observability using RED/USE metrics, contextual structured logging, distributed tracing, actionable alerting, and SLO-driven reliability engineering."
-tags: [monitoring]
+tags: [data-pipelines, fault-tolerance, monitoring, traffic-control]
 categories: ["principles"]
 draft: false
 date: "2026-02-16T10:22:20-08:00"
@@ -72,7 +72,7 @@ Track consumer lag, watermark progression, and checkpoint health for streaming j
 
 For Kafka-based pipelines, monitor `consumer_group_lag` (records behind the latest offset), `checkpoint_duration_ms`, and `records_per_second`. For Flink, track watermark delay (how far behind event-time the watermark is) and backpressure indicators per operator. Alert when consumer lag exceeds your freshness SLO—if you promise 1-minute freshness and lag is 5 minutes, you're violating your contract.
 
-See [Data Processing Architectures]({{< ref "/deep-dives/data-processing-architectures" >}}) for examples of monitoring data pipeline throughput and checkpointing. For a related treatment of backpressure, partitioning, and fault tolerance that directly affect observability, see the [Data Pipelines]({{< ref "/principles/data-pipelines" >}}) principles.
+See [Data Processing Architectures]({{< ref "/deep-dives/data-processing-architectures" >}}) for examples of monitoring data pipeline throughput and checkpointing. For a related treatment of backpressure, partitioning, and fault tolerance that directly affect the [Data Pipelines]({{< ref "/principles/data-pipelines" >}}) principles.
 
 ## Dashboard & Visualization
 

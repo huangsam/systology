@@ -2,7 +2,7 @@
 title: "Chowist"
 description: "A decade of web framework migrations: Sinatra → Rails → Django."
 summary: "A decade-spanning food discovery app migrated from Ruby Sinatra to Rails to Django; documenting the real costs of incremental framework migration, ecosystem drift, and the discipline of staying current across 10+ years of active maintenance."
-tags: [extensibility, monitoring]
+tags: [extensibility, migration, monitoring]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/chowist"

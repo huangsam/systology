@@ -2,7 +2,7 @@
 title: "Mailprune"
 description: "Privacy-first Gmail auditing tool for sender clustering and inbox cleanup."
 summary: "A highly effective, local-first email auditing and automated cleanup tool designed to definitively identify noisy senders and deliver actionable, strictly privacy-preserving recommendations."
-tags: [data-pipelines, monitoring, privacy, protocols]
+tags: [monitoring, privacy, protocols]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/mailprune"
