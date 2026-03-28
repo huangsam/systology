@@ -38,6 +38,11 @@ def main():
         action="store_true",
         help="Emit a JSON manifest instead of human-readable output",
     )
+    insights_parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Show full cross-reference list in human-readable output",
+    )
 
     # Check
     subparsers.add_parser("check", help="Validate content")
@@ -63,7 +68,7 @@ def main():
     elif args.command == "insights":
         from scripts.insights import generate_insights
 
-        generate_insights(content_dir, json_out=args.json)
+        generate_insights(content_dir, json_out=args.json, verbose=args.verbose)
     elif args.command == "check":
         run_check(content_dir)
 

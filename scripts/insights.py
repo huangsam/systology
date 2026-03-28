@@ -444,14 +444,17 @@ def collect_tag_recommendations(docs: list[dict], global_tags: set[str]) -> dict
     return recommendations
 
 
-def report_cross_references(docs: list[dict]) -> None:
-    """Print a pre-computed cross-section tag-based linking map."""
+def report_cross_references(docs: list[dict], verbose: bool = False) -> None:
+    """Print a summarized or detailed cross-section tag-based linking map."""
     pairs = collect_cross_references(docs)
     if not pairs:
         return
-    print("\nCross-References (Shared Tags Across Sections):")
-    for entry in pairs:
-        print(f"  {entry['a']} <-> {entry['b']}: {', '.join(entry['shared_tags'])}")
+
+    total = len(pairs)
+    print(f"\nCross-References (Shared Tags Across Sections): {total} links")
+    if verbose:
+        for entry in pairs:
+            print(f"  {entry['a']} <-> {entry['b']}: {', '.join(entry['shared_tags'])}")
 
 
 def collect_cross_references(docs: list[dict]) -> list[dict]:
@@ -483,12 +486,15 @@ def collect_cross_references(docs: list[dict]) -> list[dict]:
     ]
 
 
-def generate_insights(content_dir: Path, json_out: bool = False) -> None:
+def generate_insights(
+    content_dir: Path, json_out: bool = False, verbose: bool = False
+) -> None:
     """Run modular insights analysis and print reporting.
 
     Args:
         content_dir: Root content directory to scan.
         json_out: If True, emit a single JSON manifest instead of human-readable text.
+        verbose: If True, show full cross-reference list in text mode.
     """
     import json as _json
 
@@ -510,5 +516,5 @@ def generate_insights(content_dir: Path, json_out: bool = False) -> None:
 
     report_tag_distribution(docs)
     report_tag_cooccurrence(docs)
-    report_cross_references(docs)
+    report_cross_references(docs, verbose=verbose)
     report_tag_recommendations(docs, global_tags)
