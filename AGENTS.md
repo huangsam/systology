@@ -46,6 +46,17 @@ When determining what tags to put on the new page:
 
 To reduce token spend and maintain a consistent taxonomy, agents should rely on the local `make insights` tool rather than asking the LLM to "invent" categories. This provides a deterministic bridge between the current content and the repository's established site-wide categories.
 
+The insights command has two output modes:
+
+- `make insights` — human-readable summary for quick spot-checks (tag stats, cross-references, recommendations).
+- `python3 manage.py insights --json` — a structured JSON manifest for programmatic agent consumption. Preferred when scripting or when you need to infer cross-section relationships without reading file bodies.
+
+The JSON manifest has four keys:
+- `stats` — tag count, underused/overused tags, guideline violations (missing/overflow).
+- `redundant_tags` — tag pairs with Jaccard similarity ≥ 0.80 (candidates for consolidation).
+- `cross_references` — document pairs across sections that share tags (sorted by number of shared tags, strongest first). Use this to drive linking decisions without reading page content.
+- `recommendations` — per-file TF-IDF tag candidates split into `established` (existing taxonomy) and `new_candidates`.
+
 #### Mermaid diagrams
 
 When adding a Mermaid diagram:

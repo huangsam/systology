@@ -30,9 +30,11 @@ def main():
     # Tagup
     subparsers.add_parser("tagup", help="Standardize tags")
 
-    # Insights
-    subparsers.add_parser(
+    insights_parser = subparsers.add_parser(
         "insights", help="Analyze tag distribution, co-occurrence, and TF-IDF"
+    )
+    insights_parser.add_argument(
+        "--json", action="store_true", help="Emit a JSON manifest instead of human-readable output"
     )
 
     # Check
@@ -59,7 +61,7 @@ def main():
     elif args.command == "insights":
         from scripts.insights import generate_insights
 
-        generate_insights(content_dir)
+        generate_insights(content_dir, json_out=args.json)
     elif args.command == "check":
         run_check(content_dir)
 

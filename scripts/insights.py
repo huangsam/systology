@@ -308,45 +308,99 @@ def report_tag_distribution(docs: list[dict]) -> None:
             print(f"  [OVERFLOW] {p}: {count} tags (Recommend 3-5)")
 
 
+def collect_tag_distribution(docs: list[dict]) -> dict:
+    """Return tag distribution stats and guideline violations as structured data."""
+    tag_counts = Counter()
+    untagged = []
+    overtagged = []
+
+    for d in docs:
+        for t in d["tags"]:
+            tag_counts[t] += 1
+        cnt = len(d["tags"])
+        if cnt == 0:
+            untagged.append(str(d["path"]))
+        elif cnt > 5:
+            overtagged.append({"path": str(d["path"]), "count": cnt})
+
+    total_docs = len(docs)
+    underused = sorted(t for t, c in tag_counts.items() if c == 1)
+    overused = sorted(t for t, c in tag_counts.items() if c > (total_docs * 0.25))
+
+    return {
+        "total_docs": total_docs,
+        "unique_tags": len(tag_counts),
+        "underused": underused,
+        "overused": overused,
+        "guideline_violations": {
+            "missing": sorted(untagged),
+            "overflow": overtagged,
+        },
+    }
+
+
 def report_tag_cooccurrence(docs: list[dict]) -> None:
     """Analyze and print tag co-occurrence (Jaccard Similarity)."""
-    tag_to_docs = defaultdict(set)
+    redundancies = collect_tag_cooccurrence(docs)
+    if redundancies:
+        print(f"Redundant (Jaccard >= 0.80):")
+        for r in redundancies:
+            print(f"  - {r['tag_a']} / {r['tag_b']} ({(r['jaccard'] * 100):.0f}%)")
+
+
+def collect_tag_cooccurrence(docs: list[dict]) -> list[dict]:
+    """Return redundant tag pairs (Jaccard >= 0.80) as structured data."""
+    tag_to_docs: dict[str, set[int]] = defaultdict(set)
     for i, d in enumerate(docs):
         for t in d["tags"]:
             tag_to_docs[t].add(i)
 
     tags_list = list(tag_to_docs.keys())
+    threshold = 0.80
     redundancies = []
-    threshold = 0.80  # 80% overlap
 
     for i in range(len(tags_list)):
         for j in range(i + 1, len(tags_list)):
             tA, tB = tags_list[i], tags_list[j]
             docsA, docsB = tag_to_docs[tA], tag_to_docs[tB]
-
-            intersection = len(docsA.intersection(docsB))
-            union = len(docsA.union(docsB))
-
+            intersection = len(docsA & docsB)
+            union = len(docsA | docsB)
             if union > 0:
                 jaccard = intersection / union
                 if jaccard >= threshold:
-                    redundancies.append((tA, tB, jaccard))
+                    redundancies.append(
+                        {"tag_a": tA, "tag_b": tB, "jaccard": round(jaccard, 4)}
+                    )
 
-    if redundancies:
-        print(f"Redundant (Jaccard > {threshold}):")
-        for tA, tB, score in sorted(redundancies, key=lambda x: x[2], reverse=True):
-            print(f"  - {tA} / {tB} ({(score * 100):.0f}%)")
+    return sorted(redundancies, key=lambda x: -x["jaccard"])
 
 
 def report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
     """Analyze TF-IDF scores and print tag recommendations grouped by section."""
+    recommendations = collect_tag_recommendations(docs, global_tags)
+    if recommendations:
+        print("\nRecommendations (Found [Existing] or New Candidates):")
+        sections = defaultdict(list)
+        for path, recs in recommendations.items():
+            section = path.split("/", 1)[0] if "/" in path else "other"
+            sections[section].append((path, recs))
+
+        for section in sorted(sections.keys()):
+            print(f"  [{section.upper()}]")
+            for path, recs in sorted(sections[section]):
+                res_list = [f"[{t}]" for t in recs["established"]] + recs["new_candidates"]
+                print(f"    {path}: {', '.join(res_list)}")
+
+
+def collect_tag_recommendations(docs: list[dict], global_tags: set[str]) -> dict:
+    """Return TF-IDF tag recommendations as structured data keyed by file path."""
     total_docs = len(docs)
     df = Counter()
     for d in docs:
         for w in set(d["words"]):
             df[w] += 1
 
-    recommendations = defaultdict(list)
+    recommendations: dict[str, dict] = {}
     for d in docs:
         doc_path = str(d["path"])
         doc_length = len(d["words"])
@@ -356,14 +410,12 @@ def report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
         doc_scores = {}
         for w, tf in d["word_counts"].items():
             idf = math.log(total_docs / (1 + df[w]))
-            tfidf = (tf / doc_length) * idf
-            doc_scores[w] = tfidf
+            doc_scores[w] = (tf / doc_length) * idf
 
         top_words = sorted(doc_scores.items(), key=lambda x: x[1], reverse=True)
-        established_finds = set()
-        new_candidates = []
+        established_finds: set[str] = set()
+        new_candidates: list[str] = []
 
-        # Tier 1: Multi-word established tags
         for t in global_tags:
             if t in d["tags"]:
                 continue
@@ -371,47 +423,90 @@ def report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
             if len(parts) > 1 and all(p in d["word_counts"] for p in parts):
                 established_finds.add(t)
 
-        # Tier 2: Single-word established tags and new discovery
-        for w, score in top_words:
+        for w, _ in top_words:
             if w in d["tags"] or w in established_finds:
                 continue
-
             if w in global_tags:
                 established_finds.add(w)
             elif df[w] >= 3:
                 new_candidates.append(w)
-
             if len(established_finds) + len(new_candidates) >= 3:
                 break
 
         if established_finds or new_candidates:
-            res_list = [
-                f"[{t}]" for t in sorted(list(established_finds))
-            ] + new_candidates
-            recommendations[doc_path] = res_list
+            recommendations[doc_path] = {
+                "established": sorted(established_finds),
+                "new_candidates": new_candidates,
+            }
 
-    if recommendations:
-        print("\nRecommendations (Found [Existing] or New Candidates):")
-        # Sort by section (top-level directory)
-        sections = defaultdict(list)
-        for path, recs in recommendations.items():
-            section = path.split("/", 1)[0] if "/" in path else "other"
-            sections[section].append((path, recs))
-
-        for section in sorted(sections.keys()):
-            print(f"  [{section.upper()}]")
-            for path, recs in sorted(sections[section]):
-                print(f"    {path}: {', '.join(recs)}")
+    return recommendations
 
 
-def generate_insights(content_dir: Path) -> None:
-    """Run modular insights analysis and print reporting."""
+def report_cross_references(docs: list[dict]) -> None:
+    """Print a pre-computed cross-section tag-based linking map."""
+    pairs = collect_cross_references(docs)
+    if not pairs:
+        return
+    print("\nCross-References (Shared Tags Across Sections):")
+    for entry in pairs:
+        print(f"  {entry['a']} <-> {entry['b']}: {', '.join(entry['shared_tags'])}")
+
+
+def collect_cross_references(docs: list[dict]) -> list[dict]:
+    """Return cross-section document pairs and their shared tags as structured data."""
+    tag_to_docs: dict[str, list[tuple[str, str]]] = defaultdict(list)
+    for d in docs:
+        doc_path = str(d["path"])
+        section = doc_path.split("/", 1)[0] if "/" in doc_path else "other"
+        for t in d["tags"]:
+            tag_to_docs[t].append((section, doc_path))
+
+    pair_tags: dict[tuple[str, str], set[str]] = defaultdict(set)
+    for tag, entries in tag_to_docs.items():
+        sections_present = {s for s, _ in entries}
+        if len(sections_present) < 2:
+            continue
+        paths = [p for _, p in entries]
+        for i in range(len(paths)):
+            for j in range(i + 1, len(paths)):
+                if entries[i][0] == entries[j][0]:
+                    continue
+                key = (min(paths[i], paths[j]), max(paths[i], paths[j]))
+                pair_tags[key].add(tag)
+
+    sorted_pairs = sorted(pair_tags.items(), key=lambda x: (-len(x[1]), x[0]))
+    return [
+        {"a": a, "b": b, "shared_tags": sorted(shared)}
+        for (a, b), shared in sorted_pairs
+    ]
+
+
+def generate_insights(content_dir: Path, json_out: bool = False) -> None:
+    """Run modular insights analysis and print reporting.
+
+    Args:
+        content_dir: Root content directory to scan.
+        json_out: If True, emit a single JSON manifest instead of human-readable text.
+    """
+    import json as _json
+
     docs, global_tags = collect_docs(content_dir)
 
     if not docs:
         print("No markdown documents found.")
         return
 
+    if json_out:
+        manifest = {
+            "stats": collect_tag_distribution(docs),
+            "redundant_tags": collect_tag_cooccurrence(docs),
+            "cross_references": collect_cross_references(docs),
+            "recommendations": collect_tag_recommendations(docs, global_tags),
+        }
+        print(_json.dumps(manifest, indent=2))
+        return
+
     report_tag_distribution(docs)
     report_tag_cooccurrence(docs)
+    report_cross_references(docs)
     report_tag_recommendations(docs, global_tags)
