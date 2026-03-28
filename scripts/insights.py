@@ -343,7 +343,7 @@ def report_tag_cooccurrence(docs: list[dict]) -> None:
     """Analyze and print tag co-occurrence (Jaccard Similarity)."""
     redundancies = collect_tag_cooccurrence(docs)
     if redundancies:
-        print(f"Redundant (Jaccard >= 0.80):")
+        print("Redundant (Jaccard >= 0.80):")
         for r in redundancies:
             print(f"  - {r['tag_a']} / {r['tag_b']} ({(r['jaccard'] * 100):.0f}%)")
 
@@ -388,7 +388,9 @@ def report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
         for section in sorted(sections.keys()):
             print(f"  [{section.upper()}]")
             for path, recs in sorted(sections[section]):
-                res_list = [f"[{t}]" for t in recs["established"]] + recs["new_candidates"]
+                res_list = [f"[{t}]" for t in recs["established"]] + recs[
+                    "new_candidates"
+                ]
                 print(f"    {path}: {', '.join(res_list)}")
 
 

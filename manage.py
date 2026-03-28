@@ -34,7 +34,9 @@ def main():
         "insights", help="Analyze tag distribution, co-occurrence, and TF-IDF"
     )
     insights_parser.add_argument(
-        "--json", action="store_true", help="Emit a JSON manifest instead of human-readable output"
+        "--json",
+        action="store_true",
+        help="Emit a JSON manifest instead of human-readable output",
     )
 
     # Check
