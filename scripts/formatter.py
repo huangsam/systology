@@ -37,7 +37,7 @@ def format_prettier(file_path: str) -> None:
 
 
 def run_format_project(site_dir: Path, content_dir: Path, archetypes_dir: Path) -> None:
-    """Format project assets and Markdown content using Prettier and custom logic."""
+    """Format project assets and Markdown content using Prettier, Ruff, and custom logic."""
     print("Running format_project...")
     # CSS & JS in assets (respects .prettierignore)
     assets_dir = site_dir / ASSETS_DIR
@@ -54,3 +54,11 @@ def run_format_project(site_dir: Path, content_dir: Path, archetypes_dir: Path) 
                 count += 1
         if count > 0:
             print(f"  Formatted {count} files in {d}")
+
+    # Python (maintenance scripts)
+    try:
+        subprocess.run(["ruff", "check", "--fix", "."], check=True, capture_output=True)
+        subprocess.run(["ruff", "format", "."], check=True, capture_output=True)
+        print("  Formatted Python scripts via Ruff")
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        pass

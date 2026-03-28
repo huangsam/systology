@@ -1,4 +1,4 @@
-.PHONY: vendor build clean serve tidy tags insights
+.PHONY: vendor build clean serve tidy tags insights check
 
 # https://cdnjs.com/libraries/mermaid
 VERSION ?= 11.12.0
