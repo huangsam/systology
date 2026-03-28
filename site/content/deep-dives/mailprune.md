@@ -1,6 +1,6 @@
 ---
 title: "Mailprune"
-description: "Email management with advanced data processing workflows."
+description: "Privacy-first Gmail auditing tool for sender clustering and inbox cleanup."
 summary: "A highly effective, local-first email auditing and automated cleanup tool designed to definitively identify noisy senders and deliver actionable, strictly privacy-preserving recommendations."
 tags: [data-pipelines, monitoring, privacy, protocols]
 categories: ["deep-dives"]

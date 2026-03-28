@@ -1,6 +1,6 @@
 ---
 title: "Ragchain"
-description: "RAG system combining search and machine learning retrieval."
+description: "Local-first RAG stack combining BM25 and vector retrieval with on-device LLM inference."
 summary: "A comprehensive local RAG stack (ChromaDB + Ollama) designed for strictly private, reproducible retrieval and LLM inference; heavily focusing on hybrid retrieval strategies and index versioning."
 tags: [embeddings, indexing, machine-learning, privacy, retrieval]
 categories: ["deep-dives"]
