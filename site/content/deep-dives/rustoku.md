@@ -2,7 +2,7 @@
 title: "Rustoku"
 description: "A high-performance Sudoku solver implementation in Rust."
 summary: "A highly optimized Sudoku engine engineered in Rust, featuring advanced human-like techniques, multi-platform support (Python, WASM), and microsecond-level performance."
-tags: [algorithms, performance, systems-programming]
+tags: [optimization, search-algorithms, systems-programming]
 categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/rustoku"
