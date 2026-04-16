@@ -3,7 +3,7 @@
 # https://cdnjs.com/libraries/mermaid
 VERSION ?= 11.12.0
 MERMAID_URL = https://cdnjs.cloudflare.com/ajax/libs/mermaid/$(VERSION)/mermaid.min.js
-VENDOR = site/static/js/mermaid.min.js
+VENDOR = site/assets/js/mermaid.min.js
 
 vendor:
 	@mkdir -p $(dir $(VENDOR))
