@@ -65,7 +65,7 @@ Redis Streams or Kafka buffer high-throughput transient payloads and routing met
 ### Delivery Tracker (SQL)
 | Table | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
-| **notifications** | `id` | UUID (PK) | Master ID for tracking. |
+| **notifications** | `id` | UUID (PK) | Primary ID for tracking. |
 | **receipts** | `notif_id` | UUID (FK) | Links to external provider status. |
 | | `status` | ENUM | `sent`, `delivered`, `opened`, `bounced`. |
 | | `err_code` | VARCHAR | Provider-specific failure reason. |

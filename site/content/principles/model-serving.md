@@ -34,8 +34,8 @@ Canaries work best when you define promotion criteria upfront: "promote if P99 l
 graph TD
     Client --> Gateway
     Gateway --> Router[Router<br>Canary Split]
-    Router -->|5-10% canary| Canary[Canary Pool<br>New Version]
-    Router -->|90-95% stable| Stable[Stable Pool<br>Current Version]
+    Router -->|5–10% canary| Canary[Canary Pool<br>New Version]
+    Router -->|90–95% stable| Stable[Stable Pool<br>Current Version]
     Canary --> Gate{Metrics Gate}
     Gate -->|pass| Promote[Promote to 100%]
     Gate -->|fail| Rollback[Rollback]
@@ -75,7 +75,7 @@ See the [Data Pipelines]({{< ref "/principles/data-pipelines" >}}) principles fo
 
 ## Observability for Inference
 
-Log input feature distributions, output confidence scores, and hardware metrics alongside standard latency/error metrics. Distribution drift in inputs is an early warning signal for accuracy degradation before it shows up in labels.
+Track input feature distributions, output confidence scores, and hardware metrics alongside standard latency/error metrics. Distribution drift in inputs is an early warning signal for accuracy degradation before it shows up in labels.
 
 Emit: `inference_latency_p99`, `batch_fill_ratio`, `gpu_utilization`, `model_version`, and sampled `(input_hash, output_distribution)` for each serving replica. Monitor `canary_accuracy_delta` during rollouts. Alert on GPU memory pressure before it causes OOM evictions. For high-cardinality input spaces, sample at 1–5% to manage storage costs.
 

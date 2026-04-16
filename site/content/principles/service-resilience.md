@@ -2,7 +2,7 @@
 title: "Service Resilience"
 description: "Idempotency, resilience patterns, and asynchronous IO flows."
 summary: "Design patterns for reliable microservice behavior under load; implementing strict request idempotency, non-blocking async I/O, robust circuit breakers, durable background queues, and observability."
-tags: [fault-tolerance, idempotency, resilience, worker-pools]
+tags: [fault-tolerance, idempotency, resilience]
 categories: ["principles"]
 draft: false
 date: "2026-02-27T15:23:05-08:00"

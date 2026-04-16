@@ -18,7 +18,7 @@ NoSQL databases (Cassandra, MongoDB, DynamoDB) emerged to handle massive scale. 
 
 ## When to Use SQL
 
-Use SQL when you need strict ACID compliance, data is highly structured with complex relationships, and read/write load can be handled by a single massive master node or read replicas.
+Use SQL when you need strict ACID compliance, data is highly structured with complex relationships, and read/write load can be handled by a single massive primary node or read replicas.
 
 **Ideal Use Cases:** Financial systems, billing platforms, inventory management, or any application where data integrity is the absolute highest priority and relationships between entities are complex.
 
