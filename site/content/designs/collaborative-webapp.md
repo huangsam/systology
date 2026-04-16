@@ -51,11 +51,11 @@ Every action is modeled as an atomic operation.
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `type` | Enum | E.g., `insert`, `delete`, `retain`. |
-| `pos` | Integer | The absolute position in the document text array. |
-| `char` | String | The character being inserted (or omitted if delete). |
-| `replicaId` | String | Unique ID of the client originating this operation. |
-| `clock` | Integer | Logical timestamp (Lamport clock) to enforce causal ordering. |
+| `type` | ENUM | E.g., `insert`, `delete`, `retain`. |
+| `pos` | INT | The absolute position in the document text array. |
+| `char` | VARCHAR | The character being inserted (or omitted if delete). |
+| `replicaId` | VARCHAR | Unique ID of the client originating this operation. |
+| `clock` | INT | Logical timestamp (Lamport clock) to enforce causal ordering. |
 
 ### Storage Strategy
 - **In-Memory:** Active documents are held in memory on the Collab Servers (or in Redis) for immediate broadcast.

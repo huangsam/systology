@@ -26,8 +26,8 @@ Develop a global media serving system that efficiently delivers static and dynam
 - **Latency:** P99 < 100ms to edge; P99 < 500ms origin.
 - **Workload Profile:**
     - Read:Write ratio: ~98:2
-    - Peak throughput: 1M requests/sec
-    - Retention: indefinite (hot); archive to cold storage after 1y
+    - Peak throughput: 1,000,000 requests/sec
+    - Retention: Indefinite (hot); archive to cold storage after 1 year
 
 ## High-Level Architecture
 
@@ -59,8 +59,8 @@ Object storage manages raw uploads, transcoded media, and access logs. The CDN l
 | Item | Cache Key Pattern | TTL (Default) | Invalidation Tag |
 | :--- | :--- | :--- | :--- |
 | **Images** | `host/path?w=100&q=80` | 30 days | `img:<asset_id>` |
-| **Videos** | `host/path/playlist.m3u8`| 1 year | `vid:<asset_id>` |
-| **Manifests**| `host/config.json` | 60 seconds | `config:global` |
+| **Videos** | `host/path/playlist.m3u8` | 1 year | `vid:<asset_id>` |
+| **Manifests** | `host/config.json` | 60 seconds | `config:global` |
 
 ## Deep Dive & Trade-offs
 

@@ -58,17 +58,17 @@ Redis Streams or Kafka buffer high-throughput transient payloads and routing met
 | Field | Type | Description |
 | :--- | :--- | :--- |
 | `notif_id` | UUID | Correlates dispatch with receipt. |
-| `priority` | Enum | `HIGH`, `NORMAL`, `BULK`. |
-| `payload` | JSON/Proto | Rendered content or template variables. |
-| `channel_pref`| List | `[push, email]` order of retry. |
+| `priority` | ENUM | `HIGH`, `NORMAL`, `BULK`. |
+| `payload` | JSON | Rendered content or template variables. |
+| `channel_pref` | LIST | `[push, email]` order of retry. |
 
 ### Delivery Tracker (SQL)
 | Table | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
-| **notifications** | `id` | UUID (PK)| Master ID for tracking. |
-| **receipts** | `notif_id` | UUID (FK)| Links to external provider status. |
-| | `status` | Enum | `sent`, `delivered`, `opened`, `bounced`.|
-| | `err_code` | String | Provider-specific failure reason. |
+| **notifications** | `id` | UUID (PK) | Master ID for tracking. |
+| **receipts** | `notif_id` | UUID (FK) | Links to external provider status. |
+| | `status` | ENUM | `sent`, `delivered`, `opened`, `bounced`. |
+| | `err_code` | VARCHAR | Provider-specific failure reason. |
 
 ## Deep Dive & Trade-offs
 

@@ -2,7 +2,7 @@
 title: "Payment System"
 description: "Reliable global payment processing system architectures."
 summary: "A high-integrity architecture for global payment gateways and internal ledgers, emphasizing rigorous idempotency, eventual consistency, and deterministic recovery."
-tags: [consistency, databases, edge-computing, idempotency, integrity]
+tags: [consistency, databases, idempotency, integrity, data-flows]
 categories: ["designs"]
 draft: false
 date: "2026-02-17T10:27:08-08:00"
@@ -62,9 +62,9 @@ An Idempotency Store (Redis/Postgres) caches request signatures to prevent doubl
 | Table | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
 | **entries** | `id` | UUID (PK) | Unique entry identifier. |
-| | `account_id` | String (Idx) | e.g., `user_123`, `gateway_stripe`. |
-| | `amount` | BigInt | Smallest unit (e.g. cents). |
-| | `direction` | Enum | `debit`, `credit`. |
+| | `account_id` | VARCHAR (IDX) | e.g., `user_123`, `gateway_stripe`. |
+| | `amount` | BIGINT | Smallest unit (e.g., cents). |
+| | `direction` | ENUM | `debit`, `credit`. |
 | | `tx_id` | UUID (FK) | Reference to parent transaction. |
 
 ## Deep Dive & Trade-offs

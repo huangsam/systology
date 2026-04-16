@@ -53,18 +53,18 @@ Redis provides a high-speed volatile cache for atomic inventory counters and sho
 ### Inventory Key-Space (Redis)
 | Key Pattern | Value Type | Description | TTL |
 | :--- | :--- | :--- | :--- |
-| `inv:<sku_id>` | Integer | Atomic counter for available items. | Event duration |
-| `hold:<sku_id>:<user_id>`| String | Reservation lock / owner ID. | 10 minutes |
-| `idemp:<key>` | String | Idempotency key for deduplication. | 15 minutes |
+| `inv:<sku_id>` | INT | Atomic counter for available items. | Event duration |
+| `hold:<sku_id>:<user_id>` | VARCHAR | Reservation lock / owner ID. | 10 minutes |
+| `idemp:<key>` | VARCHAR | Idempotency key for deduplication. | 15 minutes |
 
 ### Order Schema (SQL)
 | Table | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
 | **orders** | `id` | UUID (PK) | Unique order identifier. |
 | | `user_id` | UUID (FK) | Buyer identifier. |
-| | `sku_id` | String | Purchased item ID. |
-| | `status` | Enum | `pending`, `confirmed`, `expired`. |
-| | `version` | Integer | For optimistic concurrency control. |
+| | `sku_id` | VARCHAR | Purchased item ID. |
+| | `status` | ENUM | `pending`, `confirmed`, `expired`. |
+| | `version` | INT | For optimistic concurrency control. |
 
 ## Deep Dive & Trade-offs
 

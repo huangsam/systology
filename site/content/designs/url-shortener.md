@@ -60,11 +60,11 @@ This easily covers the 6 Billion requirement, so a 6 or 7 character string is su
 ### Storage Schema (NoSQL or SQL)
 | Column | Type | Description |
 | :--- | :--- | :--- |
-| `id` | BigInt (PK) | Unique numerical ID (from Snowflake or DB sequence). |
-| `hash` | String(7) | Base62 encoded version of the ID (e.g., `8aBc1`). Indexed. |
-| `long_url` | String(2048) | The destination. |
-| `created_at` | Timestamp | |
-| `expires_at` | Timestamp | For automatic cleanup mechanisms. |
+| `id` | BIGINT (PK) | Unique numerical ID (from Snowflake or DB sequence). |
+| `hash` | VARCHAR(7) | Base62 encoded version of the ID (e.g., `8aBc1`). Indexed. |
+| `long_url` | VARCHAR(2048) | The destination. |
+| `created_at` | TIMESTAMP | |
+| `expires_at` | TIMESTAMP | For automatic cleanup mechanisms. |
 
 *Note: Since there are no complex joins, a Wide-Column store like Cassandra/DynamoDB is excellent here, but PostgreSQL is also perfectly fine for 6 Billion rows if partitioned or indexed on the `hash`.*
 

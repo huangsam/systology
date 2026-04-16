@@ -22,7 +22,7 @@ Design a system to aggregate millions of ad click events in real-time to provide
 
 - **Scale:** 10 billion click events per day (peak 200k events/sec).
 - **Latency:** End-to-end data delay (event time to ingestion in report) < 1 minute.
-- **Consistency:** Exactly-once semantics for billing; hyper-accurate counts (probabilistic structures acceptable for pre-aggregation).
+- **Consistency:** Exactly-once semantics per window for billing; probabilistic estimations (e.g., HyperLogLog) acceptable for sub-second real-time dashboards.
 - **Availability:** Robustness against regional outages or stream spikes.
 - **Workload Profile:**
     - Read:Write ratio: ~20:80
@@ -59,10 +59,10 @@ Kafka topics buffer high-throughput temporary streams, partitioned by ad ID to g
 ### Reporting Schema (OLAP - ClickHouse)
 | Table | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
-| **clicks_agg** | `ad_id` | UInt32 (PK) | Unique advertisement ID. |
-| | `window_ts` | DateTime (PK)| 1-min window start timestamp. |
-| | `click_count`| AggregateFunction| Rolling count for the window. |
-| | `revenue` | Decimal | Sum of bid price for clicked ads. |
+| **clicks_agg** | `ad_id` | UINT32 (PK) | Unique advertisement ID. |
+| | `window_ts` | DATETIME (PK) | 1-min window start timestamp. |
+| | `click_count` | BIGINT | Rolling count for the window. |
+| | `revenue` | DECIMAL(18,4) | Sum of bid price for clicked ads. |
 
 ## Deep Dive & Trade-offs
 

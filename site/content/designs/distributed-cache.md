@@ -49,9 +49,9 @@ Prefixed keys namespace the cache, allowing distinct eviction strategies for dif
 ### Cache Key-Space (KV)
 | Prefix | Key Format | Value Type | Description |
 | :--- | :--- | :--- | :--- |
-| `obj:` | `obj:<sha1>` | Compressed Blob | Git objects (blobs, trees, commits). |
-| `idx:` | `idx:<pack_id>` | Byte Array | Pack-index offsets for object lookups. |
-| `ref:` | `ref:<branch_path>`| SHA1 String | Branch heads and lightweight tags. |
+| `obj:` | `obj:<sha256>` | BLOB | Git objects (blobs, trees, commits). |
+| `idx:` | `idx:<pack_id>` | BINARY | Pack-index offsets for object lookups. |
+| `ref:` | `ref:<branch>` | VARCHAR | Branch heads and lightweight tags. |
 
 ### Node Metadata (Shared State/Config)
 | Field | Type | Description |

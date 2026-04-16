@@ -2,7 +2,7 @@
 title: "Video Transcoding & Streaming Pipeline"
 description: "Video transcoding systems through distributed pipelines."
 summary: "An inherently scalable video ingestion and transcoding system architecture; asynchronously chunking heavy media, extracting actionable features, and steadily outputting adaptive bitrates via worker pools."
-tags: [data-pipelines, encoding, media, queuing, worker-pools]
+tags: [data-pipelines, encoding, media, queuing, streaming]
 categories: ["designs"]
 draft: false
 date: "2026-02-24T22:34:51-08:00"
@@ -54,13 +54,13 @@ The architecture leverages a "MapReduce" pattern optimized for large-scale media
 | :--- | :--- | :--- | :--- |
 | **videos** | `video_id` | UUID (PK) | Unique identifier for the video. |
 | | `user_id` | UUID (FK) | Owner of the video. |
-| | `status` | Enum | `uploading`, `processing`, `ready`, `failed`. |
-| | `raw_s3_key` | String | Path to original upload. |
+| | `status` | ENUM | `uploading`, `processing`, `ready`, `failed`. |
+| | `raw_s3_key` | VARCHAR | Path to original upload. |
 
 ### Transcode Job State
 | Key Pattern (Redis/DB) | Value | Description |
 | :--- | :--- | :--- |
-| `task:<video_id>:<chunk_idx>:<resolution>` | Enum | `pending`, `running`, `completed`. |
+| `task:<video_id>:<chunk_idx>:<resolution>` | ENUM | `pending`, `running`, `completed`. |
 
 ## Deep Dive & Trade-offs
 

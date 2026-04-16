@@ -2,7 +2,7 @@
 title: "Privacy-Preserving Federated Learning Platform"
 description: "Federated learning systems without centralized data stores."
 summary: "A secure platform design for advanced federated learning pipelines; training models directly across edge devices without sharing raw telemetry, utilizing secure local aggregation and robust privacy safeguards."
-tags: [machine-learning, privacy, training]
+tags: [machine-learning, privacy, training, data-pipelines]
 categories: ["designs"]
 draft: false
 date: "2026-02-16T16:32:50-08:00"
@@ -14,7 +14,7 @@ Build a platform for federated learning that trains models across distributed de
 
 ### Functional Requirements
 
-- Train models across distributed devices without centralised data collection.
+- Train models across distributed devices without centralized data collection.
 - Aggregate model updates securely and privately.
 - Support client device heterogeneity (connectivity, compute).
 

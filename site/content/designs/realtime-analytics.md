@@ -21,7 +21,7 @@ Design a scalable system to ingest and process high-volume user event streams fr
 
 ### Non-Functional Requirements
 
-- **Scale:** Handle 10k–100k events/sec; peak-hour bursts.
+- **Scale:** Handle 10,000–100,000 events/sec; peak-hour bursts.
 - **Availability:** 99.9% uptime; resilient to temporary source unavailability.
 - **Consistency:** Eventual consistency for aggregations; at-least-once event processing.
 - **Latency:** P99 < 500ms for event-to-dashboard visibility.
@@ -52,8 +52,8 @@ Kafka buffers high-throughput raw streams and intermediate aggregates. A columna
 ### Event Stream (Kafka Topics)
 | Topic | Partition Key | Throughput | Retention |
 | :--- | :--- | :--- | :--- |
-| `user_events` | `session_id` | 100k msg/s | 7 days |
-| `aggregates` | `metric_name` | 1k msg/s | 24 hours |
+| `user_events` | `session_id` | 100,000 msg/s | 7 days |
+| `aggregates` | `metric_name` | 1,000 msg/s | 24 hours |
 | `late_events` | `event_id` | < 100 msg/s | 14 days |
 
 ### Metrics Store (OLAP - ClickHouse/Druid)

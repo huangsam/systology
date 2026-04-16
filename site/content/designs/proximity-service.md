@@ -2,7 +2,7 @@
 title: "Proximity Service for Maps"
 description: "Geospatial indexing for high-scale location-based search."
 summary: "An optimized system design for discovering nearby points of interest with ultra-low latency; deeply focusing on efficient spatial indexing via Geohashing, Quadtrees, and read-heavy caching tiers."
-tags: [caching, databases, geospatial]
+tags: [caching, databases, geospatial, indexing]
 categories: ["designs"]
 draft: false
 date: "2026-02-17T10:27:08-08:00"
@@ -59,9 +59,9 @@ The Spatial Index maps 2D coordinates into 1D strings (Geohashes) stored in a B-
 | Field | Type | Description | Indexing |
 | :--- | :--- | :--- | :--- |
 | `id` | UUID (PK) | Unique provider ID. | Hash |
-| `name` | String | Business/Place name. | Full-text |
-| `category` | Enum | `restaurant`, `park`, etc. | Bitmap |
-| `rating` | Float | 0.0 to 5.0 score. | Range |
+| `name` | VARCHAR | Business/Place name. | Full-text |
+| `category` | ENUM | `restaurant`, `park`, etc. | Bitmap |
+| `rating` | FLOAT | 0.0 to 5.0 score. | Range |
 
 ## Deep Dive & Trade-offs
 

@@ -33,7 +33,7 @@ Design a high-performance search and retrieval engine to index and query large v
 ## High-Level Architecture
 
 {{< mermaid >}}
-graph TD
+graph LR
     Query["Query Input"] --> QP["Query Parser"]
     QP --> Scatter["Scatter (Parallel)"]
     Scatter --> Shard1["Shard 1 (Local RankK)"]
@@ -65,8 +65,8 @@ An Inverted Index combines an in-memory dictionary with compressed on-disk posti
 ### Vector Store (HNSW/IVF)
 | Field | Type | Dim | Purpose |
 | :--- | :--- | :--- | :--- |
-| **doc_embedding** | Float16 Vector| 768 | Semantic similarity search. |
-| **hnsw_graph** | Proximity Graph| N/A | Fast approximate NN search. |
+| **doc_embedding** | FLOAT16 VECTOR | 768 | Semantic similarity search. |
+| **hnsw_graph** | BINARY | N/A | Fast approximate NN search. |
 | **doc_metadata** | JSON | N/A | Filtering/Faceting after retrieval. |
 
 ## Deep Dive & Trade-offs

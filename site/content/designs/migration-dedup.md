@@ -59,9 +59,9 @@ A Hash Index combining a Bloom filter and a Key-Value map accelerates duplicate 
 ### Migration State (SQL)
 | Table | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
-| **checkpoints** | `chunk_id` | String (PK) | Partition or PK-range identifier. |
-| | `status` | Enum | `pending`, `syncing`, `failed`, `verified`. |
-| | `checksum` | String | Hash of migrating chunk for integrity. |
+| **checkpoints** | `chunk_id` | VARCHAR (PK) | Partition or PK-range identifier. |
+| | `status` | ENUM | `pending`, `syncing`, `failed`, `verified`. |
+| | `checksum` | VARCHAR | Hash of migrating chunk for integrity. |
 | | `run_id` | UUID | To handle idempotent re-runs. |
 
 ## Deep Dive & Trade-offs

@@ -2,7 +2,7 @@
 title: "Distributed Web Crawler"
 description: "Large-scale web crawling with efficient graph traversal."
 summary: "A highly resilient architectural design for a Google-scale web crawler; heavily focusing on breadth-first search (BFS), extensive DNS resolution caching, and polite handling of malicious domains."
-tags: [algorithms, bandwidth, dns, orchestration, redirection]
+tags: [algorithms, bandwidth, dns, orchestration, fault-tolerance]
 categories: ["designs"]
 draft: false
 date: "2026-02-24T22:57:53-08:00"
@@ -21,7 +21,7 @@ Design a distributed web crawler (e.g., the ingestion agent for a search engine,
 
 ### Non-Functional Requirements
 
-- **Scale:** Crawl 1 Billion pages per month (~380 pages/second).
+- **Scale:** Crawl 1,000,000,000 pages per month (~380 pages/second).
 - **Fault Tolerance:** Servers will abruptly close connections, timeout, or return malformed data. The crawler must never crash.
 - **Network Efficiency:** DNS lookups are heavy. The system must cache DNS to avoid bottlenecking on network resolution.
 
