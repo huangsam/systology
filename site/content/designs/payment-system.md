@@ -2,7 +2,7 @@
 title: "Payment System"
 description: "Reliable global payment processing system architectures."
 summary: "A high-integrity architecture for global payment gateways and internal ledgers, emphasizing rigorous idempotency, eventual consistency, and deterministic recovery."
-tags: [consistency, databases, idempotency, integrity, data-flows]
+tags: [consistency, data-flows, databases, idempotency, integrity]
 categories: ["designs"]
 draft: false
 date: "2026-02-17T10:27:08-08:00"
