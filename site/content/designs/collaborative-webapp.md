@@ -29,9 +29,9 @@ Design a system to support real-time, multi-user collaboration on a shared docum
 
 {{< mermaid >}}
 graph TD
-    UserA[Client A] <-->|WebSocket| WS1[Collab Server 1]
-    UserB[Client B] <-->|WebSocket| WS1
-    UserC[Client C] <-->|WebSocket| WS2[Collab Server 2]
+    UserA[Client A] <-->|WebTransport / WebSocket| WS1[Collab Server 1]
+    UserB[Client B] <-->|WebTransport / WebSocket| WS1
+    UserC[Client C] <-->|WebTransport / WebSocket| WS2[Collab Server 2]
 
     WS1 <--> PubSub[(Redis Pub/Sub)]
     WS2 <--> PubSub
@@ -40,7 +40,7 @@ graph TD
     WS2 -.-> Store
 {{< /mermaid >}}
 
-Clients maintain persistent, stateful WebSocket connections to Collaborative Servers. State synchronization is managed using an algorithmic approach—like Conflict-Free Replicated Data Types (CRDTs). Edits are broadcast via a publish/subscribe bus to alert other connected nodes. Periodically, the in-memory state is flushed to durable storage.
+Clients maintain persistent, stateful WebTransport sessions when available, with WebSockets as a compatibility fallback. State synchronization is managed using an algorithmic approach—like Conflict-Free Replicated Data Types (CRDTs). Edits are broadcast via a publish/subscribe bus to alert other connected nodes. Periodically, the in-memory state is flushed to durable storage.
 
 ## Data Design
 
@@ -96,7 +96,8 @@ class LWWMap {
 
 ### Deep Dive
 
-- **CRDTs (Conflict-Free Replicated Data Types):** Rather than locking the document or forcing a central server to mediate every character (Operational Transformation), CRDT algorithms (like Yjs or Automerge) mathematically guarantee that if two clients apply the same set of operations—regardless of the order they arrive over the network—they will reach the same final state.
+- **CRDTs (Conflict-Free Replicated Data Types):** Rather than locking the document or forcing a central server to mediate every character (Operational Transformation), CRDT algorithms (like Yjs or Automerge) mathematically guarantee that if two clients apply the same set of operations—regardless of the order they arrive over the network—they will reach the same final state. Yjs and Automerge are production-grade libraries for client/server replication, while ShareDB or Liveblocks are useful reference architectures for OT-style managed backends.
+- **Pub/Sub scalability:** Redis Pub/Sub is simple for moderate-scale deployments, but Redis Cluster, NATS JetStream, or Kafka provide better horizontally scalable durability and cross-region fanout for large collaboration systems.
 - **Session Affinity (Sticky Sessions):** To minimize latency, routing all users viewing "Document 123" to the same physical Collab Server node is highly efficient. This avoids the cost of going through the Redis Pub/Sub layer for users in the same room.
 - **Presence (Ephemeral State):** Cursor positions and "User is typing..." indicators don't need to be durably saved. These are broadcast directly via WebSockets and dropped if a user disconnects.
 
@@ -108,6 +109,11 @@ class LWWMap {
 
 ## Operational Excellence
 
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
+
+### SLIs / SLOs
 - SLO: 99% of presence updates broadcast in < 50ms.
 - SLIs: `websocket_connection_drops`, `document_load_time`, `memory_per_active_doc`.
 - **Throttling:** Throttle high-frequency events (like mouse coordinates) at the client-side to e.g., 20 frames per second to avoid flooding the WebSocket buffers.

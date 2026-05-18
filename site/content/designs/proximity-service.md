@@ -120,6 +120,10 @@ def get_nearby_pois(lat, lon, radius_km):
 
 ## Operational Excellence
 
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
+
 ### SLIs / SLOs
 
 - SLO: 99.9% of search queries return results within 200 ms.

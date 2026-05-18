@@ -90,6 +90,10 @@ A Hash Index combining a Bloom filter and a Key-Value map accelerates duplicate 
 
 ## Operational Excellence
 
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
+
 ### SLIs / SLOs
 
 - SLO: Complete 10 TB migration within 24 hours.

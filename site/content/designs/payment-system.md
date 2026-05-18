@@ -71,10 +71,11 @@ An Idempotency Store (Redis/Postgres) caches request signatures to prevent doubl
 
 {{< pseudocode id="idempotency-key" title="Idempotent Payment Processing" >}}
 ```python
+import stripe
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-def process_payment(idempotency_key, user_id, amount, currency):
+def process_payment(idempotency_key: str, payment_method_id: str, amount: int, currency: str, user_id: str) -> str:
     # 1. Start a database transaction
     with get_db_connection() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -96,35 +97,41 @@ def process_payment(idempotency_key, user_id, amount, currency):
                 else:
                     raise Exception("Concurrent request processing")
 
-            # 3. Proceed with external Gateway call (e.g., Stripe)
+            # 3. Proceed with external Gateway call using Stripe PaymentIntents.
             try:
-                stripe_charge = stripe.Charge.create(
+                payment_intent = stripe.PaymentIntent.create(
                     amount=amount,
                     currency=currency,
-                    source=user_id,
-                    idempotency_key=idempotency_key # Pass down to Stripe too!
+                    payment_method_types=["card"],
+                    capture_method="automatic",
+                    description=f"Payment for user {user_id}",
+                    metadata={"idempotency_key": idempotency_key},
+                    idempotency_key=idempotency_key,
+                )
+
+                confirmed_intent = stripe.PaymentIntent.confirm(
+                    payment_intent.id,
+                    payment_method=payment_method_id,
+                    idempotency_key=f"{idempotency_key}:confirm",
                 )
 
                 # 4. Write to internal Double-Entry Ledger
-                record_ledger_entries(cur, charge_id=stripe_charge.id, amount=amount)
+                record_ledger_entries(cur, charge_id=confirmed_intent.id, amount=amount)
 
                 # 5. Update Idempotency record to 'completed'
                 cur.execute("""
                     UPDATE idempotency_keys
                     SET status = 'completed', response = %s
                     WHERE key = %s
-                """, (stripe_charge.id, idempotency_key))
+                """, (confirmed_intent.id, idempotency_key))
 
                 conn.commit()
-                return stripe_charge.id
+                return confirmed_intent.id
 
             except Exception as e:
-                conn.rollback() # Rollback ledger entries
-                # EDGE CASE: If stripe_charge succeeded above but the ledger write
-                # failed, marking the key as 'failed' would allow a retry that
-                # double-charges the customer. In production, check whether the
-                # charge was captured and, if so, mark the key with the charge ID
-                # for reconciliation rather than allowing a blind retry.
+                conn.rollback()  # Rollback ledger entries
+                # EDGE CASE: If the payment intent succeeded but ledger writes failed,
+                # persist the provider intent ID for reconciliation rather than retrying blindly.
                 cur.execute("UPDATE idempotency_keys SET status = 'failed' WHERE key = %s", (idempotency_key,))
                 conn.commit()
                 raise e
@@ -138,6 +145,8 @@ def process_payment(idempotency_key, user_id, amount, currency):
 - **Double-entry ledger:** Offsetting append-only debit/credit entries sum to zero. Corrections require new compensating entries, preserving the immutable audit trail.
 
 - **Gateway abstraction:** A unified interface (`authorize`, `capture`) decouples business logic from provider APIs, easing routing and migrations.
+
+- **PaymentIntent-first flows:** Stripe PaymentIntents (or equivalent provider stateful transaction objects) replace deprecated charge APIs, enabling safer multi-step authorization, capture, and asynchronous confirmation.
 
 - **Reconciliation jobs:** Hourly jobs validate gateway settlement reports against the ledger. Nightly deep passes re-derive balances from raw entries to catch subtle discrepancies.
 
@@ -157,11 +166,21 @@ def process_payment(idempotency_key, user_id, amount, currency):
 
 ## Operational Excellence
 
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
+
 ### SLIs / SLOs
 
 - SLO: 99.99% of payment API requests return a response (success or well-defined error) within 2 seconds.
 - SLO: 0 ledger imbalances (debits and credits sum to zero at all times).
 - SLIs: payment_success_rate, gateway_latency_p99, ledger_balance_check, reconciliation_discrepancy_count, idempotency_cache_hit_rate.
+
+### Failure Mode Response
+
+- If ledger reconciliation detects an imbalance, page on-call immediately and fail new intake until the root cause is isolated.
+- If external gateway timeouts or decline storms occur, switch traffic to a secondary provider and enqueue pending payment intents for async backfill.
+- On SLO breach, follow the incident runbook, notify stakeholders, and prioritize correctness over speed for financial records.
 
 ### Reliability & Resiliency
 

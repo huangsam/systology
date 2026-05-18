@@ -89,6 +89,10 @@ Kafka buffers high-throughput raw streams and intermediate aggregates. A columna
 
 ## Operational Excellence
 
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
+
 ### SLIs / SLOs
 
 - SLO: P99 end-to-end event processing latency (collector to OLAP) < 500 ms.

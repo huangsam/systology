@@ -72,7 +72,9 @@ Object storage manages raw uploads, transcoded media, and access logs. The CDN l
 
 - **Security & Access:** Time-limited signed URLs and rotatable keys provide zero-downtime secure delivery at the edge.
 
-- **Content Optimization:** Real-time resizing and `Accept` header negotiation deliver modern, optimal formats (WebP/AVIF).
+- **Content Optimization:** Real-time resizing and `Accept` header negotiation deliver modern, optimal formats (WebP/AVIF). HTTP/3/QUIC reduces edge-to-client head-of-line blocking and improves cold-start response times on mobile networks.
+
+- **Origin resilience:** S3 Multi-Region Access Points or equivalent multi-region object storage provide regional failover and low-latency reads without manual bucket routing.
 
 - **Multi-CDN Failover:** DNS-based anycast routing and health probes ensure automatic failover during provider degradation.
 
@@ -85,6 +87,10 @@ Object storage manages raw uploads, transcoded media, and access logs. The CDN l
 - **Multi-CDN vs. Single Provider:** Multi-CDN increases resilience but doubles configuration overhead and complicates cache invalidation sync.
 
 ## Operational Excellence
+
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
 
 ### SLIs / SLOs
 

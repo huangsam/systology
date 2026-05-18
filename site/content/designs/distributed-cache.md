@@ -128,6 +128,10 @@ class ConsistentHashRing:
 
 ## Operational Excellence
 
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
+
 ### SLIs / SLOs
 
 - SLO: Cache hit ratio ≥ 95% for object lookups.

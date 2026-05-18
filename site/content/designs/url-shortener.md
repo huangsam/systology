@@ -72,7 +72,7 @@ This easily covers the 6 Billion requirement, so a 6 or 7 character string is su
 
 ### Deep Dive
 
-- **ID Generation (Snowflake vs. Auto-Increment):** Using a single PostgreSQL database with an `AUTO_INCREMENT` primary key creates a massive single point of failure and write bottleneck. Instead, use Twitter's **Snowflake** algorithm: a decentralized microservice that generates unique 64-bit integers based on the current timestamp, a machine ID, and an internal counter. This provides highly available, causally-ordered IDs with no per-ID network call (though machine IDs must be pre-assigned via coordination, e.g., ZooKeeper).
+- **ID Generation (Snowflake vs. Auto-Increment):** Using a single PostgreSQL database with an `AUTO_INCREMENT` primary key creates a massive single point of failure and write bottleneck. Instead, use Twitter's **Snowflake** algorithm: a decentralized microservice that generates unique 64-bit integers based on the current timestamp, a machine ID, and an internal counter. This provides highly available, causally-ordered IDs with no per-ID network call (though machine IDs must be pre-assigned via coordination, e.g., ZooKeeper). Modern variants like ULID and KSUID are also popular for sortable unique IDs with lower clock-skew sensitivity.
 - **Base62 Encoding:** Rather than hashing the URL directly (which requires checking the DB for hash collisions), we take the practically unique [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID) (e.g., `2009215674938`)—unique assuming correct machine ID assignment and well-behaved clocks—and simply convert it from Base10 to Base62.
 - **Custom Vanity Aliases:** When a user requests `https://sh.rt/my-sale`, the system cannot use the ID Generator. It must attempt to insert the record with a `hash` of `my-sale`. If the DB throws a unique constraint violation, the service rejects the request.
 
@@ -81,10 +81,16 @@ This easily covers the 6 Billion requirement, so a 6 or 7 character string is su
 - **HTTP 301 vs. 302 Redirects:**
   - **301 (Moved Permanently):** The browser aggressively caches the redirect. This drastically reduces the load on your servers, but you lose the ability to track click analytics (because the browser never contacts your server again for that link).
   - **302 (Found):** The redirection is temporary. The browser will hit your server every single time by default. This allows real-time metric tracking at the cost of higher server load. (Note: CDN edge caches can still cache 302s if explicit `Cache-Control` headers are set, so 302 does not inherently prevent all caching.)
+  - **Edge delivery:** HTTP/3/QUIC edge routing with geo-aware redirects can reduce redirect latency and send users to region-specific destinations for compliance, localization, or nearest-service optimization.
 - **Hash Collisions (Truncated Hashing vs. Unique ID):** If we hashed the long URL (e.g., with MD5 or SHA-256) and took the first 7 characters, two different URLs could easily collide on those characters—the collision risk comes from truncation (~35–42 bits of entropy), not from the hash algorithm itself. Generating a unique integer first and encoding it Base62 avoids the collision problem entirely.
 
 ## Operational Excellence
 
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
+
+### SLIs / SLOs
 - SLO: 99.9% of redirects (reads) < 10ms. 99.9% of generation (writes) < 100ms.
 - SLIs: `cache_hit_ratio`, `id_generation_exhaustion`, `redirect_latency_p99`.
 - **Scaling:** If cache hit ratio drops unexpectedly (e.g., a massive spike of *distinct* URLs rather than one viral URL), the DB read capacity must instantly auto-scale.

@@ -74,7 +74,9 @@ Redis Streams or Kafka buffer high-throughput transient payloads and routing met
 
 ### Deep Dive
 
-- **Channel adapters:** Pluggable adapters behind a standard `Deliver()` interface encapsulate complex token management and connection pooling per provider.
+- **Channel adapters:** Pluggable adapters behind a standard `Deliver()` interface encapsulate complex token management, connection pooling, and provider migrations such as FCM v1 token refresh and OAuth credentials.
+
+- **Live channel transport:** In-browser live updates can use SSE as a simpler pull-style alternative to WebSockets, while HTTP/3/QUIC and WebTransport are modern options for low-latency interactive notifications when supported.
 
 - **Template engine & i18n:** Versioned templates use Mustache/Handlebars interpolation, resolving localization via a priority chain (`user_locale → region_default → en`).
 
@@ -97,6 +99,10 @@ Redis Streams or Kafka buffer high-throughput transient payloads and routing met
 - **Inline vs. Pre-rendering:** Inline allows last-minute A/B testing and personalization but adds dispatch latency; Pre-rendering is faster at dispatch but less flexible.
 
 ## Operational Excellence
+
+### Security Considerations
+- Service-to-service traffic should be authenticated with mTLS or service-mesh identity (SPIFFE/SPIRE) instead of trusting network location.
+- Secrets and API credentials should be managed in a centralized vault with automated rotation and least-privilege access.
 
 ### SLIs / SLOs
 
