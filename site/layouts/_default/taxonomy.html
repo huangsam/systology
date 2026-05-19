@@ -5,7 +5,7 @@
     <p class="meta">{{ len .Pages }} item{{ if gt (len .Pages) 1 }}s{{ end }}</p>
   </header>
 
-  {{ $pages := .Pages.ByTitle }}
+  {{ $pages := .Pages.ByLastmod.Reverse }}
   {{ $paginator := .Paginate $pages 20 }}
 
   <ul class="listing">
