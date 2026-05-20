@@ -62,6 +62,14 @@ Define "Action Risk Levels":
 
 Build UIs that surface the agent's *reasoning* alongside the proposed action, not just the result.
 
+## Assertion-based Step Validation
+
+Implement deterministic execution assertions at critical boundaries within the agent loop. Feeding raw test, schema, or runtime validation failures directly back into the agent's context enables robust, closed-loop self-correction.
+
+Rather than letting an agent continue executing steps blindly after an error, wrap key tool executions and state transitions in deterministic code assertions. For instance, when an agent writes code, compile it and run a test suite automatically; if the agent generates a configuration file, validate it against its JSON schema. If an assertion fails, immediately halt the execution loop, capture the exact traceback or validation error, and feed it back to the agent as a structured environment message (e.g., "AssertionError: Schema key 'port' must be an integer, got string '1313'"). This provides a direct, non-linguistic feedback signal that the model can use to correct its own mistake. Set a strict retry ceiling (e.g., 3–5 attempts) to prevent costly, infinite repair loops if the model repeatedly fails to resolve the issue.
+
+**Anti-pattern — Ephemeral Self-Reflection:** Relying on the agent to evaluate its own success via open-ended prompts (e.g., "Review your work and confirm it is correct"). Without an external, deterministic compiler or validation runner to assert properties, the agent will frequently hallucinate that its broken output is correct. Always validate outputs with code-level checks.
+
 ## Decision Framework
 
 Choose your orchestration pattern based on task complexity and reliability needs:
@@ -72,5 +80,6 @@ Choose your orchestration pattern based on task complexity and reliability needs
 | **Resilience** | Stateful State Machines | Enables recovery from failures and long-running pauses. |
 | **Transparency** | Reasoning Traces | Allows humans to audit *why* an action was proposed. |
 | **Safety** | Explicit Approval Gates | Prevents autonomous agents from causing irreversible damage. |
+| **Reliable Execution** | Assertion-based Validation | Runs external code checks (compilation, schema tests) to trigger self-correction. |
 
 **Decision Heuristic:** "Choose **Multi-Agent Decomposition** when the task requires more than 3 distinct logical steps. Use **explicit approval gates** for any action that affects user data or financial state."

@@ -97,6 +97,22 @@ Modern SLMs (e.g., Phi-3, Mistral-7B, Phi-4) often match larger models on specif
 
 **Anti-pattern — Over-provisioning Reasoning:** Using the most expensive frontier model for trivial tasks like "classify this email into 4 categories" or "summarize this 200-word paragraph." SLMs provide better throughput and lower costs for these high-volume sub-tasks.
 
+## Speculative Decoding for Latency Optimization
+
+Deploy a smaller, faster draft model alongside your primary target model to accelerate token generation speeds. The target model verifies batches of draft tokens in parallel, achieving high-quality output at a fraction of the standard generation latency.
+
+Speculative decoding relies on a draft model (typically 1B–3B parameters) and a larger target model (70B+ parameters). The draft model generates $K$ candidate tokens sequentially. The target model then runs these $K$ tokens through its network in a single forward pass, accepting or rejecting each based on verification probability. This changes decoding from a sequential GPU-bound bottleneck to a batch-parallel verification task. Speculative decoding works best when the draft model aligns closely in vocabulary and training domain with the target model, yielding a high acceptance rate. If the acceptance rate drops below ~50%, the overhead of target-model rejection and re-generation makes inference slower than standard decoding.
+
+**Anti-pattern — Tokenizer and Vocabulary Mismatch:** Using a draft model with a different tokenizer space or vocabulary size than the target model. This forces expensive translation layers or causes misalignment rejections. Ensure both models share the exact same vocabulary structure and tokenization boundaries.
+
+## Thinking Token Budget Control
+
+Enforce upper bounds on internal reasoning tokens when deploying reasoning models (e.g., DeepSeek-R1, o1, o3-mini) in latency-sensitive or cost-constrained environments. Without bounds, reasoning models can generate thousands of hidden tokens for simple inputs, inflating costs and violating SLAs.
+
+Reasoning models perform test-time compute by generating internal chain-of-thought tokens before returning the final answer. While this improves accuracy on complex tasks, it introduces severe tail-latency and unbounded API cost risks. Configure serving-level limits such as `max_completion_tokens` or `reasoning_effort` parameters to constrain the search space. Monitor the ratio of thinking-to-response tokens; if an agent consistently uses 90% of its budget on internal thinking for simple classification or routing tasks, adjust the model parameters or downgrade to a standard LLM to preserve tail-latency SLAs.
+
+**Anti-pattern — Unbounded Test-Time Compute:** Allowing reasoning models to run without explicit thinking budgets in multi-step agent loops. A minor prompt ambiguity can trigger a massive internal reasoning loop, saturating context windows and generating large cloud API bills for a single query. Always cap completion tokens.
+
 Choose your model serving configuration based on the primary constraint for your workload:
 
 | If you need... | ...choose this | because... |
@@ -105,6 +121,8 @@ Choose your model serving configuration based on the primary constraint for your
 | **High-Volume Throughput**| Micro-batching + shared GPU (MPS) | Amortizes kernel launch cost; maximizes GPU utilization. |
 | **Agentic Latency** | Context Caching (Prefix Caching) | Skips re-processing large static prefixes; reduces TTFT (Time to First Token). |
 | **Cost Optimization** | Specialized SLMs (Quantized) | Handles low-complexity sub-tasks at a fraction of larger model costs. |
+| **Accelerated Generation**| Speculative Decoding | Verifies draft token batches in parallel; bypasses sequential autoregressive bottlenecks. |
+| **Cost & Latency Control**| Thinking Token Budgets | Caps internal reasoning tokens to prevent unbounded API costs and SLA violations. |
 | **Safe Rollout** | Canary (5–10%) + metrics gate | Limits blast radius; automated promotion prevents human error. |
 | **Graceful Degradation** | Distilled fallback model (always warm) | Preserves SLA compliance during primary failure; loaded in memory, not fetched on demand. |
 | **Cost Efficiency** | Multi-model GPU sharing (MPS) | Keeps utilization high for many small models; acceptable when latency SLAs are loose. |

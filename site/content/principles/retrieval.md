@@ -118,6 +118,13 @@ In an agentic workflow, retrieval is a tool. The agent may search, analyze the r
 
 **Anti-pattern — Static Query Assumption:** Assuming a single user query is sufficient for retrieval. Most complex questions require multiple lookups or clarification steps. Design your retrieval system as a tool that an agent can invoke iteratively.
 
+## GraphRAG for Global Corpus Queries
+
+Deploy GraphRAG (Knowledge Graph generation combined with hierarchical community summarization) to support global, aggregation-style questions across a large document collection. Traditional vector-based RAG fails at answering broad queries because it is optimized for locating localized text chunks.
+
+While standard vector search excels at retrieving specific facts (e.g., "What was company X's revenue in Q3?"), it fails on global queries (e.g., "What are the main themes of these 500 reports?"). GraphRAG addresses this by parsing raw text chunks to extract entities (people, places, concepts), relationships, and claims, building a unified knowledge graph. The system then clusters this graph into hierarchical "communities" (using algorithms like Leiden) and generates pre-computed summaries for each community. When a global query is made, the system routes the question across these community summaries in parallel, synthesizing them into a comprehensive global response.
+
+**Anti-pattern — Vector Search for Summarization:** Attempting to answer global corpus questions by retrieving top-K vector chunks. Since the information is distributed across the entire dataset, a top-K search will only return a random subset of chunks, resulting in incomplete and narrow summaries. Use GraphRAG or offline map-reduce summaries for global questions.
 
 Choose your retrieval strategy based on the structure of the data and the type of queries being performed:
 
@@ -126,6 +133,7 @@ Choose your retrieval strategy based on the structure of the data and the type o
 | **Exact Keyword Match** | Lexical Search (BM25) | Best for names, IDs, and specific technical terminology. |
 | **Semantic Meaning** | Vector Search (RAG) | Understands intent and concepts rather than just matching characters. |
 | **Complex Relations** | Graph Search | Navigates connections between entities (e.g., social networks). |
+| **Global Summarization**| GraphRAG | Clusters entities into communities and summarizes them to answer broad, corpus-wide queries. |
 | **Long-form Narrative** | Long-context Windows | Preserves document structure and nuanced context without chunking. |
 | **Iterative Discovery**| Agentic Tool-use | Handles multi-step research where subsequent queries depend on initial results. |
 

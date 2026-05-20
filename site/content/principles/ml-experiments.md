@@ -86,6 +86,14 @@ Study the fundamentals: gradient descent mechanics, loss function design, regula
 
 **Anti-pattern — Copy-Paste ML:** Copying training loops from tutorials without understanding the components. When training diverges, you have no mental model for diagnosis—is it the learning rate, the loss function, the data, or a bug? Foundational understanding turns "it doesn't work" into "the loss is NaN because gradients exploded due to an unscaled learning rate with this optimizer."
 
+## Trajectory-based Evaluations for Agentic Workflows
+
+Evaluate multi-step agent systems by analyzing their full execution trajectory (thoughts, tool calls, and state transitions) rather than just validating the final output. Trace analysis isolates where an agent deviates, loop-locks, or fails.
+
+Unlike standard ML models that produce single-turn outputs, agents execute sequences of actions over time. Simple output-matching evaluations (e.g., checking if the final string matches a golden answer) fail to capture the efficiency, cost, and safety of the execution. Implement trajectory evaluations by recording full trace datasets (in JSONL format) containing every intermediate step: the prompt, the agent's thought, the tool called, the tool response, and the token count. Run automated assertions against these traces to check for: (1) infinite loops (repeated identical actions), (2) redundant tool invocation (calling a tool with identical parameters), (3) semantic deviation (thoughts straying from the original goal), and (4) safety policy compliance. Trajectory datasets serve as regression test suites for prompt updates and agent architecture changes.
+
+**Anti-pattern — Black-box Output Checking:** Evaluating an agent solely by checking if the final output matches a benchmark string. If the agent took 50 redundant tool calls and spent $10 in tokens to get a simple answer, it is a production failure. Evaluate the route, not just the destination.
+
 ## Decision Framework
 
 Choose your ML experimentation pattern based on the stage of the model lifecycle:
@@ -96,5 +104,6 @@ Choose your ML experimentation pattern based on the stage of the model lifecycle
 | **Production Stability**| Scripted Training Jobs | Ensures reproducibility through versioned code and artifacts. |
 | **Model Comparison** | Feature Store / Registry| Provides a single source of truth for features and model performance. |
 | **Low Overfitting** | Automated Validation | Prevents human bias from leaking into model evaluation metrics. |
+| **Agent Optimization** | Trajectory-based Evaluation| Traces step-by-step actions and thoughts to debug loops, cost, and failure points. |
 
 **Decision Heuristic:** "Choose **Versioned Artifacts** over raw notebooks. An experiment is only as valuable as its ability to be reproduced exactly."
