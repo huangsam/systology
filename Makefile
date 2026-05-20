@@ -1,4 +1,4 @@
-.PHONY: vendor build clean serve tidy tags insights check
+.PHONY: vendor build build-force clean serve tidy tags insights check
 
 # https://cdnjs.com/libraries/mermaid
 VERSION ?= 11.12.0
@@ -11,6 +11,13 @@ vendor:
 	@echo "Vendored mermaid $(VERSION) -> $(VENDOR)"
 
 build:
+	@if [ -z "$(FORCE)" ] && lsof -i :1313 >/dev/null 2>&1; then \
+		echo "Error: Dev server is running on :1313. Use FORCE=1 or stop server to build."; \
+		exit 1; \
+	fi
+	hugo -s site --minify --cleanDestinationDir
+
+build-force:
 	hugo -s site --minify --cleanDestinationDir
 
 clean:
