@@ -14,9 +14,12 @@ Separate configuration from code using environment variables and treat logs as e
 
 The [Twelve-Factor App](https://12factor.net/) methodology provides the foundation for modern web application design. At its core: store config in the environment (not in code or config files committed to Git), make processes stateless and share-nothing (session state goes to Redis or a database, not local memory), and treat each deployment as disposable (any instance can be killed and replaced without data loss).
 
+> [!WARNING]
+> **Environment Variables & Secrets:** While environment variables are excellent for non-sensitive configurations (like port numbers or log levels), storing highly sensitive production secrets (like API keys, private keys, database credentials) directly in raw environment variables is a security risk. They can easily leak through crash dumps, subprocess inheritance, debugging logs, or process inspection (`ps` / `/proc/self/environ`). In production, prefer fetching secrets dynamically in-memory from a Secrets Manager or mounting them as secure, short-lived file volumes.
+
 See how [Chowist]({{< ref "/deep-dives/chowist" >}}) applies 12-factor principles with environment-based config, stateless application processes, and external session/data stores.
 
-**Anti-pattern — Config in Code:** Hardcoding database URLs, API keys, or feature flags in source code. This means different configs require different builds—you can't promote a staging build directly to production. Environment variables let one build artifact run in any environment.
+**Anti-pattern — Config in Code:** Hardcoding database URLs, API keys, or feature flags in source code. This means different configs require different builds—you can't promote a staging build directly to production. Environment variables or external secret stores let one build artifact run in any environment.
 
 **Anti-pattern — Sticky Sessions:** Routing users to specific server instances because session state is stored in local memory. When that instance crashes or scales down, the user loses their session. Externalize all state to Redis, Memcached, or a database so any instance can serve any user.
 
@@ -34,7 +37,7 @@ See the [CDN & Media]({{< ref "/designs/cdn-media" >}}) design for a production 
 
 Use application servers (Gunicorn) with worker processes behind reverse proxies and implement database connection pooling. Horizontal scaling requires stateless design.
 
-For Python, run Gunicorn with `2 * num_cores + 1` workers (sync) or fewer workers with async (`uvicorn`/`hypercorn` for ASGI). Put NGINX in front for TLS termination, static file serving, and request buffering. For the database, use connection pooling (PgBouncer for PostgreSQL, ProxySQL for MySQL) to avoid the overhead of per-request connections. As traffic grows, add read replicas for read-heavy workloads and consider partitioning or sharding for write-heavy ones.
+For Python, run Gunicorn with `2 * num_cores + 1` workers (sync) for synchronous WSGI applications (like Django or Flask). For modern asynchronous applications (like FastAPI or Litestar), prefer dedicated ASGI servers (like `uvicorn`/`hypercorn`) or high-performance, Rust-backed runtimes (like `granian`). Put NGINX or a modern reverse proxy/ingress (Caddy, Traefik) in front for TLS termination, static file serving, and request buffering. For the database, use connection pooling (PgBouncer for PostgreSQL, ProxySQL for MySQL) to avoid the overhead of per-request connections. As traffic grows, add read replicas for read-heavy workloads and consider partitioning or sharding for write-heavy ones.
 
 **Anti-pattern — Vertical Scaling Only:** Upgrading to bigger servers instead of adding more instances. This has a ceiling (there's a largest server you can buy) and creates a single point of failure. Design for horizontal scaling from the start—it's much harder to retrofit statelessness into a stateful application.
 
@@ -94,9 +97,10 @@ Choose your web application architecture based on the interactivity and SEO requ
 
 | If you need... | ...choose this | because... |
 | :--- | :--- | :--- |
-| **SEO / Fast Loading** | Server-Side Rendering (SSR)| Pre-renders pages on the server for crawlers and slow clients. |
+| **SEO & Fast Loading** | Server-Side Rendering (SSR)| Pre-renders pages on the server for crawlers and slow clients. |
 | **High Interactivity** | Single-Page App (SPA) | Provides a fluid, app-like experience after the initial load. |
 | **Static Content** | Static Site Gen (SSG) | Maximizes security and speed for content that changes infrequently. |
+| **Hybrid Speed & Interactive**| Component-Level / Islands | Blurs SSR and SPA (like React Server Components, Astro Islands) to stream HTML and hydrate selectively. |
 | **Resilient State** | Optimistic UI Updates | Improves perceived latency by updating the UI before the server confirms. |
 
-**Decision Heuristic:** "Choose **SSR/SSG** for the content shell and **SPA/Islands** for the interactive features. Don't force a heavy JS bundle on users just to read text."
+**Decision Heuristic:** "Choose **SSR/SSG** for the static content shell, and **Islands/Server Components** for interactive features. Don't force a heavy JS bundle on users just to read text."

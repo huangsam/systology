@@ -10,9 +10,12 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## Time Semantics
 
-Choose batch processing (Spark) for bounded, rebuiltable datasets and streaming (Flink) for continuous, low-latency updates. For correctness, prefer event-time with watermarks to handle late-arriving data rather than processing-time which varies with system load.
+Choose batch processing (Spark) for bounded, rebuildable datasets and streaming (Flink) for continuous, low-latency updates. For correctness, prefer event-time with watermarks to handle late-arriving data rather than processing-time which varies with system load.
 
 Event-time processing answers the question "when did this actually happen?" rather than "when did the system see it?" This distinction is critical for analytics correctness—a click that happened at 11:59 PM should land in yesterday's report even if it arrives at 12:03 AM. Watermarks define "how long do we wait for stragglers?" and directly control the latency-completeness tradeoff.
+
+> [!NOTE]
+> **Unified Pipelines (Kappa Architecture):** Although Spark is the industry standard for batch processing and Flink for streaming, maintaining two separate pipelines (the Lambda Architecture) introduces significant operational overhead, as business logic must be duplicated and synchronized across two codebases. For unified architectures, consider Kappa-style streaming-only pipelines (using Flink or Spark Structured Streaming) where batch processing is treated as streaming over bounded/historical sources, eliminating logic drift.
 
 **Anti-pattern — Processing-time Everything:** Using processing-time windows because they're simpler. This works until data arrives out of order (network delays, partition lag, mobile offline sync), at which point your aggregates silently become wrong. Use event-time from the start and save yourself a painful migration later.
 
