@@ -683,7 +683,8 @@ th {
 }
 
 .site-nav a:hover,
-.site-nav a:focus {
+.site-nav a:focus,
+.site-nav a.active {
   color: var(--accent);
   background: var(--accent-weak);
   outline: transparent;
