@@ -18,6 +18,14 @@ See [Ragchain]({{< ref "/deep-dives/ragchain" >}}) for a local-first RAG impleme
 
 **Anti-pattern — Append-only Index Forever:** Adding new vectors without ever removing stale ones. Over time, the index accumulates outdated, deleted, or superseded documents that pollute search results with irrelevant content. A user deletes a page, but the vector persists and surfaces it in searches. Implement garbage collection tied to your document lifecycle.
 
+## Context-Preserving Chunking
+
+Align chunking boundaries with document structure and preserve global semantic context during embedding. Naive character-based or token-based sliding windows split sentences, paragraphs, and tables, stripping key context and generating meaningless vectors.
+
+Implement **Late Chunking** or semantic-aware division. Late chunking passes the entire document (or large structural sections) through the embedding model's transformer layers to generate token-level contextualized representations before pooling them into individual chunk-level vectors. If late chunking is not supported by your model, divide documents by logical markdown headings, paragraphs, or sentence boundaries rather than fixed token lengths. Always maintain parent-child relationships (e.g., small search chunks that map back to a larger parent context window injected into the model) to ensure the LLM receives full contextual paragraphs.
+
+**Anti-pattern — Naive Character-Count Chunking:** Splitting documents strictly by character or token limits (e.g., "every 500 characters") without respecting sentence boundaries or document structure. This slices code blocks, equations, and tables in half, resulting in poor retrieval recall and fragmented contexts that confuse the model.
+
 ## Hybrid Retrieval Strategy
 
 Combine lexical (BM25) and semantic retrieval for robustness—neither alone handles all query types well. Tune fusion weights per query intent class and experiment with expansion and reranking.

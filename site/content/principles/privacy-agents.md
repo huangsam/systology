@@ -86,9 +86,11 @@ Implement a policy configuration file that defines: (1) allowed actions (whiteli
 
 ## Agentic Governance
 
-Establish automated guardrails to detect and mitigate "workslop," hallucinations, and unauthorized autonomous actions. Trust but verify.
+Establish automated guardrails to detect and mitigate "workslop," hallucinations, and unauthorized autonomous actions. Trust but verify using deterministic controls first.
 
-As agents become more autonomous, the risk of low-quality or incorrect output (workslop) increases. Implement "Linguistic Guardrails" (e.g., using a second model to check for hallucinations) and "Operational Guardrails" (e.g., maximum budget for a task, max number of iterations). Maintain a "Kill Switch" that can immediately suspend all autonomous activity across the system if an anomaly is detected.
+As agents become more autonomous, the risk of low-quality or incorrect output (workslop) increases. Implement **Deterministic Runtime Assertions** (code-level checks on inputs and outputs, validation of generated code before execution) and run dedicated, lightweight guardrail classifiers (like Llama Guard or NeMo Guardrails) in parallel to scan for safety violations. Combine this with **Operational Guardrails** (setting a maximum dollar budget for a task, capping the max number of agent-loop iterations). Maintain a "Kill Switch" that can immediately suspend all autonomous activity across the system if anomalous loops or behavior are detected.
+
+**Anti-pattern — General-Purpose LLM Guardrails:** Routing every agent output to a second large, general-purpose LLM to check for errors or hallucinations in the hot execution path. This pattern introduces severe latency, doubles token costs, and is itself prone to false positives/negatives. Prefer deterministic schema-guided outputs and dedicated, lightweight classifier models.
 
 **Anti-pattern — Unchecked Autonomy:** Deploying an agent that can interact with external users or APIs without an independent verification layer. A hallucinated promise to a customer or an accidental data deletion is much harder to fix than it is to prevent.
 

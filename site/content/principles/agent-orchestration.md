@@ -10,9 +10,9 @@ date: "2026-03-17T09:54:30-07:00"
 
 ## Multi-Agent Coordination
 
-Decompose complex tasks into specialized agents with clear domains and protocols for collaboration. A single "God Agent" suffers from context dilution and high error rates; specialized agents provide modularity and better accuracy.
+Decompose complex tasks into specialized agents governed by structured state-machine graphs. Designing deterministic execution flows with explicit state transitions ensures predictable agent behavior. A single "God Agent" suffers from context dilution and high error rates, whereas structured, specialized agents provide modularity and better control.
 
-Implement a coordinator-worker or peer-to-peer pattern. The coordinator handles high-level planning and task decomposition, while workers execute specific sub-tasks (e.g., "Research Agent," "Coding Agent," "Verification Agent"). Define standard JSON schemas for agent-to-agent communication to ensure interoperability and type safety across different models.
+Implement a state-machine or coordinator-worker pattern where transitions are handled by code routing or schema-constrained decisions rather than open-ended dialogue. The coordinator manages high-level planning, state transitions, and task decomposition, while specialized workers execute restricted, domain-specific tasks (e.g., "Research Agent," "Coding Agent," "Verification Agent"). Enforce schema-guided decoding or native structured outputs (like JSON schema constraint parameters in modern model APIs) at all boundaries to guarantee type-safety and eliminate downstream format parser errors.
 
 {{< mermaid >}}
 graph TD
@@ -25,6 +25,10 @@ graph TD
     Worker3 --> Coordinator
     Coordinator --> Output[Final Result]
 {{< /mermaid >}}
+
+**Anti-pattern — Unconstrained Peer-to-Peer Chat:** Allowing agents to communicate autonomously with each other in an open-ended loop without strict code-level state constraints. This pattern leads to conversational infinite loops, rapid context-window saturation, high latency, and compounding errors.
+
+**Anti-pattern — Parsing-based JSON Extraction:** Relying on natural-language instructions to output JSON and building custom parser retry loops to handle syntax errors. This is highly fragile. Modern APIs support native schema-guided output constraints (Structured Outputs) which guarantee schema adherence at the token generation level.
 
 **Anti-pattern — The Monolithic Agent:** Forcing a single model instance to handle research, planning, execution, and self-correction in a single long prompt. This increases the chance of hallucinations and makes it impossible to swap specialized models for specific sub-tasks (e.g., using a cheaper model for research and a stronger one for coding).
 

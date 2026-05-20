@@ -17,7 +17,8 @@ clean:
 	rm -rf site/public
 
 serve:
-	hugo server -D -s site --baseURL=http://localhost:1313/
+	hugo server -D -s site --baseURL=http://localhost:1313/systology/ --disableFastRender
+
 
 tidy:
 	python3 manage.py tidy

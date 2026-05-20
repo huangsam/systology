@@ -20,7 +20,7 @@ To run the site locally:
 make serve
 ```
 
-Access the site at `http://localhost:1313/`.
+Access the site at `http://localhost:1313/systology/`.
 
 To run validation and formatting:
 ```shell
