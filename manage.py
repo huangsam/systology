@@ -11,6 +11,7 @@ from scripts.validator import run_check
 from scripts.formatter import run_format_project
 from scripts.metadata import run_sort_tags, run_tag_stats, run_tagup
 from scripts.content import run_normalize, run_add_summary_desc
+from scripts.sync import run_check_sync
 
 
 def main():
@@ -47,6 +48,22 @@ def main():
     # Check
     subparsers.add_parser("check", help="Validate content")
 
+    # Check Sync
+    check_sync_parser = subparsers.add_parser(
+        "check-sync", help="Validate that deep-dive docs are in sync with repos"
+    )
+    check_sync_parser.add_argument(
+        "--search-path",
+        "-p",
+        action="append",
+        help="Paths to search for local repository clones (repeatable). Defaults to ~/Playground and ~/JetBrains.",
+    )
+    check_sync_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Emit JSON output instead of a formatted table",
+    )
+
     args = parser.parse_args()
 
     # Path configuration
@@ -71,6 +88,40 @@ def main():
         generate_insights(content_dir, json_out=args.json, verbose=args.verbose)
     elif args.command == "check":
         run_check(content_dir)
+    elif args.command == "check-sync":
+        import sys
+
+        search_paths = []
+
+        if args.search_path:
+            search_paths = [Path(p) for p in args.search_path]
+        else:
+            config_file = base_dir / ".sync_paths.json"
+            if config_file.is_file():
+                try:
+                    import json
+
+                    with open(config_file, "r") as f:
+                        config = json.load(f)
+                    if isinstance(config, dict) and "search_paths" in config:
+                        search_paths = [Path(p) for p in config["search_paths"]]
+                    elif isinstance(config, list):
+                        search_paths = [Path(p) for p in config]
+                except Exception as e:
+                    print(f"Error: Failed to parse {config_file.name}: {e}")
+                    sys.exit(1)
+
+        if not search_paths:
+            print("Error: No search paths resolved.")
+            print(
+                "Please either pass --search-path/-p via the CLI, or create .sync_paths.json in the project root:"
+            )
+            print(
+                '{\n  "search_paths": [\n    "~/Playground",\n    "~/JetBrains"\n  ]\n}'
+            )
+            sys.exit(1)
+
+        run_check_sync(content_dir, search_paths, args.json)
 
 
 if __name__ == "__main__":
