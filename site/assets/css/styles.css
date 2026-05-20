@@ -796,6 +796,10 @@ span.muted {
     flex-basis: 100%;
     margin-bottom: var(--space-xs);
   }
+
+  .nav-link {
+    display: none;
+  }
 }
 
 /* Narrow widths (641px–700px) */

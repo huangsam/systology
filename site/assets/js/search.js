@@ -28,9 +28,12 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch((err) => console.error('Failed to load search index:', err));
   }
 
+  let previousActiveElement = null;
+
   // Open Modal
   function openSearch() {
     loadIndex();
+    previousActiveElement = document.activeElement;
     searchModal.classList.add('active');
     searchModal.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
@@ -60,6 +63,9 @@ document.addEventListener('DOMContentLoaded', function () {
     searchResultsList.innerHTML = '';
     searchDefault.style.display = 'block';
     searchResultsList.style.display = 'none';
+    if (previousActiveElement && typeof previousActiveElement.focus === 'function') {
+      previousActiveElement.focus();
+    }
   }
 
   openButtons.forEach((btn) => {
@@ -214,6 +220,37 @@ document.addEventListener('DOMContentLoaded', function () {
     debounceTimer = setTimeout(() => performSearch(e.target.value), 300);
   });
 
+  // Traps keyboard focus inside the modal when it is active
+  function trapFocus(e) {
+    if (e.key !== 'Tab') return;
+
+    const focusable = Array.from(searchModal.querySelectorAll('input, button, a')).filter((el) => {
+      return (
+        !el.disabled &&
+        el.tabIndex !== -1 &&
+        (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0)
+      );
+    });
+
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (e.shiftKey) {
+      if (active === first || !searchModal.contains(active)) {
+        last.focus();
+        e.preventDefault();
+      }
+    } else {
+      if (active === last || !searchModal.contains(active)) {
+        first.focus();
+        e.preventDefault();
+      }
+    }
+  }
+
   // Keyboard shortcuts
   document.addEventListener('keydown', function (e) {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -223,9 +260,18 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         closeSearch();
       }
+      return;
     }
-    if (e.key === 'Escape' && searchModal.classList.contains('active')) {
+
+    if (!searchModal.classList.contains('active')) return;
+
+    if (e.key === 'Escape') {
       closeSearch();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      trapFocus(e);
     }
   });
 });
