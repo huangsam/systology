@@ -11,8 +11,8 @@ vendor:
 	@echo "Vendored mermaid $(VERSION) -> $(VENDOR)"
 
 build:
-	@if [ -z "$(FORCE)" ] && lsof -i :1313 >/dev/null 2>&1; then \
-		echo "Error: Dev server is running on :1313. Use FORCE=1 or stop server to build."; \
+	@if lsof -i :1313 >/dev/null 2>&1; then \
+		echo "Error: Dev server is running on :1313. Stop the server to build."; \
 		exit 1; \
 	fi
 	hugo -s site --minify --cleanDestinationDir

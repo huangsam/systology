@@ -495,6 +495,121 @@ blockquote {
   border-radius: 6px;
 }
 
+/* Alert Callout Box (GitHub Alerts) */
+.alert-box {
+  margin: var(--space-lg) 0;
+  padding: var(--space-md) var(--space-lg);
+  border-left: 4px solid var(--border);
+  border-radius: 6px;
+  background: var(--blockquote-bg);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.alert-icon-svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.alert-content > *:first-child {
+  margin-top: 0;
+}
+.alert-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Alert Type Colors */
+.alert-note {
+  border-left-color: #2563eb;
+  background: rgba(37, 99, 235, 0.04);
+}
+.alert-note .alert-header {
+  color: #2563eb;
+}
+
+.alert-warning {
+  border-left-color: #d97706;
+  background: rgba(217, 119, 6, 0.04);
+}
+.alert-warning .alert-header {
+  color: #d97706;
+}
+
+.alert-tip {
+  border-left-color: #059669;
+  background: rgba(5, 150, 105, 0.04);
+}
+.alert-tip .alert-header {
+  color: #059669;
+}
+
+.alert-important {
+  border-left-color: #7c3aed;
+  background: rgba(124, 58, 237, 0.04);
+}
+.alert-important .alert-header {
+  color: #7c3aed;
+}
+
+.alert-caution {
+  border-left-color: #dc2626;
+  background: rgba(220, 38, 38, 0.04);
+}
+.alert-caution .alert-header {
+  color: #dc2626;
+}
+
+/* Dark mode overrides */
+[data-theme='dark'] .alert-note {
+  border-left-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.06);
+}
+[data-theme='dark'] .alert-note .alert-header {
+  color: #60a5fa;
+}
+
+[data-theme='dark'] .alert-warning {
+  border-left-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.06);
+}
+[data-theme='dark'] .alert-warning .alert-header {
+  color: #fbbf24;
+}
+
+[data-theme='dark'] .alert-tip {
+  border-left-color: #34d399;
+  background: rgba(52, 211, 153, 0.06);
+}
+[data-theme='dark'] .alert-tip .alert-header {
+  color: #34d399;
+}
+
+[data-theme='dark'] .alert-important {
+  border-left-color: #a78bfa;
+  background: rgba(167, 139, 250, 0.06);
+}
+[data-theme='dark'] .alert-important .alert-header {
+  color: #a78bfa;
+}
+
+[data-theme='dark'] .alert-caution {
+  border-left-color: #f87171;
+  background: rgba(248, 113, 113, 0.06);
+}
+[data-theme='dark'] .alert-caution .alert-header {
+  color: #f87171;
+}
+
 /* Tables */
 table {
   width: 100%;

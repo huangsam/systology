@@ -1,0 +1,42 @@
+{{- if eq .Type "alert" -}}
+  {{- $alertType := .AlertType | lower -}}
+  {{- $title := .AlertTitle -}}
+  {{- if not $title -}}
+    {{- if eq $alertType "note" -}}{{- $title = "Note" -}}
+    {{- else if eq $alertType "warning" -}}{{- $title = "Warning" -}}
+    {{- else if eq $alertType "tip" -}}{{- $title = "Tip" -}}
+    {{- else if eq $alertType "important" -}}{{- $title = "Important" -}}
+    {{- else if eq $alertType "caution" -}}{{- $title = "Caution" -}}
+    {{- else -}}{{- $title = $alertType | humanize -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $icon := "" -}}
+  {{- if eq $alertType "note" -}}
+    {{- $icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="alert-icon-svg"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>` -}}
+  {{- else if eq $alertType "warning" -}}
+    {{- $icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="alert-icon-svg"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>` -}}
+  {{- else if eq $alertType "tip" -}}
+    {{- $icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="alert-icon-svg"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1 .3 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>` -}}
+  {{- else if eq $alertType "important" -}}
+    {{- $icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="alert-icon-svg"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>` -}}
+  {{- else if eq $alertType "caution" -}}
+    {{- $icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="alert-icon-svg"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>` -}}
+  {{- else -}}
+    {{- $icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="alert-icon-svg"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>` -}}
+  {{- end -}}
+
+  <div class="alert-box alert-{{ $alertType }}">
+    <div class="alert-header">
+      <span class="alert-icon">{{ $icon | safeHTML }}</span>
+      <span class="alert-title">{{ $title }}</span>
+    </div>
+    <div class="alert-content">
+      {{- .Text -}}
+    </div>
+  </div>
+{{- else -}}
+  <blockquote{{ with .Attributes }}{{ sort . | safeHTMLAttr }}{{ end }}>
+    {{- .Text -}}
+  </blockquote>
+{{- end -}}
