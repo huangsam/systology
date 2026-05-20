@@ -18,7 +18,11 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## The Local Implementation
 
-- **Current Logic:** Mailprune is a Python CLI that uses the Gmail API to fetch messages and metadata, computes sender-level statistics (volume, open-rate proxies, thread activity), clusters senders by content/behavior, and produces targeted recommendations (unsubscribe, filter, mute). It runs as a local audit: `uv run mailprune audit` pulls messages, analyzes them in parallel (thread/process pool), caches intermediate results, and writes reports to disk.
+- **Execution Modes:** Mailprune can run either as a local Python CLI (`uv run mailprune`) or as a Model Context Protocol (MCP) server (`uv run mailprune-mcp`), built using `FastMCP` to let AI assistants audit and clean inboxes directly.
+- **MCP Server Capabilities:**
+  - **Resources:** Exposes `mailprune://guidance/cleanup-strategy` (interpret sender clusters) and `mailprune://guidance/noise-metrics` (explaining the "Ignorance Score").
+  - **Tools:** Exposes `audit` (fetch and cache Gmail message metadata), `report` (generate cleanup summaries), `patterns` (NLP-driven sender intent and entity extraction from snippets), `engagement` (analyze sender open rates by tiers), and `cluster` (K-Means behavioral clustering).
+- **Current Logic:** Mailprune uses the Gmail API to fetch messages and metadata, computes sender-level statistics (volume, open-rate proxies, thread activity), clusters senders by content/behavior, and produces targeted recommendations (unsubscribe, filter, mute). It runs as a local audit, chunking API requests into sequential batches to respect rate limits, caching intermediate results, and writing reports to disk.
 - **Bottleneck:** Fetching messages at API rate limits and large inbox sizes creates IO-bound runs; memory and CPU usage spike during full-content clustering and embedding computation; OAuth token lifecycle and reauth flows complicate long-running jobs; absent persistent checkpoints, interrupted runs must restart from scratch.
 
 ## Comparison to Industry Standards

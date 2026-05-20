@@ -14,7 +14,7 @@ date: "2026-02-16T10:22:20-08:00"
 
 **Context:** `VirtuC` is a Rust-implemented compiler for a C subset that emits LLVM IR and produces native executables via `clang`. It serves as both an educational tool for understanding compiler internals and a testbed for exploring IR generation, optimization passes, and error reporting design.
 
-**Motivation:** I built part of a compiler in college with [huangsam/ec2prog](https://github.com/huangsam/ec2prog), but wanted to explore a more structured approach with Rust's type system, LLVM IR generation, and modern error reporting techniques.
+**Motivation:** I built part of a compiler in college with [huangsam/e2cprog](https://github.com/huangsam/e2cprog), but wanted to explore a more structured approach with Rust's type system, LLVM IR generation, and modern error reporting techniques.
 
 ## The Local Implementation
 

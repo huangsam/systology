@@ -18,7 +18,7 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## The Local Implementation
 
-- **Current Logic:** Photohaul traverses file paths using configured `PathRuleSet`, computes photo hashes for deduplication, and migrates files via `PathMigrator` implementations (local path, S3, Dropbox, Google Drive, SFTP). It supports skipping unchanged files and has configuration-driven folder rules.
+- **Current Logic:** Photohaul is built using Gradle (migrated from Groovy to Kotlin DSL) with code quality enforced via JSpecify nullability annotations. It traverses file paths using a configured `PathRuleSet`, computes SHA-256 photo content hashes for deduplication, and migrates files using `PathMigrator` implementations (local path, S3, Dropbox, Google Drive, SFTP). It supports dry-runs and skipping unchanged files.
 - **Bottleneck:** IO-bound traversal and remote API latencies for cloud backends; deduplication hashing cost for large binary sets; ensuring metadata (EXIF) preservation across backends.
 
 ## Comparison to Industry Standards
@@ -29,6 +29,6 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## Risks & Mitigations
 
-- **Data loss during migration:** always run in `--dry-run` mode with manifest generation; verify checksums post-migration.
+- **Data loss during migration [IMPLEMENTED]:** Dry-run support has been fully integrated across all `PathMigrator` implementations, allowing users to generate a migration manifest and verify changes prior to executing any destructive operations.
 - **API rate limits for cloud backends:** implement exponential backoff and per-backend throttling.
 - **EXIF/metadata stripping:** preserve metadata by default and add configurable transformations; test against representative camera outputs.
