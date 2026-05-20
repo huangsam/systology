@@ -3,9 +3,9 @@
     <a class="brand" href="{{ .Site.Home.RelPermalink }}" aria-label="{{ .Site.Title }}"><img src="{{ relURL "favicon.svg" }}" alt="" class="logo-icon"> {{
       .Site.Title }}</a>
     <nav class="site-nav" role="navigation" aria-label="Main navigation">
+      <a href="{{ relURL "deep-dives/" }}" class="nav-link{{ if eq .Section "deep-dives" }} active{{ end }}">Deep Dives</a>
       <a href="{{ relURL "designs/" }}" class="nav-link{{ if eq .Section "designs" }} active{{ end }}">Designs</a>
       <a href="{{ relURL "principles/" }}" class="nav-link{{ if eq .Section "principles" }} active{{ end }}">Principles</a>
-      <a href="{{ relURL "deep-dives/" }}" class="nav-link{{ if eq .Section "deep-dives" }} active{{ end }}">Deep Dives</a>
       <button class="search-toggle" data-open-search aria-label="Search">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
