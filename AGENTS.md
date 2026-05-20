@@ -22,8 +22,9 @@ When working with the site content and related agents:
 
 When running a subagent or curl statements:
 
-- Ensure that you run `make serve` first to start the local server on port 1313
-- Use `lsof -i :1313` to check if the server is already running before starting it again
+- Ensure that you run `make serve` first to start the local server on port 1313. Always use `make serve` rather than a raw `hugo server` command to ensure the correct subpath `baseURL` (`/systology/`) and `--disableFastRender` are set, preventing assets from returning 404s on refresh.
+- Use `lsof -i :1313` to check if the server is already running before starting it again.
+- Note that `make build` will fail with a safety check if the dev server is running on port 1313. Use `FORCE=1 make build` or stop the dev server first to compile production output.
 
 ### Adding a new page
 
