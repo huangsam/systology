@@ -2,14 +2,7 @@
 {{ $currentTags := $p.Params.tags | default slice }}
 {{ $currentCats := $p.Params.categories | default slice }}
 
-{{ $related := slice }}
-
-{{ if $currentTags }}
-{{ $related = where $p.Site.RegularPages "Params.tags" "intersect" $currentTags }}
-{{ end }}
-
-{{ $related = where $related "RelPermalink" "ne" $p.RelPermalink }}
-{{ $related = first 4 $related }}
+{{ $related := .Site.RegularPages.Related . | first 4 }}
 
 {{ if gt (len $related) 0 }}
 <aside class="related">
@@ -17,12 +10,12 @@
   <ul>
     {{ range $related }}
     {{ $hasSharedTags := false }}
-    {{ if $currentTags }}
+    {{ if and $currentTags .Params.tags }}
     {{ if intersect .Params.tags $currentTags }}{{ $hasSharedTags = true }}{{ end }}
     {{ end }}
 
     {{ $hasSharedCats := false }}
-    {{ if $currentCats }}
+    {{ if and $currentCats .Params.categories }}
     {{ if intersect .Params.categories $currentCats }}{{ $hasSharedCats = true }}{{ end }}
     {{ end }}
     <li>

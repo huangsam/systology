@@ -1,45 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
   const toggles = document.querySelectorAll('.pseudocode-toggle');
   const closeButtons = document.querySelectorAll('.pseudocode-modal-close');
-  const overlays = document.querySelectorAll('.pseudocode-modal-overlay');
+  const modals = document.querySelectorAll('.pseudocode-modal');
 
   function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
-
-    // Set active class to display: flex
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-
-    // Prevent background scrolling and scroll chaining
-    document.documentElement.style.overflow = 'hidden';
-    document.documentElement.style.overscrollBehavior = 'none';
-    document.body.style.overflow = 'hidden';
-    document.body.style.overscrollBehavior = 'none';
-
-    // Focus the modal container for accessibility without highlighting the close button
-    const content = modal.querySelector('.pseudocode-modal-content');
-    if (content) {
-      content.setAttribute('tabindex', '-1');
-      content.focus();
-    }
+    modal.showModal();
   }
 
   function closeModal(modal) {
     if (!modal) return;
-
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-
-    // Restore scrolling and overscroll behavior
-    document.documentElement.style.overflow = '';
-    document.documentElement.style.overscrollBehavior = '';
-    document.body.style.overflow = '';
-    document.body.style.overscrollBehavior = '';
-
-    // Return focus to the toggle button that opened it
-    const toggleBtn = document.querySelector(`.pseudocode-toggle[aria-controls="${modal.id}"]`);
-    if (toggleBtn) toggleBtn.focus();
+    modal.close();
   }
 
   // Open events
@@ -58,19 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Close events on background click
-  overlays.forEach((overlay) => {
-    overlay.addEventListener('click', (e) => {
-      const modal = e.target.closest('.pseudocode-modal');
-      closeModal(modal);
+  // Close events on background click (light dismiss)
+  modals.forEach((modal) => {
+    modal.addEventListener('click', (e) => {
+      const rect = modal.getBoundingClientRect();
+      const isInDialog =
+        rect.top <= e.clientY &&
+        e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX &&
+        e.clientX <= rect.left + rect.width;
+      if (!isInDialog) {
+        closeModal(modal);
+      }
     });
-  });
-
-  // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      const activeModal = document.querySelector('.pseudocode-modal.active');
-      if (activeModal) closeModal(activeModal);
-    }
   });
 });

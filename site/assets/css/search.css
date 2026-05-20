@@ -2,59 +2,46 @@
    Site Search - Modal
    ============================== */
 
-/* The Modal Backdrop */
-.site-search-modal-container {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  align-items: center;
-  justify-content: center;
-  overscroll-behavior: none;
-}
-
-.site-search-modal-container.active {
-  display: flex;
-}
-
-.site-search-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(15, 23, 36, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: opacity 0.2s ease;
-  cursor: pointer;
-}
-
-[data-theme='dark'] .site-search-overlay {
-  background: rgba(0, 0, 0, 0.6);
-}
-
 /* The Modal Window */
-.site-search-modal {
-  position: relative;
+dialog.site-search-modal {
+  display: none;
+  flex-direction: column;
   width: 100%;
   max-width: 600px;
   max-height: 85vh;
-  margin: 0 var(--space-md);
+  margin: auto;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  z-index: 10000;
+  padding: 0;
   animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Force compositing layer to prevent paint flickering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-[data-theme='dark'] .site-search-modal {
+dialog.site-search-modal[open] {
+  display: flex;
+}
+
+[data-theme='dark'] dialog.site-search-modal {
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.5),
     0 10px 10px -5px rgba(0, 0, 0, 0.25);
+}
+
+/* The Modal Backdrop */
+/* Avoid backdrop-filter: blur() due to macOS/Chromium paint flashing bugs on DOM mutations */
+dialog.site-search-modal::backdrop {
+  background: rgba(15, 23, 36, 0.7);
+}
+
+[data-theme='dark'] dialog.site-search-modal::backdrop {
+  background: rgba(0, 0, 0, 0.75);
 }
 
 /* Modal Header (contains Input) */

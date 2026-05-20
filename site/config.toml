@@ -16,3 +16,17 @@ taxonomies = { tag = "tags", category = "categories" }
 
 [outputs]
   home = ["HTML", "JSON", "RSS"]
+
+[related]
+  threshold = 80
+  includeNewer = false
+  toLower = true
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+  [[related.indices]]
+    name = "categories"
+    weight = 80
+  [[related.indices]]
+    name = "date"
+    weight = 10

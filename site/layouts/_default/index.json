@@ -3,6 +3,7 @@
     {{- $.Store.Add "index"
         (dict
             "title" .Title
+            "description" .Description
             "tags" .Params.tags
             "categories" .Params.categories
             "contents" .Plain

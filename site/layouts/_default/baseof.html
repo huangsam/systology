@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ .Site.Language.Locale | default "en" }}">
 
 <head>
   <meta charset="utf-8">
@@ -17,18 +17,27 @@
   <!-- The cfasync setting prevents Cloudflare Rocket Loader from interfering -->
   <script data-cfasync="false">
     try {
-      if (localStorage.getItem('theme') === 'dark') {
+      const theme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (theme === 'dark' || (!theme && prefersDark)) {
         document.documentElement.setAttribute('data-theme', 'dark');
         document.documentElement.style.colorScheme = 'dark';
       }
     } catch (e) {}
   </script>
-  {{ $styles := resources.Get "css/styles.css" | minify | fingerprint }}
-  {{ $syntax := resources.Get "css/syntax.css" | minify | fingerprint }}
-  {{ $search := resources.Get "css/search.css" | minify | fingerprint }}
-  <link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}" crossorigin="anonymous">
-  <link rel="stylesheet" href="{{ $syntax.RelPermalink }}" integrity="{{ $syntax.Data.Integrity }}" crossorigin="anonymous">
-  <link rel="stylesheet" href="{{ $search.RelPermalink }}" integrity="{{ $search.Data.Integrity }}" crossorigin="anonymous">
+  {{ $styles := resources.Get "css/styles.css" }}
+  {{ $syntax := resources.Get "css/syntax.css" }}
+  {{ $search := resources.Get "css/search.css" }}
+
+  {{ if not hugo.IsServer }}
+    {{ $styles = $styles | minify | fingerprint }}
+    {{ $syntax = $syntax | minify | fingerprint }}
+    {{ $search = $search | minify | fingerprint }}
+  {{ end }}
+
+  <link rel="stylesheet" href="{{ $styles.RelPermalink }}" {{ if not hugo.IsServer }}integrity="{{ $styles.Data.Integrity }}" crossorigin="anonymous"{{ end }}>
+  <link rel="stylesheet" href="{{ $syntax.RelPermalink }}" {{ if not hugo.IsServer }}integrity="{{ $syntax.Data.Integrity }}" crossorigin="anonymous"{{ end }}>
+  <link rel="stylesheet" href="{{ $search.RelPermalink }}" {{ if not hugo.IsServer }}integrity="{{ $search.Data.Integrity }}" crossorigin="anonymous"{{ end }}>
 </head>
 
 <body>
@@ -41,10 +50,16 @@
   {{ partial "components/pseudocode-scripts.html" . }}
 
   <!-- Mermaid diagrams -->
-  {{ $mermaid := resources.Get "js/mermaid.min.js" | fingerprint }}
-  <script src="{{ $mermaid.RelPermalink }}" integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous"></script>
+  {{ $mermaid := resources.Get "js/mermaid.min.js" }}
+  {{ if not hugo.IsServer }}
+    {{ $mermaid = $mermaid | fingerprint }}
+  {{ end }}
+  <script src="{{ $mermaid.RelPermalink }}" {{ if not hugo.IsServer }}integrity="{{ $mermaid.Data.Integrity }}" crossorigin="anonymous"{{ end }}></script>
 
-  {{ $main := resources.Get "js/main.js" | minify | fingerprint }}
+  {{ $main := resources.Get "js/main.js" }}
+  {{ if not hugo.IsServer }}
+    {{ $main = $main | minify | fingerprint }}
+  {{ end }}
   <script src="{{ $main.RelPermalink }}" defer></script>
 </body>
 

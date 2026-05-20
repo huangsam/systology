@@ -12,9 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const indexUrl = searchModal.getAttribute('data-index-url');
 
-  // Move modal to body end to avoid z-index/transform issues
-  document.body.appendChild(searchModal);
-
   // Load search index (Hugo-generated index.json — flat array)
   let indexLoaded = false;
   function loadIndex() {
@@ -28,45 +25,43 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch((err) => console.error('Failed to load search index:', err));
   }
 
-  let previousActiveElement = null;
-
   // Open Modal
   function openSearch() {
     loadIndex();
-    previousActiveElement = document.activeElement;
-    searchModal.classList.add('active');
-    searchModal.setAttribute('aria-hidden', 'false');
-    document.documentElement.style.overflow = 'hidden';
-    document.documentElement.style.overscrollBehavior = 'none';
-    document.body.style.overflow = 'hidden';
-    document.body.style.overscrollBehavior = 'none';
-    setTimeout(() => {
-      searchInput.focus();
-      if (!searchInput.value.trim()) {
-        searchDefault.style.display = 'block';
-        searchResultsList.style.display = 'none';
-      } else {
-        performSearch(searchInput.value);
-      }
-    }, 50);
+    searchModal.showModal();
+    if (!searchInput.value.trim()) {
+      searchDefault.style.display = 'block';
+      searchResultsList.style.display = 'none';
+    } else {
+      performSearch(searchInput.value);
+    }
   }
 
   // Close Modal
   function closeSearch() {
-    searchModal.classList.remove('active');
-    searchModal.setAttribute('aria-hidden', 'true');
-    document.documentElement.style.overflow = '';
-    document.documentElement.style.overscrollBehavior = '';
-    document.body.style.overflow = '';
-    document.body.style.overscrollBehavior = '';
+    searchModal.close();
+  }
+
+  // Cleanup on native close (button, Esc key, etc.)
+  searchModal.addEventListener('close', () => {
     searchInput.value = '';
     searchResultsList.innerHTML = '';
     searchDefault.style.display = 'block';
     searchResultsList.style.display = 'none';
-    if (previousActiveElement && typeof previousActiveElement.focus === 'function') {
-      previousActiveElement.focus();
+  });
+
+  // Close when clicking on backdrop
+  searchModal.addEventListener('click', (e) => {
+    const rect = searchModal.getBoundingClientRect();
+    const isInDialog =
+      rect.top <= e.clientY &&
+      e.clientY <= rect.top + rect.height &&
+      rect.left <= e.clientX &&
+      e.clientX <= rect.left + rect.width;
+    if (!isInDialog) {
+      closeSearch();
     }
-  }
+  });
 
   openButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -99,15 +94,19 @@ document.addEventListener('DOMContentLoaded', function () {
   // Computes a relevance score for a doc based on field weights and term frequency.
   function scoreDoc(doc, q, terms) {
     const title = (doc.title || '').toLowerCase();
+    const description = (doc.description || '').toLowerCase();
     const contents = (doc.contents || '').toLowerCase();
     const tags = (doc.tags || []).join(' ').toLowerCase();
+    const categories = (doc.categories || []).join(' ').toLowerCase();
     let score = 0;
 
     // --- Exact-phrase signals (highest weight) ---
     if (title === q) score += 200;
     else if (title.startsWith(q + ' ') || title.startsWith(q)) score += 80;
     else if (title.includes(q)) score += 40;
+    if (description.includes(q)) score += 30;
     if (tags.includes(q)) score += 25;
+    if (categories.includes(q)) score += 20;
     // Content exact-phrase frequency (capped)
     score += Math.min(countOccurrences(contents, q) * 3, 15);
 
@@ -117,14 +116,18 @@ document.addEventListener('DOMContentLoaded', function () {
         allInAny = true;
       for (const term of terms) {
         const inTitle = title.includes(term);
+        const inDescription = description.includes(term);
         const inTags = tags.includes(term);
+        const inCategories = categories.includes(term);
         const inContents = contents.includes(term);
         if (!inTitle) allInTitle = false;
-        if (!inTitle && !inTags && !inContents) {
+        if (!inTitle && !inDescription && !inTags && !inCategories && !inContents) {
           allInAny = false;
         }
         if (inTitle) score += 12;
+        if (inDescription) score += 9;
         if (inTags) score += 8;
+        if (inCategories) score += 6;
         // term frequency in content, capped per term
         score += Math.min(countOccurrences(contents, term) * 1, 6);
       }
@@ -139,11 +142,18 @@ document.addEventListener('DOMContentLoaded', function () {
   // Returns true only if every query term appears in at least one field (AND logic).
   function docMatches(doc, q, terms) {
     const title = (doc.title || '').toLowerCase();
+    const description = (doc.description || '').toLowerCase();
     const contents = (doc.contents || '').toLowerCase();
     const tags = (doc.tags || []).join(' ').toLowerCase();
+    const categories = (doc.categories || []).join(' ').toLowerCase();
     // Each term must appear in at least one field
     return terms.every(
-      (term) => title.includes(term) || contents.includes(term) || tags.includes(term)
+      (term) =>
+        title.includes(term) ||
+        description.includes(term) ||
+        contents.includes(term) ||
+        tags.includes(term) ||
+        categories.includes(term)
     );
   }
 
@@ -220,58 +230,15 @@ document.addEventListener('DOMContentLoaded', function () {
     debounceTimer = setTimeout(() => performSearch(e.target.value), 300);
   });
 
-  // Traps keyboard focus inside the modal when it is active
-  function trapFocus(e) {
-    if (e.key !== 'Tab') return;
-
-    const focusable = Array.from(searchModal.querySelectorAll('input, button, a')).filter((el) => {
-      return (
-        !el.disabled &&
-        el.tabIndex !== -1 &&
-        (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0)
-      );
-    });
-
-    if (focusable.length === 0) return;
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement;
-
-    if (e.shiftKey) {
-      if (active === first || !searchModal.contains(active)) {
-        last.focus();
-        e.preventDefault();
-      }
-    } else {
-      if (active === last || !searchModal.contains(active)) {
-        first.focus();
-        e.preventDefault();
-      }
-    }
-  }
-
   // Keyboard shortcuts
   document.addEventListener('keydown', function (e) {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
-      if (!searchModal.classList.contains('active')) {
+      if (!searchModal.open) {
         openSearch();
       } else {
         closeSearch();
       }
-      return;
-    }
-
-    if (!searchModal.classList.contains('active')) return;
-
-    if (e.key === 'Escape') {
-      closeSearch();
-      return;
-    }
-
-    if (e.key === 'Tab') {
-      trapFocus(e);
     }
   });
 });

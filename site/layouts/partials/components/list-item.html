@@ -6,18 +6,34 @@
 
 <li>
   <a href="{{ $url }}">{{ $title }}</a>{{ if $draft }} <span class="draft-badge">WIP</span>{{ end }}
-  {{ with $tags }}
-  <small class="tags">&nbsp;—&nbsp;
-    {{ $max := 3 }}
-    {{ range $i, $t := first $max . }}
-    {{ if $i }}, {{ end }}
-    <a href="{{ relURL (printf "tags/%s/" ($t | urlize)) }}">{{ $t }}</a>
+  {{ if .page }}
+    {{ with .page.GetTerms "tags" }}
+    <small class="tags">&nbsp;—&nbsp;
+      {{ $max := 3 }}
+      {{ range $i, $term := first $max . }}
+      {{ if $i }}, {{ end }}
+      <a href="{{ $term.RelPermalink }}">{{ $term.LinkTitle }}</a>
+      {{ end }}
+      {{ $remaining := sub (len .) $max }}
+      {{ if gt $remaining 0 }}
+      <span class="muted">and +{{ $remaining }} more</span>
+      {{ end }}
+    </small>
     {{ end }}
-    {{ $remaining := sub (len .) $max }}
-    {{ if gt $remaining 0 }}
-    <span class="muted">and +{{ $remaining }} more</span>
+  {{ else }}
+    {{ with $tags }}
+    <small class="tags">&nbsp;—&nbsp;
+      {{ $max := 3 }}
+      {{ range $i, $t := first $max . }}
+      {{ if $i }}, {{ end }}
+      <a href="{{ relURL (printf "tags/%s/" ($t | urlize)) }}">{{ $t }}</a>
+      {{ end }}
+      {{ $remaining := sub (len .) $max }}
+      {{ if gt $remaining 0 }}
+      <span class="muted">and +{{ $remaining }} more</span>
+      {{ end }}
+    </small>
     {{ end }}
-  </small>
   {{ end }}
   {{ with $summary }}
   <p>{{ . }}</p>

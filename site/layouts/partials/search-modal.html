@@ -1,47 +1,44 @@
-<div id="site-search-modal" class="site-search-modal-container" aria-hidden="true" role="dialog"
+<dialog id="site-search-modal" class="site-search-modal"
   data-index-url="{{ "index.json" | relURL }}">
-  <div class="site-search-overlay" data-close-search></div>
-  <div class="site-search-modal">
-    <div class="site-search-header">
-      <div class="site-search-input-wrapper">
-        <span class="site-search-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </span>
-        <input type="text" class="site-search-input" id="site-search-input"
-          placeholder="Search designs, principles, deep dives..." aria-label="Search" autocomplete="off" />
-        <button class="site-search-close" data-close-search aria-label="Close modal">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="lucide lucide-x">
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div class="site-search-body">
-      <div id="site-search-default" class="site-search-default">
-        <div class="site-search-quick-links">
-          <a href="{{ relURL "categories/" }}" class="site-search-cta">
-            <span class="site-search-cta-icon">📂</span>
-            <span class="site-search-cta-text">All Categories</span>
-          </a>
-          <a href="{{ relURL "tags/" }}" class="site-search-cta">
-            <span class="site-search-cta-icon">🏷️</span>
-            <span class="site-search-cta-text">All Tags</span>
-          </a>
-        </div>
-      </div>
-      <div id="site-search-results-list" style="display: none;">
-        <!-- Results injected here -->
-      </div>
+  <div class="site-search-header">
+    <div class="site-search-input-wrapper">
+      <span class="site-search-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </span>
+      <input type="text" class="site-search-input" id="site-search-input"
+        placeholder="Search designs, principles, deep dives..." aria-label="Search" autocomplete="off" autofocus />
+      <button class="site-search-close" data-close-search aria-label="Close modal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-x">
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
     </div>
   </div>
-</div>
+  <div class="site-search-body">
+    <div id="site-search-default" class="site-search-default">
+      <div class="site-search-quick-links">
+        <a href="{{ relURL "categories/" }}" class="site-search-cta">
+          <span class="site-search-cta-icon">📂</span>
+          <span class="site-search-cta-text">All Categories</span>
+        </a>
+        <a href="{{ relURL "tags/" }}" class="site-search-cta">
+          <span class="site-search-cta-icon">🏷️</span>
+          <span class="site-search-cta-text">All Tags</span>
+        </a>
+      </div>
+    </div>
+    <div id="site-search-results-list" style="display: none;">
+      <!-- Results injected here -->
+    </div>
+  </div>
+</dialog>
 
 {{ $search := resources.Get "js/search.js" | minify | fingerprint }}
 <script src="{{ $search.RelPermalink }}" defer></script>

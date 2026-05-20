@@ -63,6 +63,12 @@ html {
   background-color: var(--bg);
 }
 
+/* Prevent background scroll & GPU repaint when dialog is open */
+html:has(dialog[open]),
+html:has(dialog[open]) body {
+  overflow: hidden;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -840,59 +846,45 @@ span.muted {
   border: 1px solid rgba(96, 165, 250, 0.4);
 }
 
-.pseudocode-modal {
+dialog.pseudocode-modal {
   display: none;
-  /* Hidden by default */
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-  overscroll-behavior: none;
-}
-
-.pseudocode-modal.active {
-  display: flex;
-}
-
-.pseudocode-modal-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(15, 23, 36, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: opacity 0.2s ease;
-}
-
-[data-theme='dark'] .pseudocode-modal-overlay {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.pseudocode-modal-content {
-  position: relative;
+  flex-direction: column;
   width: 100%;
   max-width: 800px;
   /* Wider for code */
   max-height: 85vh;
-  margin: 0 var(--space-md);
+  margin: auto;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  /* Header/body handle scrolling */
-  z-index: 1001;
+  padding: 0;
   animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Force compositing layer to prevent paint flickering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-[data-theme='dark'] .pseudocode-modal-content {
+dialog.pseudocode-modal[open] {
+  display: flex;
+}
+
+[data-theme='dark'] dialog.pseudocode-modal {
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.5),
     0 10px 10px -5px rgba(0, 0, 0, 0.25);
+}
+
+/* Avoid backdrop-filter: blur() due to macOS/Chromium paint flashing bugs on DOM mutations */
+dialog.pseudocode-modal::backdrop {
+  background: rgba(15, 23, 36, 0.7);
+}
+
+[data-theme='dark'] dialog.pseudocode-modal::backdrop {
+  background: rgba(0, 0, 0, 0.75);
 }
 
 @keyframes modalIn {
@@ -1012,4 +1004,37 @@ span.muted {
 [data-theme='dark'] .toc {
   background: rgba(96, 165, 250, 0.05);
   border-color: rgba(96, 165, 250, 0.1);
+}
+
+/* ==============================
+   Feature-Specific: Frontpage Categories
+   ============================== */
+.category-block {
+  margin-bottom: var(--space-xl);
+}
+
+.category-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-md);
+}
+
+.category-block-header h2 {
+  margin-bottom: 0;
+}
+
+.category-block-header .view-all {
+  font-size: 0.875rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.category-block-header .view-all:hover {
+  text-decoration: underline;
+}
+
+.category-block-summary {
+  margin-bottom: var(--space-md);
+  color: var(--muted);
 }
