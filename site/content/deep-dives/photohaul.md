@@ -29,6 +29,6 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## Risks & Mitigations
 
-- **Data loss during migration [IMPLEMENTED]:** Dry-run support has been fully integrated across all `PathMigrator` implementations, allowing users to generate a migration manifest and verify changes prior to executing any destructive operations.
+- **Data loss during migration:** Dry-run support has been fully integrated across all `PathMigrator` implementations, allowing users to generate a migration manifest and verify changes prior to executing any destructive operations.
 - **API rate limits for cloud backends:** implement exponential backoff and per-backend throttling.
 - **EXIF/metadata stripping:** preserve metadata by default and add configurable transformations; test against representative camera outputs.

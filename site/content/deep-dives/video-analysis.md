@@ -48,4 +48,4 @@ The two approaches aren't mutually exclusive: xcode-trial is a good fit for inte
 - **False positives in detection (vidicant):** ship a calibration CLI that sweeps thresholds against a labeled dataset and recommends operating points. Document that default thresholds are tuned for professional video and must be recalibrated for other content types.
 - **ABI compatibility (vidicant):** pin OpenCV version and statically link core dependencies into wheels to avoid system library conflicts. Run binary compatibility tests across target platforms in CI.
 - **pybind11 version drift (vidicant):** pin pybind11 version and test against minimum and latest supported Python versions (3.9–3.12) in the CI matrix.
-- **IO throughput (vidicant) [SOLVED]:** Implemented single-pass metrics extraction (`ImageMetrics`/`VideoMetrics`) and caching in `ImageHandler` to eliminate redundant file reopens.
+- **IO throughput (vidicant):** Implemented single-pass metrics extraction (`ImageMetrics`/`VideoMetrics`) and caching in `ImageHandler` to eliminate redundant file reopens.
