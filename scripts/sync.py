@@ -22,9 +22,7 @@ def run_cmd(args: List[str], cwd: Optional[Path] = None) -> Optional[str]:
 def get_git_timestamp(file_path: Path, repo_root: Path) -> Optional[str]:
     """Get the last git commit ISO 8601 timestamp for a file, falling back to mtime."""
     rel_path = file_path.relative_to(repo_root)
-    ts = run_cmd(
-        ["git", "log", "-1", "--format=%cI", "--", str(rel_path)], cwd=repo_root
-    )
+    ts = run_cmd(["git", "log", "-1", "--format=%cI", "--", str(rel_path)], cwd=repo_root)
     if ts:
         return ts
     # Fallback to file mtime if file is untracked or git command failed
@@ -104,9 +102,7 @@ def compare_timestamps(ts1: str, ts2: str) -> int:
         return 0
 
 
-def run_check_sync(
-    content_dir: Path, search_paths: List[Path], print_json: bool = False
-) -> None:
+def run_check_sync(content_dir: Path, search_paths: List[Path], print_json: bool = False) -> None:
     """Validate that deep-dive docs are in sync with referenced repositories."""
     repo_root = content_dir.parent.parent
     deep_dives_dir = content_dir / "deep-dives"
@@ -129,9 +125,7 @@ def run_check_sync(
 
             # Find all references to huangsam repositories
             # e.g., https://github.com/huangsam/mailprune
-            referenced_repos = re.findall(
-                r"https://github.com/(huangsam/[\w\-]+)", text
-            )
+            referenced_repos = re.findall(r"https://github.com/(huangsam/[\w\-]+)", text)
             if not referenced_repos:
                 continue
 
@@ -181,9 +175,7 @@ def run_check_sync(
     # Print human-readable table
     print("\nDeep-Dive Repository Sync Status:")
     print("-" * 110)
-    print(
-        f"{'Document':<35} | {'Repository':<25} | {'Doc Commit':<25} | {'Repo Commit':<25} | {'Status':<12}"
-    )
+    print(f"{'Document':<35} | {'Repository':<25} | {'Doc Commit':<25} | {'Repo Commit':<25} | {'Status':<12}")
     print("-" * 110)
     for r in results:
         doc_display = r["document"].split("/")[-1]
@@ -199,8 +191,6 @@ def run_check_sync(
         else:
             status_str = f"\033[93m{status}\033[0m"  # Yellow
 
-        print(
-            f"{doc_display:<35} | {repo_display:<25} | {doc_commit:<25} | {repo_commit:<25} | {status_str:<12}"
-        )
+        print(f"{doc_display:<35} | {repo_display:<25} | {doc_commit:<25} | {repo_commit:<25} | {status_str:<12}")
     print("-" * 110)
     print(f"Total checked: {len(results)} references.")

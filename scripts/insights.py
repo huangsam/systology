@@ -368,9 +368,7 @@ def collect_tag_cooccurrence(docs: list[dict]) -> list[dict]:
             if union > 0:
                 jaccard = intersection / union
                 if jaccard >= threshold:
-                    redundancies.append(
-                        {"tag_a": tA, "tag_b": tB, "jaccard": round(jaccard, 4)}
-                    )
+                    redundancies.append({"tag_a": tA, "tag_b": tB, "jaccard": round(jaccard, 4)})
 
     return sorted(redundancies, key=lambda x: -x["jaccard"])
 
@@ -388,9 +386,7 @@ def report_tag_recommendations(docs: list[dict], global_tags: set[str]) -> None:
         for section in sorted(sections.keys()):
             print(f"  [{section.upper()}]")
             for path, recs in sorted(sections[section]):
-                res_list = [f"[{t}]" for t in recs["established"]] + recs[
-                    "new_candidates"
-                ]
+                res_list = [f"[{t}]" for t in recs["established"]] + recs["new_candidates"]
                 print(f"    {path}: {', '.join(res_list)}")
 
 
@@ -480,15 +476,10 @@ def collect_cross_references(docs: list[dict]) -> list[dict]:
                 pair_tags[key].add(tag)
 
     sorted_pairs = sorted(pair_tags.items(), key=lambda x: (-len(x[1]), x[0]))
-    return [
-        {"a": a, "b": b, "shared_tags": sorted(shared)}
-        for (a, b), shared in sorted_pairs
-    ]
+    return [{"a": a, "b": b, "shared_tags": sorted(shared)} for (a, b), shared in sorted_pairs]
 
 
-def generate_insights(
-    content_dir: Path, json_out: bool = False, verbose: bool = False
-) -> None:
+def generate_insights(content_dir: Path, json_out: bool = False, verbose: bool = False) -> None:
     """Run modular insights analysis and print reporting.
 
     Args:

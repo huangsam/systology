@@ -97,16 +97,7 @@ def run_add_summary_desc(content_dir: Path) -> None:
                     changed = True
 
         if changed:
-            new_text = (
-                FM_DELIM
-                + "\n"
-                + "\n".join(fm_lines)
-                + "\n"
-                + FM_DELIM
-                + "\n"
-                + "\n".join(body_lines)
-                + "\n"
-            )
+            new_text = FM_DELIM + "\n" + "\n".join(fm_lines) + "\n" + FM_DELIM + "\n" + "\n".join(body_lines) + "\n"
             p.write_text(new_text, encoding="utf-8")
             count += 1
     print(f"  Updated {count} files")

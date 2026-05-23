@@ -8,9 +8,7 @@ from .constants import FM_DELIM
 
 def strip_quotes(s: str) -> str:
     s = s.strip()
-    if (s.startswith('"') and s.endswith('"')) or (
-        s.startswith("'") and s.endswith("'")
-    ):
+    if (s.startswith('"') and s.endswith('"')) or (s.startswith("'") and s.endswith("'")):
         return s[1:-1].strip()
     return s
 
@@ -34,9 +32,7 @@ def extract_fm_body(text: str) -> tuple[list[str] | None, list[str]]:
 def parse_fm(fm_lines: list[str]) -> dict[str, str]:
     """Parse frontmatter lines into a key-value dictionary."""
     fm = {}
-    pattern = re.compile(
-        r"^\s*([A-Za-z0-9_\-]+)\s*:\s*(?:\"([^\"]*)\"|'([^']*)'|([^#].*))?"
-    )
+    pattern = re.compile(r"^\s*([A-Za-z0-9_\-]+)\s*:\s*(?:\"([^\"]*)\"|'([^']*)'|([^#].*))?")
     for ln in fm_lines:
         m = pattern.match(ln)
         if m:

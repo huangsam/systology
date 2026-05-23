@@ -31,9 +31,7 @@ def main():
     # Tagup
     subparsers.add_parser("tagup", help="Standardize tags")
 
-    insights_parser = subparsers.add_parser(
-        "insights", help="Analyze tag distribution, co-occurrence, and TF-IDF"
-    )
+    insights_parser = subparsers.add_parser("insights", help="Analyze tag distribution, co-occurrence, and TF-IDF")
     insights_parser.add_argument(
         "--json",
         action="store_true",
@@ -49,9 +47,7 @@ def main():
     subparsers.add_parser("check", help="Validate content")
 
     # Check Sync
-    check_sync_parser = subparsers.add_parser(
-        "check-sync", help="Validate that deep-dive docs are in sync with repos"
-    )
+    check_sync_parser = subparsers.add_parser("check-sync", help="Validate that deep-dive docs are in sync with repos")
     check_sync_parser.add_argument(
         "--search-path",
         "-p",
@@ -113,12 +109,8 @@ def main():
 
         if not search_paths:
             print("Error: No search paths resolved.")
-            print(
-                "Please either pass --search-path/-p via the CLI, or create .sync_paths.json in the project root:"
-            )
-            print(
-                '{\n  "search_paths": [\n    "~/Playground",\n    "~/JetBrains"\n  ]\n}'
-            )
+            print("Please either pass --search-path/-p via the CLI, or create .sync_paths.json in the project root:")
+            print('{\n  "search_paths": [\n    "~/Playground",\n    "~/JetBrains"\n  ]\n}')
             sys.exit(1)
 
         run_check_sync(content_dir, search_paths, args.json)

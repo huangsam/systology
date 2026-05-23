@@ -80,9 +80,7 @@ def parse_tags_from_text(text: str) -> list[str]:
     return []
 
 
-def run_tag_stats(
-    content_dir: Path, min_count: int, top: int, json_out: bool, show_files: bool
-) -> None:
+def run_tag_stats(content_dir: Path, min_count: int, top: int, json_out: bool, show_files: bool) -> None:
     """Calculate and display usage statistics for tags across all Markdown content."""
     counter = Counter()
     files_for_tag = defaultdict(list)

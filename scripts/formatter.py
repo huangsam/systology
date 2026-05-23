@@ -28,9 +28,7 @@ def format_prettier(file_path: str) -> None:
     if not path.exists():
         return
     try:
-        subprocess.run(
-            ["prettier", "--write", str(path)], check=True, capture_output=True
-        )
+        subprocess.run(["prettier", "--write", str(path)], check=True, capture_output=True)
         print(f"  Formatted {file_path}")
     except (FileNotFoundError, subprocess.CalledProcessError):
         pass
