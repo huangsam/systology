@@ -1,7 +1,7 @@
 ---
 title: "Video Analysis"
-description: "Multimodal video feature extraction: Apple-native (Vision, AVFoundation) vs. OpenCV/pybind11."
-summary: "An exploration of multimodal video feature extraction comparing Apple-native frameworks (Vision, AVFoundation, Core Image) against cross-platform C++/Python toolchains (OpenCV, pybind11) for ML prep."
+description: "Multimodal video feature extraction: Apple-native vs. C++/Python."
+summary: "A comparative study of Apple-native frameworks (Vision, AVFoundation) against cross-platform C++/Python (OpenCV, pybind11) for video feature extraction."
 tags: [extensibility, machine-learning, media]
 categories: ["deep-dives"]
 links:
