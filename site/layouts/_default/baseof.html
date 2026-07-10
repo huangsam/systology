@@ -14,8 +14,7 @@
 
   {{ partial "opengraph.html" . }}
 
-  <!-- The cfasync setting prevents Cloudflare Rocket Loader from interfering -->
-  <script data-cfasync="false">
+  <script>
     try {
       const theme = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
