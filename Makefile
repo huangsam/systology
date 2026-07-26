@@ -1,8 +1,8 @@
 .PHONY: vendor build build-force clean serve tidy tags insights check check-sync
 
-# https://cdnjs.com/libraries/mermaid
-VERSION ?= 11.12.0
-MERMAID_URL = https://cdnjs.cloudflare.com/ajax/libs/mermaid/$(VERSION)/mermaid.min.js
+# https://www.jsdelivr.com/package/npm/mermaid
+VERSION ?= 11.16.0
+MERMAID_URL = https://cdn.jsdelivr.net/npm/mermaid@$(VERSION)/dist/mermaid.min.js
 VENDOR = site/assets/js/mermaid.min.js
 
 vendor:
