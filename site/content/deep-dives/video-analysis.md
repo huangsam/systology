@@ -34,6 +34,20 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## Comparative Analysis
 
+{{< mermaid >}}
+graph LR
+    subgraph AppleNative["xcode-trial (macOS Native)"]
+        direction LR
+        A1["Media Input"] --> A2["AVFoundation"] --> A3["Vision & Core Image"] --> A4["JSON Output"]
+        A3 -. GPU / NPU .-> A5["Metal / Neural Engine"]
+    end
+
+    subgraph CrossPlatform["vidicant (C++ / Zig / Python)"]
+        direction LR
+        B1["Media Input"] --> B2["C++ Engine (OpenCV / Zig)"] --> B3["C-ABI (extern 'C')"] --> B4["Python (ctypes)"] --> B5["JSON Output"]
+    end
+{{< /mermaid >}}
+
 For macOS-only workflows where hardware acceleration matters — on-device processing, privacy-sensitive media, or tight integration with the Apple ecosystem — xcode-trial's approach delivers better out-of-the-box acceleration and a richer recognition API (AVFoundation audio, Vision OCR, Neural Engine routing). The cost is platform lock-in and CI fragility.
 
 For ML preprocessing pipelines that run on Linux servers, need Python integration, or must process large media archives at scale, vidicant's cross-platform C++/Zig/Python approach is the pragmatic choice. The C-ABI `ctypes` binding design is particularly well-suited to the ML ecosystem: zero external build dependencies, pip-installable wheels, Python Stable ABI compatibility, and fast native compilation via `build.zig`. The performance ceiling is lower (no Neural Engine), but the operational model is far simpler.
