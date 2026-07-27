@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tertiaryColor: '#e6e9ee',
         noteBkgColor: '#f0f9ff',
         noteBorderColor: '#2563eb',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        fontFamily: 'Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       },
       flowchart: { useMaxWidth: true, curve: 'linear' },
       sequence: { useMaxWidth: true },
