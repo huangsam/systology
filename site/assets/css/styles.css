@@ -821,6 +821,10 @@ span.muted {
   stroke-width: 2;
 }
 
+.edgeLabel p {
+  padding: 4px;
+}
+
 .mermaid text {
   fill: var(--text);
   font-family: inherit;
