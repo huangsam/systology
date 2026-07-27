@@ -199,15 +199,9 @@ STOP_WORDS = {
     "level",
     "first",
     "single",
-    "than",
-    "while",
     "must",
     "requirements",
-    "when",
     "like",
-    "each",
-    "into",
-    "only",
     "also",
     "done",
     "made",
@@ -245,7 +239,7 @@ def collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
 
         try:
             text = p.read_text(encoding="utf-8")
-        except Exception:
+        except OSError:
             continue
 
         fm_lines, body_lines = extract_fm_body(text)
@@ -258,7 +252,7 @@ def collect_docs(content_dir: Path) -> tuple[list[dict], set[str]]:
         if fm_lines:
             # Simple metadata extraction for weighting
             for line in fm_lines:
-                if line.startswith("title:") or line.startswith("summary:"):
+                if line.startswith(("title:", "summary:")):
                     meta_text += " " + line.split(":", 1)[1]
 
         body_text = "\n".join(body_lines) if body_lines else ""

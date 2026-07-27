@@ -66,11 +66,12 @@ Prefixed keys namespace the cache, allowing distinct eviction strategies for dif
 import hashlib
 import bisect
 
+
 class ConsistentHashRing:
     def __init__(self, num_virtual_nodes=100):
         self.num_vnodes = num_virtual_nodes
-        self.ring = []       # Sorted list of hashed virtual node positions
-        self.nodes = {}      # Maps hash_val -> physical_node_id
+        self.ring = []  # Sorted list of hashed virtual node positions
+        self.nodes = {}  # Maps hash_val -> physical_node_id
 
     def add_node(self, node_id):
         # Create multiple virtual nodes for each physical node
@@ -78,7 +79,7 @@ class ConsistentHashRing:
             vnode_key = f"{node_id}#vnode{i}"
             hash_val = self._hash(vnode_key)
 
-            bisect.insort(self.ring, hash_val) # Keep ring sorted
+            bisect.insort(self.ring, hash_val)  # Keep ring sorted
             self.nodes[hash_val] = node_id
 
     def get_node(self, key):
@@ -100,7 +101,7 @@ class ConsistentHashRing:
     def _hash(self, key):
         # Use SHA-256 (or BLAKE3) to map the string to a 256-bit integer space.
         # .hexdigest() returns a base-16 string, so we parse it with base=16.
-        return int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16)
+        return int(hashlib.sha256(key.encode("utf-8")).hexdigest(), 16)
 ```
 {{< /pseudocode >}}
 

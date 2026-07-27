@@ -4,7 +4,8 @@ Logic for validating Systology site content.
 
 import re
 from pathlib import Path
-from .constants import MD_EXT, FM_TITLE
+
+from .constants import FM_TITLE, MD_EXT
 from .utils import extract_fm_body, parse_fm
 
 
@@ -13,10 +14,10 @@ def check_file(p: Path, content_root: Path) -> list[str]:
     errors = []
     try:
         text = p.read_text(encoding="utf-8")
-    except Exception as e:
+    except OSError as e:
         return [f"Could not read file: {e}"]
 
-    fm_lines, body_lines = extract_fm_body(text)
+    fm_lines, _body_lines = extract_fm_body(text)
 
     # 1. Frontmatter Validation
     if fm_lines is None:
@@ -42,9 +43,8 @@ def check_file(p: Path, content_root: Path) -> list[str]:
         else:
             target = base_dir / link
 
-        if target and not target.exists():
-            if target.with_suffix(MD_EXT).exists():
-                target = target.with_suffix(MD_EXT)
+        if target and not target.exists() and target.with_suffix(MD_EXT).exists():
+            target = target.with_suffix(MD_EXT)
 
         if target and not target.exists():
             errors.append(f"Broken link: {link}")

@@ -4,6 +4,7 @@ Logic for formatting Systology site assets and content.
 
 import subprocess
 from pathlib import Path
+
 from .constants import ASSETS_DIR, MD_EXT
 
 
@@ -17,7 +18,7 @@ def process_md_format(file_path: Path) -> bool:
         if new_content != content:
             file_path.write_text(new_content, encoding="utf-8")
             return True
-    except Exception:
+    except OSError:
         pass
     return False
 

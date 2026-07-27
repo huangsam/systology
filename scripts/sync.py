@@ -5,21 +5,20 @@ Logic for checking if deep-dive documentation is in sync with its referenced rep
 import json
 import re
 import subprocess
-from pathlib import Path
 from datetime import datetime
-from typing import Optional, List, Dict
+from pathlib import Path
 
 
-def run_cmd(args: List[str], cwd: Optional[Path] = None) -> Optional[str]:
+def run_cmd(args: list[str], cwd: Path | None = None) -> str | None:
     """Helper to run shell commands and return stdout, returning None on failure."""
     try:
         res = subprocess.run(args, cwd=cwd, capture_output=True, text=True, check=True)
         return res.stdout.strip()
-    except Exception:
+    except (subprocess.SubprocessError, OSError):
         return None
 
 
-def get_git_timestamp(file_path: Path, repo_root: Path) -> Optional[str]:
+def get_git_timestamp(file_path: Path, repo_root: Path) -> str | None:
     """Get the last git commit ISO 8601 timestamp for a file, falling back to mtime."""
     rel_path = file_path.relative_to(repo_root)
     ts = run_cmd(["git", "log", "-1", "--format=%cI", "--", str(rel_path)], cwd=repo_root)
@@ -29,11 +28,11 @@ def get_git_timestamp(file_path: Path, repo_root: Path) -> Optional[str]:
     try:
         mtime = file_path.stat().st_mtime
         return datetime.fromtimestamp(mtime).astimezone().isoformat()
-    except Exception:
+    except OSError:
         return None
 
 
-def find_local_repos(search_paths: List[Path]) -> Dict[str, Path]:
+def find_local_repos(search_paths: list[Path]) -> dict[str, Path]:
     """Scan search paths for directories containing a .git folder."""
     local_repos = {}
     for search_path in search_paths:
@@ -58,7 +57,7 @@ def find_local_repos(search_paths: List[Path]) -> Dict[str, Path]:
     return local_repos
 
 
-def get_repo_last_commit(repo_name: str, local_path: Optional[Path]) -> Optional[str]:
+def get_repo_last_commit(repo_name: str, local_path: Path | None) -> str | None:
     """Get the last commit timestamp for a repository (local git or remote gh)."""
     if local_path:
         ts = run_cmd(["git", "log", "-1", "--format=%cI"], cwd=local_path)
@@ -73,7 +72,7 @@ def get_repo_last_commit(repo_name: str, local_path: Optional[Path]) -> Optional
                 # gh returns JSON like {"pushedAt": "2026-05-20T14:35:43Z"}
                 parsed = json.loads(gh_data)
                 return parsed.get("pushedAt")
-            except Exception:
+            except (json.JSONDecodeError, KeyError, TypeError):
                 pass
     return None
 
@@ -93,7 +92,7 @@ def compare_timestamps(ts1: str, ts2: str) -> int:
         elif dt1 > dt2:
             return 1
         return 0
-    except Exception:
+    except (ValueError, TypeError):
         # Fallback to string comparison if datetime parsing fails
         if ts1 < ts2:
             return -1
@@ -102,7 +101,7 @@ def compare_timestamps(ts1: str, ts2: str) -> int:
         return 0
 
 
-def run_check_sync(content_dir: Path, search_paths: List[Path], print_json: bool = False) -> None:
+def run_check_sync(content_dir: Path, search_paths: list[Path], print_json: bool = False) -> None:
     """Validate that deep-dive docs are in sync with referenced repositories."""
     repo_root = content_dir.parent.parent
     deep_dives_dir = content_dir / "deep-dives"
@@ -120,7 +119,7 @@ def run_check_sync(content_dir: Path, search_paths: List[Path], print_json: bool
 
             try:
                 text = p.read_text(encoding="utf-8")
-            except Exception:
+            except OSError:
                 continue
 
             # Find all references to huangsam repositories
@@ -134,7 +133,7 @@ def run_check_sync(content_dir: Path, search_paths: List[Path], print_json: bool
                 continue
 
             # Keep unique repos
-            unique_repos = sorted(list(set(referenced_repos)))
+            unique_repos = sorted(set(referenced_repos))
 
             for repo in unique_repos:
                 repo_basename = repo.split("/")[-1].lower()

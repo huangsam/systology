@@ -2,11 +2,12 @@
 Logic for managing Systology site metadata (tags, etc.).
 """
 
+import json
 import os
 import re
-import json
-from pathlib import Path
 from collections import Counter, defaultdict
+from pathlib import Path
+
 from .constants import FM_DELIM, FM_TAGS, MD_EXT, TAG_ALIASES, TAG_REMOVALS
 from .utils import strip_quotes
 
@@ -23,7 +24,7 @@ def run_sort_tags(content_dir: Path) -> None:
         if m:
             tags_str = m.group(1)
             tags = [t.strip() for t in tags_str.split(",") if t.strip()]
-            sorted_tags = sorted(list(set(tags)))
+            sorted_tags = sorted(set(tags))
             if tags != sorted_tags:
                 new_tags_str = ", ".join(sorted_tags)
                 new_content = content.replace(f"[{tags_str}]", f"[{new_tags_str}]")
@@ -88,7 +89,7 @@ def run_tag_stats(content_dir: Path, min_count: int, top: int, json_out: bool, s
     for md in content_dir.rglob(f"*{MD_EXT}"):
         try:
             text = md.read_text(encoding="utf-8")
-        except Exception:
+        except OSError:
             continue
         for t in parse_tags_from_text(text):
             counter[t] += 1
@@ -139,7 +140,7 @@ def tagup_in_text(text: str, aliases: dict, removals: list) -> str:
             new_t = aliases.get(clean_t, clean_t)
             new_tags.append(new_t)
         # Unique and sorted
-        final_tags = sorted(list(set(new_tags)))
+        final_tags = sorted(set(new_tags))
         return f"tags: [{', '.join(final_tags)}]"
 
     return re.sub(r"tags\s*:\s*\[([^\]]*)\]", replace_tag, text)

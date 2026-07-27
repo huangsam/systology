@@ -4,7 +4,8 @@ Logic for content normalization and updating Systology site pages.
 
 import re
 from pathlib import Path
-from .constants import FM_DELIM, FM_TITLE, FM_SUMMARY, FM_DESC, MD_EXT, MAX_DESC_LEN
+
+from .constants import FM_DELIM, FM_DESC, FM_SUMMARY, FM_TITLE, MAX_DESC_LEN, MD_EXT
 from .utils import extract_fm_body, parse_fm
 
 
@@ -63,9 +64,8 @@ def run_normalize(content_dir: Path) -> None:
     print("Running normalize_content...")
     count = 0
     for p in content_dir.rglob(f"*{MD_EXT}"):
-        if p.is_file():
-            if normalize_file(p):
-                count += 1
+        if p.is_file() and normalize_file(p):
+            count += 1
     print(f"  Normalized {count} files")
 
 

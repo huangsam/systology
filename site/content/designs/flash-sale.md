@@ -73,7 +73,7 @@ Redis provides a high-speed volatile cache for atomic inventory counters and sho
 import redis
 
 # Connect to Redis cluster
-r = redis.Redis(host='localhost', port=6379, db=0)
+r = redis.Redis(host="localhost", port=6379, db=0)
 
 # Lua script to check inventory and deduct atomically
 # ARGV[1] = requested amount
@@ -93,6 +93,7 @@ end
 
 # Register script to avoid parsing it on every call
 reserve_inventory = r.register_script(LUA_RESERVE_SCRIPT)
+
 
 def try_reserve(sku_id, amount_needed):
     # Executes atomically: guarantees no race condition between GET and DECR

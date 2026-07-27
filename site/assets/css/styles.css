@@ -55,6 +55,25 @@
 }
 
 /* ==============================
+   Font Definitions
+   ============================== */
+@font-face {
+  font-family: 'Geist';
+  src: url('../fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('../fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==============================
    Base & Typography
    ============================== */
 
@@ -78,7 +97,14 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    'Geist',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
   line-height: 1.75;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -441,7 +467,9 @@ code {
   border-radius: 6px;
   border: 1px solid rgba(37, 99, 235, 0.15);
   font-size: 0.94em;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  font-family:
+    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New',
+    monospace;
 }
 
 /* Code blocks */
@@ -456,7 +484,9 @@ code {
 }
 
 pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  font-family:
+    'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New',
+    monospace;
   padding: var(--space-lg);
   border-radius: var(--radius);
   background: var(--bg);

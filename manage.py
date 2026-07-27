@@ -8,7 +8,7 @@ import json
 import sys
 from pathlib import Path
 
-from scripts.constants import SITE_DIR, CONTENT_DIR, ARCHETYPES_DIR
+from scripts.constants import ARCHETYPES_DIR, CONTENT_DIR, SITE_DIR
 from scripts.content import run_add_summary_desc, run_normalize
 from scripts.formatter import run_format_project
 from scripts.insights import generate_insights
@@ -122,7 +122,7 @@ def handle_check_sync(args, base_dir, content_dir, site_dir, archetypes_dir):
                     search_paths = [Path(p) for p in config["search_paths"]]
                 elif isinstance(config, list):
                     search_paths = [Path(p) for p in config]
-            except Exception as e:
+            except (json.JSONDecodeError, OSError) as e:
                 print(f"Error: Failed to parse {config_file.name}: {e}")
                 sys.exit(1)
 

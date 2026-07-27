@@ -89,7 +89,7 @@ def process_transcode_task(queue, obj_store):
             update_job_status(task, "completed")
 
         except Exception as e:
-            queue.nack(task.id) # Re-queue for another worker
+            queue.nack(task.id)  # Re-queue for another worker
             update_job_status(task, "failed")
 ```
 {{< /pseudocode >}}

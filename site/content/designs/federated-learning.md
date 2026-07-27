@@ -74,7 +74,6 @@ def federated_averaging(global_model, client_devices, current_round, num_rounds)
     Simplified FedAvg Training Loop (Server-side & Client-side)
     """
     for round_num in range(current_round, num_rounds):
-
         # 1. Server: Select a random subset of available clients for this round
         participating_clients = select_clients(client_devices, fraction=0.1)
 
@@ -94,10 +93,7 @@ def federated_averaging(global_model, client_devices, current_round, num_rounds)
             local_model.train(client.dataset, epochs=5, batch_size=32)
 
             # Client sends updated weights back (securely/encrypted in reality)
-            client_updates.append({
-                'weights': local_model.get_weights(),
-                'sample_count': client_data_count
-            })
+            client_updates.append({"weights": local_model.get_weights(), "sample_count": client_data_count})
             total_data_points += client_data_count
 
         # 4. Server: Securely aggregate updates (weighted average)
@@ -109,8 +105,8 @@ def federated_averaging(global_model, client_devices, current_round, num_rounds)
 
             # Sum the weighted parameters from all clients
             for update in client_updates:
-                weight_factor = update['sample_count'] / total_data_points
-                layer_sum += update['weights'][p_idx] * weight_factor
+                weight_factor = update["sample_count"] / total_data_points
+                layer_sum += update["weights"][p_idx] * weight_factor
 
             new_global_weights.append(layer_sum)
 

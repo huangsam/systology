@@ -75,25 +75,28 @@ import stripe
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+
 def process_payment(idempotency_key: str, payment_method_id: str, amount: int, currency: str, user_id: str) -> str:
     # 1. Start a database transaction
     with get_db_connection() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-
             # 2. Try to insert the idempotency key.
             # If it exists, constraint violation occurs, preventing double processing.
             try:
-                cur.execute("""
+                cur.execute(
+                    """
                     INSERT INTO idempotency_keys (key, status)
                     VALUES (%s, 'processing')
-                """, (idempotency_key,))
+                """,
+                    (idempotency_key,),
+                )
             except psycopg2.IntegrityError:
                 # Key exists! Fetch the previous result/status and return it
                 cur.execute("SELECT status, response FROM idempotency_keys WHERE key = %s", (idempotency_key,))
                 existing_record = cur.fetchone()
 
-                if existing_record['status'] == 'completed':
-                    return existing_record['response']
+                if existing_record["status"] == "completed":
+                    return existing_record["response"]
                 else:
                     raise Exception("Concurrent request processing")
 
@@ -119,11 +122,14 @@ def process_payment(idempotency_key: str, payment_method_id: str, amount: int, c
                 record_ledger_entries(cur, charge_id=confirmed_intent.id, amount=amount)
 
                 # 5. Update Idempotency record to 'completed'
-                cur.execute("""
+                cur.execute(
+                    """
                     UPDATE idempotency_keys
                     SET status = 'completed', response = %s
                     WHERE key = %s
-                """, (confirmed_intent.id, idempotency_key))
+                """,
+                    (confirmed_intent.id, idempotency_key),
+                )
 
                 conn.commit()
                 return confirmed_intent.id
