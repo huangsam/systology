@@ -1,4 +1,4 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Designs - Systology</title><meta name=description content="Detailed system design sketches and trade-off analyses."><link rel=canonical href=https://sambyte.net/systology/designs/><link rel=icon href=/systology/favicon.svg type=image/svg+xml><meta name=robots content="index, follow"><meta property="og:site_name" content="Systology"><meta property="og:title" content="Designs - Systology"><meta property="og:description" content="Detailed system design sketches and trade-off analyses."><meta property="og:url" content="https://sambyte.net/systology/designs/"><meta property="og:type" content="website"><meta name=twitter:card content="summary"><meta name=twitter:title content="Designs - Systology"><meta name=twitter:description content="Detailed system design sketches and trade-off analyses."><script>try{const e=localStorage.getItem("theme"),t=window.matchMedia("(prefers-color-scheme: dark)").matches;(e==="dark"||!e&&t)&&(document.documentElement.setAttribute("data-theme","dark"),document.documentElement.style.colorScheme="dark")}catch{}</script><link rel=stylesheet href=/systology/css/styles.min.d9d27fe8d0556583b66986cf5979ac432a720ecbecf16ae57edfe4c33017ccc4.css integrity="sha256-2dJ/6NBVZYO2aYbPWXmsQypyDsvs8Wrlft/kwzAXzMQ=" crossorigin=anonymous><link rel=stylesheet href=/systology/css/syntax.min.41269e100e00e40bf5ff7da1957df2084878d0d640c74feb6686420524d46f03.css integrity="sha256-QSaeEA4A5Av1/32hlX3yCEh40NZAx0/rZoZCBSTUbwM=" crossorigin=anonymous><link rel=stylesheet href=/systology/css/search.min.e564347981243e513463f4e158576ac66860680526e73eebc06356f5ae43e946.css integrity="sha256-5WQ0eYEkPlE0Y/ThWFdqxmhgaAUm5z7rwGNW9a5D6UY=" crossorigin=anonymous></head><body><header class=site-header role=banner><div class="container header-inner"><a class=brand href=/systology/ aria-label=Systology><img src=/systology/favicon.svg alt class=logo-icon> Systology</a><nav class=site-nav role=navigation aria-label="Main navigation"><a href=/systology/deep-dives/ class=nav-link>Deep Dives</a>
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Designs - Systology</title><meta name=description content="Detailed system design sketches and trade-off analyses."><link rel=canonical href=https://sambyte.net/systology/designs/><link rel=icon href=/systology/favicon.svg type=image/svg+xml><meta name=robots content="index, follow"><meta property="og:site_name" content="Systology"><meta property="og:title" content="Designs - Systology"><meta property="og:description" content="Detailed system design sketches and trade-off analyses."><meta property="og:url" content="https://sambyte.net/systology/designs/"><meta property="og:type" content="website"><meta name=twitter:card content="summary"><meta name=twitter:title content="Designs - Systology"><meta name=twitter:description content="Detailed system design sketches and trade-off analyses."><script>try{const e=localStorage.getItem("theme"),t=window.matchMedia("(prefers-color-scheme: dark)").matches;(e==="dark"||!e&&t)&&(document.documentElement.setAttribute("data-theme","dark"),document.documentElement.style.colorScheme="dark")}catch{}</script><link rel=stylesheet href=/systology/css/styles.min.11617bd09ae23a9874aca9d192d5d6d9e9429c7662e2b615193dba2e69358e3e.css integrity="sha256-EWF70JriOph0rKnRktXW2elCnHZi4rYVGT26Lmk1jj4=" crossorigin=anonymous><link rel=stylesheet href=/systology/css/syntax.min.41269e100e00e40bf5ff7da1957df2084878d0d640c74feb6686420524d46f03.css integrity="sha256-QSaeEA4A5Av1/32hlX3yCEh40NZAx0/rZoZCBSTUbwM=" crossorigin=anonymous><link rel=stylesheet href=/systology/css/search.min.e564347981243e513463f4e158576ac66860680526e73eebc06356f5ae43e946.css integrity="sha256-5WQ0eYEkPlE0Y/ThWFdqxmhgaAUm5z7rwGNW9a5D6UY=" crossorigin=anonymous></head><body><header class=site-header role=banner><div class="container header-inner"><a class=brand href=/systology/ aria-label=Systology><img src=/systology/favicon.svg alt class=logo-icon> Systology</a><nav class=site-nav role=navigation aria-label="Main navigation"><a href=/systology/deep-dives/ class=nav-link>Deep Dives</a>
 <a href=/systology/designs/ class="nav-link active">Designs</a>
 <a href=/systology/principles/ class=nav-link>Principles</a>
 <button class=search-toggle data-open-search aria-label=Search>
@@ -6,35 +6,63 @@
 </button>
 <button class=theme-toggle id=theme-toggle aria-label="Toggle dark mode">
 <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></nav></div></header><main id=content class="container prose"><article><header><h1>Designs</h1><h2>Detailed system design sketches and trade-off analyses.</h2></header><section><p>These documents serve as a sandbox for architectural thinking. They are useful for working through constraints, load estimations, and component interactions in a structured format; understanding <em>why</em> a certain database or architecture was chosen over another (e.g., SQL vs. NoSQL, polling vs. WebSockets); and building a mental library of design patterns that can be applied to real-world distributed systems.</p></section><ul class=listing><li><a href=/systology/designs/url-shortener/>URL Shortener & Pastebin</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/algorithms/>Algorithms</a>
-,
-<a href=/systology/tags/caching/>Caching</a>
-,
-<a href=/systology/tags/encoding/>Encoding</a>
-<span class=muted>and +1 more</span></small><p>A robust structural design for a highly available, extremely read-heavy service bridging short aliases to long URLs; implementing Base62 encoding, Snowflake IDs, and strict collision avoidance.</p></li><li><a href=/systology/designs/search-retrieval/>Search & Retrieval Engine</a>
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></nav></div></header><main id=content class="container prose"><article><header><h1>Designs</h1><h2>Detailed system design sketches and trade-off analyses.</h2></header><section><p>These documents serve as a sandbox for architectural thinking. They are useful for working through constraints, load estimations, and component interactions in a structured format; understanding <em>why</em> a certain database or architecture was chosen over another (e.g., SQL vs. NoSQL, polling vs. WebSockets); and building a mental library of design patterns that can be applied to real-world distributed systems.</p></section><ul class=listing><li><a href=/systology/designs/search-retrieval/>Search & Retrieval Engine</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/indexing/>Indexing</a>
 ,
 <a href=/systology/tags/machine-learning/>Machine-Learning</a>
 ,
 <a href=/systology/tags/monitoring/>Monitoring</a>
-<span class=muted>and +2 more</span></small><p>A high-performance search and retrieval engine architecture designed for extensive document and media collections; strictly ensuring low-latency ranking and horizontally scalable inverted indexing.</p></li><li><a href=/systology/designs/realtime-analytics/>Real-Time Analytics Pipeline</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/data-pipelines/>Data-Pipelines</a>
-,
-<a href=/systology/tags/fault-tolerance/>Fault-Tolerance</a>
-,
-<a href=/systology/tags/olap/>Olap</a>
-<span class=muted>and +2 more</span></small><p>A highly scalable real-time streaming pipeline engineered to continuously ingest and process high-volume user event streams; gracefully handling late arrivals and robust fault tolerance protocols.</p></li><li><a href=/systology/designs/federated-learning/>Privacy-Preserving Federated Learning Platform</a>
+<span class=muted>and +2 more</span></small><p>A high-performance search and retrieval engine architecture designed for extensive document and media collections; strictly ensuring low-latency ranking and horizontally scalable inverted indexing.</p></li><li><a href=/systology/designs/federated-learning/>Privacy-Preserving Federated Learning Platform</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/data-pipelines/>Data-Pipelines</a>
 ,
 <a href=/systology/tags/machine-learning/>Machine-Learning</a>
 ,
 <a href=/systology/tags/privacy/>Privacy</a>
-<span class=muted>and +1 more</span></small><p>A secure platform design for advanced federated learning pipelines; training models directly across edge devices without sharing raw telemetry, utilizing secure local aggregation and robust privacy safeguards.</p></li><li><a href=/systology/designs/cdn-media/>Global CDN Media Serving</a>
+<span class=muted>and +1 more</span></small><p>A secure platform design for advanced federated learning pipelines; training models directly across edge devices without sharing raw telemetry, utilizing secure local aggregation and robust privacy safeguards.</p></li><li><a href=/systology/designs/distributed-cache/>Distributed Caching Layer for VCS</a>
+<small class=tags>&nbsp;—&nbsp;
+<a href=/systology/tags/caching/>Caching</a>
+,
+<a href=/systology/tags/fault-tolerance/>Fault-Tolerance</a>
+,
+<a href=/systology/tags/partitioning/>Partitioning</a>
+<span class=muted>and +2 more</span></small><p>An optimized distributed caching architecture designed to drastically reduce backend I/O and accelerate VCS operations; intelligently caching heavy objects and hashes with ultra-low latency.</p></li><li><a href=/systology/designs/payment-system/>Payment System</a>
+<small class=tags>&nbsp;—&nbsp;
+<a href=/systology/tags/consistency/>Consistency</a>
+,
+<a href=/systology/tags/data-flows/>Data-Flows</a>
+,
+<a href=/systology/tags/databases/>Databases</a>
+<span class=muted>and +2 more</span></small><p>A high-integrity architecture for global payment gateways and internal ledgers, emphasizing rigorous idempotency, eventual consistency, and deterministic recovery.</p></li><li><a href=/systology/designs/flash-sale/>Flash Sale / Ticketmaster</a>
+<small class=tags>&nbsp;—&nbsp;
+<a href=/systology/tags/concurrency/>Concurrency</a>
+,
+<a href=/systology/tags/consistency/>Consistency</a>
+,
+<a href=/systology/tags/databases/>Databases</a>
+<span class=muted>and +2 more</span></small><p>A high-resiliency architecture for extreme traffic bursts, utilizing virtual waiting rooms and atomic inventory management to ensure fair distribution under load.</p></li><li><a href=/systology/designs/video-transcoding/>Video Transcoding & Streaming Pipeline</a>
+<small class=tags>&nbsp;—&nbsp;
+<a href=/systology/tags/data-pipelines/>Data-Pipelines</a>
+,
+<a href=/systology/tags/encoding/>Encoding</a>
+,
+<a href=/systology/tags/media/>Media</a>
+<span class=muted>and +2 more</span></small><p>An inherently scalable video ingestion and transcoding system architecture; asynchronously chunking heavy media, extracting actionable features, and steadily outputting adaptive bitrates via worker pools.</p></li><li><a href=/systology/designs/url-shortener/>URL Shortener & Pastebin</a>
+<small class=tags>&nbsp;—&nbsp;
+<a href=/systology/tags/algorithms/>Algorithms</a>
+,
+<a href=/systology/tags/caching/>Caching</a>
+,
+<a href=/systology/tags/encoding/>Encoding</a>
+<span class=muted>and +1 more</span></small><p>A robust structural design for a highly available, extremely read-heavy service bridging short aliases to long URLs; implementing Base62 encoding, Snowflake IDs, and strict collision avoidance.</p></li><li><a href=/systology/designs/realtime-analytics/>Real-Time Analytics Pipeline</a>
+<small class=tags>&nbsp;—&nbsp;
+<a href=/systology/tags/data-pipelines/>Data-Pipelines</a>
+,
+<a href=/systology/tags/fault-tolerance/>Fault-Tolerance</a>
+,
+<a href=/systology/tags/olap/>Olap</a>
+<span class=muted>and +2 more</span></small><p>A highly scalable real-time streaming pipeline engineered to continuously ingest and process high-volume user event streams; gracefully handling late arrivals and robust fault tolerance protocols.</p></li><li><a href=/systology/designs/cdn-media/>Global CDN Media Serving</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/caching/>Caching</a>
 ,
@@ -48,56 +76,28 @@
 <a href=/systology/tags/deduplication/>Deduplication</a>
 ,
 <a href=/systology/tags/integrity/>Integrity</a>
-<span class=muted>and +1 more</span></small><p>A comprehensive system architecture for migrating remarkably large datasets; rigorously enforcing deduplication heuristics, checksum-backed integrity validations, resumability, and strict idempotence.</p></li><li><a href=/systology/designs/distributed-cache/>Distributed Caching Layer for VCS</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/caching/>Caching</a>
-,
-<a href=/systology/tags/fault-tolerance/>Fault-Tolerance</a>
-,
-<a href=/systology/tags/partitioning/>Partitioning</a>
-<span class=muted>and +2 more</span></small><p>An optimized distributed caching architecture designed to drastically reduce backend I/O and accelerate VCS operations; intelligently caching heavy objects and hashes with ultra-low latency.</p></li><li><a href=/systology/designs/proximity-service/>Proximity Service for Maps</a>
+<span class=muted>and +1 more</span></small><p>A comprehensive system architecture for migrating remarkably large datasets; rigorously enforcing deduplication heuristics, checksum-backed integrity validations, resumability, and strict idempotence.</p></li><li><a href=/systology/designs/proximity-service/>Proximity Service for Maps</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/caching/>Caching</a>
 ,
 <a href=/systology/tags/databases/>Databases</a>
 ,
 <a href=/systology/tags/geospatial/>Geospatial</a>
-<span class=muted>and +1 more</span></small><p>An optimized system design for discovering nearby points of interest with ultra-low latency; deeply focusing on efficient spatial indexing via Geohashing, Quadtrees, and read-heavy caching tiers.</p></li><li><a href=/systology/designs/payment-system/>Payment System</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/consistency/>Consistency</a>
-,
-<a href=/systology/tags/data-flows/>Data-Flows</a>
-,
-<a href=/systology/tags/databases/>Databases</a>
-<span class=muted>and +2 more</span></small><p>A high-integrity architecture for global payment gateways and internal ledgers, emphasizing rigorous idempotency, eventual consistency, and deterministic recovery.</p></li><li><a href=/systology/designs/notification-system/>Notification System</a>
+<span class=muted>and +1 more</span></small><p>An optimized system design for discovering nearby points of interest with ultra-low latency; deeply focusing on efficient spatial indexing via Geohashing, Quadtrees, and read-heavy caching tiers.</p></li><li><a href=/systology/designs/notification-system/>Notification System</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/dispatch/>Dispatch</a>
 ,
 <a href=/systology/tags/protocols/>Protocols</a>
 ,
 <a href=/systology/tags/queuing/>Queuing</a>
-<span class=muted>and +1 more</span></small><p>A robust architectural design for a high-throughput, multi-channel notification service supporting push, email, and SMS; featuring strict prioritization queues, tiered rate limiting, and reliable delivery tracking.</p></li><li><a href=/systology/designs/flash-sale/>Flash Sale / Ticketmaster</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/concurrency/>Concurrency</a>
-,
-<a href=/systology/tags/consistency/>Consistency</a>
-,
-<a href=/systology/tags/databases/>Databases</a>
-<span class=muted>and +2 more</span></small><p>A high-resiliency architecture for extreme traffic bursts, utilizing virtual waiting rooms and atomic inventory management to ensure fair distribution under load.</p></li><li><a href=/systology/designs/ad-click-aggregator/>Ad Click Aggregator</a>
+<span class=muted>and +1 more</span></small><p>A robust architectural design for a high-throughput, multi-channel notification service supporting push, email, and SMS; featuring strict prioritization queues, tiered rate limiting, and reliable delivery tracking.</p></li><li><a href=/systology/designs/ad-click-aggregator/>Ad Click Aggregator</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/analytics/>Analytics</a>
 ,
 <a href=/systology/tags/olap/>Olap</a>
 ,
 <a href=/systology/tags/streaming/>Streaming</a>
-<span class=muted>and +1 more</span></small><p>A high-throughput streaming architecture for global ad click aggregation, ensuring exactly-once processing, robust deduplication, and sub-second reporting.</p></li><li><a href=/systology/designs/video-transcoding/>Video Transcoding & Streaming Pipeline</a>
-<small class=tags>&nbsp;—&nbsp;
-<a href=/systology/tags/data-pipelines/>Data-Pipelines</a>
-,
-<a href=/systology/tags/encoding/>Encoding</a>
-,
-<a href=/systology/tags/media/>Media</a>
-<span class=muted>and +2 more</span></small><p>An inherently scalable video ingestion and transcoding system architecture; asynchronously chunking heavy media, extracting actionable features, and steadily outputting adaptive bitrates via worker pools.</p></li><li><a href=/systology/designs/collaborative-webapp/>Real-Time Collaborative WebApp</a>
+<span class=muted>and +1 more</span></small><p>A high-throughput streaming architecture for global ad click aggregation, ensuring exactly-once processing, robust deduplication, and sub-second reporting.</p></li><li><a href=/systology/designs/collaborative-webapp/>Real-Time Collaborative WebApp</a>
 <small class=tags>&nbsp;—&nbsp;
 <a href=/systology/tags/concurrency/>Concurrency</a>
 ,
