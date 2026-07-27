@@ -58,11 +58,43 @@ def find_local_repos(search_paths: list[Path]) -> dict[str, Path]:
 
 
 def get_repo_last_commit(repo_name: str, local_path: Path | None) -> str | None:
-    """Get the last commit timestamp for a repository (local git or remote gh)."""
+    """Get the last commit timestamp for a repository (local git or remote gh),
+    filtering out bot updates, dependency bumps, and lockfile-only churn.
+    """
     if local_path:
-        ts = run_cmd(["git", "log", "-1", "--format=%cI"], cwd=local_path)
+        # First attempt: filtered commit search ignoring bot/dependency commits and lockfile churn
+        ts = run_cmd(
+            [
+                "git",
+                "log",
+                "-1",
+                "--no-merges",
+                "-i",
+                "--invert-grep",
+                "--grep=dependabot",
+                "--grep=bump",
+                "--grep=dependency",
+                "--grep=dependencies",
+                "--format=%cI",
+                "--",
+                ".",
+                ":(exclude)*.lock",
+                ":(exclude)*lock.json",
+                ":(exclude)go.mod",
+                ":(exclude)go.sum",
+                ":(exclude)Pipfile.lock",
+                ":(exclude)poetry.lock",
+                ":(exclude).github",
+                ":(exclude)gradle/wrapper",
+            ],
+            cwd=local_path,
+        )
         if ts:
             return ts
+        # Fallback to standard git log if filtered search yields no commits
+        ts_fallback = run_cmd(["git", "log", "-1", "--format=%cI"], cwd=local_path)
+        if ts_fallback:
+            return ts_fallback
 
     # Fallback to GitHub CLI if available and repo name is full (owner/repo)
     if "/" in repo_name:
