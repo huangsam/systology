@@ -203,25 +203,54 @@ def run_check_sync(content_dir: Path, search_paths: list[Path], print_json: bool
         print("No referenced repositories found in deep-dives.")
         return
 
-    # Print human-readable table
-    print("\nDeep-Dive Repository Sync Status:")
-    print("-" * 110)
-    print(f"{'Document':<35} | {'Repository':<25} | {'Doc Commit':<25} | {'Repo Commit':<25} | {'Status':<12}")
-    print("-" * 110)
+    # Sort results deterministically by document name then repository
+    results.sort(key=lambda x: (x["document"].split("/")[-1], x["repository"]))
+
+    # Prepare table headers and raw cell data
+    headers = ["Document", "Repository", "Doc Commit", "Repo Commit", "Status"]
+    table_rows = []
     for r in results:
         doc_display = r["document"].split("/")[-1]
         repo_display = r["repository"]
-        doc_commit = r["doc_last_commit"][:19] if r["doc_last_commit"] else "None"
-        repo_commit = r["repo_last_commit"][:19] if r["repo_last_commit"] else "Unknown"
-
+        doc_commit = r["doc_last_commit"][:19].replace("T", " ") if r["doc_last_commit"] else "None"
+        repo_commit = r["repo_last_commit"][:19].replace("T", " ") if r["repo_last_commit"] else "Unknown"
         status = r["status"].upper()
-        if status == "OUT-OF-DATE":
-            status_str = f"\033[91m{status}\033[0m"  # Red
-        elif status == "UP-TO-DATE":
-            status_str = f"\033[92m{status}\033[0m"  # Green
-        else:
-            status_str = f"\033[93m{status}\033[0m"  # Yellow
+        table_rows.append((doc_display, repo_display, doc_commit, repo_commit, status))
 
-        print(f"{doc_display:<35} | {repo_display:<25} | {doc_commit:<25} | {repo_commit:<25} | {status_str:<12}")
-    print("-" * 110)
+    # Calculate dynamic column widths (max content length)
+    col_widths = []
+    for i, h in enumerate(headers):
+        max_len = max(len(h), max((len(row[i]) for row in table_rows), default=0))
+        col_widths.append(max_len)
+
+    # Construct exact separator line matching total table width
+    total_table_width = sum(col_widths) + 3 * (len(headers) - 1)
+    sep_line = "-" * total_table_width
+
+    # Print human-readable table
+    print("\nDeep-Dive Repository Sync Status:")
+    print(sep_line)
+    header_str = " | ".join(f"{h:<{w}}" for h, w in zip(headers, col_widths))
+    print(header_str)
+    print(sep_line)
+
+    for row in table_rows:
+        status = row[4]
+        if status == "OUT-OF-DATE":
+            color = "\033[91m"  # Red
+        elif status == "UP-TO-DATE":
+            color = "\033[92m"  # Green
+        else:
+            color = "\033[93m"  # Yellow
+
+        cells = [
+            f"{row[0]:<{col_widths[0]}}",
+            f"{row[1]:<{col_widths[1]}}",
+            f"{row[2]:<{col_widths[2]}}",
+            f"{row[3]:<{col_widths[3]}}",
+            f"{color}{status:<{col_widths[4]}}\033[0m",
+        ]
+        print(" | ".join(cells))
+
+    print(sep_line)
     print(f"Total checked: {len(results)} references.")
