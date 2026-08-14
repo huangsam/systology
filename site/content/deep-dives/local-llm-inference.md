@@ -10,7 +10,7 @@ date: "2026-08-14T08:18:07-07:00"
 
 ## Context & Motivation
 
-**Context:** Modern AI-assisted software engineering increasingly relies on local-first language model runtimes. Workstation-grade Apple Silicon unified memory systems (e.g., M-series Max/Ultra SoCs with unified memory architectures) allow developers to host 70B+ and 120B+ parameter models directly on local hardware, powering terminal tooling, dotfile automation, shell instrumentation, and interactive agent loops.
+**Context:** Modern AI-assisted software engineering increasingly relies on local-first language model runtimes. Workstation-grade Apple Silicon systems (e.g., M-series Max/Ultra SoCs) allow developers to host 70B+ and 120B+ parameter models directly on local hardware, powering terminal tooling, dotfile automation, shell instrumentation, and interactive agent loops.
 
 **Motivation:** Running local LLMs provides zero-marginal-cost inference, offline capability, and total confidentiality for proprietary codebases. However, local inference operates under strict physical hardware constraints that differ fundamentally from cloud datacenter clusters. Without multi-node GPU clusters, local serving is governed by the physics of single-bus memory bandwidth, Metal GPU wired memory ceilings, and prompt payload overheads. Understanding prefill vs. decode bottlenecks, KV cache eviction behaviors, and empirical memory pressure thresholds is critical for designing responsive, stable local AI workflows.
 
@@ -20,10 +20,10 @@ date: "2026-08-14T08:18:07-07:00"
 
 Every autoregressive Large Language Model request consists of two distinct operational phases with fundamentally different hardware bottlenecks:
 
-| Phase | Bottleneck & Throughput | Core Operation |
+| Phase | Bottleneck | Core Operation |
 |---|---|---|
-| **1. Prefill** | **Compute (FLOPs)** ~70 – 300+ tokens/sec | Parallel batch prompt matrix multiplication to populate the Key-Value (KV) cache. |
-| **2. Decode** | **Memory Bandwidth** ~3.5 – 90+ tokens/sec | Sequential autoregressive token generation attending across the populated KV cache. |
+| **Prefill** | **Compute** | Parallel batch prompt matrix multiplication to populate KV cache. |
+| **Decode** | **Memory** | Sequential autoregressive token generation attending across KV cache. |
 
 {{< mermaid >}}
 graph LR
@@ -95,45 +95,38 @@ graph TD
     * Memory pressure remains **solid green** with ~5.6 GB of unswapped system headroom. 100% of model layers execute inside Metal GPU VRAM.
 * **At 128K Context**: Total demand reaches 76.5 GB + 39.7 GB = **116.2 GB for the runtime process alone**, pushing aggregate system demand over **135 GB**.
     * macOS spills 15+ model layers into CPU System RAM and Swap.
-    * Prefill throughput collapses from **~140 tokens/sec down to ~10 tokens/sec** due to PCI/memory bus paging thrashing.
+    * Prefill throughput collapses from **~140 tokens/sec down to ~10 tokens/sec** due to swap paging and memory bus thrashing.
 
 ### Client Architecture & Prompt Payload Dynamics
 
 The choice of client interface drastically alters prompt payload volume and prefill latency:
 
 * **IDE Auto-Dump** *(Open tabs, full file tree, git logs, linter states)*
-    * *Turn #1 Payload:* **~26,320 tokens**
-    * *Turn #1 Prefill Latency:* **~2.5 to 7.0 minutes** on Dense 128B
-    * *Turn #2+ Delta Prefill:* Evaluates entire diff set; highly susceptible to prefix cache eviction.
+    * *Turn #1 (~26k tokens):* **~2.5 to 7.0 minutes** prefill on Dense 128B; saturates memory bus and easily evicts prefix caches.
 * **Explicit Context CLI** *(System prompt + explicit `@file` references)*
-    * *Turn #1 Payload:* **~548 tokens**
-    * *Turn #1 Prefill Latency:* **~6.5 seconds** on Dense 128B
-    * *Turn #2+ Delta Prefill:* **0.19 seconds** (`f_sim_best = 1.000` via Longest Common Prefix matching).
-
-#### Prompt Evaluation Lifecycle:
-1. **Turn #1 (Setup Payload)**: The client initializes context. Lean payloads (~500 tokens) avoid initial memory bus saturation.
-2. **Turn #2+ (Incremental Delta)**: Using cache retention configurations (`OLLAMA_KEEP_ALIVE=30m`), runtime Longest Common Prefix (LCP) matchers reuse past KV vectors in VRAM. Turn #2 evaluates only the new 30–50 token query in **<200 milliseconds**.
+    * *Turn #1 (~500 tokens):* **~6.5 seconds** prefill on Dense 128B.
+    * *Turn #2+ Delta (<50 tokens):* **<200 milliseconds** (`f_sim_best = 1.000`) via runtime Longest Common Prefix (LCP) caching (`OLLAMA_KEEP_ALIVE=30m`).
 
 ### The 4-Tier Local Model Arsenal
 
-On workstation and laptop hardware, local models categorize into four distinct operational tiers based on resource footprint and latency characteristics:
+On workstation and laptop hardware, local models categorize into four operational tiers:
 
-* **Tier 1: Heavyweight Architects (120B+)** *(Principal Code & Security Audits)*
+* **Tier 1: Heavyweight Architects (120B+)**
     * *Models:* `mistral-medium-3.5:128b` (80 GB), `qwen3.5:122b` (81 GB)
-    * *Performance Profile:* Dense 120B+ / ~3.5 – 6.5 tokens/sec / 64K VRAM
-    * *Ideal Use Case:* Deep multi-file refactoring, security audits, complex architectural reasoning.
-* **Tier 2: Flagship Workhorses & Reasoning (70B+)** *(Daily Core Engineering)*
+    * *Performance Profile:* Dense / ~3.5 – 6.5 tokens/sec / 64K VRAM
+    * *Ideal Use Case:* Multi-file refactoring, security audits, and complex architectural reasoning.
+* **Tier 2: Flagship Workhorses & Reasoning (70B+)**
     * *Models:* `deepseek-r1:70b` (42 GB), `qwen3-coder-next:q4_K_M` (51 GB)
     * *Performance Profile:* 70B+ RL / Q4 / ~25 – 54 tokens/sec
-    * *Ideal Use Case:* Complex algorithmic puzzle solving, test generation, math verification, main pair-programming.
-* **Tier 3: Mid-Weight Speedsters (26B – 35B)** *(Interactive Shell & Laptop Workhorses)*
-    * *Models:* `qwen3.6:35b-mlx` (21 GB), `qwen3.6:27b-mlx` (19 GB), `gemma4:31b-mlx` (18 GB), `gemma4:26b-mlx` (17 GB)
-    * *Performance Profile:* MLX / ~60 – 90+ tokens/sec / ~17 – 21 GB VRAM
-    * *Ideal Use Case:* Rapid inline completions, interactive CLI loops, full-capability sweet spot on 36GB–48GB MacBooks.
-* **Tier 4: Ultra-Lightweight Mobility (Sub-14B)** *(Battery Efficiency & Fast Lookups)*
+    * *Ideal Use Case:* Core engineering, logic puzzles, test generation, and pair-programming.
+* **Tier 3: Mid-Weight Speedsters (26B – 35B)**
+    * *Models:* `qwen3.6:35b-mlx` (21 GB), `gemma4:31b-mlx` (18 GB)
+    * *Performance Profile:* MLX / ~60 – 90+ tokens/sec / ~18 – 21 GB VRAM
+    * *Ideal Use Case:* Rapid completions, interactive CLI loops, and sweet spot for 36GB–48GB MacBooks.
+* **Tier 4: Ultra-Lightweight Mobility (Sub-14B)**
     * *Models:* `gemma4:12b-mlx` (7.7 GB), `qwen3.5:9b-mlx` (8.9 GB)
     * *Performance Profile:* <10 GB VRAM / ~80 – 120+ tokens/sec / low power draw
-    * *Ideal Use Case:* Shell command lookup, git commit message drafting, native offline execution on 16GB/18GB base MacBooks.
+    * *Ideal Use Case:* Fast command lookups and commit message drafting on base MacBooks.
 
 ## Comparison to Industry Standards
 
