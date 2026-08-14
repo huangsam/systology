@@ -42,14 +42,14 @@ graph LR
 When you cancel an in-flight query, the lifecycle state of the KV cache determines whether computed work is preserved for your next turn:
 
 #### Canceling During Generation (Text Output)
-* **Execution State**: The model has already ingested the full prompt and stored its representations in VRAM.
-* **Effect of Cancel**: Output generation stops immediately, but the prompt prefix remains intact in memory.
-* **Subsequent Turn**: The runtime reuses the existing cache. Your next turn achieves an immediate **100% cache hit** and begins answering instantly without re-reading the prompt.
+* **Execution State**: The full prompt is already ingested and its KV activations are stored in VRAM.
+* **Effect of Cancel**: Token generation halts immediately, but the prompt prefix remains intact in memory.
+* **Subsequent Turn**: Reuses the cached prefix, yielding an immediate **100% cache hit** without re-reading.
 
 #### Canceling During Prefill (Prompt Ingestion)
-* **Execution State**: The model is actively digesting the prompt in sequential batches (e.g., chunks of 512 tokens).
-* **Effect of Cancel**: The runtime halts ingestion and rolls back unfinalized blocks (`memory_seq_rm`).
-* **Subsequent Turn**: Only chunks completed before cancellation remain. The server suffers a **cache miss** on the rest of the prompt and must re-process it from scratch.
+* **Execution State**: The prompt is actively being ingested in sequential batches (e.g., chunks of 512 tokens).
+* **Effect of Cancel**: Ingestion halts immediately and the runtime rolls back unfinalized blocks (`memory_seq_rm`).
+* **Subsequent Turn**: Loses unfinalized tokens, causing a **cache miss** that re-processes the prompt from scratch.
 
 ### Model Architecture & Memory Bandwidth on Unified Memory
 
