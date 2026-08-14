@@ -10,20 +10,20 @@ date: "2026-08-14T08:18:07-07:00"
 
 ## Context & Motivation
 
-**Context:** Modern AI-assisted software engineering increasingly relies on local-first language model runtimes. Workstation-grade Apple Silicon systems (e.g., M-series Max/Ultra SoCs) allow developers to host 70B+ and 120B+ parameter models directly on local hardware, powering terminal tooling, dotfile automation, shell instrumentation, and interactive agent loops.
+**Context:** Modern software engineering workflows are moving toward local-first AI runtimes. High-spec workstations, particularly Apple Silicon SoCs with unified memory, can now host 70B+ and 120B+ parameter models directly on device. This makes it practical to run terminal tools, shell helpers, and interactive coding agents entirely on local hardware.
 
-**Motivation:** Running local LLMs provides zero-marginal-cost inference, offline capability, and total confidentiality for proprietary codebases. However, local inference operates under strict physical hardware constraints that differ fundamentally from cloud datacenter clusters. Without multi-node GPU clusters, local serving is governed by the physics of single-bus memory bandwidth, Metal GPU wired memory ceilings, and prompt payload overheads. Understanding prefill vs. decode bottlenecks, KV cache eviction behaviors, and empirical memory pressure thresholds is critical for designing responsive, stable local AI workflows.
+**Motivation:** Running local models gives developers free inference, offline workflows, and total confidentiality for proprietary codebases. But local hardware behaves very differently from cloud clusters. Instead of distributing computation across a fleet of networked GPUs, local serving runs against a single unified memory bus. Performance is dictated by raw memory bandwidth, OS-level GPU memory limits, and prompt size. Understanding these physical boundaries (such as prefill vs. decode bottlenecks and memory cliffs) is essential for building fast, reliable local AI tools.
 
 ## The Local Implementation
 
 ### The Two Phases of LLM Inference
 
-Every autoregressive Large Language Model request consists of two distinct operational phases with fundamentally different hardware bottlenecks:
+Every Large Language Model request consists of two distinct phases with fundamentally different hardware bottlenecks:
 
 | Phase | Bottleneck | Core Operation |
 |---|---|---|
-| **Prefill** | **Compute** | Parallel batch prompt matrix multiplication to populate KV cache. |
-| **Decode** | **Memory** | Sequential autoregressive token generation attending across KV cache. |
+| **Prefill** | **Compute (FLOPs)** | Ingests and processes the input prompt in parallel to populate the working memory (KV cache). |
+| **Decode** | **Memory Bandwidth** | Generates output tokens one by one, sweeping through the entire model and cache for every new token. |
 
 {{< mermaid >}}
 graph LR
@@ -36,42 +36,44 @@ graph LR
 
 ### Cancellation Dynamics: Prefill vs. Generation
 
-When an inference turn is canceled or interrupted, the lifecycle state of the KV cache determines whether computed activations are preserved for subsequent turns:
+When you cancel an in-flight query, the lifecycle state of the KV cache determines whether computed work is preserved for your next turn:
 
 #### Canceling During Generation (Text Output)
-* **Execution State**: 100% of the input prompt has already been evaluated and stored in the KV cache within VRAM.
-* **Effect of Cancel**: Token generation halts immediately, but the prompt prefix activations remain intact in memory.
-* **Subsequent Turn**: The server retains the prompt prefix. The next turn achieves an immediate **100% cache hit** and begins generating output instantly without re-evaluating the prompt.
+* **Execution State**: The model has already ingested the full prompt and stored its representations in VRAM.
+* **Effect of Cancel**: Output generation stops immediately, but the prompt prefix remains intact in memory.
+* **Subsequent Turn**: The runtime reuses the existing cache. Your next turn achieves an immediate **100% cache hit** and begins answering instantly without re-reading the prompt.
 
 #### Canceling During Prefill (Prompt Ingestion)
-* **Execution State**: The model is actively computing KV activations in chunks (e.g., batches of 512 tokens).
-* **Effect of Cancel**: The inference runtime halts execution and evicts or rolls back incomplete sequence blocks (`memory_seq_rm`).
-* **Subsequent Turn**: Only tokens finalized prior to the cancellation point exist in the cache. The runtime suffers a **cache miss** for the remainder of the context and must evaluate all remaining tokens from scratch.
+* **Execution State**: The model is actively digesting the prompt in sequential batches (e.g., chunks of 512 tokens).
+* **Effect of Cancel**: The runtime halts ingestion and rolls back unfinalized blocks (`memory_seq_rm`).
+* **Subsequent Turn**: Only chunks completed before cancellation remain. The server suffers a **cache miss** on the rest of the prompt and must re-process it from scratch.
 
-### Dense vs. MoE Architecture Dynamics on Unified Memory
+### Model Architecture & Memory Bandwidth on Unified Memory
 
-On single-memory-bus systems (such as Apple Silicon Unified Memory), autoregressive token generation speed is strictly bounded by memory bandwidth:
+On unified memory systems (like Apple Silicon), generation speed during the decode phase is strictly limited by how fast the GPU can read model weights from memory:
 
 ```text
 Generation Speed (tokens/sec) = GPU Memory Bandwidth (GB/s) / Active Model Size in VRAM (GB)
 ```
 
-* **Dense (120B+)** — `mistral-medium-3.5:128b`, `qwen3.5:122b`
+Because every generated token requires a full pass over the active model weights in RAM, larger models produce slower token streams regardless of available compute cores:
+
+* **Dense Models (120B+):** `mistral-medium-3.5:128b`, `qwen3.5:122b`
     * *Footprint:* 122B – 128B active parameters (~76.5 – 81 GB VRAM)
     * *Throughput:* ~3.5 – 6.5 tokens/sec (M-Max ~800 GB/s)
     * *Best Fit:* Deep architectural refactoring, zero-hallucination audits, complex logic.
-* **Dense / Quantized 70B+** — `deepseek-r1:70b`, `qwen3-coder-next:q4_K_M`
+* **Dense / Quantized Models (70B+):** `deepseek-r1:70b`, `qwen3-coder-next:q4_K_M`
     * *Footprint:* 70B+ parameters (~42 – 51 GB VRAM)
     * *Throughput:* ~25 – 54 tokens/sec
     * *Best Fit:* Balanced sweet spot of high generation speed, reasoning depth, and memory headroom.
-* **Optimized MLX / MoE** — `qwen3.6:35b-mlx`, `gemma4:31b-mlx`
+* **Optimized MLX / MoE Models:** `qwen3.6:35b-mlx`, `gemma4:31b-mlx`
     * *Footprint:* Parameter-efficient MLX runtime (~18 – 21 GB VRAM)
     * *Throughput:* ~60 – 90+ tokens/sec
     * *Best Fit:* High-throughput interactive pair programming, fast shell completions, responsive chat.
 
 ### macOS Metal GPU Allocation Limits & KV Cache Sizing
 
-Apple Silicon Unified Memory operates under operating system thresholds managed by the Metal graphics driver and XNU kernel:
+Apple Silicon manages Unified Memory using thresholds enforced by the Metal graphics driver and XNU kernel:
 
 {{< mermaid >}}
 graph TD
@@ -84,49 +86,49 @@ graph TD
 {{< /mermaid >}}
 
 #### KV Cache Memory Footprint (Q8_0 Quantization):
-* **16K Context (`16,384` tokens)**: **~4.9 GB VRAM** (Ideal for 36 GB)
+* **16K Context (`16,384` tokens)**: **~4.9 GB VRAM** (Ideal for 36 GB machines)
 * **32K Context (`32,768` tokens)**: **~9.9 GB VRAM**
-* **64K Context (`65,536` tokens)**: **~19.8 GB VRAM** (Ideal for 128 GB)
+* **64K Context (`65,536` tokens)**: **~19.8 GB VRAM** (Ideal for 128 GB machines)
 * **131K Context (`131,072` tokens)**: **~39.7 GB VRAM**
 
-#### The 64K vs. 128K Empirical Cliff:
+#### The 64K vs. 128K Context Cliff:
 * **At 64K Context**: Dense 128B weights (76.5 GB) + 64K KV Cache (19.8 GB) = **~96.3 GB**.
     * Total process memory: ~107 GB (~101 GB Wired Memory).
-    * Memory pressure remains **solid green** with ~5.6 GB of unswapped system headroom. 100% of model layers execute inside Metal GPU VRAM.
-* **At 128K Context**: Total demand reaches 76.5 GB + 39.7 GB = **116.2 GB for the runtime process alone**, pushing aggregate system demand over **135 GB**.
-    * macOS spills 15+ model layers into CPU System RAM and Swap.
-    * Prefill throughput collapses from **~140 tokens/sec down to ~10 tokens/sec** due to swap paging and memory bus thrashing.
+    * Memory pressure remains **solid green** with ~5.6 GB of unswapped system headroom. All model layers run inside fast GPU VRAM.
+* **At 128K Context**: Total demand reaches 76.5 GB + 39.7 GB = **116.2 GB for the runtime process alone**, pushing total system demand over **135 GB**.
+    * macOS hits its wired limit and begins spilling model layers to disk swap.
+    * Prompt ingestion collapses from **~140 tokens/sec down to ~10 tokens/sec** as the system spends its time swapping memory pages rather than executing matrix multiplications.
 
-### Client Architecture & Prompt Payload Dynamics
+### Client Design & Prompt Overhead
 
-The choice of client interface drastically alters prompt payload volume and prefill latency:
+How a client tool structures its requests has a dramatic impact on prefill delay and cache hits:
 
-* **IDE Auto-Dump** *(Open tabs, full file tree, git logs, linter states)*
-    * *Turn #1 (~26k tokens):* **~2.5 to 7.0 minutes** prefill on Dense 128B; saturates memory bus and easily evicts prefix caches.
-* **Explicit Context CLI** *(System prompt + explicit `@file` references)*
-    * *Turn #1 (~500 tokens):* **~6.5 seconds** prefill on Dense 128B.
-    * *Turn #2+ Delta (<50 tokens):* **<200 milliseconds** (`f_sim_best = 1.000`) via runtime Longest Common Prefix (LCP) caching (`OLLAMA_KEEP_ALIVE=30m`).
+* **IDE Auto-Dump** *(Dumping open tabs, whole file trees, git history, and linter state)*
+    * *Turn #1 (~26k tokens):* **~2.5 to 7.0 minutes** prefill on 128B models; saturates the memory bus and risks evicting existing caches.
+* **Explicit Context CLI** *(Clean system prompt + explicit `@file` references)*
+    * *Turn #1 (~500 tokens):* **~6.5 seconds** prefill on 128B models.
+    * *Turn #2+ Delta (<50 tokens):* **<200 milliseconds** (`f_sim_best = 1.000`) by reusing cached prefixes via Longest Common Prefix (LCP) matching (`OLLAMA_KEEP_ALIVE=30m`).
 
-### The 4-Tier Local Model Arsenal
+### Local Model Hardware Tiers
 
-On workstation and laptop hardware, local models categorize into four operational tiers:
+On local hardware, models naturally fall into four practical tiers based on footprint and response speed:
 
-* **Tier 1: Heavyweight Architects (120B+)**
+* **Tier 1: Heavyweight Reasoning (120B+)**
     * *Models:* `mistral-medium-3.5:128b` (80 GB), `qwen3.5:122b` (81 GB)
     * *Performance Profile:* Dense / ~3.5 – 6.5 tokens/sec / 64K VRAM
     * *Ideal Use Case:* Multi-file refactoring, security audits, and complex architectural reasoning.
-* **Tier 2: Flagship Workhorses & Reasoning (70B+)**
+* **Tier 2: General-Purpose Workhorses (70B+)**
     * *Models:* `deepseek-r1:70b` (42 GB), `qwen3-coder-next:q4_K_M` (51 GB)
     * *Performance Profile:* 70B+ RL / Q4 / ~25 – 54 tokens/sec
-    * *Ideal Use Case:* Core engineering, logic puzzles, test generation, and pair-programming.
-* **Tier 3: Mid-Weight Speedsters (26B – 35B)**
+    * *Ideal Use Case:* Core daily engineering, algorithmic logic, test generation, and pair programming.
+* **Tier 3: Fast Interactive Models (26B – 35B)**
     * *Models:* `qwen3.6:35b-mlx` (21 GB), `gemma4:31b-mlx` (18 GB)
     * *Performance Profile:* MLX / ~60 – 90+ tokens/sec / ~18 – 21 GB VRAM
-    * *Ideal Use Case:* Rapid completions, interactive CLI loops, and sweet spot for 36GB–48GB MacBooks.
-* **Tier 4: Ultra-Lightweight Mobility (Sub-14B)**
+    * *Ideal Use Case:* Rapid inline completions, CLI interactive loops, and sweet spot for 36GB–48GB MacBooks.
+* **Tier 4: Lightweight Utility Models (Sub-14B)**
     * *Models:* `gemma4:12b-mlx` (7.7 GB), `qwen3.5:9b-mlx` (8.9 GB)
     * *Performance Profile:* <10 GB VRAM / ~80 – 120+ tokens/sec / low power draw
-    * *Ideal Use Case:* Fast command lookups and commit message drafting on base MacBooks.
+    * *Ideal Use Case:* Quick terminal command lookups and commit message drafting on base laptops.
 
 ## Comparison to Industry Standards
 
@@ -141,7 +143,7 @@ On workstation and laptop hardware, local models categorize into four operationa
 
 ## Risks & Mitigations
 
-- **Memory Cliff Thrashing (OS Swap Spillover):** When process memory demand exceeds Metal GPU wired memory limits (~98 GB on 128 GB hardware), macOS spills layers into swap, collapsing prefill speed from 140 t/s to 10 t/s.
+- **Memory Cliff Thrashing (OS Swap):** Exceeding Metal GPU wired memory limits (~98 GB on 128 GB hardware) spills layers into swap, collapsing prefill speed from 140 t/s to 10 t/s.
     - *Mitigation:* Hard-cap context windows to safe limits (`65536` for 128 GB setups, `16384` for 36 GB setups) and monitor wired memory allocations before expanding context depth.
 - **Premature Prefill Interruption:** Canceling a request during prompt ingestion invalidates the unfinalized sequence chunk, forfeiting the KV cache for the next turn.
     - *Mitigation:* Allow the prefill phase to complete before canceling or re-prompting; canceling immediately as generation begins retains the full prefix in the cache.
