@@ -16,6 +16,9 @@ date: "2026-08-14T08:18:07-07:00"
 
 ## The Local Implementation
 
+> [!NOTE]
+> **Test Environment:** All benchmarks and empirical measurements were conducted on an **Apple Silicon M5 Max workstation with 128 GB Unified Memory**, serving models via **Ollama** (leveraging the `llama.cpp` Metal GPU backend) alongside native **MLX** runtimes.
+
 ### The Two Phases of LLM Inference
 
 Every Large Language Model request consists of two distinct phases with fundamentally different hardware bottlenecks:
@@ -103,9 +106,9 @@ graph TD
 
 How a client tool structures its requests has a dramatic impact on prefill delay and cache hits:
 
-* **IDE Auto-Dump** *(Dumping open tabs, whole file trees, git history, and linter state)*
-    * *Turn #1 (~26k tokens):* **~2.5 to 7.0 minutes** prefill on 128B models; saturates the memory bus and risks evicting existing caches.
-* **Explicit Context CLI** *(Clean system prompt + explicit `@file` references)*
+* **IDE Workspace Auto-Context (e.g., VS Code / Continue)**
+    * *Turn #1 (~26k tokens):* **~2.5 to 7.0 minutes** prefill on 128B models; saturates the memory bus and risks evicting existing prefix caches.
+* **Targeted Context CLI (e.g., OpenCode)**
     * *Turn #1 (~500 tokens):* **~6.5 seconds** prefill on 128B models.
     * *Turn #2+ Delta (<50 tokens):* **<200 milliseconds** (`f_sim_best = 1.000`) by reusing cached prefixes via Longest Common Prefix (LCP) matching (`OLLAMA_KEEP_ALIVE=30m`).
 
