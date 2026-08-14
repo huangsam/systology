@@ -67,7 +67,7 @@ Because every generated token requires a full pass over the active model weights
     * *Best Fit:* Deep architectural refactoring, zero-hallucination audits, complex logic.
 * **Dense / Quantized Models (70B+):** `deepseek-r1:70b`, `qwen3-coder-next:q4_K_M`
     * *Footprint:* 70B+ parameters (~42 – 51 GB VRAM)
-    * *Throughput:* ~25 – 54 tokens/sec
+    * *Throughput:* ~10 – 19 tokens/sec (up to ~25 – 54 tokens/sec with speculative decoding)
     * *Best Fit:* Balanced sweet spot of high generation speed, reasoning depth, and memory headroom.
 * **Optimized MLX / MoE Models:** `qwen3.6:35b-mlx`, `gemma4:31b-mlx`
     * *Footprint:* Parameter-efficient MLX runtime (~18 – 21 GB VRAM)
@@ -92,7 +92,7 @@ graph TD
 * **16K Context (`16,384` tokens)**: **~4.9 GB VRAM** (Ideal for 36 GB machines)
 * **32K Context (`32,768` tokens)**: **~9.9 GB VRAM**
 * **64K Context (`65,536` tokens)**: **~19.8 GB VRAM** (Ideal for 128 GB machines)
-* **131K Context (`131,072` tokens)**: **~39.7 GB VRAM**
+* **128K Context (`131,072` tokens)**: **~39.7 GB VRAM**
 
 #### The 64K vs. 128K Context Cliff:
 * **At 64K Context**: Dense 128B weights (76.5 GB) + 64K KV Cache (19.8 GB) = **~96.3 GB**.
@@ -122,7 +122,7 @@ On local hardware, models naturally fall into four practical tiers based on foot
     * *Ideal Use Case:* Multi-file refactoring, security audits, and complex architectural reasoning.
 * **Tier 2: General-Purpose Workhorses (70B+)**
     * *Models:* `deepseek-r1:70b` (42 GB), `qwen3-coder-next:q4_K_M` (51 GB)
-    * *Performance Profile:* 70B+ RL / Q4 / ~25 – 54 tokens/sec
+    * *Performance Profile:* 70B+ RL / Q4 / ~10 – 19 tokens/sec (up to ~54 t/s with speculative decode)
     * *Ideal Use Case:* Core daily engineering, algorithmic logic, test generation, and pair programming.
 * **Tier 3: Fast Interactive Models (26B – 35B)**
     * *Models:* `qwen3.6:35b-mlx` (21 GB), `gemma4:31b-mlx` (18 GB)
