@@ -83,7 +83,7 @@ When optimizing algorithms, use the following guide to choose your battle:
 
 | If you need... | ...choose this | because... |
 | :--- | :--- | :--- |
-| **Maintainability** | Clarity & O(n log n) | Lower cognitive load for the team; easier to fix bugs. |
+| **Maintainability** | Clarity & $O(n \log n)$ | Lower cognitive load for the team; easier to fix bugs. |
 | **P99 Latency** | Memory Discipline | Avoiding allocations reduces GC/allocator jitter. |
 | **Bulk Throughput** | Parallelism | Horizontally scaling work processes more data per second. |
 | **Reproducibility** | Deterministic Seeds | Essential for debugging production failures. |

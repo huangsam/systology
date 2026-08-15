@@ -55,9 +55,7 @@ When you cancel an in-flight query, the lifecycle state of the KV cache determin
 
 On unified memory systems (like Apple Silicon), generation speed during the decode phase is strictly limited by how fast the GPU can read model weights from memory:
 
-```text
-Generation Speed (tokens/sec) = GPU Memory Bandwidth (GB/s) / Active Model Size in VRAM (GB)
-```
+$$\text{Generation Speed (tokens/sec)} = \frac{\text{GPU Memory Bandwidth (GB/s)}}{\text{Active Model Size in VRAM (GB)}}$$
 
 Because every generated token requires a full pass over the active model weights in RAM, larger models produce slower token streams regardless of available compute cores:
 
@@ -76,7 +74,7 @@ Because every generated token requires a full pass over the active model weights
 
 ### macOS Metal GPU Allocation Limits & KV Cache Sizing
 
-Apple Silicon manages Unified Memory using thresholds enforced by the Metal graphics driver and XNU kernel:
+Apple Silicon manages Unified Memory using operating system thresholds enforced by the Metal graphics driver and XNU kernel (where `sysctl iogpu.wired_mem_limit` defaults to 75% of physical RAM for wired GPU allocations):
 
 {{< mermaid >}}
 graph TD
@@ -89,6 +87,9 @@ graph TD
 {{< /mermaid >}}
 
 #### KV Cache Memory Footprint (Q8_0 Quantization):
+
+$$\text{KV Cache Size} = 2 \times N_{\text{layers}} \times D_{\text{model}} \times N_{\text{context}} \times \text{Precision (Bytes)}$$
+
 * **16K Context (`16,384` tokens)**: **~4.9 GB VRAM** (Ideal for 36 GB machines)
 * **32K Context (`32,768` tokens)**: **~9.9 GB VRAM**
 * **64K Context (`65,536` tokens)**: **~19.8 GB VRAM** (Ideal for 128 GB machines)

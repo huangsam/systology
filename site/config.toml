@@ -8,6 +8,13 @@ taxonomies = { tag = "tags", category = "categories" }
 # https://gohugo.io/configuration/markup/
 # https://gohugo.io/quick-reference/syntax-highlighting-styles/
 [markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)'], ['$', '$']]
   [markup.highlight]
     noClasses = false
     noBackground = true

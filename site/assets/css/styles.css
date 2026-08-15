@@ -663,6 +663,29 @@ th {
   font-weight: 600;
 }
 
+/* KaTeX Math */
+.katex-display {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: var(--space-sm) 0;
+  margin: var(--space-md) 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.katex-display > .katex {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .katex-display {
+    font-size: 0.9em;
+    padding: var(--space-xs) 0;
+  }
+}
+
 /* ==============================
    Navigation: Header
    ============================== */

@@ -22,7 +22,11 @@ See the [Notification System]({{< ref "/designs/notification-system" >}}) design
 
 Implement exponential backoff with jitter for transient failures (5xx, timeouts) but never retry non-retryable errors (4xx). Cap retries to prevent infinite loops and differentiate error types to avoid wasted effort.
 
-Use a standard formula: `delay = min(base * 2^attempt + random_jitter, max_delay)`. Start at 1s, cap at 60s, add ±25% jitter to prevent thundering herd when many clients retry simultaneously. Classify errors: 429 (rate limited) → retry with the `Retry-After` header; 500/502/503 → retry with backoff; 400/401/403/404 → do not retry (fix the request).
+Use a standard exponential backoff formula:
+
+$$\text{delay} = \min\left(\text{base} \times 2^{\text{attempt}} + \text{jitter},\ \text{max\_delay}\right)$$
+
+Start at 1s, cap at 60s, and add $\pm 25\%$ jitter to prevent thundering herds when many clients retry simultaneously. Classify errors: 429 (rate limited) → retry with the `Retry-After` header; 500/502/503 → retry with backoff; 400/401/403/404 → do not retry (fix the request).
 
 See [Photohaul]({{< ref "/deep-dives/photohaul" >}}) for an example of handling exponential backoff and retries when dealing with cloud storage API rate limits.
 

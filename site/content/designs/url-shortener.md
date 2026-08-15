@@ -53,9 +53,11 @@ Reads and writes are logically (or physically) separated. The Write Service reli
 ## Data Design
 
 ### Unique Identifier Math
-To store 6 Billion links, we need an alias length. Using Base62 ([a-z, A-Z, 0-9]):
-- 6 character alias = 62 ^ 6 = ~56.8 Billion possible combinations.
-This easily covers the 6 Billion requirement, so a 6 or 7 character string is sufficient.
+To store 6 Billion links over 5 years, we need an appropriate alias length. Using Base62 characters (`[a-z, A-Z, 0-9]`):
+
+$$\text{Capacity} = 62^6 \approx 56.8 \times 10^9 \text{ combinations}$$
+
+A 6-character alias provides $\sim 56.8\text{B}$ unique combinations, which easily satisfies the 6-billion link requirement (a 7-character alias scales to $62^7 \approx 3.52\text{T}$).
 
 ### Storage Schema (NoSQL or SQL)
 | Column | Type | Description |

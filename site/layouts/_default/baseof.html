@@ -37,6 +37,8 @@
   <link rel="stylesheet" href="{{ $styles.RelPermalink }}" {{ if not hugo.IsServer }}integrity="{{ $styles.Data.Integrity }}" crossorigin="anonymous"{{ end }}>
   <link rel="stylesheet" href="{{ $syntax.RelPermalink }}" {{ if not hugo.IsServer }}integrity="{{ $syntax.Data.Integrity }}" crossorigin="anonymous"{{ end }}>
   <link rel="stylesheet" href="{{ $search.RelPermalink }}" {{ if not hugo.IsServer }}integrity="{{ $search.Data.Integrity }}" crossorigin="anonymous"{{ end }}>
+
+  {{ partial "math.html" . }}
 </head>
 
 <body>
