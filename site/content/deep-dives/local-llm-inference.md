@@ -55,13 +55,13 @@ When you cancel an in-flight query, the lifecycle state of the KV cache determin
 
 On unified memory systems (like Apple Silicon), generation speed during the decode phase is strictly limited by how fast the GPU can read model weights from memory:
 
-$$\text{Generation Speed (tokens/sec)} = \frac{\text{GPU Memory Bandwidth (GB/s)}}{\text{Active Model Size in VRAM (GB)}}$$
+$$\text{Generation Speed (tokens/sec)} = \frac{\text{GPU Memory Bandwidth (GB/s)}}{\text{Active Model Size in VRAM (GB)}} \times \eta_{\text{efficiency}}$$
 
-Because every generated token requires a full pass over the active model weights in RAM, larger models produce slower token streams regardless of available compute cores:
+Because every generated token requires a full pass over the active model weights in RAM, larger models produce slower token streams regardless of available compute cores. In practice, real-world inference engines achieve $\eta_{\text{efficiency}} \approx 40\%\text{ to }65\%$ bus utilization due to layer-by-layer Metal kernel dispatch overhead and memory controller latency:
 
 * **Dense Models (120B+):** `mistral-medium-3.5:128b`, `qwen3.5:122b`
     * *Footprint:* 122B – 128B active parameters (~76.5 – 81 GB VRAM)
-    * *Throughput:* ~3.5 – 6.5 tokens/sec (M-Max ~800 GB/s)
+    * *Throughput:* ~3.5 – 6.5 tokens/sec (on ~800 GB/s M-Max)
     * *Best Fit:* Deep architectural refactoring, zero-hallucination audits, complex logic.
 * **Dense / Quantized Models (70B+):** `deepseek-r1:70b`, `qwen3-coder-next:q4_K_M`
     * *Footprint:* 70B+ parameters (~42 – 51 GB VRAM)
