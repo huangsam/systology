@@ -1,5 +1,7 @@
 archive/
 public/
+brainstorm/
+scratch/
 .DS_Store
 *.lock
 __pycache__/
