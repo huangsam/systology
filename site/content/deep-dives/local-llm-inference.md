@@ -112,9 +112,9 @@ $$\text{KV Cache Size} = 2 \times N_{\text{layers}} \times D_{\text{model}} \tim
 
 How a client tool structures its requests has a dramatic impact on prefill delay and cache hits:
 
-* **IDE Workspace Auto-Context (e.g., VS Code / Continue)**
+* **IDE Workspace Auto-Context (e.g. VS Code)**
     * *Turn #1 (~26k tokens):* **~2.5 to 7.0 minutes** prefill on 128B models; saturates the memory bus and risks evicting existing prefix caches.
-* **Targeted Context CLI (e.g., OpenCode)**
+* **Targeted Context CLI (e.g. OpenCode)**
     * *Turn #1 (~500 tokens):* **~6.5 seconds** prefill on 128B models.
     * *Turn #2+ Delta (<50 tokens):* **<200 milliseconds** (`f_sim_best = 1.000`) by reusing cached prefixes via Longest Common Prefix (LCP) matching (`OLLAMA_KEEP_ALIVE=30m`).
 
