@@ -30,9 +30,9 @@ Every Large Language Model request consists of two distinct phases with fundamen
 
 {{< mermaid >}}
 graph LR
-    Prompt[Prompt Input] --> Prefill["Prefill<br>Compute-Bound Ops"]
+    Prompt[Prompt Input] --> Prefill["Prefill<br>Compute Bound"]
     Prefill --> Cache[KV Cache in VRAM]
-    Cache --> Decode["Decode<br>Bandwidth-Bound Sweep"]
+    Cache --> Decode["Decode<br>Bandwidth Bound"]
     Decode --> Token[Next Token]
     Token -.->|Feedback Loop| Decode
 {{< /mermaid >}}
@@ -42,14 +42,14 @@ graph LR
 When you cancel an in-flight query, the lifecycle state of the KV cache determines whether computed work is preserved for your next turn:
 
 #### Canceling During Generation (Text Output)
-* **Execution State**: The full prompt is already ingested and its KV activations are stored in VRAM.
-* **Effect of Cancel**: Token generation halts immediately, but the prompt prefix remains intact in memory.
-* **Subsequent Turn**: Reuses the cached prefix, yielding an immediate **100% cache hit** without re-reading.
+* **Execution State**: Full prompt is ingested; KV activations reside in VRAM.
+* **Effect of Cancel**: Halts token output, leaving the prompt prefix intact in memory.
+* **Subsequent Turn**: Reuses cached prefix for an instant **100% cache hit**.
 
 #### Canceling During Prefill (Prompt Ingestion)
-* **Execution State**: The prompt is actively being ingested in sequential batches (e.g., chunks of 512 tokens).
-* **Effect of Cancel**: Ingestion halts immediately and the runtime rolls back unfinalized blocks (`memory_seq_rm`).
-* **Subsequent Turn**: Loses unfinalized tokens, causing a **cache miss** that re-processes the prompt from scratch.
+* **Execution State**: Prompt is actively ingesting in batched token chunks.
+* **Effect of Cancel**: Ingestion halts; runtime rolls back unfinalized blocks (`memory_seq_rm`).
+* **Subsequent Turn**: Incomplete prefix causes a **cache miss**, re-ingesting from scratch.
 
 ### Model Architecture & Memory Bandwidth on Unified Memory
 
