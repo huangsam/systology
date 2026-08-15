@@ -649,6 +649,7 @@ table {
   display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 th,
@@ -656,6 +657,13 @@ td {
   padding: var(--space-sm) 0.75rem;
   border-bottom: 1px solid var(--border);
   text-align: left;
+  vertical-align: top;
+  min-width: 160px;
+}
+
+th:first-child,
+td:first-child {
+  min-width: 100px;
 }
 
 th {

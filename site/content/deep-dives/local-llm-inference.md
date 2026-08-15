@@ -23,10 +23,10 @@ date: "2026-08-14T08:18:07-07:00"
 
 Every Large Language Model request consists of two distinct phases with fundamentally different hardware bottlenecks:
 
-| Phase | Bottleneck | Core Operation |
+| Phase | Primary Bottleneck | Core Operation |
 |---|---|---|
-| **Prefill** | **Compute (FLOPs)** | Ingests and processes the input prompt in parallel to populate the working memory (KV cache). |
-| **Decode** | **Memory Bandwidth** | Generates output tokens one by one, sweeping through the entire model and cache for every new token. |
+| **Prefill** | Compute (FLOPs) | Parallel prompt ingestion & KV cache initialization |
+| **Decode** | Memory Bandwidth | Sequential token generation via active weight sweeps |
 
 {{< mermaid >}}
 graph LR
@@ -123,12 +123,12 @@ How a client tool structures its requests has a dramatic impact on prefill delay
 
 | Feature | Enterprise Datacenter | Local Workstation (M5 Max) |
 |---|---|---|
-| **Compute Fabric** | Thousands of H100/H200/Blackwell GPUs | Single SoC Apple Silicon M-Max/Ultra |
-| **Interconnects** | NVLink 900 GB/s per GPU, NVL72 130 TB/s Backplane | On-die Unified Memory Bus (~800 GB/s) |
-| **Context Capacity** | 500,000 to 2,000,000+ Tokens | 32,768 to 65,536 Tokens (VRAM-Locked) |
-| **Mitigation Tech** | Disaggregated Prefill/Decode (RDMA), RadixAttention | In-Memory LCP Prefix Cache, Explicit Context Clients |
-| **Best-Fit Workloads** | Multi-service incident tracing, massive log correlation, 1M+ token repo ingests. | Zero-cost daily coding, proprietary IP development, offline operation, instant sub-second local iterations. |
-| **Cost & Privacy** | Usage-based API pricing, third-party network egress. | **$0 / month operating cost**, 100% private and air-gapped. |
+| **Compute Fabric** | Thousands of H100 / Blackwell GPUs | Apple Silicon SoC (M-Max / Ultra) |
+| **Interconnects** | NVLink 900 GB/s / NVL72 Backplane | Unified Memory Bus (~800 GB/s) |
+| **Context Capacity** | 500K – 2M+ Tokens (Distributed VRAM) | 32K – 64K Tokens (Wired VRAM-Locked) |
+| **Mitigation Tech** | Disaggregated Prefill/Decode, RadixAttention | In-Memory LCP Prefix Cache, Targeted CLI |
+| **Best-Fit Workloads** | Multi-service tracing, repo-wide ingests | Zero-cost daily coding, private IP, fast iteration |
+| **Cost & Privacy** | Usage-based API pricing, cloud network egress | **$0 / month operating cost**, 100% air-gapped |
 
 ## Risks & Mitigations
 
