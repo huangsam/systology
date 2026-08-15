@@ -59,18 +59,23 @@ $$\text{Generation Speed (tokens/sec)} = \frac{\text{GPU Memory Bandwidth (GB/s)
 
 Because every generated token requires a full pass over the active model weights in RAM, larger models produce slower token streams regardless of available compute cores. In practice, real-world inference engines achieve $\eta_{\text{efficiency}} \approx 40\%\text{ to }65\%$ bus utilization due to layer-by-layer Metal kernel dispatch overhead and memory controller latency:
 
-* **Dense Models (120B+):** `mistral-medium-3.5:128b`, `qwen3.5:122b`
+* **Dense Heavyweight Models (120B+):** `mistral-medium-3.5:128b`, `qwen3.5:122b`
     * *Footprint:* 122B – 128B active parameters (~76.5 – 81 GB VRAM)
     * *Throughput:* ~3.5 – 6.5 tokens/sec (on ~800 GB/s M-Max)
-    * *Best Fit:* Deep architectural refactoring, zero-hallucination audits, complex logic.
-* **Dense / Quantized Models (70B+):** `deepseek-r1:70b`, `qwen3-coder-next:q4_K_M`
+    * *Best Fit:* Architectural refactoring and deep codebase audits.
+* **Dense / Quantized Workhorses (70B+):** `deepseek-r1:70b`, `qwen3-coder-next:q4_K_M`
     * *Footprint:* 70B+ parameters (~42 – 51 GB VRAM)
     * *Throughput:* ~10 – 19 tokens/sec (up to ~25 – 54 tokens/sec with speculative decoding)
-    * *Best Fit:* Balanced sweet spot of high generation speed, reasoning depth, and memory headroom.
-* **Optimized MLX / MoE Models:** `qwen3.6:35b-mlx`, `gemma4:31b-mlx`
+    * *Best Fit:* Daily engineering, algorithmic logic, and pair programming.
+* **Fast Interactive Models (26B – 35B):** `qwen3.6:35b-mlx`, `gemma4:31b-mlx`
     * *Footprint:* Parameter-efficient MLX runtime (~18 – 21 GB VRAM)
     * *Throughput:* ~60 – 90+ tokens/sec
-    * *Best Fit:* High-throughput interactive pair programming, fast shell completions, responsive chat.
+    * *Best Fit:* Inline completions and CLI loops on 36GB–48GB MacBooks.
+* **Lightweight Utility Models (Sub-14B):** `gemma4:12b-mlx`, `qwen3.5:9b-mlx`
+    * *Footprint:* Sub-14B parameter models (<10 GB VRAM)
+    * *Throughput:* ~80 – 120+ tokens/sec (low power draw)
+    * *Best Fit:* Terminal shell helpers and commit message drafting.
+
 
 ### macOS Metal GPU Allocation Limits & KV Cache Sizing
 
@@ -113,26 +118,6 @@ How a client tool structures its requests has a dramatic impact on prefill delay
     * *Turn #1 (~500 tokens):* **~6.5 seconds** prefill on 128B models.
     * *Turn #2+ Delta (<50 tokens):* **<200 milliseconds** (`f_sim_best = 1.000`) by reusing cached prefixes via Longest Common Prefix (LCP) matching (`OLLAMA_KEEP_ALIVE=30m`).
 
-### Local Model Hardware Tiers
-
-On local hardware, models naturally fall into four practical tiers based on footprint and response speed:
-
-* **Tier 1: Heavyweight Reasoning (120B+)**
-    * *Models:* `mistral-medium-3.5:128b` (80 GB), `qwen3.5:122b` (81 GB)
-    * *Performance Profile:* Dense / ~3.5 – 6.5 tokens/sec / 64K VRAM
-    * *Ideal Use Case:* Multi-file refactoring, security audits, and complex architectural reasoning.
-* **Tier 2: General-Purpose Workhorses (70B+)**
-    * *Models:* `deepseek-r1:70b` (42 GB), `qwen3-coder-next:q4_K_M` (51 GB)
-    * *Performance Profile:* 70B+ RL / Q4 / ~10 – 19 tokens/sec (up to ~54 t/s with speculative decode)
-    * *Ideal Use Case:* Core daily engineering, algorithmic logic, test generation, and pair programming.
-* **Tier 3: Fast Interactive Models (26B – 35B)**
-    * *Models:* `qwen3.6:35b-mlx` (21 GB), `gemma4:31b-mlx` (18 GB)
-    * *Performance Profile:* MLX / ~60 – 90+ tokens/sec / ~18 – 21 GB VRAM
-    * *Ideal Use Case:* Rapid inline completions, CLI interactive loops, and sweet spot for 36GB–48GB MacBooks.
-* **Tier 4: Lightweight Utility Models (Sub-14B)**
-    * *Models:* `gemma4:12b-mlx` (7.7 GB), `qwen3.5:9b-mlx` (8.9 GB)
-    * *Performance Profile:* <10 GB VRAM / ~80 – 120+ tokens/sec / low power draw
-    * *Ideal Use Case:* Quick terminal command lookups and commit message drafting on base laptops.
 
 ## Comparison to Industry Standards
 
