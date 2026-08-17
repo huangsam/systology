@@ -1,14 +1,26 @@
-.PHONY: vendor build build-force clean serve tidy tags insights check check-sync
+.PHONY: vendor vendor-mermaid vendor-katex build build-force clean serve tidy tags insights check check-sync
 
 # https://www.jsdelivr.com/package/npm/mermaid
-VERSION ?= 11.16.0
-MERMAID_URL = https://cdn.jsdelivr.net/npm/mermaid@$(VERSION)/dist/mermaid.min.js
-VENDOR = site/assets/js/mermaid.min.js
+MERMAID_VERSION ?= 11.16.0
+MERMAID_URL = https://cdn.jsdelivr.net/npm/mermaid@$(MERMAID_VERSION)/dist/mermaid.min.js
+MERMAID_VENDOR = site/assets/js/mermaid.min.js
 
-vendor:
-	@mkdir -p $(dir $(VENDOR))
-	@curl -fsSL "$(MERMAID_URL)" -o "$(VENDOR)"
-	@echo "Vendored mermaid $(VERSION) -> $(VENDOR)"
+# https://www.jsdelivr.com/package/npm/katex
+KATEX_VERSION ?= 0.16.21
+KATEX_URL = https://registry.npmjs.org/katex/-/katex-$(KATEX_VERSION).tgz
+KATEX_VENDOR_DIR = site/static/vendor/katex
+
+vendor: vendor-mermaid vendor-katex
+
+vendor-mermaid:
+	@mkdir -p $(dir $(MERMAID_VENDOR))
+	@curl -fsSL "$(MERMAID_URL)" -o "$(MERMAID_VENDOR)"
+	@echo "Vendored mermaid $(MERMAID_VERSION) -> $(MERMAID_VENDOR)"
+
+vendor-katex:
+	@mkdir -p $(KATEX_VENDOR_DIR)
+	@curl -fsSL "$(KATEX_URL)" | tar -xzf - --strip-components=2 -C "$(KATEX_VENDOR_DIR)" package/dist
+	@echo "Vendored katex $(KATEX_VERSION) -> $(KATEX_VENDOR_DIR)"
 
 build:
 	@if lsof -i :1313 >/dev/null 2>&1; then \
