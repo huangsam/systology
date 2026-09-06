@@ -221,7 +221,10 @@ dialog.site-search-modal::backdrop {
 }
 
 .site-search-cta-icon {
-  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  transition: var(--transition);
 }
 
 .site-search-cta-text {
@@ -230,6 +233,10 @@ dialog.site-search-modal::backdrop {
 }
 
 .site-search-cta:hover {
+  color: var(--accent);
+}
+
+.site-search-cta:hover .site-search-cta-icon {
   color: var(--accent);
 }
 
