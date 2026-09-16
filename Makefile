@@ -1,7 +1,7 @@
 .PHONY: vendor vendor-mermaid vendor-katex build build-force clean serve tidy tags insights check check-sync
 
 # https://www.jsdelivr.com/package/npm/mermaid
-MERMAID_VERSION ?= 11.16.0
+MERMAID_VERSION ?= 12.0.0
 MERMAID_URL = https://cdn.jsdelivr.net/npm/mermaid@$(MERMAID_VERSION)/dist/mermaid.min.js
 MERMAID_VENDOR = site/assets/js/mermaid.min.js
 

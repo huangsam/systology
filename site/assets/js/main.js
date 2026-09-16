@@ -1,27 +1,34 @@
 document.addEventListener('DOMContentLoaded', function () {
   /* Mermaid */
-  if (window.mermaid) {
+  async function renderMermaid() {
+    if (!window.mermaid) return;
+    var diagrams = document.querySelectorAll('.mermaid');
+    if (!diagrams.length) return;
+
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     mermaid.initialize({
-      startOnLoad: true,
-      theme: 'base',
+      startOnLoad: false,
       securityLevel: 'loose',
-      themeVariables: {
-        primaryColor: '#f3f4f6',
-        primaryTextColor: '#0f1724',
-        primaryBorderColor: '#2563eb',
-        lineColor: '#2563eb',
-        secondBkgColor: '#ffffff',
-        tertiaryTextColor: '#6b7280',
-        tertiaryColor: '#e6e9ee',
-        noteBkgColor: '#f0f9ff',
-        noteBorderColor: '#2563eb',
-        fontFamily: 'Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      },
-      flowchart: { useMaxWidth: true, curve: 'linear' },
-      sequence: { useMaxWidth: true },
-      gantt: { useWidth: undefined },
+      theme: isDark ? 'redux-dark-color' : 'redux-color',
     });
+
+    for (var i = 0; i < diagrams.length; i++) {
+      var el = diagrams[i];
+      if (!el.dataset.src) {
+        var rawAttr = el.getAttribute('data-mermaid-src');
+        el.dataset.src = rawAttr ? decodeURIComponent(rawAttr).trim() : el.textContent.trim();
+      }
+      try {
+        var id = 'mermaid-svg-' + i + '-' + Date.now();
+        var result = await mermaid.render(id, el.dataset.src);
+        el.innerHTML = result.svg;
+      } catch (err) {
+        console.error('Mermaid render error:', err);
+      }
+    }
   }
+
+  renderMermaid();
 
   /* Dark-mode toggle */
   var toggle = document.getElementById('theme-toggle');
@@ -32,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
       try {
         localStorage.setItem('theme', dark ? 'light' : 'dark');
       } catch (e) {}
+      renderMermaid();
     });
   }
 });
