@@ -116,7 +116,7 @@ def handle_check_sync(args, base_dir, content_dir, site_dir, archetypes_dir):
         config_file = base_dir / ".sync_paths.json"
         if config_file.is_file():
             try:
-                with open(config_file, "r") as f:
+                with open(config_file) as f:
                     config = json.load(f)
                 if isinstance(config, dict) and "search_paths" in config:
                     search_paths = [Path(p) for p in config["search_paths"]]

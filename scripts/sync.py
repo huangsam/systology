@@ -230,7 +230,7 @@ def run_check_sync(content_dir: Path, search_paths: list[Path], print_json: bool
     # Print human-readable table
     print("\nDeep-Dive Repository Sync Status:")
     print(sep_line)
-    header_str = " | ".join(f"{h:<{w}}" for h, w in zip(headers, col_widths))
+    header_str = " | ".join(f"{h:<{w}}" for h, w in zip(headers, col_widths, strict=True))
     print(header_str)
     print(sep_line)
 
