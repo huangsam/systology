@@ -6,7 +6,7 @@ MERMAID_URL = https://cdn.jsdelivr.net/npm/mermaid@$(MERMAID_VERSION)/dist/merma
 MERMAID_VENDOR = site/assets/js/mermaid.min.js
 
 # https://www.jsdelivr.com/package/npm/katex
-KATEX_VERSION ?= 0.16.21
+KATEX_VERSION ?= 0.18.7
 KATEX_URL = https://registry.npmjs.org/katex/-/katex-$(KATEX_VERSION).tgz
 KATEX_VENDOR_DIR = site/static/vendor/katex
 
