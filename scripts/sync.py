@@ -102,6 +102,33 @@ def get_repo_last_commit(repo_name: str, local_path: Path | None) -> str | None:
 
     # Fallback to GitHub CLI if available and repo name is full (owner/repo)
     if "/" in repo_name:
+        # First attempt: query recent commits via gh api and filter out bots and dependency churn
+        gh_commits_raw = run_cmd(["gh", "api", f"repos/{repo_name}/commits?per_page=100"])
+        if gh_commits_raw:
+            try:
+                commits = json.loads(gh_commits_raw)
+                ignore_pattern = re.compile(r"\b(dependabot|bump|dependency|dependencies|deps)\b", re.IGNORECASE)
+                for c in commits:
+                    author_login = ((c.get("author") or {}).get("login") or "").lower()
+                    if author_login.endswith("[bot]") or author_login in (
+                        "dependabot",
+                        "renovate",
+                        "github-actions",
+                    ):
+                        continue
+                    author_name = (((c.get("commit") or {}).get("author") or {}).get("name") or "").lower()
+                    if author_name.endswith("[bot]") or "dependabot" in author_name:
+                        continue
+                    msg = ((c.get("commit") or {}).get("message") or "").split("\n")[0].strip()
+                    if ignore_pattern.search(msg):
+                        continue
+                    date = ((c.get("commit") or {}).get("author") or {}).get("date")
+                    if date:
+                        return date
+            except (json.JSONDecodeError, KeyError, TypeError):
+                pass
+
+        # Fallback to repo pushedAt if commit listing fails or yields no non-bot commits
         gh_data = run_cmd(["gh", "repo", "view", repo_name, "--json", "pushedAt"])
         if gh_data:
             try:
