@@ -19,8 +19,17 @@ def run_cmd(args: list[str], cwd: Path | None = None) -> str | None:
 
 
 def get_git_timestamp(file_path: Path, repo_root: Path) -> str | None:
-    """Get the last git commit ISO 8601 timestamp for a file, falling back to mtime."""
+    """Get the last git commit ISO 8601 timestamp for a file, falling back to mtime if modified or untracked."""
     rel_path = file_path.relative_to(repo_root)
+    # If the file has uncommitted changes, prioritize its file modification time
+    status = run_cmd(["git", "status", "--porcelain", "--", str(rel_path)], cwd=repo_root)
+    if status:
+        try:
+            mtime = file_path.stat().st_mtime
+            return datetime.fromtimestamp(mtime).astimezone().isoformat()
+        except OSError:
+            pass
+
     ts = run_cmd(["git", "log", "-1", "--format=%cI", "--", str(rel_path)], cwd=repo_root)
     if ts:
         return ts
