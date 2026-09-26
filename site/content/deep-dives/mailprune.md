@@ -18,7 +18,7 @@ date: "2026-02-16T10:22:20-08:00"
 
 ## The Local Implementation
 
-- **Execution Modes:** Mailprune can run either as a local Python CLI (`uv run mailprune`) or as a Model Context Protocol (MCP) server (`uv run mailprune-mcp`), built using `FastMCP` to let AI assistants audit and clean inboxes directly.
+- **Execution Modes:** Mailprune can run either as a local Python CLI (`uv run mailprune`) or as a Model Context Protocol (MCP) server (`uv run mailprune-mcp`), built using `MCPServer` (`mcp>=2.0.0`) to let AI assistants audit and clean inboxes directly.
 - **MCP Server Capabilities:**
   - **Resources:** Exposes `mailprune://guidance/cleanup-strategy` (interpret sender clusters) and `mailprune://guidance/noise-metrics` (explaining the "Ignorance Score").
   - **Tools:** Exposes `audit` (fetch and cache Gmail message metadata), `report` (generate cleanup summaries), `patterns` (NLP-driven sender intent and entity extraction from snippets), `engagement` (analyze sender open rates by tiers), and `cluster` (K-Means behavioral clustering).
