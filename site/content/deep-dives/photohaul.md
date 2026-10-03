@@ -7,7 +7,7 @@ categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/photohaul"
 draft: false
-date: "2026-02-16T10:22:20-08:00"
+date: "2026-10-03T08:21:00-07:00"
 ---
 
 ## Context & Motivation
@@ -22,7 +22,7 @@ date: "2026-02-16T10:22:20-08:00"
 - **Customizable Folder Layout DSL:** The organization hierarchy is defined via a `folder.structure` DSL (e.g. `yearTaken|yearModified/make|Unknown`). It extracts EXIF attributes (`yearTaken`, `make`, `model`, `focalLength`, `iso`) and supports **fallback chains** (`|`) to handle missing headers gracefully, defaulting to a configurable fallback folder (`folder.fallback`).
 - **XMP Sidecar & Keyword Resolution:** Beyond EXIF headers, Photohaul resolves `tags` by scanning for external XMP sidecar files (`[name].xmp` or `[name].[ext].xmp`) or embedded IPTC/XMP keywords, allowing photos to be organized into subject-based folders. XML parsing incorporates explicit XXE (XML External Entity) protection.
 - **Concurrent Migration Engine:** Multi-threaded migration (`migration.threads`) allows parallel file transfers across local disks and cloud endpoints. The worker pool is safely integrated with dry-runs (migration manifest audit) and delta tracking (`.photohaul_state.json`), ensuring atomic, thread-safe updates to the resume state.
-- **Runtime Performance & ZGC:** The JVM runtime configuration leverages ZGC (Generational Z Garbage Collector) for low-latency heap management during large-scale directory traversals and multi-gigabyte photo batch processing.
+- **Runtime Performance & JVM Configuration:** While earlier releases bundled explicit JVM arguments in the application plugin, Photohaul now leaves JVM ergonomics clean and uncoupled from build files. Operators can selectively configure Generational ZGC (`-XX:+UseZGC -XX:+ZGenerational`) and heap bounds (`-Xmx4g`) via standard JVM environment variables or runtime execution options when dealing with multi-gigabyte photo batches.
 - **Bottleneck:** Cloud API rate limits (HTTP 429) when running high concurrency against Google Drive or Dropbox; IO-bound traversal and hashing overhead for multi-terabyte binary datasets.
 
 ## Comparison to Industry Standards

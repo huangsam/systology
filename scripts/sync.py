@@ -77,6 +77,7 @@ def get_repo_last_commit(repo_name: str, local_path: Path | None) -> str | None:
                 "git",
                 "log",
                 "-1",
+                "-E",
                 "--no-merges",
                 "-i",
                 "--invert-grep",
@@ -85,6 +86,7 @@ def get_repo_last_commit(repo_name: str, local_path: Path | None) -> str | None:
                 "--grep=dependency",
                 "--grep=dependencies",
                 "--grep=deps",
+                "--grep=update .* to [0-9v]",
                 "--format=%cI",
                 "--",
                 ".",
@@ -116,7 +118,10 @@ def get_repo_last_commit(repo_name: str, local_path: Path | None) -> str | None:
         if gh_commits_raw:
             try:
                 commits = json.loads(gh_commits_raw)
-                ignore_pattern = re.compile(r"\b(dependabot|bump|dependency|dependencies|deps)\b", re.IGNORECASE)
+                ignore_pattern = re.compile(
+                    r"\b(dependabot|bump|dependency|dependencies|deps)\b|^update\s+.+\s+to\s+[0-9v]",
+                    re.IGNORECASE,
+                )
                 for c in commits:
                     author_login = ((c.get("author") or {}).get("login") or "").lower()
                     if author_login.endswith("[bot]") or author_login in (

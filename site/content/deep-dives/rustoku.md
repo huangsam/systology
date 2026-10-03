@@ -8,7 +8,7 @@ links:
   github: "https://github.com/huangsam/rustoku"
   demo: "https://sambyte.net/rustoku/"
 draft: false
-date: "2026-02-16T10:22:20-08:00"
+date: "2026-10-03T08:21:00-07:00"
 ---
 
 ## Context & Motivation
@@ -25,8 +25,8 @@ date: "2026-02-16T10:22:20-08:00"
 - **Trace generation:** Each solve step emits a structured record: `{ cell: (row, col), candidates: [digits], chosen: digit, technique: "Swordfish" | "Naked Pair" | ... }`. These traces power the interactive web demo, showing users exactly how the engine derived a solution without brute force.
 - **Generator logic:** The generator produces puzzles by filling a solved grid with a seeded RNG, then iteratively removing clues while verifying uniqueness via the solver in `solve_all` mode (utilizing **Rayon** for parallel search). Puzzles can be generated with specific symmetric layout constraints (e.g., rotational, diagonal, or bilateral symmetry) using a flexible builder pattern.
 - **Web Demo Enhancements:** The interactive web demo received major UX upgrades across the v0.15 release cycle. A **visual step trace** mode (`demo/src/trace.ts`) animates each solver step directly on the grid—highlighting the current cell, candidate eliminations, and the applied technique—giving users a frame-by-frame view of the solve path. Custom typography and refined styling were applied across UI buttons and grid components. Undo/redo history is fully validated: duplicate board states are rejected on push and guarded against off-by-one hydration bugs, with accessibility supported by proper modal ARIA roles and focus trapping.
-- **Keyless OIDC Multi-Registry Publishing:** The release pipeline was modernized to use keyless GitHub Actions OIDC Trusted Publishing across crates.io (`crates-release.yml`), PyPI (`py-release.yml`), and npm (`wasm-release.yml`). Tag pushes automatically build, test, and publish packages (including cross-platform precompiled Python wheels for Linux, macOS, and Windows) without storing long-lived static API tokens.
-- **Documentation & Doctest Rigor:** Achieved 100% rustdoc API coverage (111/111 public items) across `rustoku-lib`, backed by 25 runnable, CI-verified `# Examples` doctests exercising solver execution, puzzle generation, formatting, and binding paths.
+- **Keyless OIDC Multi-Registry Publishing:** The release pipeline (refined in v0.15.2) uses keyless GitHub Actions OIDC Trusted Publishing across crates.io (`crates-release.yml`), PyPI (`py-release.yml`), and npm (`wasm-release.yml`). Tag pushes automatically build, test, and publish packages (including cross-platform precompiled Python wheels for Linux, macOS, and Windows) without storing long-lived static API tokens.
+- **Documentation & Doctest Rigor:** Achieved 100% rustdoc API coverage (111/111 public items) across `rustoku-lib`, backed by 25 runnable, CI-verified `# Examples` doctests exercising solver execution, puzzle generation, formatting, and binding paths alongside strict clippy warning enforcement.
 - **Workspace Build Configuration:** A `.cargo/config.toml` standardizes cross-crate build targets and linker flags for the entire Cargo workspace, while demo build verification is integrated directly into main CI workflows.
 
 ## Comparison to Industry Standards
