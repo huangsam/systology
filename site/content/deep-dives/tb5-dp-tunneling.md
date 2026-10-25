@@ -1,5 +1,5 @@
 ---
-title: "Why My Thunderbolt 5 Dock's HDMI Output Went Black"
+title: "Why My Dock HDMI Went Black"
 description: "A hands-on investigation of a display problem with one Mac, dock, and monitor."
 summary: "The dock's HDMI output went black on one Mac. Testing pointed to an interaction between macOS 26, the monitor's HDMI Deep Color setting, and the dock's HDMI converter; direct DisplayPort provided a workaround."
 tags: [bandwidth, encoding, monitoring, protocols, systems-programming]
