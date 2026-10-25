@@ -8,112 +8,89 @@ draft: false
 date: "2026-10-24T23:30:00-07:00"
 ---
 
+
 ## Context & Motivation
 
-**Context:** Modern single-cable workstation topologies rely on **Thunderbolt 5 (USB4 v2)** to multiplex PCIe, SuperSpeed USB, and high-bandwidth DisplayPort 2.1 streams over an 80 Gb/s (up to 120 Gb/s asymmetric) physical link. Rather than dedicating fixed physical wires on the USB-C connector to video (as in traditional DisplayPort Alt Mode), Thunderbolt 5 encapsulates DisplayPort packets inside time-slotted **Thunderbolt DisplayPort Tunnels** managed by host-side `DP-In` adapters and dock-side `DP-Out` adapters. Inside multi-port docks, these tunneled DisplayPort streams are either routed directly to downstream Thunderbolt USB-C receptacles or passed through active **DisplayPort-to-HDMI branch protocol converters** (such as Synaptics `VMMxxxx` silicon) to drive legacy HDMI 2.0/2.1 monitors.
+**Context:** **Thunderbolt 5 (USB4 v2)** multiplexes PCIe, USB and DisplayPort 2.1 over an 80 Gb/s link. Video is not carried on dedicated wires as in DP Alt Mode. It travels in **DisplayPort tunnels** between a host `DP-In` adapter and a dock `DP-Out` adapter. Multi-port docks either hand the stream to a downstream USB-C port or pass it through an active DP-to-HDMI converter (here a Synaptics `SYNAq`).
 
-**Motivation:** When connecting a 4K @ 60Hz HDR monitor (**LG HDR 4K**) via HDMI to an **Anker Prime Thunderbolt 5 Docking Station** (`Intel JHL9580` Barlow Ridge controller), the display worked out of the box on **M1 Pro** and **M3 Max** MacBook Pros—and worked when plugged directly into the built-in HDMI port of an **M5 Max** MacBook Pro—yet consistently produced a **black screen** when connected through the dock's HDMI port on the **M5 Max**. Standard OS-level display preferences (`System Settings → Displays`) reported the monitor as active, online, and running at `2560 x 1440 @ 60.00Hz` (HiDPI scaled via a `5120 x 2880` backing framebuffer), masking a silent kernel-level split-brain between the **Thunderbolt 5 tunnel allocation layer** and the **Display Co-Processor (DCP) data plane**.
+**Motivation:** An **LG HDR 4K** monitor on the HDMI port of an **Anker Prime TB5 dock** (Intel `JHL9580`) works from an **M1 Pro** and an **M3 Max**. It also works on the built-in HDMI port of an **M5 Max**. Through the dock's HDMI port on the M5 Max, it stays black, even though System Settings reports the display as active at 2560×1440 @ 60Hz.
 
 ## The Local Implementation
 
 > [!NOTE]
-> **Test Environment:** All hardware register captures and live kernel state transitions were collected on an **Apple M5 Max (`T6050`, 40-core GPU)** running **macOS 26.x (`Darwin Kernel 25.6.0`)**, connected over an 80 Gb/s Thunderbolt 5 link to an **Anker Prime Docking Station (14-in-1, 8K, Thunderbolt 5)** (`VID: 0x291A`, `PID: 0x83B5`, Intel `JHL9580` FW `64.1`, MCU `1.11.0`) driving an **LG HDR 4K** display (`0x1E6D:0x7706` on HDMI; `0x1E6D:0x7707` on DisplayPort).
+> **Test environment:** Apple M5 Max (`T6050`) on macOS 26.x (Darwin 25.6.0), 80 Gb/s TB5 link to the Anker Prime dock (`JHL9580` FW 64.1). All findings come from this single host/dock/monitor combination, via `ioreg -lw0`.
 
-### Three Signal Paths Across Two Silicon Generations
+### Three Signal Paths
 
-To isolate why only the `{M5 Max + Anker TB5 Dock + HDMI Port}` tuple failed at 4K @ 60Hz, we traced all three physical topologies in the IOKit registry (`ioreg -lw0`):
-
-| Signal Path | Host Router / Link Mode | Tunnel / Link Allocation | Downstream Silicon | 4K @ 60Hz Result |
-|---|---|---|---|---|
-| **Built-in HDMI (`Port-HDMI@1`)** | Direct SoC (`AppleATCDPPort`) | 4 Lanes × 8.1 Gbps (HBR3) = **25.92 Gbps** | Built-in `pHDMIg` (`00-10-FA`) | **Pass** (12 bpc, 594 MHz) |
-| **Dock HDMI (`IOThunderboltPort@C`)** | `IOThunderboltSwitchType7` (80 Gb/s) | **2 Lanes** × 5.4 Gbps (HBR2) = **8.64 Gbps** | Synaptics `SYNAq` (`90-CC-24`) | **Fail** (Black Screen / `HPD_IRQ` Loop) |
-| **Dock Rear USB-C (`IOThunderboltPort@B`)** | `IOThunderboltSwitchType7` (80 Gb/s) | Direct DP Tunnel → `Dp1.2` Sink | Native LG DP Sink (`00-E0-4C`) | **Pass** (10 bpc, 533.25 MHz CVT-RB) |
+| Signal Path | Tunnel / Link Allocation | Downstream Silicon | 4K @ 60Hz |
+|---|---|---|---|
+| **Built-in HDMI** | Direct SoC link, 4 lanes × HBR3 (25.92 Gbps) | Built-in `pHDMIg` | **Pass** |
+| **Dock HDMI** (`Port@C`) | **2 lanes** × HBR2 (8.64 Gbps) | Synaptics `SYNAq` | **Fail** (black, `HPD_IRQ` loop) |
+| **Dock USB-C** (`Port@B`) | Direct DP tunnel | Native monitor DP sink | **Pass** (533 MHz CVT-RB) |
 
 {{< mermaid >}}
 graph LR
-    DCP["M5 Max DCP<br>Reports 4 Lanes"] --> DPIn["TB5 DP-In Adapter<br>Masks to 2 Lanes (8.64 Gbps)"]
-    DPIn -->|Dock Port C| SYNA["Synaptics SYNAq<br>Needs 14.93 Gbps"]
-    SYNA -.->|HPD_IRQ Loop| HDMI["LG 4K HDMI<br>594 MHz (Black Screen)"]
-    DPIn -->|Dock Port B| DP["LG 4K DisplayPort<br>533.25 MHz (Pass)"]
+    DCP["M5 Max DCP<br>Believes 4 lanes"] --> DPIn["TB5 DP-In Adapter<br>Tunnel: 2 lanes (8.64 Gbps)"]
+    DPIn -->|Port C| SYNA["Synaptics SYNAq<br>Needs more than 8.64 Gbps"]
+    SYNA -.->|HPD_IRQ loop| HDMI["LG 4K HDMI<br>594 MHz (black screen)"]
+    DPIn -->|Port B| DP["LG 4K DisplayPort<br>533 MHz (pass)"]
 {{< /mermaid >}}
 
-### Control Plane vs. Data Plane Split-Brain in `AppleThunderboltDPInAdapterOS2`
+### Likely Cause: Tunnel and Display Engine Disagree
 
-When the M5 Max connects to the Anker dock, the host router (`IOThunderboltSwitchType7`) and dock router (`IOThunderboltSwitchIntelJHL9580`) negotiate an **80 Gb/s Thunderbolt 5 (USB4 v2)** link with **DisplayPort Bandwidth Allocation Mode (`DPI BWAM Support = Yes`)** enabled.
-
-Inspecting the raw 32-bit DisplayPort Adapter Configuration Space capability registers (`DP_LOCAL_CAP`, `DP_REMOTE_CAP`, and `DP_COMMON_CAP`) on `AppleThunderboltDPInAdapterOS2` and `AppleThunderboltDPOutAdapterOS2` exposed the exact failure mechanism:
+The link negotiates with **DisplayPort Bandwidth Allocation Mode** (`DPI BWAM Support = Yes`). Both ends advertise 4 lanes (`0xc7` in byte 1 of the DP capability words). The cached *common* capability is masked down to `0x47`, which is 2 lanes:
 
 ```text
-+-o AppleThunderboltDPInAdapterOS2  <class AppleThunderboltDPInAdapterOS2, id 0x100000d13>
-    {
-      "Reserved Client" = "<0:0x00000001:0x0000000c>"
-      "DP State" = 2
-      "Cached Local DP Capabilities"  = <15c72335>
-      "Remote DP Capabilities"        = <05c7a335>
-      "Cached Common DP Capabilities" = <85472235>
-      "DPI BWAM Support" = Yes
-    }
-
-+-o AppleThunderboltDPOutAdapterOS2  <class AppleThunderboltDPOutAdapterOS2, id 0x10001b59a>
-    {
-      "DP State" = 2
-      "HPD State" = Yes
-      "Cached Local DP Capabilities" = <05c7a335>
-      "Remote DP Capabilities"       = <15c72335>
-      "Established DP Link Rate"     = 2
-      "Established DP Lane Count"    = 2
-      "Established DP Bandwidth"     = 160
-      "Cached Estimated Bandwidth"   = 1197
-      "DPI BWAM Support"             = Yes
-    }
+AppleThunderboltDPInAdapterOS2
+  Cached Local DP Capabilities  = <15c72335>
+  Remote DP Capabilities        = <05c7a335>
+  Cached Common DP Capabilities = <85472235>   # byte 1: c7 -> 47
+AppleThunderboltDPOutAdapterOS2
+  Established DP Link Rate = 2   (HBR2)
+  Established DP Lane Count = 2
 ```
 
-1. **Capability Bitmask Truncation (`0xc7` → `0x47`):**
-   * Both the M5 Max (`<15 c7 23 35>`) and the Anker dock (`<05 c7 a3 35>`) advertise `0xc7` in byte 1 (indicating support for **4 DisplayPort lanes**).
-   * However, when `AppleThunderboltDPInAdapterOS2` computes the intersection under `DPI BWAM`, `Cached Common DP Capabilities` masks byte 1 down to `0x47` (**2 lanes**), provisioning a tunnel with **`Established DP Lane Count = 2`** and **`Established DP Link Rate = 2` (HBR2 = 5.4 Gbps/lane)**.
-2. **Tunnel Payload Ceiling:**
-   * Using standard DisplayPort 8b/10b encoding ($\eta = 0.80$), a 2-lane HBR2 tunnel has a hard payload ceiling of:
+A 2-lane HBR2 tunnel carries at most $2 \times 5.4 \times 0.8 = 8.64$ Gbps after 8b/10b coding. Meanwhile the higher-level `IOPortTransportStateDisplayPort` object still reports `LaneCount = 4` (17.28 Gbps) to the display co-processor. The co-processor therefore picks uncompressed CEA-861 3840×2160 @ 60Hz (594 MHz pixel clock, `DPTimingModeId = 77`) with no DSC:
 
-$$\text{Max Tunnel Payload} = 2\text{ lanes} \times 5.4\text{ Gbps/lane} \times 0.80 = 8.64\text{ Gbps}$$
+$$594\text{ MHz} \times 24\text{ bpp} \approx 14.3\text{ Gbps}\ (17.8\text{ Gbps at 10 bpc})$$
 
-3. **Unpropagated Constraint to the Display Engine (`Port@C` vs. `Port@B`):**
-   * Despite the Thunderbolt tunnel only provisioning **2 lanes**, the higher-level DisplayPort transport state object (`IOPortTransportStateDisplayPort` at `Port-USB-C@1/CIO/DisplayPort@0`) reports **`LaneCount = 4`** at **`5.4 Gbps (HBR2)`** (**17.28 Gbps** assumed capacity) to the Display Co-Processor (`AppleMobileDispT605X-DCP`).
-   * Believing it has 17.28 Gbps of headroom, the display engine selects uncompressed **CEA-861 3840x2160 @ 60Hz (`594 MHz` pixel clock, 10/12 bpc, `DPTimingModeId = 77`)** without enabling Display Stream Compression (DSC):
+Both figures are well above 8.64 Gbps. The stream stalls in the dock's `SYNAq` converter. The host shows `PixelClock = 0`, and `AppleATCDPINAdapterPort` logs `HPD_IRQ` retrains every 3.8–5.4 s until the dock unplugs. The USB-C path (`Port@B`) avoids the converter. It also negotiates a lighter 533 MHz reduced-blanking timing.
 
-$$\text{Required Uncompressed 4K60 Payload (10 bpc)} = 594\text{ MHz} \times 30\text{ bits/pixel} = 17.82\text{ Gbps raw} \quad (\approx 14.93\text{ Gbps active})$$
+The tunnel is clearly 2 lanes while the display engine believes 4. I couldn't confirm which component is at fault, and a firmware or driver explanation is equally plausible.
 
-   * On **`IOThunderboltPort@C`**, the stream is routed into the dock's internal Synaptics (`SYNAq`) DP-to-HDMI branch/MST converter, which enforces the 2-lane HBR2 (`8.64 Gbps`) cap and starves on the ~14.93 Gbps HDMI timing. The M5 Max display pipeline (`dispext0,t605x`) stalls with `"PixelClock" = 0` and `"DisplayClock" = 0`, while `AppleATCDPINAdapterPort(atc0-dpin0)` logs pairs of `Action = "IRQ"` (`HPD_IRQ` link-loss) retraining interrupts every **3.8 to 5.4 seconds** until the dock drops HPD (`Action = "Unplug"`).
-   * By contrast, **`IOThunderboltPort@B`** (rear Thunderbolt 5 USB-C receptacle) bypasses the internal `SYNAq` HDMI branch chip entirely, establishing a direct DisplayPort tunnel to the monitor's native `Dp1.2` sink at a lower reduced-blanking pixel clock (`533.25 MHz` CVT-RB, `DPTimingModeId = 45`) without protocol conversion overhead.
+### The "Silent Upscaling" Trap
 
-### The "Silent Upscaling" Trap in `AppleMobileDispT605X-DCP`
+Selecting `2560×1440 (low resolution)` should need only about 5.6 Gbps, yet it still gave a black screen. While the monitor's EDID advertises 4K60 (`MaxTotalPixelRate = 594000000`), the display co-processor keeps the **wire timing at 3840 wide** and scales on the GPU. The wire timing only dropped to a real 1440p60 (`DPTimingModeId = 46`) after **HDMI ULTRA HD Deep Color** was disabled on the monitor. That capped the advertised rate at 297 MHz.
 
-A counter-intuitive behavior surfaced during live testing when attempting to lower the resolution in **System Settings → Displays**:
-* Selecting **`2560 x 1440 (low resolution)` @ 60Hz** (which natively requires only ~5.6 Gbps and should easily fit inside 8.64 Gbps) **still resulted in a black screen** when `HDMI ULTRA HD Deep Color` was enabled on the monitor.
-* Inspecting `dispext0,t605x` revealed why: as long as the monitor's EDID advertises `3840x2160 @ 60Hz` (`MaxTotalPixelRate = 594000000`) as its preferred native timing, Apple Silicon's DCP **locks the physical wire timing to `DisplayWidth = 3840` (`DPTimingModeId = 77`)** and performs all resolution changes via GPU scaling.
-* Only when **HDMI ULTRA HD Deep Color** was disabled on the monitor's OSD—causing the monitor's EDID to cap `MaxTotalPixelRate` at `297000000` (297 MHz)—did `dispext0,t605x` actually lower the physical wire clock to native `2560 x 1440 @ 60Hz` (`DisplayWidth = 2560`, `DPTimingModeId = 46`, `subframe-interrupt-time-lines = 1381`), immediately lighting up the screen at 60Hz.
+### Why M1 Pro and M3 Max Work
 
-### Why M1 Pro and M3 Max Work Over the Same Dock
-
-* **M1 Pro** and **M3 Max** use Thunderbolt 4 (**USB4 v1, 40 Gb/s**) host routers (`IOThunderboltSwitchType5`).
-* When the Anker Prime Thunderbolt 5 dock connects to a TB4 host, its Intel `JHL9580` controller falls back to **USB4 v1 backward-compatibility mode**.
-* In USB4 v1 mode, macOS uses legacy DisplayPort tunnel allocation rather than `DPI BWAM`, provisioning all **4 lanes of HBR2 (17.28 Gbps)** to `IOThunderboltPort@C`—allowing the Synaptics `SYNAq` converter to pass uncompressed 4K @ 60Hz without starvation.
+They have USB4 v1 (40 Gb/s) host routers. The dock falls back to v1 mode, where macOS appears to use legacy DP tunnel allocation without BWAM. That grants 4 lanes of HBR2 (17.28 Gbps), enough for 4K60 at 8 bpc (about 14.3 Gbps).
 
 ## Comparison to Industry Standards
 
-| Architectural Layer | Expected Specification Behavior (TB5 / DP 2.1) | Observed macOS + JHL9580 Behavior |
+| Layer | Expected (USB4 v2 / DP tunneling) | Observed (macOS + `JHL9580`) |
 |---|---|---|
-| **Tunnel Lane Negotiation** | Intersect `DP_LOCAL_CAP` (4L) and `DP_REMOTE_CAP` (4L) → **4 Lanes** (`0xc7`) | Masked to **2 Lanes** (`0x47`) in `Cached Common DP Capabilities` under `DPI BWAM` |
-| **State Propagation** | Propagate `Established DP Lane Count = 2` to `IOPortTransportStateDisplayPort` | `IOPortTransportStateDisplayPort` reports stale/static `LaneCount = 4` to DCP |
-| **Bandwidth Mitigation** | Automatically engage **DSC (Display Stream Compression)** or 4:2:0 chroma when tunnel < mode rate | Attempts uncompressed 594 MHz 4K60 over 2-lane HBR2 tunnel → `PixelClock = 0` stall |
-| **Resolution Downscaling** | Selecting `2560x1440 (low-res)` lowers physical wire clock to 1440p60 (~241.5 MHz) | DCP keeps physical wire locked at `3840x2160` (`DPTimingModeId = 77`) if 594 MHz is in EDID |
+| **Lane negotiation** | Intersect local and remote capability, giving 4 lanes | Common capability masked to 2 lanes under BWAM |
+| **State propagation** | Display engine sees the established tunnel bandwidth | Transport state still reports 4 lanes |
+| **Bandwidth mitigation** | Engage DSC or 4:2:0 when the tunnel is below the mode rate | Attempts uncompressed 594 MHz over the 2-lane tunnel |
+| **Downscaling** | A lower resolution lowers the wire clock | Wire stays at 3840 while EDID offers 594 MHz |
+
+The "expected" column reflects my reading of the [USB4 specification](https://www.usb.org/document-library/usb4r-specification-v20) (DP IN/OUT adapter capability registers and DP bandwidth allocation mode) and the [DisplayPort standard](https://vesa.org/vesa-standards/) (8b/10b coding, DSC). It is not tied to specific clauses. The Linux [`thunderbolt` driver](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/thunderbolt/tunnel.c) (`tb_dp_xchg_caps()`) is an open reference for how the `DP_LOCAL_CAP`/`DP_REMOTE_CAP`/`DP_COMMON_CAP` exchange is implemented.
 
 ## Risks & Mitigations
 
-- **Protocol Converter Starvation on Dock HDMI Ports (`SYNAq`):** Routing high-pixel-clock CEA-861 HDMI timings (`594 MHz`) through an internal DP-to-HDMI branch converter over a 2-lane HBR2 Thunderbolt 5 tunnel causes continuous `HPD_IRQ` link drops.
-    - *Mitigation (Hardware — Optimal):* Connect the monitor's **DisplayPort** input directly to one of the dock's **rear Thunderbolt 5 USB-C ports (`IOThunderboltPort@B` or `@13`)** using a **DisplayPort-to-USB-C cable**. This completely bypasses the internal Synaptics `SYNAq` HDMI branch chip, communicating directly with the monitor's native DP sink (`SinkDeviceID = "Dp1.2"`, `DPTimingModeId = 45`, `533.25 MHz` CVT-RB) at full **4K HiDPI (`Looks like 2560 x 1440`) @ 60Hz, 10-bit** across M5 Max, M3 Max, and M1 Pro.
-- **Silent GPU Upscaling Locking Wire Timings (`DPTimingModeId = 77`):** Changing macOS display resolution in System Settings does not reduce physical DisplayPort/HDMI link bandwidth if the monitor's EDID still advertises 4K60 (`594 MHz`).
-    - *Mitigation (Monitor OSD / Software):* If restricted to an HDMI cable on the dock, either set the refresh rate to **30Hz** (`DPTimingModeId = 57`, ~7.46 Gbps), disable **HDMI ULTRA HD Deep Color** on the monitor OSD so macOS switches the physical wire timing to `DPTimingModeId = 46` (`2560x1440 @ 60Hz`), or use **BetterDisplay** to force **YCbCr 4:2:0 (8-bit)** at 4K60 (~7.46 Gbps).
-- **Wedged Secondary DCP Pipelines (`dispext1,t605x`) During Rapid Hot-Plugging:** Simultaneously connecting or rapidly swapping between the built-in HDMI port (`ufp0,0-dfp3,0`) and tunneled dock ports (`ufp1,0-dfp0,1`) can leave secondary `IOMobileFramebufferShim` instances stuck with `"NormalModeActive" = Yes` and `"DisplayClock" = 0`.
-    - *Mitigation:* Disconnect redundant video paths to the same physical monitor and power-cycle the Thunderbolt dock for 10 seconds to reset `AppleT6050DisplayCrossbar` and clear stale DFP mappings.
-- **Early Major OS Upgrade Regressions:** Upgrading to an early `.0` or `.1` major OS release to chase a kernel driver fix risks introducing broader regressions across WindowServer and developer toolchains, while the dock's own `JHL9580` (`FW 64.1`) / `SYNAq` HBR2 ceiling remains unchanged.
-    - *Mitigation:* Use the native DP-to-USB-C hardware path on a stable OS release, file targeted kernel telemetry via Apple Feedback Assistant referencing `AppleThunderboltDPInAdapterOS2`, and defer major OS upgrades until mature point releases and updated dock firmware are available.
+- **Converter starvation on dock HDMI:** 594 MHz timings over a 2-lane tunnel cause continuous `HPD_IRQ` drops.
+    - *Mitigation:* Use a **DisplayPort-to-USB-C cable** on a rear dock USB-C port. This bypasses `SYNAq`. It gave 4K HiDPI @ 60Hz, 10-bit.
+- **Wire timing locked to 4K60:** Changing the macOS resolution does not reduce link bandwidth.
+    - *Mitigation:* Over HDMI, either set 30Hz, disable HDMI ULTRA HD Deep Color on the monitor, or force YCbCr 4:2:0 with BetterDisplay.
+- **Wedged secondary display pipelines:** Rapid hot-plugging between built-in HDMI and dock ports can leave `dispext1,t605x` stuck at `DisplayClock = 0`.
+    - *Mitigation:* Connect only one video path per monitor, then power-cycle the dock for 10 seconds.
+- **Early OS upgrade regressions:** Upgrading to a `.0` or `.1` release for a driver fix risks wider regressions, and the dock's own limits remain.
+    - *Mitigation:* Use the DP-to-USB-C path on a stable OS, file Feedback Assistant telemetry naming `AppleThunderboltDPInAdapterOS2`, and wait for mature point releases and dock firmware.
+
+## References
+
+- [USB4 Specification v2.0](https://www.usb.org/document-library/usb4r-specification-v20), USB-IF: DP tunneling, DP adapter registers, bandwidth allocation mode.
+- [VESA DisplayPort Standard](https://vesa.org/vesa-standards/): link rates, lane counts, 8b/10b coding, DSC.
+- [Linux `drivers/thunderbolt/tunnel.c`](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/thunderbolt/tunnel.c): open-source DP tunnel setup and capability exchange.
+- [Linux Thunderbolt/USB4 admin guide](https://docs.kernel.org/admin-guide/thunderbolt.html): background on tunnels and connection management.
