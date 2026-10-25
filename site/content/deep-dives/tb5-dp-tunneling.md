@@ -10,7 +10,7 @@ date: "2026-10-24T23:30:00-07:00"
 
 ## What Happened
 
-My LG 4K monitor works through the HDMI port on an Anker Thunderbolt 5 dock when connected to my M1 Pro or M3 Max. It also works from the built-in HDMI port on my M5 Max. But through the dock's HDMI port on the M5 Max, the screen stays black—even though macOS lists the display as active at 2560×1440 and 60 Hz. Comparing connection paths and checking the system state as I changed settings pointed me to a reliable 4K workaround.
+My LG 4K monitor works through the HDMI port on an Anker Thunderbolt 5 dock when connected to my M1 Pro or M3 Max. It also works when I connect an HDMI cable directly from my M5 Max's built-in HDMI port to the monitor. But through the dock's HDMI port on the M5 Max, the screen stays black, even though macOS lists the display as active at 2560×1440 and 60 Hz. Comparing connection paths and checking the system state as I changed settings pointed me to a reliable 4K workaround.
 
 > [!NOTE]
 > **Test setup:** Apple M5 Max (`T6050`), macOS 26.x, Anker Prime Thunderbolt 5 dock (`JHL9580`, firmware 64.1), and one LG 4K monitor. These observations are from this setup; they may not apply to other docks, monitors, or OS versions.
@@ -21,7 +21,7 @@ Thunderbolt carries video through the dock as well as data. The dock's HDMI port
 
 | Connection | Result |
 |---|---|
-| M5 Max's built-in HDMI port | Works |
+| HDMI cable directly from M5 Max to monitor, bypassing the dock | Works |
 | Dock's HDMI port, with M5 Max | Black screen |
 | Dock's USB-C port to the monitor's DisplayPort input, with M5 Max | Works at 4K, 60 Hz |
 | Dock's HDMI port, with M1 Pro or M3 Max | Works |
@@ -43,9 +43,9 @@ The strongest clue was a mismatch in the reported connection details:
 - The dock's DisplayPort output adapter reported an established link with **2 lanes** and a link rate value of `2`. I interpreted that rate as HBR2, but have not independently verified the mapping.
 - A separate display-transport property reported `LaneCount = 4`.
 - macOS continued to use a 3840×2160, 60 Hz output timing even when I selected 2560×1440 in Display Settings.
-- During the black-screen failure, the display clock was reported as zero, and the system repeatedly logged `HPD_IRQ` events—display-link retraining attempts.
+- During the black-screen failure, the display clock was reported as zero, and the system repeatedly logged `HPD_IRQ` events, which appear to be display-link retraining attempts.
 
-These values could fit a bandwidth problem: the display path may be trying to send more video data than the dock's HDMI route can carry. But I don't know whether the two lane-count properties describe the same thing, or which component—if any—is reporting the wrong value.
+These values could fit a bandwidth problem: the display path may be trying to send more video data than the dock's HDMI route can carry. But I don't know whether the two lane-count properties describe the same thing, or which component, if any, is reporting the wrong value.
 
 I initially read a change in the raw capability values, `0xc7` to `0x47`, as evidence that the available lanes had changed from four to two. I have not verified that interpretation of the undocumented bit fields, so I don't rely on those values as proof.
 
@@ -67,7 +67,7 @@ The M1 Pro and M3 Max working through the same dock is another useful comparison
 
 My best explanation is an interaction between macOS 26, the monitor's HDMI ULTRA HD Deep Color setting, and the dock's Synaptics `SYNAq` HDMI converter. With Deep Color enabled, the monitor advertises a 4K-at-60-Hz timing with a higher pixel rate. macOS appears to keep using that timing even when its display settings show 2560×1440. That higher-rate signal fails on the dock's HDMI path.
 
-Turning Deep Color off lowers the advertised rate, after which macOS sends a real 2560×1440 signal and the picture appears. Sending DisplayPort directly through the dock's USB-C port bypasses the `SYNAq` converter and gives me a reliable 4K picture. Together, these results point to a compatibility and bandwidth interaction in this setup—not a confirmed fault in any one component. I found the working 4K path within about an hour; what remains unresolved is which part of the interaction causes the HDMI failure.
+Turning Deep Color off lowers the advertised rate, after which macOS sends a real 2560×1440 signal and the picture appears. Sending DisplayPort directly through the dock's USB-C port bypasses the `SYNAq` converter and gives me a reliable 4K picture. Together, these results point to a compatibility and bandwidth interaction in this setup, but they do not confirm a fault in any one component. I found the working 4K path within about an hour; what remains unresolved is which part of the interaction causes the HDMI failure.
 
 ## Technical Notes
 
