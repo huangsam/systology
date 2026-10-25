@@ -9,14 +9,20 @@ document.addEventListener('DOMContentLoaded', function () {
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: 'loose',
+      suppressErrorRendering: true,
       theme: isDark ? 'redux-dark-color' : 'redux-color',
     });
 
     for (var i = 0; i < diagrams.length; i++) {
       var el = diagrams[i];
       if (!el.dataset.src) {
+        var rawCode = el.getAttribute('data-mermaid-code');
         var rawAttr = el.getAttribute('data-mermaid-src');
-        el.dataset.src = rawAttr ? decodeURIComponent(rawAttr).trim() : el.textContent.trim();
+        el.dataset.src = rawCode
+          ? rawCode.trim()
+          : rawAttr && rawAttr !== '#ZgotmplZ'
+            ? decodeURIComponent(rawAttr).trim()
+            : el.textContent.trim();
       }
       try {
         var id = 'mermaid-svg-' + i + '-' + Date.now();
