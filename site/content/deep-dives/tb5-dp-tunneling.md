@@ -2,7 +2,7 @@
 title: "Why My Dock HDMI Went Black"
 description: "A hands-on investigation of a display problem with one Mac, dock, and monitor."
 summary: "The dock's HDMI output went black on one Mac. Testing pointed to an interaction between macOS 26, the monitor's HDMI Deep Color setting, and the dock's HDMI converter; direct DisplayPort provided a workaround."
-tags: [bandwidth, encoding, monitoring, protocols, systems-programming]
+tags: [bandwidth, media, protocols, systems-programming]
 categories: ["deep-dives"]
 draft: false
 date: "2026-10-24T23:30:00-07:00"
@@ -28,10 +28,9 @@ Thunderbolt carries video through the dock as well as data. The dock's HDMI port
 
 {{< mermaid >}}
 graph LR
-    Mac["M5 Max"] -->|Dock HDMI| Converter["Dock converts video to HDMI"]
-    Converter -.->|Black screen| HDMI["LG monitor"]
-    Mac -->|Dock USB-C to DisplayPort| DP["LG monitor"]
-    DP -->|Works| Pass["4K at 60 Hz"]
+    Mac["M5 Max"] -->|Dock HDMI| Converter["Dock HDMI Converter"]
+    Converter -.->|Fails| HDMI["LG Monitor (HDMI)<br>Black screen"]
+    Mac -->|Dock USB-C to DP| DP["LG Monitor (DisplayPort)<br>Works at 4K 60 Hz"]
 {{< /mermaid >}}
 
 ## What the System Information Suggested
@@ -79,14 +78,40 @@ AppleThunderboltDPInAdapterOS2
   Remote DP Capabilities        = <05c7a335>
   Cached Common DP Capabilities = <85472235>
   DPI BWAM Support              = Yes
+
 AppleThunderboltDPOutAdapterOS2
-  Established DP Link Rate = 2   (HBR2)
+  Established DP Link Rate  = 2   (HBR2)
   Established DP Lane Count = 2
+
+IOPortTransportStateDisplayPort (Port-USB-C@1/CIO/DisplayPort@0)
+  LaneCount = 4
 ```
 
 If the reported link rate of `2` means HBR2, then a two-lane link would carry roughly 8.64 Gbps after link coding. A 594 MHz 4K signal would require roughly 14.3 Gbps at 8 bits per color channel, or 17.8 Gbps at 10 bits per channel, before considering the details of the full display transport. That rough comparison is why I suspected a bandwidth mismatch; it is not a complete analysis of the dock's actual bandwidth allocation.
 
-The registry also showed `LaneCount = 4` on an `IOPortTransportStateDisplayPort` object, while the dock's output adapter reported an established lane count of 2. The meaning and relationship of these properties are not clear to me.
+The registry also showed how `dispext0,t605x` (`AppleMobileDispT605X-DCP`) changed across the three tests on the M5 Max:
+
+```text
+Dock HDMI — Deep Color ON (2560×1440 selected in macOS, screen black)
+  SinkDeviceID      = "SYNAq"
+  MaxTotalPixelRate = 594000000
+  DisplayWidth      = 3840
+  DPTimingModeId    = 77
+  PixelClock        = 0
+
+Dock HDMI — Deep Color OFF (2560×1440 @ 60 Hz working)
+  SinkDeviceID      = "SYNAq"
+  MaxTotalPixelRate = 297000000
+  DisplayWidth      = 2560
+  DPTimingModeId    = 46
+
+Dock USB-C to DisplayPort — Deep Color ON (4K @ 60 Hz working)
+  SinkDeviceID      = "Dp1.2"
+  DisplayWidth      = 3840
+  DPTimingModeId    = 45
+```
+
+When Deep Color was enabled on the dock's HDMI path, `DisplayWidth = 3840` and `DPTimingModeId = 77` remained active even after selecting 2560×1440 in Display Settings, while `PixelClock` reported `0`. Turning Deep Color off lowered `MaxTotalPixelRate` from `594000000` to `297000000` and switched the active timing to `DisplayWidth = 2560` (`DPTimingModeId = 46`). Moving to the USB-C-to-DisplayPort cable switched `SinkDeviceID` from `"SYNAq"` to `"Dp1.2"` and used `DPTimingModeId = 45` at full 3840×2160.
 
 ## References
 
