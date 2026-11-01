@@ -7,22 +7,23 @@ categories: ["deep-dives"]
 links:
   github: "https://github.com/huangsam/ai-ml-workshop"
 draft: false
-date: "2026-02-16T10:22:20-08:00"
+date: "2026-10-18T10:00:00-07:00"
 ---
 
 ## Context & Motivation
 
 **Context:** A hands-on collection focused on core ML workflows: PyTorch model development, Hugging Face model/dataset tooling, NumPy implementations for fundamentals, and scikit-learn experiments for classical algorithms. RAG/agents and media preprocessing are covered in auxiliary repos (`ragchain`, `vidicant`, `xcode-trial`).
 
-**Motivation:** It was difficult finding one place to learn and experiment with the full ML workflow—from data loading to model training, evaluation, and optimization—especially with a local-first approach that emphasizes reproducibility and hardware-aware benchmarking (MPS vs. CPU). Many resources are either too high-level (abstracting away training details) or too fragmented (focusing on one aspect like Hugging Face without the full pipeline). Additionally, ensuring experiments are reproducible and comparable across hardware adds complexity.
+**Motivation:** It was difficult finding one place to learn and experiment with the full ML workflow: from data loading to model training, evaluation, and optimization, especially with a local-first approach that emphasizes reproducibility and hardware-aware benchmarking (MPS vs. CPU). Many resources are either too high-level (abstracting away training details) or too fragmented (focusing on one aspect like Hugging Face without the full pipeline). Additionally, ensuring experiments are reproducible and comparable across hardware adds complexity.
 
 ## The Local Implementation
 
 - **CLI Workshop Core:** The `workshop` CLI (orchestrated via `uv run workshop`) drives PyTorch examples (training, transfer learning, PEFT/LoRA fine-tuning), Hugging Face integrations (datasets, tokenizers, model hubs), NumPy-from-scratch exercises (backpropagation, Q-learning, attention, transformer block), and scikit-learn algorithm demos. Auxiliary repos (`ragchain`, `mailprune`, `vidicant`, `xcode-trial`) cover RAG, agents, and media pipelines.
-- **Full-Stack Dashboard Architecture:** The workshop now ships a real-time web dashboard: a **FastAPI backend** (`uv run workshop server`) dispatches training jobs to a `ThreadPoolExecutor`, streams live progress via **Server-Sent Events (SSE)**, and serves an API that a **Next.js 15 frontend** (`npm run dev --prefix frontend`) consumes to display interactive hyperparameter controls, live metrics charts (Recharts), and step timelines—all without a page reload.
+- **Full-Stack Dashboard Architecture:** The workshop now ships a real-time web dashboard: a **FastAPI backend** (`uv run workshop server`) dispatches training jobs to a `ThreadPoolExecutor`, streams live progress via **Server-Sent Events (SSE)**, and serves an API that a **Next.js 15 frontend** (`npm run dev --prefix frontend`) consumes to display interactive hyperparameter controls, live metrics charts (Recharts), and step timelines, all without a page reload.
 - **Pydantic-Driven Config Forms:** Each task exposes its hyperparameters as a Pydantic model. The frontend fetches the JSON schema (`GET /tasks/{module}/{task}/schema`) and auto-generates sliders and numeric inputs in `ConfigForm.tsx`, keeping backend and frontend in sync without duplicated type definitions.
-- **Matplotlib Monkey-Patching:** To capture plots from background training threads without writing to disk, `plt.savefig` is intercepted at startup. The patch checks thread-local storage for the active `job_id`, captures figure bytes in-memory via `io.BytesIO`, and stores them in a per-job registry—then exposes them at `/plots/{job_id}/{filename}`. A dynamic whitelist (built at startup from registered task plot names) guards against path-traversal attacks.
+- **Matplotlib Monkey-Patching:** To capture plots from background training threads without writing to disk, `plt.savefig` is intercepted at startup. The patch checks thread-local storage for the active `job_id`, captures figure bytes in-memory via `io.BytesIO`, and stores them in a per-job registry, then exposes them at `/plots/{job_id}/{filename}`. A dynamic whitelist (built at startup from registered task plot names) guards against path-traversal attacks.
 - **Cooperative Cancellation & Thread-Local Console Capture:** Background threads poll a cancellation flag via `HTTPProgressHook`, so users can abort a misconfigured run gracefully. Standard output and `tqdm` progress bars are captured per-job using a `ThreadLocalStream` wrapper over `sys.stdout`/`sys.stderr`, preventing concurrent training runs from mixing their console output.
+- **NaN and Inf Telemetry Sanitization:** During exploratory model training (especially custom NumPy backpropagation or divergent learning rates), non-finite floats (`NaN`, `Infinity`, `-Infinity`) can corrupt JSON payloads over SSE streams. The registry layer sanitizes metrics into compliant representations before serialization, preventing client-side Recharts graphing crashes.
 - **Bottleneck:** Variation in hardware (MPS vs. CPU) and resource limits for transformer-scale experiments still create noisy comparisons. Large-model fine-tuning may be infeasible without PEFT techniques or smaller model checkpoints.
 
 ## Comparison to Industry Standards
