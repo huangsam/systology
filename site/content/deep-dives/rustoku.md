@@ -29,6 +29,68 @@ date: "2026-10-11T10:00:00-07:00"
 - **Documentation & Doctest Rigor:** Achieved 100% rustdoc API coverage (111/111 public items) across `rustoku-lib`, backed by 25 runnable, CI-verified `# Examples` doctests exercising solver execution, puzzle generation, formatting, and binding paths alongside strict clippy warning enforcement.
 - **Workspace Build Configuration:** A `.cargo/config.toml` standardizes cross-crate build targets and linker flags for the entire Cargo workspace, while demo build verification is integrated directly into main CI workflows.
 
+{{< pseudocode id="rustoku-mrv-solver" title="Bitmask MRV Backtracking Solver" >}}
+```rust
+// Minimum Remaining Values (MRV) Backtracking Search Loop
+struct RustokuSolver {
+    board: [u8; 81],       // 0 for empty, 1..=9 for clues/digits
+    row_masks: [u16; 9],   // Bitmask of digits placed in each row
+    col_masks: [u16; 9],   // Bitmask of digits placed in each column
+    box_masks: [u16; 9],   // Bitmask of digits placed in each 3x3 box
+    candidates: [u16; 81], // Bitmask of valid candidate digits per cell
+}
+
+impl RustokuSolver {
+    // 1. Select the most constrained unassigned cell (MRV Heuristic)
+    fn find_mrv_cell(&self) -> Option<(usize, usize)> {
+        let mut min_candidates = 10;
+        let mut best_cell = None;
+
+        for (r, c) in self.empty_cells() {
+            // Hardware POPCNT instruction counts remaining candidate bits
+            let count = self.candidates[r * 9 + c].count_ones();
+            if count < min_candidates {
+                min_candidates = count;
+                best_cell = Some((r, c));
+                if count == 1 {
+                    return best_cell; // Immediate shortcut for naked singles
+                }
+            }
+        }
+        best_cell
+    }
+
+    // 2. Recursive depth-first search with forward-checking and constraint propagation
+    fn solve_backtrack(&mut self) -> bool {
+        // Base case: All cells filled -> valid solution reached
+        let Some((r, c)) = self.find_mrv_cell() else {
+            return true;
+        };
+
+        let candidate_mask = self.candidates[r * 9 + c];
+        for num in 1..=9 {
+            let bit = 1 << (num - 1);
+            if (candidate_mask & bit) == 0 {
+                continue; // Digit violates current row, col, or box mask
+            }
+
+            // Forward move: place digit on board, set mask bits, prune peer candidates
+            self.place_number(r, c, num);
+
+            if self.solve_backtrack() {
+                return true; // Propagate success
+            }
+
+            // Backtrack: clear cell, restore mask bits, recalculate peer candidates
+            self.remove_number(r, c, num);
+        }
+
+        false // Trigger backtracking in parent caller
+    }
+}
+```
+{{< /pseudocode >}}
+
 ## Comparison to Industry Standards
 
 - **My Project:** A multi-target, explanatory Sudoku engine engineered for auditability and human-like logic. It uniquely integrates library, CLI, Python, and WASM interfaces from a single high-performance source with keyless multi-registry release automation.

@@ -42,6 +42,76 @@ graph LR
     Rerank --> Results[Top-k Results]
 {{< /mermaid >}}
 
+{{< pseudocode id="inverted-index" title="Inverted Index 'AND' Query Intersection" >}}
+```python
+def search_and(query_string, inverted_index):
+    # 1. Tokenize and normalize the query string
+    tokens = tokenize_and_stem(query_string)
+    if not tokens:
+        return []
+
+    # 2. Fetch the posting list (sorted document IDs) for each token
+    posting_lists = []
+    for token in tokens:
+        postings = inverted_index.get(token, [])
+        if not postings:
+            return []  # If any word is missing, AND result is empty
+        posting_lists.append(postings)
+
+    # 3. Sort posting lists by length (shortest first) to optimize intersection
+    posting_lists.sort(key=len)
+
+    # 4. Intersect the shortest list with subsequent lists (two-pointer merge)
+    result = posting_lists[0]
+
+    for i in range(1, len(posting_lists)):
+        current_list = posting_lists[i]
+        new_result = []
+
+        p1 = 0  # Pointer for accumulated result
+        p2 = 0  # Pointer for current list
+
+        while p1 < len(result) and p2 < len(current_list):
+            if result[p1] == current_list[p2]:
+                new_result.append(result[p1])
+                p1 += 1
+                p2 += 1
+            elif result[p1] < current_list[p2]:
+                p1 += 1
+            else:
+                p2 += 1
+
+        result = new_result
+        if not result:
+            break  # Early exit if intersection becomes empty
+
+    return result
+```
+{{< /pseudocode >}}
+
+{{< pseudocode id="rrf-fusion" title="Reciprocal Rank Fusion (RRF)" >}}
+```python
+def reciprocal_rank_fusion(dense_rankings, sparse_rankings, k=60):
+    """
+    Combines dense vector search results and sparse lexical (BM25) results.
+    dense_rankings: List of doc_ids ordered by vector cosine similarity
+    sparse_rankings: List of doc_ids ordered by BM25 score
+    k: Smoothing parameter (typically 60) to prevent top ranks from dominating
+    """
+    scores = {}
+
+    for rank, doc_id in enumerate(dense_rankings, start=1):
+        scores[doc_id] = scores.get(doc_id, 0.0) + (1.0 / (k + rank))
+
+    for rank, doc_id in enumerate(sparse_rankings, start=1):
+        scores[doc_id] = scores.get(doc_id, 0.0) + (1.0 / (k + rank))
+
+    # Sort documents by accumulated RRF score descending
+    sorted_docs = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+    return [doc_id for doc_id, score in sorted_docs]
+```
+{{< /pseudocode >}}
+
 See the [Ragchain]({{< ref "/deep-dives/ragchain" >}}) deep-dive for an applied pipeline combining BM25 and vector retrieval, or the [Resources]({{< ref "/resources" >}}) guide for canonical large-scale search architectures.
 
 **Anti-pattern — Semantic-only Retrieval:** Relying exclusively on vector search. Embeddings are great for conceptual similarity but terrible for exact matches: searching for the error code `ERR_CONNECTION_REFUSED` via semantic search returns results about "network problems" rather than the exact error. Hybrid retrieval covers both precision and recall.
