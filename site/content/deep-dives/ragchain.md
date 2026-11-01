@@ -25,6 +25,61 @@ date: "2026-02-16T10:22:20-08:00"
 - **Privacy architecture:** no data leaves the device. Ollama runs models locally (currently qwen3 for generation, qwen3-embedding for embeddings), Chroma stores vectors on local disk or via a local Docker container, and the BM25 index is an in-memory structure rebuilt from local documents.
 - **Bottleneck:** Embedding generation is the ingestion bottleneck—Ollama on CPU can be slow per chunk, making large re-indexing runs time-consuming. Memory footprint grows with corpus size (Chroma vectors + BM25 term frequencies). The default corpus covers 50 programming languages plus 10 conceptual bridge pages, and extending to larger domains requires attention to chunk sizing and retrieval parameter tuning.
 
+{{< pseudocode id="ragchain-adaptive-retriever" title="Intent-Routed Adaptive Ensemble Retriever" >}}
+```python
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
+
+
+class AdaptiveEnsembleRetriever:
+    """
+    Combines BM25 and dense vector search with intent-routed dynamic weights.
+    Executes branch retrievals in parallel and applies weighted RRF scoring.
+    """
+
+    def __init__(self, bm25_retriever, chroma_retriever, rrf_k=60):
+        self.bm25 = bm25_retriever
+        self.chroma = chroma_retriever
+        self.rrf_k = rrf_k
+
+    def resolve_weights(self, query: str) -> tuple[float, float]:
+        # Fast-path pattern matching with router fallback
+        query_lower = query.lower()
+        if any(term in query_lower for term in ["what is", "define", "error", "code"]):
+            return (0.8, 0.2)  # FACT: keyword-heavy for exact term matches
+        elif any(term in query_lower for term in ["versus", "vs", "compare", "difference"]):
+            return (0.3, 0.7)  # COMPARISON: semantic-heavy for conceptual breadth
+        else:
+            return (0.4, 0.6)  # CONCEPT: balanced hybrid default
+
+    def retrieve(self, query: str, top_k: int = 5):
+        bm25_weight, chroma_weight = self.resolve_weights(query)
+
+        # 1. Concurrent branch retrieval across both indices
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            future_bm25 = executor.submit(self.bm25.search, query)
+            future_chroma = executor.submit(self.chroma.search, query)
+            bm25_docs = future_bm25.result()
+            chroma_docs = future_chroma.result()
+
+        # 2. Weighted Reciprocal Rank Fusion: score = weight / (k + rank)
+        doc_scores = defaultdict(float)
+        doc_map = {}
+
+        for rank, doc in enumerate(bm25_docs):
+            doc_scores[doc.page_content] += bm25_weight * (1.0 / (self.rrf_k + rank + 1))
+            doc_map[doc.page_content] = doc
+
+        for rank, doc in enumerate(chroma_docs):
+            doc_scores[doc.page_content] += chroma_weight * (1.0 / (self.rrf_k + rank + 1))
+            doc_map[doc.page_content] = doc
+
+        # 3. Sort by aggregated score descending and return top-k chunks
+        sorted_docs = sorted(doc_scores.items(), key=lambda item: item[1], reverse=True)
+        return [doc_map[content] for content, _ in sorted_docs[:top_k]]
+```
+{{< /pseudocode >}}
+
 ## Comparison to Industry Standards
 
 - **My Project:** Local-only RAG with explicit reproducibility and privacy guarantees. No cloud dependencies. Hybrid retrieval with systematic evaluation. Suitable for personal knowledge bases and privacy-sensitive domains.
