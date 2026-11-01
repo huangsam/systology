@@ -42,7 +42,7 @@ graph LR
     Rerank --> Results[Top-k Results]
 {{< /mermaid >}}
 
-See the [Search & Retrieval]({{< ref "/designs/search-retrieval" >}}) design for a production architecture combining BM25 and vector retrieval with reranking at scale.
+See the [Ragchain]({{< ref "/deep-dives/ragchain" >}}) deep-dive for an applied pipeline combining BM25 and vector retrieval, or the [Resources]({{< ref "/resources" >}}) guide for canonical large-scale search architectures.
 
 **Anti-pattern — Semantic-only Retrieval:** Relying exclusively on vector search. Embeddings are great for conceptual similarity but terrible for exact matches: searching for the error code `ERR_CONNECTION_REFUSED` via semantic search returns results about "network problems" rather than the exact error. Hybrid retrieval covers both precision and recall.
 

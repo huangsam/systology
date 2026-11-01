@@ -14,7 +14,7 @@
     <p class="category-block-summary">{{ .Summary }}</p>
 
     <div class="posts-grid">
-      {{ $recentPages := first 2 .RegularPagesRecursive.ByLastmod.Reverse }}
+      {{ $recentPages := first 4 .RegularPagesRecursive.ByLastmod.Reverse }}
       {{ range $recentPages }}
       {{ $metaText := delimit (.Params.tags | default slice) ", " }}
       {{ partial "components/post-card.html"

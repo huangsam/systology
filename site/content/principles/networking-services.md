@@ -14,7 +14,7 @@ Define clear, versioned API contracts with request/response schemas and use REST
 
 Start with OpenAPI (Swagger) for REST APIs or Protocol Buffer definitions for gRPC. These schemas serve as the single source of truth—generate client SDKs, server stubs, and documentation from the same spec. Version your API in the URL path (`/v1/`, `/v2/`) or via content negotiation headers. When adding fields, make them optional with sensible defaults so existing clients don't break.
 
-See the [Notification System]({{< ref "/designs/notification-system" >}}) design for an example of a well-defined internal API with priority routing and channel adapters.
+See the [Resources]({{< ref "/resources" >}}) guide for canonical references on high-throughput multi-channel notification architecture and priority routing.
 
 **Anti-pattern — Implicit Contracts:** Documenting your API in a README that drifts from the actual implementation. Without a machine-readable schema, clients are built on assumptions that break silently when the server changes. A typo in a field name becomes a production incident. Use contract-first design: write the spec, generate the code.
 
@@ -40,7 +40,7 @@ Respect external rate limits with adaptive throttling and implement client-side 
 
 Implement both client-side and server-side rate limiting. Client-side: use a token bucket that tracks your API quota and blocks requests proactively before hitting the server. Server-side: return `429 Too Many Requests` with a `Retry-After` header. For adaptive throttling, track recent 429 responses and reduce request rate proportionally—like TCP congestion control for APIs.
 
-See the [Flash Sale]({{< ref "/designs/flash-sale" >}}) design for production-grade rate limiting and connection shedding at extreme scale (1M concurrent users).
+See the [Service Resilience]({{< ref "/principles/service-resilience" >}}) principles and [Resources]({{< ref "/resources" >}}) guide for production-grade rate limiting, token buckets, and connection shedding at extreme scale.
 
 **Anti-pattern — Ignoring Rate Limits:** Treating 429 responses as transient errors and retrying immediately at full speed. This escalates to IP bans, API key revocation, and provider relationship damage. Parse the `Retry-After` header and back off accordingly.
 

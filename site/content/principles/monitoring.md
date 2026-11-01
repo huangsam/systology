@@ -34,7 +34,7 @@ Add trace IDs and span IDs across service boundaries to track requests end-to-en
 
 Instrument your services with OpenTelemetry (the industry standard), propagating trace context via HTTP headers (`traceparent`) or gRPC metadata. Each service creates spans for its work and passes the trace ID downstream. The trace collector (Jaeger, Tempo, Zipkin) assembles the full request tree, showing exactly where time was spent, which service caused the delay, and which calls failed.
 
-See how the [Notification System]({{< ref "/designs/notification-system" >}}) design tracks notifications through priority queues, dispatchers, and channel adapters—tracing reveals which stage introduces latency.
+See the [Resources]({{< ref "/resources" >}}) guide for distributed tracing references across event queues and dispatchers.
 
 **Anti-pattern — Tracing Only at the Edge:** Adding trace instrumentation only to the API gateway and assuming you'll figure out downstream latency from logs. Without spans from intermediate services, your trace shows a single long span with no visibility into whether the database, cache, or third-party API caused the delay.
 
@@ -44,7 +44,7 @@ Define Service Level Objectives and error budgets for critical systems, then set
 
 Start by defining SLIs (Service Level Indicators): request latency P99, error rate, availability. Then set SLOs: "99.9% of requests complete in < 500ms" and "error rate < 0.1% over a 7-day window." Calculate the error budget (0.1% of 7 days ≈ 10 minutes of downtime). Alert when the burn rate threatens to exhaust the error budget within the SLO period—not on instantaneous spikes.
 
-See the operational excellence sections in the [Flash Sale]({{< ref "/designs/flash-sale" >}}) and [Ad Click Aggregator]({{< ref "/designs/ad-click-aggregator" >}}) designs for concrete SLO/SLI examples in production systems.
+See the [Resources]({{< ref "/resources" >}}) guide and [Service Resilience]({{< ref "/principles/service-resilience" >}}) for concrete SLO/SLI and burn rate definitions in production systems.
 
 **Anti-pattern — Threshold on Instantaneous Values:** Alerting on `latency_p99 > 500ms` with a 1-minute window. A single slow garbage collection pause triggers a page at 3 AM. Instead, alert on burn rate: "at the current error rate, we'll exceed our monthly error budget within 6 hours." This distinguishes brief transients from sustained degradation.
 

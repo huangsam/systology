@@ -58,4 +58,4 @@ Choose your windowing strategy based on the tension between your Latency SLA and
 
 ## Cross-principle Notes
 
-This principle extends the **Time Semantics** section in [Data Pipelines]({{< ref "/principles/data-pipelines" >}}). For a production example of speculative intervals in action, see the **Deep Dive & Trade-offs** in the [Ad Click Aggregator]({{< ref "/designs/ad-click-aggregator" >}}), where a 1-minute reporting SLA forces the system to handle fraud corrections as late-arriving retractions.
+This principle extends the **Time Semantics** section in [Data Pipelines]({{< ref "/principles/data-pipelines" >}}). For comparative evaluations of stream processing engines handling late-arriving data and watermarks, see the [Data Processing Architectures]({{< ref "/deep-dives/data-processing-architectures" >}}) deep-dive.

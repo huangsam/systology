@@ -14,7 +14,7 @@ Design operations to be idempotent using idempotency keys and unique request IDs
 
 Generate a unique idempotency key per logical operation (UUID or deterministic hash of the operation parameters). Send it with each request. The server checks a short-lived store (Redis with 15-minute TTL) for the key: if found, return the cached response; if not, process the request and cache the result. This makes retries safe for state-changing operations like payments and order creation.
 
-See the [Payment System]({{< ref "/designs/payment-system" >}}) design for a production-grade implementation of idempotency in financial transactions.
+See the [Resources]({{< ref "/resources" >}}) guide for canonical references on financial transaction ledgers and idempotent API implementations (e.g., Stripe).
 
 **Anti-pattern — POST Without Idempotency:** Using POST for state-changing operations without idempotency keys. A network timeout causes the client to retry, and the server processes the request twice—creating duplicate orders, double-charging a credit card, or sending duplicate notifications. Idempotency keys are cheap insurance against expensive duplicates.
 
@@ -47,7 +47,7 @@ stateDiagram-v2
     note right of HalfOpen : One probe request
 {{< /mermaid >}}
 
-See the [Distributed Cache]({{< ref "/designs/distributed-cache" >}}) design for how caching provides resilience layers alongside performance.
+See the [Resources]({{< ref "/resources" >}}) guide for canonical distributed caching architectures and cache-aside/write-through resilience patterns.
 
 **Anti-pattern — All-or-Nothing Dependency:** Treating every downstream service as critical. If the recommendation service is down, should the entire product page fail? Usually not—show the product without recommendations. Classify dependencies as critical (payment must succeed) vs. optional (recommendations are nice-to-have) and degrade gracefully for optional ones.
 
@@ -109,4 +109,4 @@ Choose your resilience pattern based on the failure mode you're designing agains
 
 ## Cross-principle Notes
 
-For idempotency, circuit breakers, async IO, and background job patterns in the context of networked services, see the [Networking & Services]({{< ref "/principles/networking-services" >}}) principles. For production examples, see the [Payment System]({{< ref "/designs/payment-system" >}}) design (idempotency in financial transactions) and the [Flash Sale]({{< ref "/designs/flash-sale" >}}) design (queue-based load management at extreme scale).
+For idempotency, circuit breakers, async IO, and background job patterns in the context of networked services, see the [Networking & Services]({{< ref "/principles/networking-services" >}}) principles. For production case studies and canonical patterns, see the [Resources]({{< ref "/resources" >}}) guide.

@@ -37,7 +37,7 @@ Good partition keys distribute work evenly and group related records together. P
 
 **Anti-pattern — Hot Key Blindness:** Partitioning by a key with a Zipfian distribution (e.g., a viral tweet's ID, a celebrity user) and wondering why one task takes 100x longer than others. Monitor partition sizes in your pipeline's metrics and add salting or pre-aggregation for known hot keys.
 
-See the [Ad Click Aggregator]({{< ref "/designs/ad-click-aggregator" >}}) design for a production example of event-time windowed aggregation with partition-aware scaling.
+See [Data Processing Architectures]({{< ref "/deep-dives/data-processing-architectures" >}}) for a comparative breakdown of event-time windowed aggregation and partition handling across Spark, Flink, and Beam.
 
 ## IO & Schema
 
@@ -55,7 +55,7 @@ Design sinks to be idempotent under retries and rely on transactional semantics 
 
 The practical approach: use upserts keyed on `(partition, offset)` or `(window_key, window_start)` rather than blind inserts. If a task retries and writes the same record again, the upsert overwrites identically rather than creating a duplicate. This gives you exactly-once *effect* without the complexity of distributed transactions.
 
-See the [Realtime Analytics]({{< ref "/designs/realtime-analytics" >}}) design for a deeper treatment of exactly-once semantics in streaming architectures.
+See the [Resources]({{< ref "/resources" >}}) guide for canonical references on stream processing architectures, and [Data Processing Architectures]({{< ref "/deep-dives/data-processing-architectures" >}}) for hands-on exactly-once semantics.
 
 **Anti-pattern — Append-only Without Dedup:** Writing to a sink that only supports appends (e.g., a log file, a Kafka topic) without tracking what's already been written. On retry, you get duplicates that silently inflate your metrics. Always pair appends with a dedup mechanism at the consumer.
 

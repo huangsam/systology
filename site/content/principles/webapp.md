@@ -29,7 +29,7 @@ Build static assets during CI with versioning and caching headers, serve via CDN
 
 Use content-hashed filenames (`app.a1b2c3.js`) for cache busting—users always get the latest version without manual cache invalidation. Set `Cache-Control: max-age=31536000, immutable` for hashed assets (they never change). Serve through a CDN (CloudFront, Fastly, Cloudflare) so users hit edge nodes rather than your origin server. Store user uploads (images, documents) in object storage (S3, GCS) with pre-signed URLs for direct upload, bypassing your application server.
 
-See the [CDN & Media]({{< ref "/designs/cdn-media" >}}) design for a production architecture covering origin shielding, edge caching, and media transformation pipelines.
+See the [Resources]({{< ref "/resources" >}}) guide for canonical references on CDN origin shielding and media transformation architectures, and [Video Analysis]({{< ref "/deep-dives/video-analysis" >}}) for local frame processing.
 
 **Anti-pattern — Serving Uploads from Application Servers:** Storing user uploads on the application server's local filesystem and serving them via the app process. This is a single point of failure (disk dies, files are gone), doesn't scale (each server has different files), and wastes application server resources on IO. Use object storage with CDN.
 
